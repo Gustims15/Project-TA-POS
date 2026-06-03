@@ -23,7 +23,7 @@ class DailyUnitsChart extends ChartWidget
 
     public function getHeading(): string
     {
-        return 'Daily ' . $this->getDashboardMetricLabel();
+        return 'Daily ' . $this->getDashboardMetricLabel() . ' - ' . $this->getDashboardPeriodLabel();
     }
 
     protected function getData(): array
@@ -42,6 +42,8 @@ class DailyUnitsChart extends ChartWidget
                     $date->copy()->startOfDay(),
                     $date->copy()->endOfDay(),
                 ]);
+
+            $this->applyDashboardPeriodFilterToOrderQuery($query);
 
             $values[] = match ($this->getDashboardMetric()) {
                 'orders' => (int) $query->count(),

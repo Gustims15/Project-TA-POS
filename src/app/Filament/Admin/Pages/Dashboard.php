@@ -7,7 +7,6 @@ namespace App\Filament\Admin\Pages;
 use App\Filament\Admin\Widgets\DailyUnitsChart;
 use App\Filament\Admin\Widgets\DashboardLuxuryOverviewWidget;
 use App\Filament\Admin\Widgets\LatestOrdersTable;
-use App\Filament\Admin\Widgets\MetricTabsWidget;
 use App\Filament\Admin\Widgets\MonthlyRevenueChart;
 use App\Filament\Admin\Widgets\MonthlyUnitsChart;
 use App\Filament\Admin\Widgets\ProductCategoryChart;
@@ -53,8 +52,6 @@ class Dashboard extends BaseDashboard
 
         return [
             DashboardLuxuryOverviewWidget::class,
-
-            MetricTabsWidget::class,
 
             ProductCategoryChart::class,
             DailyUnitsChart::class,

@@ -32,11 +32,15 @@ class ProductCategoryChart extends Widget
             default => DB::raw('SUM(order_items.quantity) as metric_total'),
         };
 
-        $categorySales = OrderItem::query()
+        $query = OrderItem::query()
             ->join('products', 'order_items.product_id', '=', 'products.id')
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
-            ->where('orders.status', 'Selesai')
+            ->where('orders.status', 'Selesai');
+
+        $this->applyDashboardPeriodFilterToOrderQuery($query);
+
+        $categorySales = $query
             ->select([
                 'categories.name as name',
                 $metricSelect,
@@ -79,7 +83,7 @@ class ProductCategoryChart extends Widget
 
         return [
             'categories' => $data,
-            'heading' => $this->getDashboardMetricLabel() . ' by Category',
+            'heading' => $this->getDashboardMetricLabel() . ' by Category - ' . $this->getDashboardPeriodLabel(),
             'metricLabel' => $this->getDashboardMetricLabel(),
         ];
     }

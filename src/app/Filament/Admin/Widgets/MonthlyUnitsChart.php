@@ -23,7 +23,7 @@ class MonthlyUnitsChart extends ChartWidget
 
     public function getHeading(): string
     {
-        return 'Monthly ' . $this->getDashboardMetricLabel() . ' Bar';
+        return 'Monthly ' . $this->getDashboardMetricLabel() . ' Bar - ' . $this->getDashboardPeriodLabel();
     }
 
     protected function getData(): array
@@ -42,6 +42,8 @@ class MonthlyUnitsChart extends ChartWidget
                     $date->copy()->startOfMonth(),
                     $date->copy()->endOfMonth(),
                 ]);
+
+            $this->applyDashboardPeriodFilterToOrderQuery($query);
 
             $values[] = match ($this->getDashboardMetric()) {
                 'orders' => (int) $query->count(),

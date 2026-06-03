@@ -23,7 +23,7 @@ class MonthlyRevenueChart extends ChartWidget
 
     public function getHeading(): string
     {
-        return 'Monthly ' . $this->getDashboardMetricLabel();
+        return 'Monthly ' . $this->getDashboardMetricLabel() . ' - ' . $this->getDashboardPeriodLabel();
     }
 
     protected function getData(): array
@@ -42,6 +42,8 @@ class MonthlyRevenueChart extends ChartWidget
                     $date->copy()->startOfMonth(),
                     $date->copy()->endOfMonth(),
                 ]);
+
+            $this->applyDashboardPeriodFilterToOrderQuery($query);
 
             $values[] = match ($this->getDashboardMetric()) {
                 'orders' => (int) $query->count(),

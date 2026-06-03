@@ -30,7 +30,7 @@ class TopProductsTable extends TableWidget
     public function table(Table $table): Table
     {
         return $table
-            ->heading('Top Product by ' . $this->getDashboardMetricLabel())
+            ->heading('Top Product by ' . $this->getDashboardMetricLabel() . ' - ' . $this->getDashboardPeriodLabel())
             ->query($this->getTableQuery())
             ->paginated([5])
             ->columns([
@@ -58,9 +58,13 @@ class TopProductsTable extends TableWidget
 
     protected function getTableQuery(): Builder
     {
-        return OrderItem::query()
+        $query = OrderItem::query()
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
-            ->where('orders.status', 'Selesai')
+            ->where('orders.status', 'Selesai');
+
+        $this->applyDashboardPeriodFilterToOrderQuery($query);
+
+        return $query
             ->select([
                 DB::raw('MIN(order_items.id) as id'),
                 'order_items.product_name as product_name',

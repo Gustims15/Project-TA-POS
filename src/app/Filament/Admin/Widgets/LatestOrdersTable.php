@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Filament\Admin\Widgets\Concerns\HasDashboardMetric;
 use App\Models\Order;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -12,13 +13,13 @@ use Illuminate\Database\Eloquent\Builder;
 
 class LatestOrdersTable extends TableWidget
 {
+    use HasDashboardMetric;
+
     protected int|string|array $columnSpan = [
         'default' => 1,
         'md' => 1,
         'xl' => 4,
     ];
-
-    protected static ?string $heading = 'Latest Orders';
 
     protected function getTablePaginationPageOptions(): array
     {
@@ -28,6 +29,7 @@ class LatestOrdersTable extends TableWidget
     public function table(Table $table): Table
     {
         return $table
+            ->heading('Latest Orders - ' . $this->getDashboardPeriodLabel())
             ->query($this->getTableQuery())
             ->paginated([5])
             ->columns([
@@ -63,7 +65,11 @@ class LatestOrdersTable extends TableWidget
 
     protected function getTableQuery(): Builder
     {
-        return Order::query()
+        $query = Order::query()
             ->latest('ordered_at');
+
+        $this->applyDashboardPeriodFilterToOrderQuery($query);
+
+        return $query;
     }
 }
