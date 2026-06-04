@@ -109,40 +109,6 @@
             font-weight: 950;
         }
 
-        .dashboard-period-filter {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .dashboard-period-link {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 38px;
-            padding: 9px 15px;
-            border-radius: 999px;
-            color: white;
-            font-size: 12px;
-            font-weight: 850;
-            text-decoration: none;
-            background: rgba(255,255,255,0.14);
-            border: 1px solid rgba(255,255,255,0.24);
-            transition: 0.2s ease;
-        }
-
-        .dashboard-period-link:hover {
-            background: rgba(255,255,255,0.22);
-        }
-
-        .dashboard-period-link.active {
-            color: #0f766e;
-            background: white;
-            border-color: white;
-            box-shadow: 0 14px 30px rgba(15,23,42,0.16);
-        }
-
         .dashboard-lux-main-row {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(520px, 620px);
@@ -165,7 +131,7 @@
             background: white;
             border: 1px solid rgba(226,232,240,0.95);
             box-shadow: 0 16px 40px rgba(15,23,42,0.07);
-            min-height: 150px;
+            min-height: 190px;
             transition: 0.25s ease;
         }
 
@@ -191,6 +157,8 @@
         .dashboard-lux-card.stock::after { background: #ef4444; }
 
         .dashboard-lux-label {
+            position: relative;
+            z-index: 2;
             margin: 0;
             color: #64748b;
             font-size: 13px;
@@ -198,6 +166,8 @@
         }
 
         .dashboard-lux-value {
+            position: relative;
+            z-index: 2;
             margin: 18px 0 0;
             color: #020617;
             font-size: 28px;
@@ -207,6 +177,8 @@
         }
 
         .dashboard-lux-caption {
+            position: relative;
+            z-index: 2;
             display: inline-flex;
             align-items: center;
             margin-top: 14px;
@@ -222,6 +194,8 @@
         .stock .dashboard-lux-caption { background: #fef2f2; color: #b91c1c; }
 
         .dashboard-trend {
+            position: relative;
+            z-index: 2;
             display: block;
             margin-top: 10px;
             color: #64748b;
@@ -233,6 +207,74 @@
         .dashboard-trend.up { color: #059669; }
         .dashboard-trend.down { color: #dc2626; }
         .dashboard-trend.neutral { color: #64748b; }
+
+        .kpi-mini-visual {
+            position: relative;
+            z-index: 2;
+            margin-top: 14px;
+        }
+
+        .kpi-mini-bars {
+            height: 38px;
+            display: grid;
+            grid-template-columns: repeat(var(--kpi-count), minmax(0, 1fr));
+            align-items: end;
+            gap: 4px;
+        }
+
+        .kpi-mini-bar {
+            min-height: 2px;
+            border-radius: 6px 6px 2px 2px;
+            background: linear-gradient(180deg, #0f766e, #14b8a6);
+            opacity: 0.9;
+        }
+
+        .kpi-mini-line {
+            height: 42px;
+            display: grid;
+            grid-template-columns: repeat(var(--kpi-count), minmax(0, 1fr));
+            align-items: end;
+            gap: 4px;
+        }
+
+        .kpi-mini-line-point {
+            width: 100%;
+            min-height: 3px;
+            border-radius: 999px;
+            background: #0f766e;
+            box-shadow: 0 6px 12px rgba(15,118,110,0.18);
+        }
+
+        .kpi-stock-track {
+            height: 12px;
+            border-radius: 999px;
+            overflow: hidden;
+            display: flex;
+            background: #e2e8f0;
+        }
+
+        .kpi-stock-safe {
+            background: #0f766e;
+        }
+
+        .kpi-stock-low {
+            background: #f97316;
+        }
+
+        .kpi-stock-out {
+            background: #dc2626;
+        }
+
+        .kpi-stock-legend {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 9px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 850;
+        }
 
         .metric-lux-card {
             height: 100%;
@@ -268,23 +310,80 @@
         }
 
         .metric-lux-body {
-            padding: 8px 16px 16px;
+            padding: 10px 16px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .metric-section-block {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .metric-section-label {
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .metric-period-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .metric-period-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 38px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            text-decoration: none;
+            border: 1px solid #d7e2ea;
+            background: #ffffff;
+            color: #475569;
+            font-size: 11px;
+            font-weight: 900;
+            text-align: center;
+            transition: 0.22s ease;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+        }
+
+        .metric-period-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 24px rgba(15, 23, 42, 0.08);
+        }
+
+        .metric-period-link.active {
+            color: #ffffff;
+            border-color: #0f766e;
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            box-shadow: 0 14px 26px rgba(15, 118, 110, 0.22);
+        }
+
+        .metric-option-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
+            gap: 8px;
         }
 
         .metric-lux-item {
-            display: flex;
-            flex-direction: column;
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
-            min-height: 54px;
-            border-radius: 16px;
-            padding: 10px 12px;
+            min-height: 38px;
+            padding: 8px 10px;
+            border-radius: 999px;
             text-decoration: none;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #d7e2ea;
             background: #ffffff;
-            transition: 0.25s ease;
+            transition: 0.22s ease;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
         }
 
         .metric-lux-item:hover {
@@ -300,10 +399,10 @@
 
         .metric-lux-label {
             color: #0f172a;
-            font-size: 12px;
-            font-weight: 950;
+            font-size: 11px;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em;
             text-align: center;
         }
 
@@ -311,22 +410,9 @@
             color: white;
         }
 
-        .metric-lux-description {
-            margin-top: 4px;
-            color: #64748b;
-            font-size: 10px;
-            font-weight: 750;
-            text-align: center;
-            line-height: 1.35;
-        }
-
-        .metric-lux-item.active .metric-lux-description {
-            color: #ccfbf1;
-        }
-
         .powerbi-panel-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: minmax(280px, 0.85fr) minmax(0, 2.15fr);
             gap: 18px;
             margin-top: 18px;
             align-items: stretch;
@@ -359,248 +445,141 @@
             line-height: 1.5;
         }
 
-        .top-product-chart {
+        .powerbi-top-chart {
+            position: relative;
             display: grid;
-            gap: 10px;
-            margin-top: 18px;
+            gap: 12px;
+            margin-top: 22px;
+            padding: 4px 2px 2px;
         }
 
-        .top-product-row {
+        .powerbi-top-row {
             display: grid;
-            gap: 6px;
-        }
-
-        .top-product-row-head {
-            display: flex;
+            grid-template-columns: 125px minmax(0, 1fr) 58px;
             align-items: center;
-            justify-content: space-between;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .top-product-rank-name {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-        }
-
-        .top-product-rank {
-            flex: 0 0 auto;
-            width: 24px;
-            height: 24px;
-            border-radius: 999px;
-            background: #ecfeff;
-            color: #0f766e;
-            font-size: 11px;
-            font-weight: 900;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .top-product-name {
-            color: #0f172a;
+        .powerbi-top-label {
+            color: #334155;
             font-size: 12px;
-            font-weight: 800;
+            font-weight: 850;
+            line-height: 1.25;
+            text-align: right;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .top-product-value {
-            color: #64748b;
-            font-size: 11px;
-            font-weight: 800;
+        .powerbi-top-bar-wrap {
+            position: relative;
+            width: 100%;
+            height: 19px;
+        }
+
+        .powerbi-top-bar-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 3px;
+            background:
+                linear-gradient(90deg, rgba(148, 163, 184, 0.16) 1px, transparent 1px),
+                transparent;
+            background-size: 25% 100%;
+        }
+
+        .powerbi-top-bar {
+            position: relative;
+            height: 100%;
+            min-width: 7px;
+            border-radius: 2px;
+            background: #5dade2;
+            box-shadow: 0 5px 12px rgba(93, 173, 226, 0.22);
+        }
+
+        .powerbi-top-value {
+            color: #475569;
+            font-size: 12px;
+            font-weight: 850;
             white-space: nowrap;
         }
 
-        .mini-bar-track {
-            width: 100%;
-            height: 10px;
-            border-radius: 999px;
-            background: #e2e8f0;
-            overflow: hidden;
-        }
-
-        .mini-bar-fill {
-            height: 100%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #34d399, #10b981);
-        }
-
-        .revenue-summary {
+        .powerbi-axis {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
-            margin-top: 18px;
-            margin-bottom: 12px;
+            grid-template-columns: 125px minmax(0, 1fr) 58px;
+            gap: 12px;
+            margin-top: 8px;
         }
 
-        .revenue-summary-card {
-            border-radius: 18px;
-            padding: 12px 14px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+        .powerbi-axis-line {
+            grid-column: 2 / 3;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 6px;
         }
 
-        .revenue-summary-label {
-            display: block;
-            color: #64748b;
-            font-size: 11px;
+        .powerbi-axis-line span {
+            color: #94a3b8;
+            font-size: 10px;
             font-weight: 800;
         }
 
-        .revenue-summary-value {
-            display: block;
-            margin-top: 4px;
-            color: #0f172a;
-            font-size: 20px;
-            line-height: 1.1;
-            font-weight: 950;
+        .revenue-performance-panel {
+            overflow: hidden;
         }
 
-        .revenue-change-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 8px;
-            font-size: 11px;
-            font-weight: 900;
-        }
-
-        .revenue-change-chip.up { color: #059669; }
-        .revenue-change-chip.down { color: #dc2626; }
-        .revenue-change-chip.neutral { color: #64748b; }
-
-        .revenue-chart-box {
-            margin-top: auto;
-            border-radius: 20px;
-            padding: 12px 12px 10px;
-            background: linear-gradient(180deg, rgba(240,253,250,0.9), rgba(255,255,255,1));
+        .revenue-wide-chart-box {
+            position: relative;
+            flex: 1;
+            margin-top: 20px;
+            min-height: 335px;
+            border-radius: 22px;
+            padding: 18px 18px 12px;
+            background:
+                linear-gradient(180deg, rgba(240,253,250,0.9), rgba(255,255,255,1)),
+                radial-gradient(circle at top right, rgba(20,184,166,0.12), transparent 32%);
             border: 1px solid #dbeafe;
         }
 
-        .revenue-chart-svg {
+        .revenue-wide-chart-svg {
             width: 100%;
-            height: 220px;
+            height: 300px;
             display: block;
+            overflow: visible;
         }
 
-        .revenue-axis-labels {
+        .revenue-data-label {
+            fill: #0f172a;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .revenue-chart-point {
+            filter: drop-shadow(0 5px 8px rgba(15, 118, 110, 0.22));
+        }
+
+        .revenue-wide-axis {
             display: grid;
-            gap: 6px;
-            margin-top: 8px;
+            grid-template-columns: repeat(var(--axis-count), minmax(0, 1fr));
+            gap: 4px;
+            margin-top: 4px;
+            padding: 0 10px;
         }
 
-        .revenue-axis-caption {
-            display: flex;
-            justify-content: space-between;
-            gap: 6px;
-        }
-
-        .revenue-axis-caption span {
-            flex: 1 1 0;
+        .revenue-wide-axis span {
+            color: #334155;
+            font-size: 12px;
+            font-weight: 900;
             text-align: center;
-            color: #64748b;
-            font-size: 10px;
-            font-weight: 800;
             white-space: nowrap;
         }
 
-        .low-stock-visual-list {
-            display: grid;
-            gap: 12px;
-            margin-top: 18px;
-        }
-
-        .low-stock-visual-row {
-            border-radius: 18px;
-            padding: 14px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-        }
-
-        .low-stock-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .low-stock-name {
-            color: #0f172a;
-            font-size: 13px;
-            font-weight: 900;
-        }
-
-        .low-stock-status {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 10px;
-            font-weight: 900;
-            white-space: nowrap;
-        }
-
-        .low-stock-status.critical {
-            background: #fef2f2;
-            color: #b91c1c;
-        }
-
-        .low-stock-status.low {
-            background: #fff7ed;
-            color: #c2410c;
-        }
-
-        .low-stock-status.warning {
-            background: #fefce8;
-            color: #a16207;
-        }
-
-        .low-stock-meta {
-            margin-top: 5px;
+        .revenue-chart-note {
+            margin-top: 10px;
             color: #64748b;
             font-size: 11px;
-            font-weight: 700;
-        }
-
-        .low-stock-track {
-            width: 100%;
-            height: 12px;
-            border-radius: 999px;
-            background: #e5e7eb;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .low-stock-fill {
-            height: 100%;
-            border-radius: 999px;
-        }
-
-        .low-stock-fill.critical {
-            background: linear-gradient(90deg, #ef4444, #dc2626);
-        }
-
-        .low-stock-fill.low {
-            background: linear-gradient(90deg, #fb923c, #f97316);
-        }
-
-        .low-stock-fill.warning {
-            background: linear-gradient(90deg, #facc15, #eab308);
-        }
-
-        .low-stock-foot {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-top: 8px;
-            color: #64748b;
-            font-size: 10px;
-            font-weight: 800;
+            font-weight: 750;
+            line-height: 1.5;
         }
 
         .empty-state {
@@ -624,10 +603,6 @@
                 height: auto;
             }
 
-            .metric-lux-body {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-
             .powerbi-panel-grid {
                 grid-template-columns: 1fr;
             }
@@ -641,6 +616,10 @@
             .dashboard-lux-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
+
+            .metric-period-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
         }
 
         @media (max-width: 900px) {
@@ -648,8 +627,12 @@
                 flex-direction: column;
             }
 
-            .metric-lux-body {
+            .metric-option-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .metric-period-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
 
@@ -664,6 +647,36 @@
             }
 
             .dashboard-lux-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .powerbi-top-row {
+                grid-template-columns: 95px minmax(0, 1fr) 48px;
+                gap: 8px;
+            }
+
+            .powerbi-top-label {
+                font-size: 11px;
+            }
+
+            .powerbi-top-value {
+                font-size: 11px;
+            }
+
+            .powerbi-axis {
+                grid-template-columns: 95px minmax(0, 1fr) 48px;
+                gap: 8px;
+            }
+
+            .revenue-wide-chart-svg {
+                height: 240px;
+            }
+
+            .revenue-wide-axis span {
+                font-size: 10px;
+            }
+
+            .metric-period-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -693,24 +706,6 @@
                     <strong>Rp {{ number_format($summary['period_revenue'], 0, ',', '.') }}</strong>
                 </div>
             </div>
-
-            <div class="dashboard-period-filter">
-                @foreach ($periodOptions as $periodKey => $periodName)
-                    @php
-                        $url = url('/admin') . '?' . http_build_query([
-                            'period' => $periodKey,
-                            'metric' => $activeMetric,
-                        ]);
-                    @endphp
-
-                    <a
-                        href="{{ $url }}"
-                        class="dashboard-period-link {{ $activePeriod === $periodKey ? 'active' : '' }}"
-                    >
-                        {{ $periodName }}
-                    </a>
-                @endforeach
-            </div>
         </section>
 
         <div class="dashboard-lux-main-row">
@@ -723,6 +718,19 @@
                     </p>
 
                     <p class="dashboard-lux-caption">{{ $periodLabel }}</p>
+
+                    <div
+                        class="kpi-mini-visual kpi-mini-bars"
+                        style="--kpi-count: {{ max(count($kpiVisuals['orders']['items']), 1) }};"
+                    >
+                        @foreach ($kpiVisuals['orders']['items'] as $item)
+                            <div
+                                class="kpi-mini-bar"
+                                style="height: {{ $item['height'] }}%;"
+                                title="{{ $item['label'] }} - {{ number_format((int) $item['value'], 0, ',', '.') }} order"
+                            ></div>
+                        @endforeach
+                    </div>
 
                     <span class="dashboard-trend {{ $trends['orders']['direction'] }}">
                         {{ $trends['orders']['direction'] === 'up' ? '▲' : ($trends['orders']['direction'] === 'down' ? '▼' : '●') }}
@@ -739,6 +747,19 @@
 
                     <p class="dashboard-lux-caption">{{ $periodLabel }}</p>
 
+                    <div
+                        class="kpi-mini-visual kpi-mini-bars"
+                        style="--kpi-count: {{ max(count($kpiVisuals['units']['items']), 1) }};"
+                    >
+                        @foreach ($kpiVisuals['units']['items'] as $item)
+                            <div
+                                class="kpi-mini-bar"
+                                style="height: {{ $item['height'] }}%;"
+                                title="{{ $item['label'] }} - {{ number_format((int) $item['value'], 0, ',', '.') }} item"
+                            ></div>
+                        @endforeach
+                    </div>
+
                     <span class="dashboard-trend {{ $trends['units']['direction'] }}">
                         {{ $trends['units']['direction'] === 'up' ? '▲' : ($trends['units']['direction'] === 'down' ? '▼' : '●') }}
                         {{ $trends['units']['label'] }}
@@ -746,25 +767,69 @@
                 </div>
 
                 <div class="dashboard-lux-card product">
-                    <p class="dashboard-lux-label">Total Product</p>
+                    <p class="dashboard-lux-label">Total Revenue</p>
 
                     <p class="dashboard-lux-value">
-                        {{ number_format($summary['total_products'], 0, ',', '.') }}
+                        Rp {{ number_format($summary['period_revenue'], 0, ',', '.') }}
                     </p>
 
-                    <p class="dashboard-lux-caption">
-                        {{ number_format($summary['total_categories'], 0, ',', '.') }} kategori
-                    </p>
+                    <p class="dashboard-lux-caption">{{ $periodLabel }}</p>
+
+                    <div
+                        class="kpi-mini-visual kpi-mini-line"
+                        style="--kpi-count: {{ max(count($kpiVisuals['revenue']['items']), 1) }};"
+                    >
+                        @foreach ($kpiVisuals['revenue']['items'] as $item)
+                            <div
+                                class="kpi-mini-line-point"
+                                style="height: {{ $item['height'] }}%;"
+                                title="{{ $item['label'] }} - Rp {{ number_format((int) $item['value'], 0, ',', '.') }}"
+                            ></div>
+                        @endforeach
+                    </div>
+
+                    <span class="dashboard-trend {{ $trends['revenue']['direction'] }}">
+                        {{ $trends['revenue']['direction'] === 'up' ? '▲' : ($trends['revenue']['direction'] === 'down' ? '▼' : '●') }}
+                        {{ $trends['revenue']['label'] }}
+                    </span>
                 </div>
 
                 <div class="dashboard-lux-card stock">
-                    <p class="dashboard-lux-label">Stok Habis</p>
+                    <p class="dashboard-lux-label">Stock Health</p>
 
                     <p class="dashboard-lux-value">
-                        {{ number_format($summary['out_of_stock_products'], 0, ',', '.') }}
+                        {{ number_format($kpiVisuals['stock']['safe'], 1, ',', '.') }}%
                     </p>
 
-                    <p class="dashboard-lux-caption">Produk perlu restock</p>
+                    <p class="dashboard-lux-caption">
+                        {{ number_format($summary['total_products'], 0, ',', '.') }} produk ·
+                        {{ number_format($summary['out_of_stock_products'], 0, ',', '.') }} habis
+                    </p>
+
+                    <div class="kpi-mini-visual">
+                        <div class="kpi-stock-track">
+                            <div
+                                class="kpi-stock-safe"
+                                style="width: {{ $kpiVisuals['stock']['safe'] }}%;"
+                            ></div>
+
+                            <div
+                                class="kpi-stock-low"
+                                style="width: {{ $kpiVisuals['stock']['low'] }}%;"
+                            ></div>
+
+                            <div
+                                class="kpi-stock-out"
+                                style="width: {{ $kpiVisuals['stock']['out'] }}%;"
+                            ></div>
+                        </div>
+
+                        <div class="kpi-stock-legend">
+                            <span>Aman {{ $kpiVisuals['stock']['safe'] }}%</span>
+                            <span>Low {{ $kpiVisuals['stock']['low'] }}%</span>
+                            <span>Habis {{ $kpiVisuals['stock']['out'] }}%</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -775,34 +840,58 @@
                     </h3>
 
                     <p class="metric-lux-desc">
-                        Pilih metric utama untuk mengubah visualisasi dashboard.
+                        Pilih periode dan metric utama untuk mengubah visualisasi dashboard.
                     </p>
                 </div>
 
                 <div class="metric-lux-body">
-                    @foreach ($metrics as $key => $metric)
-                        @php
-                            $isActive = $activeMetric === $key;
+                    <div class="metric-section-block">
+                        <span class="metric-section-label">Periode</span>
 
-                            $url = url('/admin') . '?' . http_build_query([
-                                'period' => $activePeriod,
-                                'metric' => $key,
-                            ]);
-                        @endphp
+                        <div class="metric-period-grid">
+                            @foreach ($periodOptions as $periodKey => $periodName)
+                                @php
+                                    $periodUrl = url('/admin') . '?' . http_build_query([
+                                        'period' => $periodKey,
+                                        'metric' => $activeMetric,
+                                    ]);
+                                @endphp
 
-                        <a
-                            href="{{ $url }}"
-                            class="metric-lux-item {{ $isActive ? 'active' : '' }}"
-                        >
-                            <span class="metric-lux-label">
-                                {{ $metric['label'] }}
-                            </span>
+                                <a
+                                    href="{{ $periodUrl }}"
+                                    class="metric-period-link {{ $activePeriod === $periodKey ? 'active' : '' }}"
+                                >
+                                    {{ $periodName }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
 
-                            <span class="metric-lux-description">
-                                {{ $metric['description'] }}
-                            </span>
-                        </a>
-                    @endforeach
+                    <div class="metric-section-block">
+                        <span class="metric-section-label">Metric</span>
+
+                        <div class="metric-option-grid">
+                            @foreach ($metrics as $key => $metric)
+                                @php
+                                    $isActive = $activeMetric === $key;
+
+                                    $url = url('/admin') . '?' . http_build_query([
+                                        'period' => $activePeriod,
+                                        'metric' => $key,
+                                    ]);
+                                @endphp
+
+                                <a
+                                    href="{{ $url }}"
+                                    class="metric-lux-item {{ $isActive ? 'active' : '' }}"
+                                >
+                                    <span class="metric-lux-label">
+                                        {{ $metric['label'] }}
+                                    </span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -810,33 +899,57 @@
         <div class="powerbi-panel-grid">
             <div class="powerbi-panel">
                 <div>
-                    <h3 class="powerbi-panel-title">Insight Penjualan</h3>
+                    <h3 class="powerbi-panel-title">Top Product Performance</h3>
                     <p class="powerbi-panel-desc">
                         {{ $topProductsChart['title'] }} pada {{ strtolower($periodLabel) }}.
                     </p>
                 </div>
 
                 @if (count($topProductsChart['items']) > 0)
-                    <div class="top-product-chart">
-                        @foreach ($topProductsChart['items'] as $item)
-                            <div class="top-product-row">
-                                <div class="top-product-row-head">
-                                    <div class="top-product-rank-name">
-                                        <span class="top-product-rank">{{ $loop->iteration }}</span>
-                                        <span class="top-product-name">{{ $item['name'] }}</span>
-                                    </div>
+                    @php
+                        $maxAxisValue = max((float) ($topProductsChart['max_value'] ?? 1), 1);
 
-                                    <span class="top-product-value">{{ $item['formatted_value'] }}</span>
+                        $axisStepOne = $maxAxisValue * 0.25;
+                        $axisStepTwo = $maxAxisValue * 0.50;
+                        $axisStepThree = $maxAxisValue * 0.75;
+                        $axisStepFour = $maxAxisValue;
+                    @endphp
+
+                    <div class="powerbi-top-chart">
+                        @foreach ($topProductsChart['items'] as $item)
+                            <div class="powerbi-top-row">
+                                <div class="powerbi-top-label" title="{{ $item['name'] }}">
+                                    {{ $item['name'] }}
                                 </div>
 
-                                <div class="mini-bar-track">
+                                <div class="powerbi-top-bar-wrap">
+                                    <div class="powerbi-top-bar-bg"></div>
+
                                     <div
-                                        class="mini-bar-fill"
-                                        style="width: {{ $item['width'] }}%;"
+                                        class="powerbi-top-bar"
+                                        style="width: {{ max((float) $item['width'], 3) }}%;"
                                     ></div>
+                                </div>
+
+                                <div class="powerbi-top-value">
+                                    {{ $item['formatted_value'] }}
                                 </div>
                             </div>
                         @endforeach
+
+                        <div class="powerbi-axis">
+                            <div></div>
+
+                            <div class="powerbi-axis-line">
+                                <span>0</span>
+                                <span>{{ number_format($axisStepOne, 0, ',', '.') }}</span>
+                                <span>{{ number_format($axisStepTwo, 0, ',', '.') }}</span>
+                                <span>{{ number_format($axisStepThree, 0, ',', '.') }}</span>
+                                <span>{{ number_format($axisStepFour, 0, ',', '.') }}</span>
+                            </div>
+
+                            <div></div>
+                        </div>
                     </div>
                 @else
                     <div class="empty-state">
@@ -845,92 +958,136 @@
                 @endif
             </div>
 
-            <div class="powerbi-panel">
+            <div class="powerbi-panel revenue-performance-panel">
                 <div>
-                    <h3 class="powerbi-panel-title">Revenue Performance</h3>
+                    <h3 class="powerbi-panel-title">Sales Trend Overview</h3>
                     <p class="powerbi-panel-desc">
-                        Visualisasi tren pendapatan {{ strtolower($periodLabel) }}.
+                        Tren pendapatan {{ strtolower($periodLabel) }} dengan informasi nilai pada setiap periode.
                     </p>
                 </div>
 
-                <div class="revenue-summary">
-                    <div class="revenue-summary-card">
-                        <span class="revenue-summary-label">Revenue {{ $periodLabel }}</span>
-                        <strong class="revenue-summary-value">
-                            Rp {{ number_format($summary['period_revenue'], 0, ',', '.') }}
-                        </strong>
-
-                        <span class="revenue-change-chip {{ $trends['revenue']['direction'] }}">
-                            {{ $trends['revenue']['direction'] === 'up' ? '▲' : ($trends['revenue']['direction'] === 'down' ? '▼' : '●') }}
-                            {{ $trends['revenue']['label'] }}
-                        </span>
-                    </div>
-                </div>
-
                 @php
-                    $chartWidth = 560;
-                    $chartHeight = 220;
-                    $paddingTop = 18;
-                    $paddingRight = 16;
-                    $paddingBottom = 26;
-                    $paddingLeft = 12;
+                    $chartWidth = 860;
+                    $chartHeight = 300;
+                    $paddingTop = 42;
+                    $paddingRight = 26;
+                    $paddingBottom = 34;
+                    $paddingLeft = 26;
 
-                    $series = $revenueTrendChart['series'];
-                    $trendValues = $revenueTrendChart['trend_values'];
+                    $series = $revenueTrendChart['series'] ?? [];
 
                     $plotWidth = $chartWidth - $paddingLeft - $paddingRight;
                     $plotHeight = $chartHeight - $paddingTop - $paddingBottom;
 
-                    $maxChartValue = max(
-                        max(array_map(fn ($item) => (float) $item['value'], $series)),
-                        max($trendValues ?: [0]),
-                        1
+                    $values = array_map(
+                        fn ($item) => (float) ($item['value'] ?? 0),
+                        $series
                     );
+
+                    $maxChartValue = count($values) > 0 ? max($values) : 1;
+                    $minChartValue = count($values) > 0 ? min($values) : 0;
+
+                    $maxChartValue = max((float) $maxChartValue, 1);
+                    $minChartValue = (float) $minChartValue;
+
+                    if ($maxChartValue <= $minChartValue) {
+                        $maxChartValue = $minChartValue + 1;
+                    }
 
                     $countSeries = count($series);
                     $stepX = $countSeries > 1 ? ($plotWidth / ($countSeries - 1)) : $plotWidth;
 
-                    $linePoints = [];
-                    $trendPoints = [];
-                    $areaPoints = [];
+                    $points = [];
 
                     foreach ($series as $index => $point) {
+                        $value = (float) ($point['value'] ?? 0);
+
                         $x = $paddingLeft + ($index * $stepX);
-                        $y = $paddingTop + (($maxChartValue - (float) $point['value']) / $maxChartValue) * $plotHeight;
+                        $y = $paddingTop + (($maxChartValue - $value) / ($maxChartValue - $minChartValue)) * $plotHeight;
 
-                        $linePoints[] = round($x, 2) . ',' . round($y, 2);
-                        $areaPoints[] = round($x, 2) . ',' . round($y, 2);
+                        $points[] = [
+                            'x' => round($x, 2),
+                            'y' => round($y, 2),
+                            'value' => $value,
+                            'label' => $point['label'] ?? '',
+                        ];
+                    }
 
-                        $trendY = $paddingTop + (($maxChartValue - (float) ($trendValues[$index] ?? 0)) / $maxChartValue) * $plotHeight;
-                        $trendPoints[] = round($x, 2) . ',' . round($trendY, 2);
+                    $linePath = '';
+
+                    if (count($points) > 0) {
+                        $linePath = 'M ' . $points[0]['x'] . ' ' . $points[0]['y'];
+
+                        for ($i = 1; $i < count($points); $i++) {
+                            $previous = $points[$i - 1];
+                            $current = $points[$i];
+
+                            $controlX = ($previous['x'] + $current['x']) / 2;
+
+                            $linePath .= ' C '
+                                . $controlX . ' ' . $previous['y'] . ', '
+                                . $controlX . ' ' . $current['y'] . ', '
+                                . $current['x'] . ' ' . $current['y'];
+                        }
                     }
 
                     $areaPath = '';
-                    if (count($areaPoints) > 0) {
-                        $firstPoint = explode(',', $areaPoints[0]);
-                        $lastPoint = explode(',', $areaPoints[count($areaPoints) - 1]);
 
-                        $areaPath = 'M ' . $firstPoint[0] . ' ' . ($paddingTop + $plotHeight) . ' ';
-                        foreach ($areaPoints as $point) {
-                            [$xPoint, $yPoint] = explode(',', $point);
-                            $areaPath .= 'L ' . $xPoint . ' ' . $yPoint . ' ';
+                    if (count($points) > 0) {
+                        $baselineY = $paddingTop + $plotHeight;
+
+                        $areaPath = 'M ' . $points[0]['x'] . ' ' . $baselineY . ' ';
+                        $areaPath .= 'L ' . $points[0]['x'] . ' ' . $points[0]['y'] . ' ';
+
+                        for ($i = 1; $i < count($points); $i++) {
+                            $previous = $points[$i - 1];
+                            $current = $points[$i];
+
+                            $controlX = ($previous['x'] + $current['x']) / 2;
+
+                            $areaPath .= 'C '
+                                . $controlX . ' ' . $previous['y'] . ', '
+                                . $controlX . ' ' . $current['y'] . ', '
+                                . $current['x'] . ' ' . $current['y'] . ' ';
                         }
-                        $areaPath .= 'L ' . $lastPoint[0] . ' ' . ($paddingTop + $plotHeight) . ' Z';
+
+                        $lastPoint = $points[count($points) - 1];
+                        $areaPath .= 'L ' . $lastPoint['x'] . ' ' . $baselineY . ' Z';
                     }
 
                     $gridLines = 4;
+
+                    $formatRevenueLabel = function (float $value): string {
+                        if ($value >= 1000000) {
+                            return 'Rp ' . number_format($value / 1000000, 1, ',', '.') . 'Jt';
+                        }
+
+                        if ($value >= 1000) {
+                            return 'Rp ' . number_format($value / 1000, 0, ',', '.') . 'Rb';
+                        }
+
+                        return 'Rp ' . number_format($value, 0, ',', '.');
+                    };
                 @endphp
 
-                <div class="revenue-chart-box">
+                <div class="revenue-wide-chart-box">
                     <svg
-                        class="revenue-chart-svg"
+                        class="revenue-wide-chart-svg"
                         viewBox="0 0 {{ $chartWidth }} {{ $chartHeight }}"
                         preserveAspectRatio="none"
                     >
+                        <defs>
+                            <linearGradient id="revenueAreaGradient" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="#0f766e" stop-opacity="0.38" />
+                                <stop offset="100%" stop-color="#0f766e" stop-opacity="0.10" />
+                            </linearGradient>
+                        </defs>
+
                         @for ($i = 0; $i <= $gridLines; $i++)
                             @php
                                 $y = $paddingTop + (($plotHeight / $gridLines) * $i);
                             @endphp
+
                             <line
                                 x1="{{ $paddingLeft }}"
                                 y1="{{ $y }}"
@@ -944,112 +1101,64 @@
                         @if ($areaPath !== '')
                             <path
                                 d="{{ $areaPath }}"
-                                fill="rgba(20, 184, 166, 0.12)"
+                                fill="url(#revenueAreaGradient)"
                             />
                         @endif
 
-                        <polyline
-                            fill="none"
-                            stroke="#111827"
-                            stroke-width="2"
-                            stroke-dasharray="6 6"
-                            points="{{ implode(' ', $trendPoints) }}"
-                        />
+                        @if ($linePath !== '')
+                            <path
+                                d="{{ $linePath }}"
+                                fill="none"
+                                stroke="#064e3b"
+                                stroke-width="5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                        @endif
 
-                        <polyline
-                            fill="none"
-                            stroke="#0f9f8c"
-                            stroke-width="3"
-                            points="{{ implode(' ', $linePoints) }}"
-                        />
-
-                        @foreach ($series as $index => $point)
+                        @foreach ($points as $point)
                             @php
-                                $x = $paddingLeft + ($index * $stepX);
-                                $y = $paddingTop + (($maxChartValue - (float) $point['value']) / $maxChartValue) * $plotHeight;
+                                $labelY = $point['y'] - 14;
+
+                                if ($labelY < 14) {
+                                    $labelY = $point['y'] + 24;
+                                }
                             @endphp
 
                             <circle
-                                cx="{{ $x }}"
-                                cy="{{ $y }}"
-                                r="4"
-                                fill="#0f9f8c"
+                                class="revenue-chart-point"
+                                cx="{{ $point['x'] }}"
+                                cy="{{ $point['y'] }}"
+                                r="7"
+                                fill="#064e3b"
+                                stroke="#ffffff"
+                                stroke-width="3"
                             />
+
+                            <text
+                                x="{{ $point['x'] }}"
+                                y="{{ $labelY }}"
+                                text-anchor="middle"
+                                class="revenue-data-label"
+                            >
+                                {{ $formatRevenueLabel($point['value']) }}
+                            </text>
                         @endforeach
                     </svg>
 
-                    <div class="revenue-axis-labels">
-                        <div class="revenue-axis-caption">
-                            @foreach ($series as $point)
-                                <span>{{ $point['label'] }}</span>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="powerbi-panel">
-                <div>
-                    <h3 class="powerbi-panel-title">Low Stock Alert</h3>
-                    <p class="powerbi-panel-desc">
-                        Visualisasi produk dengan stok rendah yang perlu diperhatikan.
-                    </p>
-                </div>
-
-                @if ($lowStockProducts->isNotEmpty())
-                    <div class="low-stock-visual-list">
-                        @foreach ($lowStockProducts as $product)
-                            @php
-                                $stock = (int) $product->stock;
-
-                                if ($stock <= 0) {
-                                    $status = 'Kritis';
-                                    $statusClass = 'critical';
-                                } elseif ($stock <= 2) {
-                                    $status = 'Rendah';
-                                    $statusClass = 'low';
-                                } else {
-                                    $status = 'Waspada';
-                                    $statusClass = 'warning';
-                                }
-
-                                $safeLimit = 5;
-                                $width = $stock <= 0 ? 4 : min(($stock / $safeLimit) * 100, 100);
-                            @endphp
-
-                            <div class="low-stock-visual-row">
-                                <div class="low-stock-head">
-                                    <div>
-                                        <div class="low-stock-name">{{ $product->name }}</div>
-                                        <div class="low-stock-meta">
-                                            {{ $stock <= 0 ? 'Stok habis' : 'Stok rendah dan perlu restock' }}
-                                        </div>
-                                    </div>
-
-                                    <span class="low-stock-status {{ $statusClass }}">
-                                        {{ $status }}
-                                    </span>
-                                </div>
-
-                                <div class="low-stock-track">
-                                    <div
-                                        class="low-stock-fill {{ $statusClass }}"
-                                        style="width: {{ $width }}%;"
-                                    ></div>
-                                </div>
-
-                                <div class="low-stock-foot">
-                                    <span>Stok saat ini: {{ number_format($stock, 0, ',', '.') }}</span>
-                                    <span>Batas aman: {{ $safeLimit }}</span>
-                                </div>
-                            </div>
+                    <div
+                        class="revenue-wide-axis"
+                        style="--axis-count: {{ max(count($series), 1) }};"
+                    >
+                        @foreach ($series as $point)
+                            <span>{{ $point['label'] }}</span>
                         @endforeach
                     </div>
-                @else
-                    <div class="empty-state">
-                        Semua stok produk masih aman dan belum ada alert untuk ditampilkan.
+
+                    <div class="revenue-chart-note">
+                        Grafik menampilkan perkembangan revenue berdasarkan periode aktif yang dipilih pada filter dashboard.
                     </div>
-                @endif
+                </div>
             </div>
         </div>
     </div>

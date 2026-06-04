@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Pages;
 
-use App\Filament\Admin\Widgets\DailyUnitsChart;
+use App\Filament\Admin\Widgets\CategoryContributionChart;
 use App\Filament\Admin\Widgets\DashboardLuxuryOverviewWidget;
-use App\Filament\Admin\Widgets\LatestOrdersTable;
-use App\Filament\Admin\Widgets\MonthlyRevenueChart;
-use App\Filament\Admin\Widgets\MonthlyUnitsChart;
-use App\Filament\Admin\Widgets\ProductCategoryChart;
-use App\Filament\Admin\Widgets\TopProductsTable;
+use App\Filament\Admin\Widgets\ProductPerformanceMatrix;
+use App\Filament\Admin\Widgets\RecentSalesTimeline;
+use App\Filament\Admin\Widgets\RestockPriorityChart;
+use App\Filament\Admin\Widgets\SalesHeatmapWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
@@ -53,14 +52,13 @@ class Dashboard extends BaseDashboard
         return [
             DashboardLuxuryOverviewWidget::class,
 
-            ProductCategoryChart::class,
-            DailyUnitsChart::class,
+            CategoryContributionChart::class,
+            RestockPriorityChart::class,
 
-            MonthlyRevenueChart::class,
-            MonthlyUnitsChart::class,
+            SalesHeatmapWidget::class,
+            RecentSalesTimeline::class,
 
-            TopProductsTable::class,
-            LatestOrdersTable::class,
+            ProductPerformanceMatrix::class,
         ];
     }
 

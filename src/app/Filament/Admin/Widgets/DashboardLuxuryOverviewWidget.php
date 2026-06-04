@@ -81,6 +81,13 @@ class DashboardLuxuryOverviewWidget extends Widget
 
             'lowStockProducts' => $lowStockProducts,
 
+            'kpiVisuals' => [
+                'orders' => $this->getKpiTrendVisual('orders'),
+                'units' => $this->getKpiTrendVisual('units'),
+                'revenue' => $this->getKpiTrendVisual('revenue'),
+                'stock' => $this->getStockHealthVisual(),
+            ],
+
             'activeMetric' => $activeMetric,
             'activePeriod' => $this->getDashboardPeriod(),
             'periodLabel' => $this->getDashboardPeriodLabel(),
@@ -101,6 +108,185 @@ class DashboardLuxuryOverviewWidget extends Widget
                 ],
             ],
         ];
+    }
+
+    private function getKpiTrendVisual(string $metric): array
+    {
+        $period = $this->getDashboardPeriod();
+
+        [$labels, $ranges] = match ($period) {
+            'today' => $this->getKpiHourlyRanges(),
+            'week' => $this->getKpiDailyRangesForCurrentWeek(),
+            'month' => $this->getKpiWeeklyRangesForCurrentMonth(),
+            'year' => $this->getKpiMonthlyRangesForCurrentYear(),
+            'all' => $this->getKpiLastSixMonthsRanges(),
+            default => $this->getKpiHourlyRanges(),
+        };
+
+        $items = [];
+        $maxValue = 1;
+
+        foreach ($ranges as $index => $range) {
+            [$start, $end] = $range;
+
+            $query = Order::query()
+                ->where('status', 'Selesai')
+                ->whereBetween(DB::raw('COALESCE(ordered_at, created_at)'), [$start, $end]);
+
+            $value = match ($metric) {
+                'orders' => (int) $query->count(),
+                'revenue' => (int) $query->sum('total_price'),
+                'units' => (int) $query->sum('total_item'),
+                default => 0,
+            };
+
+            $maxValue = max($maxValue, $value);
+
+            $items[] = [
+                'label' => $labels[$index] ?? '',
+                'value' => $value,
+                'height' => 0,
+            ];
+        }
+
+        foreach ($items as $index => $item) {
+            $items[$index]['height'] = $maxValue > 0
+                ? max(round(((float) $item['value'] / $maxValue) * 100, 2), $item['value'] > 0 ? 8 : 0)
+                : 0;
+        }
+
+        return [
+            'items' => $items,
+            'max_value' => $maxValue,
+        ];
+    }
+
+    private function getStockHealthVisual(): array
+    {
+        $safeStock = (int) Product::query()
+            ->where('stock', '>', 5)
+            ->count();
+
+        $lowStock = (int) Product::query()
+            ->where('stock', '>', 0)
+            ->where('stock', '<=', 5)
+            ->count();
+
+        $outOfStock = (int) Product::query()
+            ->where('stock', '<=', 0)
+            ->count();
+
+        $total = max($safeStock + $lowStock + $outOfStock, 1);
+
+        return [
+            'safe' => round(($safeStock / $total) * 100, 1),
+            'low' => round(($lowStock / $total) * 100, 1),
+            'out' => round(($outOfStock / $total) * 100, 1),
+            'safe_count' => $safeStock,
+            'low_count' => $lowStock,
+            'out_count' => $outOfStock,
+        ];
+    }
+
+    private function getKpiHourlyRanges(): array
+    {
+        $labels = [];
+        $ranges = [];
+
+        for ($hour = 7; $hour <= 22; $hour++) {
+            $time = now()->copy()->startOfDay()->addHours($hour);
+
+            $labels[] = $time->format('H');
+            $ranges[] = [
+                $time->copy()->startOfHour(),
+                $time->copy()->endOfHour(),
+            ];
+        }
+
+        return [$labels, $ranges];
+    }
+
+    private function getKpiDailyRangesForCurrentWeek(): array
+    {
+        $labels = [];
+        $ranges = [];
+
+        $startOfWeek = now()->copy()->startOfWeek();
+
+        for ($day = 0; $day < 7; $day++) {
+            $date = $startOfWeek->copy()->addDays($day);
+
+            $labels[] = $date->format('D');
+            $ranges[] = [
+                $date->copy()->startOfDay(),
+                $date->copy()->endOfDay(),
+            ];
+        }
+
+        return [$labels, $ranges];
+    }
+
+    private function getKpiWeeklyRangesForCurrentMonth(): array
+    {
+        $labels = [];
+        $ranges = [];
+
+        $cursor = now()->copy()->startOfMonth();
+        $endOfMonth = now()->copy()->endOfMonth();
+        $weekIndex = 1;
+
+        while ($cursor->lte($endOfMonth)) {
+            $start = $cursor->copy()->startOfDay();
+            $end = $cursor->copy()->addDays(6)->endOfDay();
+
+            if ($end->gt($endOfMonth)) {
+                $end = $endOfMonth->copy()->endOfDay();
+            }
+
+            $labels[] = 'W' . $weekIndex;
+            $ranges[] = [$start, $end];
+
+            $cursor->addWeek();
+            $weekIndex++;
+        }
+
+        return [$labels, $ranges];
+    }
+
+    private function getKpiMonthlyRangesForCurrentYear(): array
+    {
+        $labels = [];
+        $ranges = [];
+
+        for ($monthIndex = 0; $monthIndex < 12; $monthIndex++) {
+            $month = now()->copy()->startOfYear()->addMonths($monthIndex);
+
+            $labels[] = $month->format('M');
+            $ranges[] = [
+                $month->copy()->startOfMonth(),
+                $month->copy()->endOfMonth(),
+            ];
+        }
+
+        return [$labels, $ranges];
+    }
+
+    private function getKpiLastSixMonthsRanges(): array
+    {
+        $labels = [];
+        $ranges = [];
+
+        for ($monthIndex = 5; $monthIndex >= 0; $monthIndex--) {
+            $month = now()->copy()->subMonths($monthIndex);
+
+            $labels[] = $month->format('M');
+            $ranges[] = [
+                $month->copy()->startOfMonth(),
+                $month->copy()->endOfMonth(),
+            ];
+        }
+
+        return [$labels, $ranges];
     }
 
     private function getTopProductsChart(?Carbon $start, ?Carbon $end, string $metric): array

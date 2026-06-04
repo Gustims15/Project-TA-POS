@@ -1,0 +1,396 @@
+<?php if (isset($component)) { $__componentOriginalb525200bfa976483b4eaa0b7685c6e24 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalb525200bfa976483b4eaa0b7685c6e24 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'filament-widgets::components.widget','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('filament-widgets::widget'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+    <?php if (isset($component)) { $__componentOriginalee08b1367eba38734199cf7829b1d1e9 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalee08b1367eba38734199cf7829b1d1e9 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'filament::components.section.index','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('filament::section'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+        <style>
+            .stock-risk-pbi {
+                min-height: 380px;
+            }
+
+            .stock-risk-head {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 14px;
+                margin-bottom: 16px;
+            }
+
+            .stock-risk-title {
+                margin: 0;
+                color: #0f172a;
+                font-size: 15px;
+                font-weight: 950;
+                letter-spacing: -0.03em;
+            }
+
+            .stock-risk-subtitle {
+                margin: 5px 0 0;
+                color: #64748b;
+                font-size: 11px;
+                font-weight: 700;
+                line-height: 1.5;
+            }
+
+            .stock-risk-chip {
+                height: fit-content;
+                padding: 7px 10px;
+                border-radius: 999px;
+                background: #fef2f2;
+                color: #b91c1c;
+                font-size: 10px;
+                font-weight: 950;
+                white-space: nowrap;
+            }
+
+            .stock-risk-summary {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+                margin-bottom: 14px;
+            }
+
+            .stock-risk-box {
+                border-radius: 16px;
+                padding: 12px 13px;
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+            }
+
+            .stock-risk-box-label {
+                color: #64748b;
+                font-size: 10px;
+                font-weight: 900;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+            }
+
+            .stock-risk-box-value {
+                margin-top: 5px;
+                color: #0f172a;
+                font-size: 22px;
+                line-height: 1;
+                font-weight: 950;
+                letter-spacing: -0.05em;
+            }
+
+            .stock-risk-distribution {
+                border-radius: 18px;
+                padding: 14px;
+                background: linear-gradient(180deg, #f8fafc, #ffffff);
+                border: 1px solid #e2e8f0;
+                margin-bottom: 14px;
+            }
+
+            .stock-risk-bar {
+                display: flex;
+                height: 18px;
+                overflow: hidden;
+                border-radius: 999px;
+                background: #e2e8f0;
+            }
+
+            .stock-risk-segment {
+                min-width: 4px;
+                height: 100%;
+            }
+
+            .stock-risk-segment.safe {
+                background: #0f766e;
+            }
+
+            .stock-risk-segment.warning {
+                background: #eab308;
+            }
+
+            .stock-risk-segment.low {
+                background: #f97316;
+            }
+
+            .stock-risk-segment.critical {
+                background: #dc2626;
+            }
+
+            .stock-risk-legend {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 8px;
+                margin-top: 12px;
+            }
+
+            .stock-risk-legend-item {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                min-width: 0;
+                color: #64748b;
+                font-size: 10px;
+                font-weight: 850;
+            }
+
+            .stock-risk-dot {
+                width: 9px;
+                height: 9px;
+                border-radius: 999px;
+                flex: none;
+            }
+
+            .stock-risk-dot.safe {
+                background: #0f766e;
+            }
+
+            .stock-risk-dot.warning {
+                background: #eab308;
+            }
+
+            .stock-risk-dot.low {
+                background: #f97316;
+            }
+
+            .stock-risk-dot.critical {
+                background: #dc2626;
+            }
+
+            .stock-risk-list {
+                display: grid;
+                gap: 9px;
+            }
+
+            .stock-risk-item {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) auto;
+                gap: 12px;
+                align-items: center;
+                border-radius: 15px;
+                padding: 10px 11px;
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+            }
+
+            .stock-risk-name {
+                color: #0f172a;
+                font-size: 12px;
+                font-weight: 950;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .stock-risk-meta {
+                margin-top: 6px;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) auto;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .stock-risk-track {
+                height: 8px;
+                border-radius: 999px;
+                background: #e2e8f0;
+                overflow: hidden;
+            }
+
+            .stock-risk-fill {
+                height: 100%;
+                min-width: 4px;
+                border-radius: 999px;
+            }
+
+            .stock-risk-fill.warning {
+                background: linear-gradient(90deg, #eab308, #facc15);
+            }
+
+            .stock-risk-fill.low {
+                background: linear-gradient(90deg, #f97316, #fb923c);
+            }
+
+            .stock-risk-fill.critical {
+                background: linear-gradient(90deg, #dc2626, #ef4444);
+            }
+
+            .stock-risk-stock {
+                color: #64748b;
+                font-size: 10px;
+                font-weight: 900;
+                white-space: nowrap;
+            }
+
+            .stock-risk-status {
+                padding: 5px 8px;
+                border-radius: 999px;
+                font-size: 9px;
+                font-weight: 950;
+                white-space: nowrap;
+            }
+
+            .stock-risk-status.warning {
+                background: #fef9c3;
+                color: #a16207;
+            }
+
+            .stock-risk-status.low {
+                background: #ffedd5;
+                color: #c2410c;
+            }
+
+            .stock-risk-status.critical {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+            .stock-risk-empty {
+                min-height: 145px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 16px;
+                background: #f8fafc;
+                border: 1px dashed #cbd5e1;
+                color: #64748b;
+                font-size: 12px;
+                font-weight: 850;
+                text-align: center;
+                padding: 18px;
+            }
+
+            @media (max-width: 720px) {
+                .stock-risk-summary,
+                .stock-risk-legend {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+        </style>
+
+        <div class="stock-risk-pbi">
+            <div class="stock-risk-head">
+                <div>
+                    <h3 class="stock-risk-title">Stock Risk</h3>
+                    <p class="stock-risk-subtitle">
+                        Distribusi risiko stok dan prioritas produk yang perlu segera diperhatikan.
+                    </p>
+                </div>
+
+                <span class="stock-risk-chip">Stock Alert</span>
+            </div>
+
+            <div class="stock-risk-summary">
+                <div class="stock-risk-box">
+                    <div class="stock-risk-box-label">Risk Products</div>
+                    <div class="stock-risk-box-value">
+                        <?php echo e(number_format($riskProducts, 0, ',', '.')); ?>
+
+                    </div>
+                </div>
+
+                <div class="stock-risk-box">
+                    <div class="stock-risk-box-label">Total Products</div>
+                    <div class="stock-risk-box-value">
+                        <?php echo e(number_format($totalProducts, 0, ',', '.')); ?>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="stock-risk-distribution">
+                <div class="stock-risk-bar">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $distribution; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $segment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                        <div
+                            class="stock-risk-segment <?php echo e($segment['class']); ?>"
+                            style="width: <?php echo e(max((float) $segment['width'], $segment['count'] > 0 ? 4 : 0)); ?>%;"
+                            title="<?php echo e($segment['label']); ?> - <?php echo e($segment['count']); ?> produk"
+                        ></div>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                </div>
+
+                <div class="stock-risk-legend">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $distribution; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $segment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                        <div class="stock-risk-legend-item">
+                            <span class="stock-risk-dot <?php echo e($segment['class']); ?>"></span>
+                            <span>
+                                <?php echo e($segment['label']); ?> <?php echo e(number_format($segment['count'], 0, ',', '.')); ?>
+
+                            </span>
+                        </div>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                </div>
+            </div>
+
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($items) > 0): ?>
+                <div class="stock-risk-list">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                        <div class="stock-risk-item">
+                            <div>
+                                <div class="stock-risk-name" title="<?php echo e($item['name']); ?>">
+                                    <?php echo e($item['name']); ?>
+
+                                </div>
+
+                                <div class="stock-risk-meta">
+                                    <div class="stock-risk-track">
+                                        <div
+                                            class="stock-risk-fill <?php echo e($item['statusClass']); ?>"
+                                            style="width: <?php echo e(max((float) $item['width'], $item['stock'] > 0 ? 6 : 4)); ?>%;"
+                                        ></div>
+                                    </div>
+
+                                    <div class="stock-risk-stock">
+                                        <?php echo e(number_format($item['stock'], 0, ',', '.')); ?>/<?php echo e($item['safeLimit']); ?>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <span class="stock-risk-status <?php echo e($item['statusClass']); ?>">
+                                <?php echo e($item['status']); ?>
+
+                            </span>
+                        </div>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                </div>
+            <?php else: ?>
+                <div class="stock-risk-empty">
+                    Semua produk berada di atas batas risiko stok.
+                </div>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+        </div>
+     <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalee08b1367eba38734199cf7829b1d1e9)): ?>
+<?php $attributes = $__attributesOriginalee08b1367eba38734199cf7829b1d1e9; ?>
+<?php unset($__attributesOriginalee08b1367eba38734199cf7829b1d1e9); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalee08b1367eba38734199cf7829b1d1e9)): ?>
+<?php $component = $__componentOriginalee08b1367eba38734199cf7829b1d1e9; ?>
+<?php unset($__componentOriginalee08b1367eba38734199cf7829b1d1e9); ?>
+<?php endif; ?>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>
+<?php $attributes = $__attributesOriginalb525200bfa976483b4eaa0b7685c6e24; ?>
+<?php unset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>
+<?php $component = $__componentOriginalb525200bfa976483b4eaa0b7685c6e24; ?>
+<?php unset($__componentOriginalb525200bfa976483b4eaa0b7685c6e24); ?>
+<?php endif; ?><?php /**PATH /var/www/html/resources/views/filament/admin/widgets/restock-priority-chart.blade.php ENDPATH**/ ?>
