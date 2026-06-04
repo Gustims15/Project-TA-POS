@@ -144,13 +144,6 @@
             <option value="highest">Total Terbesar</option>
             <option value="lowest">Total Terkecil</option>
           </select>
-
-          <!-- <select id="historyStatus" aria-label="Filter status order">
-            <option value="all" selected>Semua status</option>
-            <option value="Selesai">Selesai</option>
-            <option value="Diproses">Diproses</option>
-            <option value="Dibatalkan">Dibatalkan</option>
-          </select> -->
         </div>
 
         <div class="history-table-wrap">
@@ -162,12 +155,26 @@
                 <th>Waktu</th>
                 <th>Total</th>
                 <th>Status</th>
+                <th>Aksi</th>
               </tr>
             </thead>
 
             <tbody id="historyBody"></tbody>
           </table>
 
+          <div class="history-pagination" id="historyPagination">
+            <button type="button" id="historyPrevPage">
+              Sebelumnya
+            </button>
+
+            <span id="historyPageInfo">
+              Halaman 1 dari 1
+            </span>
+
+            <button type="button" id="historyNextPage">
+              Berikutnya
+            </button>
+          </div>
           <div class="cart-empty history-empty" id="historyEmpty">
             Data history tidak ditemukan.
           </div>
@@ -175,6 +182,77 @@
       </section>
     </section>
   </main>
+
+  <div class="invoice-modal-backdrop" id="invoiceModalBackdrop"></div>
+
+  <section class="invoice-modal" id="invoiceModal" aria-label="Detail order">
+    <div class="invoice-modal-card">
+      <div class="invoice-modal-head">
+        <div>
+          <span class="eyebrow">Detail Transaksi</span>
+          <h2>Struk Order</h2>
+          <p id="invoiceOrderCode">-</p>
+        </div>
+
+        <button class="invoice-close-btn" type="button" id="closeInvoiceModal">
+          ×
+        </button>
+      </div>
+
+      <div class="invoice-preview" id="invoicePreview">
+        <div class="invoice-brand">
+          <h3>Ngunjuk POS</h3>
+          <p>Sistem Informasi Kasir UMKM Ngunjuk</p>
+        </div>
+
+        <div class="invoice-meta">
+          <div>
+            <span>Order</span>
+            <strong id="invoiceCode">-</strong>
+          </div>
+
+          <div>
+            <span>Waktu</span>
+            <strong id="invoiceDate">-</strong>
+          </div>
+
+          <div>
+            <span>Status</span>
+            <strong id="invoiceStatus">-</strong>
+          </div>
+        </div>
+
+        <div class="invoice-items" id="invoiceItems"></div>
+
+        <div class="invoice-total-box">
+          <div>
+            <span>Total Item</span>
+            <strong id="invoiceTotalItem">0 item</strong>
+          </div>
+
+          <div class="invoice-grand-total">
+            <span>Total Harga</span>
+            <strong id="invoiceTotalPrice">Rp 0</strong>
+          </div>
+        </div>
+
+        <div class="invoice-footer-note">
+          <p>Terima kasih sudah berbelanja di Ngunjuk.</p>
+          <small>Simpan struk ini sebagai bukti transaksi.</small>
+        </div>
+      </div>
+
+      <div class="invoice-actions">
+        <button class="invoice-secondary-btn" type="button" id="closeInvoiceModalBottom">
+          Tutup
+        </button>
+
+        <button class="invoice-print-btn" type="button" id="printInvoice">
+          Cetak Struk
+        </button>
+      </div>
+    </div>
+  </section>
 
   <div class="toast" id="toast">
     Data history siap diexport.

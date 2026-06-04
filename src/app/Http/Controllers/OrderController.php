@@ -21,6 +21,7 @@ class OrderController extends Controller
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.product_size_id' => ['required', 'exists:product_sizes,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
+            'items.*.note' => ['nullable', 'string', 'max:120'],
         ]);
 
         try {
@@ -52,8 +53,11 @@ class OrderController extends Controller
                         throw new \RuntimeException("Stok {$product->name} tidak mencukupi.");
                     }
 
-                    $price = $productSize->price;
+                    $price = (int) $productSize->price;
                     $subtotal = $price * $quantity;
+                    $note = isset($item['note']) && trim((string) $item['note']) !== ''
+                        ? trim((string) $item['note'])
+                        : null;
 
                     $order->items()->create([
                         'product_id' => $product->id,
@@ -63,6 +67,7 @@ class OrderController extends Controller
                         'price' => $price,
                         'quantity' => $quantity,
                         'subtotal' => $subtotal,
+                        'note' => $note,
                     ]);
 
                     $product->decrement('stock', $quantity);

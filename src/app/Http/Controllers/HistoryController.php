@@ -38,7 +38,10 @@ class HistoryController extends Controller
                     $subQuery
                         ->where('order_code', 'like', '%' . $search . '%')
                         ->orWhereHas('items', function ($itemQuery) use ($search): void {
-                            $itemQuery->where('product_name', 'like', '%' . $search . '%');
+                            $itemQuery
+                                ->where('product_name', 'like', '%' . $search . '%')
+                                ->orWhere('size_name', 'like', '%' . $search . '%')
+                                ->orWhere('note', 'like', '%' . $search . '%');
                         });
                 });
             })
@@ -83,9 +86,6 @@ class HistoryController extends Controller
         |--------------------------------------------------------------------------
         | Bagian kartu statistik dibuat menghitung SEMUA order,
         | bukan hanya order hari ini.
-        |
-        | Jadi Total Order akan cocok dengan total semua transaksi yang ada.
-        | Filter tanggal hanya memengaruhi tabel history, bukan kartu ringkasan.
         */
         $summaryQuery = Order::query();
 
@@ -118,6 +118,7 @@ class HistoryController extends Controller
                             'quantity' => $item->quantity,
                             'price' => $item->price,
                             'subtotal' => $item->subtotal,
+                            'note' => $item->note,
                         ];
                     })->values(),
                 ];

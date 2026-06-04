@@ -14,11 +14,29 @@ const itemsTotal = document.querySelector('#itemsTotal');
 const grandTotal = document.querySelector('#grandTotal');
 const placeOrder = document.querySelector('#placeOrder');
 const toast = document.querySelector('#toast');
+const checkoutConfirmBackdrop = document.querySelector('#checkoutConfirmBackdrop');
+const checkoutConfirmModal = document.querySelector('#checkoutConfirmModal');
+const confirmTotalItem = document.querySelector('#confirmTotalItem');
+const confirmTotalPrice = document.querySelector('#confirmTotalPrice');
+const confirmOrderItems = document.querySelector('#confirmOrderItems');
+const cancelCheckout = document.querySelector('#cancelCheckout');
+const confirmCheckout = document.querySelector('#confirmCheckout');
+
+const checkoutSuccessBackdrop = document.querySelector('#checkoutSuccessBackdrop');
+const checkoutSuccessModal = document.querySelector('#checkoutSuccessModal');
+const successOrderCode = document.querySelector('#successOrderCode');
+const successTotalItem = document.querySelector('#successTotalItem');
+const successTotalPrice = document.querySelector('#successTotalPrice');
+const successOrderItems = document.querySelector('#successOrderItems');
+const successStayPos = document.querySelector('#successStayPos');
+const successGoHistory = document.querySelector('#successGoHistory');
+const successPrintReceipt = document.querySelector('#successPrintReceipt');
 
 let products = [];
 let categories = [];
 let activeCategory = '';
 let cart = [];
+let lastSavedOrder = null;
 
 const formatRupiah = value => {
   return new Intl.NumberFormat('id-ID', {
@@ -26,6 +44,15 @@ const formatRupiah = value => {
     currency: 'IDR',
     maximumFractionDigits: 0
   }).format(Number(value || 0));
+};
+
+const escapeHTML = value => {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 };
 
 const showToast = message => {
@@ -50,6 +77,139 @@ const closeCartDrawer = () => {
   cartDrawer.classList.remove('show');
   cartBackdrop.classList.remove('show');
 };
+
+const openCheckoutSuccessModal = order => {
+  if (!checkoutSuccessModal || !checkoutSuccessBackdrop) {
+    return;
+  }
+
+  lastSavedOrder = order || null;
+
+  const totalItem = Number(order?.total_item || 0);
+  const totalPrice = Number(order?.total_price || 0);
+  const orderItems = Array.isArray(order?.items) ? order.items : [];
+
+  if (successOrderCode) {
+    successOrderCode.textContent = order?.order_code || '-';
+  }
+
+  if (successOrderItems) {
+    successOrderItems.innerHTML = renderModalOrderItems(orderItems, 'success');
+  }
+
+  if (successTotalItem) {
+    successTotalItem.textContent = `${totalItem} item`;
+  }
+
+  if (successTotalPrice) {
+    successTotalPrice.textContent = formatRupiah(totalPrice);
+  }
+
+  checkoutSuccessModal.classList.add('show');
+  checkoutSuccessBackdrop.classList.add('show');
+};
+
+const closeCheckoutSuccessModal = () => {
+  checkoutSuccessModal?.classList.remove('show');
+  checkoutSuccessBackdrop?.classList.remove('show');
+};
+
+const renderModalOrderItems = (items, type = 'confirm') => {
+  if (!Array.isArray(items) || items.length === 0) {
+    return `
+      <div class="${type}-items-empty">
+        Belum ada pesanan.
+      </div>
+    `;
+  }
+
+  return `
+    <div class="${type}-items-head">
+      <span>Pesanan</span>
+      <strong>${items.length} menu</strong>
+    </div>
+
+    <div class="${type}-items-list">
+      ${items.map(item => {
+        const productName = item.name || item.product_name || '-';
+        const sizeName = item.size || item.size_name || 'Regular';
+        const quantity = Number(item.quantity || 0);
+        const price = Number(item.price || 0);
+        const subtotal = Number(item.subtotal || price * quantity);
+        const note = item.note ? escapeHTML(item.note) : '';
+
+        return `
+          <div class="${type}-item-card">
+            <div class="${type}-item-main">
+              <div>
+                <strong>${escapeHTML(productName)}</strong>
+                <span>${escapeHTML(sizeName)} • x${quantity}</span>
+              </div>
+
+              <b>${formatRupiah(subtotal)}</b>
+            </div>
+
+            ${note
+              ? `
+                <div class="${type}-item-note">
+                  Catatan: ${note}
+                </div>
+              `
+              : ''
+            }
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+};
+
+const openCheckoutConfirmModal = () => {
+  if (!cart.length) {
+    showToast('Cart masih kosong.');
+    return;
+  }
+
+  if (confirmOrderItems) {
+    confirmOrderItems.innerHTML = renderModalOrderItems(cart, 'confirm');
+  }
+
+  if (confirmTotalItem) {
+    confirmTotalItem.textContent = `${cartTotalQuantity()} item`;
+  }
+
+  if (confirmTotalPrice) {
+    confirmTotalPrice.textContent = formatRupiah(cartTotalPrice());
+  }
+
+  checkoutConfirmModal?.classList.add('show');
+  checkoutConfirmBackdrop?.classList.add('show');
+};
+
+const closeCheckoutConfirmModal = () => {
+  checkoutConfirmModal?.classList.remove('show');
+  checkoutConfirmBackdrop?.classList.remove('show');
+};
+
+cancelCheckout?.addEventListener('click', closeCheckoutConfirmModal);
+checkoutConfirmBackdrop?.addEventListener('click', closeCheckoutConfirmModal);
+
+successStayPos?.addEventListener('click', () => {
+  closeCheckoutSuccessModal();
+});
+
+successGoHistory?.addEventListener('click', () => {
+  window.location.href = window.NGUNJUK_ROUTES.history;
+});
+
+checkoutSuccessBackdrop?.addEventListener('click', closeCheckoutSuccessModal);
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    closeCheckoutSuccessModal();
+    closeCheckoutConfirmModal();
+  }
+});
 
 openCart?.addEventListener('click', openCartDrawer);
 closeCart?.addEventListener('click', closeCartDrawer);
@@ -229,13 +389,13 @@ const renderProducts = () => {
 
     card.innerHTML = `
       <div class="drink-img">
-        <img src="${product.image}" alt="${product.name}">
+        <img src="${product.image}" alt="${escapeHTML(product.name)}">
       </div>
 
       <div class="product-info">
         <div class="product-head">
           <div>
-            <h3>${product.name}</h3>
+            <h3>${escapeHTML(product.name)}</h3>
 
             <span class="stock-badge ${isOutOfStock ? 'empty' : ''}">
               ${isOutOfStock ? 'Stok habis' : `Stok ${product.stock}`}
@@ -244,8 +404,6 @@ const renderProducts = () => {
 
           <strong class="price">${formatRupiah(displayPrice)}</strong>
         </div>
-
-        <p class="description">${product.description}</p>
 
         ${sizeHtml}
 
@@ -384,7 +542,8 @@ productGrid?.addEventListener('click', event => {
       size: selectedSize.name,
       price: selectedSize.price,
       quantity,
-      stock: product.stock
+      stock: product.stock,
+      note: ''
     });
 
     addButton.textContent = 'Added to cart';
@@ -441,12 +600,20 @@ const renderCart = () => {
 
     cartItem.innerHTML = `
       <div class="cart-img">
-        <img src="${item.image}" alt="${item.name}">
+        <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}">
       </div>
 
       <div class="cart-item-info">
-        <h3>${item.name}</h3>
-        <p class="cart-item-meta">${item.size}</p>
+        <div class="cart-item-top">
+          <div>
+            <h3>${escapeHTML(item.name)}</h3>
+            <p class="cart-item-meta">${escapeHTML(item.size)}</p>
+          </div>
+
+          <strong class="cart-line-total">
+            ${formatRupiah(item.price * item.quantity)}
+          </strong>
+        </div>
 
         <div class="cart-price-row">
           <strong>${formatRupiah(item.price)}</strong>
@@ -473,6 +640,19 @@ const renderCart = () => {
             </button>
           </div>
         </div>
+
+        <label class="cart-note-wrap">
+          <span>Catatan pesanan</span>
+          <input
+            type="text"
+            class="cart-note-input"
+            data-id="${item.product_id}"
+            data-size-id="${item.product_size_id}"
+            value="${escapeHTML(item.note || '')}"
+            placeholder="Contoh: less ice, less sugar..."
+            maxlength="120"
+          >
+        </label>
       </div>
     `;
 
@@ -480,9 +660,40 @@ const renderCart = () => {
   });
 
   cartCount.textContent = cartTotalQuantity();
-  itemsTotal.textContent = formatRupiah(cartTotalPrice());
+
+  if (itemsTotal?.previousElementSibling) {
+    itemsTotal.previousElementSibling.textContent = 'Total Item';
+  }
+
+  if (grandTotal?.previousElementSibling) {
+    grandTotal.previousElementSibling.textContent = 'Total Harga';
+  }
+
+  itemsTotal.textContent = `${cartTotalQuantity()} item`;
   grandTotal.textContent = formatRupiah(cartTotalPrice());
 };
+
+cartList?.addEventListener('input', event => {
+  const noteInput = event.target.closest('.cart-note-input');
+
+  if (!noteInput) {
+    return;
+  }
+
+  const productId = Number(noteInput.dataset.id);
+  const productSizeId = Number(noteInput.dataset.sizeId);
+
+  const item = cart.find(cartItem => {
+    return cartItem.product_id === productId &&
+      cartItem.product_size_id === productSizeId;
+  });
+
+  if (!item) {
+    return;
+  }
+
+  item.note = noteInput.value;
+});
 
 cartList?.addEventListener('click', event => {
   const minusButton = event.target.closest('.cart-minus');
@@ -528,6 +739,285 @@ cartList?.addEventListener('click', event => {
   renderCart();
 });
 
+const buildCheckoutReceiptHtml = order => {
+  const totalItem = Number(order?.total_item || 0);
+  const totalPrice = Number(order?.total_price || 0);
+  const orderedAt = order?.ordered_at || new Date().toISOString();
+
+  const items = Array.isArray(order?.items) ? order.items : [];
+
+  const itemRows = items.map(item => {
+    const note = item.note
+      ? `<div class="note">Catatan: ${escapeHTML(item.note)}</div>`
+      : '';
+
+    return `
+      <div class="item">
+        <div class="item-title">
+          <strong>${escapeHTML(item.product_name || item.name || '-')}</strong>
+        </div>
+
+        <div class="item-meta">
+          <span>${escapeHTML(item.size_name || item.size || 'Regular')} x${Number(item.quantity || 0)}</span>
+          <span>${formatRupiah(item.price || 0)}</span>
+        </div>
+
+        ${note}
+
+        <div class="item-subtotal">
+          <span>Subtotal</span>
+          <strong>${formatRupiah(item.subtotal || 0)}</strong>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+      <meta charset="UTF-8">
+      <title>Struk ${escapeHTML(order?.order_code || '-')}</title>
+      <style>
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          padding: 18px;
+          font-family: Arial, sans-serif;
+          color: #1f1f1f;
+          background: #ffffff;
+        }
+
+        .receipt {
+          width: 300px;
+          margin: 0 auto;
+        }
+
+        .center {
+          text-align: center;
+        }
+
+        .brand {
+          margin-bottom: 4px;
+          font-size: 21px;
+          font-weight: 800;
+          letter-spacing: 1px;
+        }
+
+        .brand span {
+          color: #e8733d;
+        }
+
+        .subtitle {
+          font-size: 11px;
+          line-height: 1.4;
+          color: #666666;
+        }
+
+        .line {
+          border-top: 1px dashed #999999;
+          margin: 12px 0;
+        }
+
+        .info,
+        .total {
+          display: grid;
+          gap: 6px;
+          font-size: 12px;
+        }
+
+        .info div,
+        .total div,
+        .item-meta,
+        .item-subtotal {
+          display: flex;
+          justify-content: space-between;
+          gap: 10px;
+        }
+
+        .info span,
+        .total span {
+          color: #555555;
+        }
+
+        .item {
+          padding-bottom: 10px;
+          margin-bottom: 10px;
+          border-bottom: 1px dashed #dddddd;
+          font-size: 12px;
+        }
+
+        .item:last-child {
+          border-bottom: 0;
+          margin-bottom: 0;
+          padding-bottom: 0;
+        }
+
+        .item-title strong {
+          display: block;
+          font-size: 13px;
+          line-height: 1.35;
+        }
+
+        .item-meta {
+          margin-top: 4px;
+          color: #666666;
+        }
+
+        .note {
+          margin-top: 6px;
+          padding: 6px 7px;
+          border-radius: 6px;
+          background: #f4f4f4;
+          color: #444444;
+          font-size: 11px;
+          line-height: 1.35;
+        }
+
+        .item-subtotal {
+          margin-top: 6px;
+          font-size: 12px;
+        }
+
+        .grand {
+          padding-top: 7px;
+          border-top: 1px dashed #999999;
+          font-size: 15px;
+          font-weight: 800;
+        }
+
+        .thanks {
+          margin-top: 14px;
+          font-size: 12px;
+          line-height: 1.5;
+          text-align: center;
+        }
+
+        .small {
+          margin-top: 4px;
+          color: #666666;
+          font-size: 10px;
+          text-align: center;
+        }
+
+        @media print {
+          @page {
+            size: 80mm auto;
+            margin: 4mm;
+          }
+
+          body {
+            padding: 0;
+          }
+
+          .receipt {
+            width: 100%;
+          }
+        }
+      </style>
+    </head>
+
+    <body>
+      <div class="receipt">
+        <div class="center">
+          <div class="brand"><span>Ngun</span>juk POS</div>
+          <div class="subtitle">
+            Sistem Informasi Kasir<br>
+            UMKM Ngunjuk
+          </div>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="info">
+          <div>
+            <span>Order</span>
+            <strong>${escapeHTML(order?.order_code || '-')}</strong>
+          </div>
+
+          <div>
+            <span>Waktu</span>
+            <strong>${new Intl.DateTimeFormat('id-ID', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            }).format(new Date(String(orderedAt).replace(' ', 'T')))}</strong>
+          </div>
+
+          <div>
+            <span>Status</span>
+            <strong>${escapeHTML(order?.status || 'Selesai')}</strong>
+          </div>
+        </div>
+
+        <div class="line"></div>
+
+        ${itemRows || '<div class="item">Item tidak tersedia.</div>'}
+
+        <div class="line"></div>
+
+        <div class="total">
+          <div>
+            <span>Total Item</span>
+            <strong>${totalItem} item</strong>
+          </div>
+
+          <div class="grand">
+            <span>Total</span>
+            <strong>${formatRupiah(totalPrice)}</strong>
+          </div>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="thanks">
+          Terima kasih sudah berbelanja.
+        </div>
+
+        <div class="small">
+          Struk ini dicetak otomatis oleh Ngunjuk POS.
+        </div>
+      </div>
+
+      <script>
+        window.onload = function () {
+          window.print();
+
+          setTimeout(function () {
+            window.close();
+          }, 500);
+        };
+      <\/script>
+    </body>
+    </html>
+  `;
+};
+
+const printLastSavedOrder = () => {
+  if (!lastSavedOrder) {
+    showToast('Data order belum tersedia.');
+    return;
+  }
+
+  const printWindow = window.open('', '_blank', 'width=420,height=680');
+
+  if (!printWindow) {
+    showToast('Popup print diblokir browser.');
+    return;
+  }
+
+  printWindow.document.open();
+  printWindow.document.write(buildCheckoutReceiptHtml(lastSavedOrder));
+  printWindow.document.close();
+};
+
+successPrintReceipt?.addEventListener('click', printLastSavedOrder);
+
 const submitOrder = async () => {
   if (!cart.length) {
     showToast('Cart masih kosong.');
@@ -538,7 +1028,8 @@ const submitOrder = async () => {
     items: cart.map(item => ({
       product_id: item.product_id,
       product_size_id: item.product_size_id,
-      quantity: item.quantity
+      quantity: item.quantity,
+      note: item.note || null
     }))
   };
 
@@ -562,17 +1053,16 @@ const submitOrder = async () => {
       throw new Error(result.message || 'Gagal menyimpan transaksi.');
     }
 
+    const savedOrder = result.data || {};
+
     cart = [];
     renderCart();
     closeCartDrawer();
 
     showToast('Transaksi berhasil masuk ke database.');
+    openCheckoutSuccessModal(savedOrder);
 
     await loadProducts();
-
-    setTimeout(() => {
-      window.location.href = window.NGUNJUK_ROUTES.history;
-    }, 900);
   } catch (error) {
     console.error(error);
     showToast(error.message || 'Gagal menyimpan transaksi.');
@@ -582,7 +1072,11 @@ const submitOrder = async () => {
   }
 };
 
-placeOrder?.addEventListener('click', submitOrder);
+placeOrder?.addEventListener('click', openCheckoutConfirmModal);
+confirmCheckout?.addEventListener('click', () => {
+  closeCheckoutConfirmModal();
+  submitOrder();
+});
 searchInput?.addEventListener('input', renderProducts);
 
 renderCart();
