@@ -24,13 +24,8 @@ class ListProducts extends ListRecords
         ];
     }
 
-    protected function getHeaderActions(): array
+   protected function getHeaderActions(): array
     {
-        return [
-            CreateAction::make()
-                ->label('New Produk')
-                ->icon('heroicon-o-plus')
-                ->color('primary'),
-        ];
+    return [];
     }
 }

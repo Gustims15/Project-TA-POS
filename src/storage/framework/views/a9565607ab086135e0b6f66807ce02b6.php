@@ -462,8 +462,10 @@
             gap: 12px;
             margin-top: 22px;
             padding: 4px 2px 2px;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
         }
-
         .powerbi-top-row {
             display: grid;
             grid-template-columns: 125px minmax(0, 1fr) 58px;

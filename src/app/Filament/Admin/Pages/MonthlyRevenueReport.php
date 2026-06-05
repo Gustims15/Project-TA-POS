@@ -6,7 +6,6 @@ namespace App\Filament\Admin\Pages;
 
 use App\Models\Order;
 use Carbon\Carbon;
-use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -38,15 +37,16 @@ class MonthlyRevenueReport extends Page
             && auth()->user()->hasRole('super_admin');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Header Action
+    |--------------------------------------------------------------------------
+    | Tombol download di header Filament dihilangkan.
+    | Tombol download sekarang dipindahkan ke hero hijau di Blade.
+    */
     protected function getHeaderActions(): array
     {
-        return [
-            Action::make('exportSelectedMonth')
-                ->label('Download Laporan Bulan Ini')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->color('success')
-                ->action(fn (): StreamedResponse => $this->exportSelectedMonth()),
-        ];
+        return [];
     }
 
     protected function getViewData(): array
@@ -151,7 +151,14 @@ class MonthlyRevenueReport extends Page
         ];
     }
 
-    private function exportSelectedMonth(): StreamedResponse
+    /*
+    |--------------------------------------------------------------------------
+    | Export Selected Month
+    |--------------------------------------------------------------------------
+    | Method dibuat public supaya bisa dipanggil dari tombol Blade:
+    | wire:click="exportSelectedMonth"
+    */
+    public function exportSelectedMonth(): StreamedResponse
     {
         abort_unless(
             auth()->check() && auth()->user()->hasRole('super_admin'),

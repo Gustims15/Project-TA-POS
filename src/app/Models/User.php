@@ -5,16 +5,21 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
 
-final class User extends Authenticatable
+final class User extends Authenticatable implements HasAvatar
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasRoles, Notifiable;
+    use HasFactory;
+    use HasRoles;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -38,13 +43,50 @@ final class User extends Authenticatable
         'remember_token',
     ];
 
-    public function getFilamentAvatarUrl(): string
+    /**
+     * Avatar yang dipakai Filament untuk sidebar/user menu.
+     */
+    public function getFilamentAvatarUrl(): ?string
     {
-        if ($this->avatar_url) {
-            return asset('storage/' . $this->avatar_url);
+        if (! empty($this->avatar_url)) {
+            $avatarPath = (string) $this->avatar_url;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Jika avatar sudah berbentuk URL lengkap
+            |--------------------------------------------------------------------------
+            */
+            if (str_starts_with($avatarPath, 'http://') || str_starts_with($avatarPath, 'https://')) {
+                return $avatarPath;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Jika avatar tersimpan dengan awalan storage/
+            |--------------------------------------------------------------------------
+            */
+            if (str_starts_with($avatarPath, 'storage/')) {
+                return asset($avatarPath);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Jika avatar tersimpan di disk public
+            |--------------------------------------------------------------------------
+            | Contoh isi database:
+            | - avatars/admin.jpg
+            | - admin.jpg
+            |--------------------------------------------------------------------------
+            */
+            return Storage::disk('public')->url($avatarPath);
         }
 
-        $hash = md5(mb_strtolower(mb_trim($this->email)));
+        /*
+        |--------------------------------------------------------------------------
+        | Fallback avatar jika user belum upload foto
+        |--------------------------------------------------------------------------
+        */
+        $hash = md5(mb_strtolower(mb_trim((string) $this->email)));
 
         return 'https://www.gravatar.com/avatar/' . $hash . '?d=mp&r=g&s=250';
     }

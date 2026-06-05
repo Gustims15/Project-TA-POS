@@ -4,3 +4,2075 @@
 @source '../../../../resources/views/filament/**/*';
 @source '../../../../vendor/jeffgreco13/filament-breezy/resources/**/*';
 @source '../../../../vendor/awcodes/overlook/resources/**/*.blade.php';
+
+/*
+|--------------------------------------------------------------------------
+| NGUNJUK POS - Final Luxury Glass Dashboard Theme
+|--------------------------------------------------------------------------
+| Final fix:
+| - Dashboard background luxury glass
+| - Widget tidak double background
+| - Sidebar floating compact
+| - Search sidebar dihapus
+| - Dropdown admin center di dalam sidebar
+| - Light / dark mode lebih terbaca
+| - Kotak putih Top Product Performance dihilangkan
+|--------------------------------------------------------------------------
+*/
+
+:root {
+    --ngunjuk-bg-1: #edf7f4;
+    --ngunjuk-bg-2: #f7fbff;
+    --ngunjuk-bg-3: #e9f3ef;
+
+    --ngunjuk-primary: #0f766e;
+    --ngunjuk-primary-2: #0d9488;
+    --ngunjuk-primary-3: #14b8a6;
+
+    --ngunjuk-dark: #0f172a;
+    --ngunjuk-muted: #64748b;
+
+    --ngunjuk-shadow: 0 28px 80px rgba(15, 23, 42, 0.12);
+    --ngunjuk-shadow-soft: 0 16px 42px rgba(15, 23, 42, 0.08);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Main Background
+|--------------------------------------------------------------------------
+*/
+
+.fi-body {
+    min-height: 100vh !important;
+    color: var(--ngunjuk-dark) !important;
+    background:
+        radial-gradient(circle at 18% 12%, rgba(20, 184, 166, 0.36), transparent 28%),
+        radial-gradient(circle at 86% 14%, rgba(125, 211, 252, 0.24), transparent 30%),
+        radial-gradient(circle at 80% 78%, rgba(16, 185, 129, 0.18), transparent 34%),
+        radial-gradient(circle at 22% 86%, rgba(255, 255, 255, 0.82), transparent 26%),
+        linear-gradient(135deg, var(--ngunjuk-bg-1) 0%, var(--ngunjuk-bg-2) 48%, var(--ngunjuk-bg-3) 100%) !important;
+    overflow-x: hidden !important;
+}
+
+.fi-body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.24;
+    background-image:
+        linear-gradient(rgba(15, 118, 110, 0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 118, 110, 0.10) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(circle at center, black, transparent 76%);
+}
+
+.fi-body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(115deg, transparent 0 18%, rgba(255,255,255,0.42) 18.2% 18.7%, transparent 19% 100%),
+        linear-gradient(128deg, transparent 0 58%, rgba(255,255,255,0.28) 58.2% 58.8%, transparent 59% 100%),
+        radial-gradient(circle at 48% 4%, rgba(255,255,255,0.58), transparent 22%);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Main Content
+|--------------------------------------------------------------------------
+*/
+
+.fi-main-ctn {
+    position: relative !important;
+    z-index: 1 !important;
+    background: transparent !important;
+}
+
+.fi-main {
+    position: relative !important;
+    z-index: 2 !important;
+    padding-top: 2rem !important;
+    padding-bottom: 3rem !important;
+    background: transparent !important;
+}
+
+.fi-page {
+    background: transparent !important;
+}
+
+.fi-header-heading {
+    color: #101827 !important;
+    font-weight: 950 !important;
+    letter-spacing: -0.055em !important;
+}
+
+.fi-header-subheading {
+    color: rgba(71, 85, 105, 0.82) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Filament Section / Card Glass
+|--------------------------------------------------------------------------
+*/
+
+.fi-section,
+.fi-ta-ctn,
+.fi-card {
+    border-radius: 1.75rem !important;
+    background:
+        linear-gradient(145deg, rgba(255,255,255,0.76), rgba(255,255,255,0.46)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.72) !important;
+    box-shadow:
+        0 22px 58px rgba(15, 23, 42, 0.09),
+        inset 0 1px 0 rgba(255,255,255,0.88) !important;
+    backdrop-filter: blur(26px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(26px) saturate(150%) !important;
+    transition:
+        transform 220ms ease,
+        box-shadow 220ms ease,
+        border-color 220ms ease !important;
+}
+
+.fi-section:hover,
+.fi-ta-ctn:hover,
+.fi-card:hover {
+    transform: translateY(-3px) !important;
+    border-color: rgba(255, 255, 255, 0.92) !important;
+    box-shadow:
+        0 30px 76px rgba(15, 23, 42, 0.13),
+        inset 0 1px 0 rgba(255,255,255,0.94) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Fix Double Background Widget Wrapper
+|--------------------------------------------------------------------------
+*/
+
+.fi-wi-widget {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+}
+
+.fi-wi-widget > div {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transform: none !important;
+}
+
+.fi-wi-widget:hover,
+.fi-wi-widget > div:hover {
+    transform: none !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard Hero
+|--------------------------------------------------------------------------
+*/
+
+.dashboard-lux-wrapper {
+    margin-bottom: 26px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+}
+
+.fi-wi-widget:has(.dashboard-lux-wrapper),
+.fi-wi-widget:has(.dashboard-lux-wrapper) > div {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+.dashboard-lux-hero {
+    position: relative !important;
+    overflow: hidden !important;
+    min-height: 250px !important;
+    border-radius: 2.4rem !important;
+    padding: 2.4rem !important;
+    color: #0f172a !important;
+    background:
+        radial-gradient(circle at 72% 42%, rgba(255,255,255,0.38), transparent 22%),
+        radial-gradient(circle at 88% 8%, rgba(20,184,166,0.26), transparent 32%),
+        linear-gradient(135deg, rgba(255,255,255,0.76), rgba(255,255,255,0.34)) !important;
+    border: 1px solid rgba(255,255,255,0.74) !important;
+    box-shadow:
+        0 32px 90px rgba(15, 23, 42, 0.12),
+        inset 0 1px 0 rgba(255,255,255,0.9) !important;
+    backdrop-filter: blur(30px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(160%) !important;
+    isolation: isolate !important;
+}
+
+.dashboard-lux-hero::before {
+    content: "" !important;
+    position: absolute !important;
+    width: 420px !important;
+    height: 420px !important;
+    right: 80px !important;
+    top: -120px !important;
+    border-radius: 45% 55% 60% 40% !important;
+    background:
+        radial-gradient(circle at 32% 30%, rgba(255,255,255,0.92), rgba(255,255,255,0.16) 58%, transparent 72%) !important;
+    box-shadow:
+        inset 24px 18px 55px rgba(255,255,255,0.45),
+        0 40px 80px rgba(15, 118, 110, 0.12) !important;
+    opacity: 0.78 !important;
+    z-index: -1 !important;
+}
+
+.dashboard-lux-hero::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+    background:
+        linear-gradient(118deg, transparent 0 23%, rgba(255,255,255,0.52) 23.2% 23.8%, transparent 24.2% 100%),
+        radial-gradient(circle at 20% 80%, rgba(20,184,166,0.12), transparent 28%) !important;
+    z-index: -1 !important;
+}
+
+.dashboard-lux-badge {
+    background: rgba(255,255,255,0.66) !important;
+    color: #0f766e !important;
+    border: 1px solid rgba(255,255,255,0.86) !important;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08) !important;
+    backdrop-filter: blur(18px) !important;
+}
+
+.dashboard-lux-dot {
+    background: #0f766e !important;
+    box-shadow: 0 0 0 5px rgba(15, 118, 110, 0.14) !important;
+}
+
+.dashboard-lux-title {
+    color: #111827 !important;
+    font-size: clamp(2rem, 3vw, 3.8rem) !important;
+    line-height: 0.98 !important;
+    font-weight: 950 !important;
+    letter-spacing: -0.075em !important;
+    max-width: 760px !important;
+}
+
+.dashboard-lux-desc {
+    color: rgba(51, 65, 85, 0.78) !important;
+    max-width: 680px !important;
+    font-size: 0.95rem !important;
+}
+
+.dashboard-lux-mini {
+    color: #0f172a !important;
+    background: rgba(255,255,255,0.62) !important;
+    border: 1px solid rgba(255,255,255,0.78) !important;
+    box-shadow:
+        0 22px 52px rgba(15, 23, 42, 0.10),
+        inset 0 1px 0 rgba(255,255,255,0.9) !important;
+    backdrop-filter: blur(22px) saturate(160%) !important;
+}
+
+.dashboard-lux-mini span {
+    color: rgba(71,85,105,0.78) !important;
+}
+
+.dashboard-lux-mini strong {
+    color: #0f766e !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard Cards
+|--------------------------------------------------------------------------
+*/
+
+.dashboard-lux-card,
+.metric-lux-card,
+.powerbi-panel {
+    border-radius: 1.75rem !important;
+    background:
+        linear-gradient(145deg, rgba(255,255,255,0.74), rgba(255,255,255,0.48)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.72) !important;
+    box-shadow:
+        0 22px 58px rgba(15, 23, 42, 0.09),
+        inset 0 1px 0 rgba(255,255,255,0.88) !important;
+    backdrop-filter: blur(26px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(26px) saturate(150%) !important;
+}
+
+.dashboard-lux-card:hover,
+.metric-lux-card:hover,
+.powerbi-panel:hover {
+    transform: translateY(-4px) !important;
+    box-shadow:
+        0 34px 82px rgba(15, 23, 42, 0.13),
+        inset 0 1px 0 rgba(255,255,255,0.94) !important;
+}
+
+.dashboard-lux-card::after {
+    opacity: 0.22 !important;
+    filter: blur(1px) !important;
+}
+
+.dashboard-lux-label,
+.metric-lux-title,
+.powerbi-panel-title {
+    color: #0f172a !important;
+}
+
+.dashboard-lux-value {
+    color: #0f172a !important;
+}
+
+.metric-lux-header {
+    background:
+        radial-gradient(circle at right top, rgba(20,184,166,0.16), transparent 30%),
+        linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.36)) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.54) !important;
+}
+
+.metric-period-link,
+.metric-lux-item {
+    background: rgba(255,255,255,0.62) !important;
+    border: 1px solid rgba(255,255,255,0.76) !important;
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06) !important;
+    backdrop-filter: blur(14px) !important;
+}
+
+.metric-period-link.active,
+.metric-lux-item.active {
+    color: #fff !important;
+    background: linear-gradient(135deg, #0f766e, #14b8a6) !important;
+    border-color: rgba(255,255,255,0.72) !important;
+    box-shadow: 0 18px 42px rgba(15, 118, 110, 0.24) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Widget Bawah Section Glass
+|--------------------------------------------------------------------------
+*/
+
+.fi-section:has(.category-pbi),
+.fi-section:has(.stock-risk-pbi),
+.fi-section:has(.heatmap-pbi),
+.fi-section:has(.recent-pbi),
+.fi-section:has(.product-quadrant-pbi) {
+    background:
+        linear-gradient(145deg, rgba(255,255,255,0.72), rgba(255,255,255,0.46)) !important;
+    border: 1px solid rgba(255,255,255,0.72) !important;
+    box-shadow:
+        0 22px 58px rgba(15, 23, 42, 0.09),
+        inset 0 1px 0 rgba(255,255,255,0.88) !important;
+    backdrop-filter: blur(26px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(26px) saturate(150%) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Inner Chart Panels
+|--------------------------------------------------------------------------
+*/
+
+.revenue-wide-chart-box,
+.category-row,
+.category-empty,
+.stock-risk-box,
+.stock-risk-distribution,
+.stock-risk-item,
+.stock-risk-empty,
+.heatmap-insight-box,
+.heatmap-pbi-canvas,
+.product-quadrant-box,
+.product-quadrant-canvas,
+.product-quadrant-empty,
+.recent-pbi-card,
+.recent-pbi-empty {
+    background:
+        linear-gradient(145deg, rgba(255,255,255,0.66), rgba(255,255,255,0.38)) !important;
+    border: 1px solid rgba(255,255,255,0.68) !important;
+    box-shadow:
+        0 14px 34px rgba(15, 23, 42, 0.06),
+        inset 0 1px 0 rgba(255,255,255,0.82) !important;
+    backdrop-filter: blur(18px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
+}
+
+.revenue-wide-chart-box,
+.heatmap-pbi-canvas,
+.product-quadrant-canvas {
+    background:
+        linear-gradient(180deg, rgba(240,253,250,0.68), rgba(255,255,255,0.42)),
+        radial-gradient(circle at top right, rgba(20,184,166,0.14), transparent 34%) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Remove Inner White Box - Top Product Performance
+|--------------------------------------------------------------------------
+*/
+
+.powerbi-top-chart {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Donut Chart Fix
+|--------------------------------------------------------------------------
+*/
+
+.category-donut {
+    box-shadow:
+        0 18px 42px rgba(15, 23, 42, 0.10),
+        inset 0 1px 0 rgba(255,255,255,0.52) !important;
+}
+
+.category-donut::after {
+    background: rgba(255,255,255,0.82) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Widget Titles and Chips
+|--------------------------------------------------------------------------
+*/
+
+.category-title,
+.stock-risk-title,
+.heatmap-pbi-title,
+.product-quadrant-title,
+.recent-pbi-title {
+    color: #0f172a !important;
+    font-weight: 950 !important;
+}
+
+.category-subtitle,
+.stock-risk-subtitle,
+.heatmap-pbi-subtitle,
+.product-quadrant-subtitle,
+.recent-pbi-subtitle {
+    color: rgba(71, 85, 105, 0.78) !important;
+}
+
+.category-chip,
+.stock-risk-chip,
+.heatmap-pbi-chip,
+.product-quadrant-chip,
+.recent-pbi-chip {
+    border: 1px solid rgba(255,255,255,0.78) !important;
+    background: rgba(255,255,255,0.58) !important;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06) !important;
+    backdrop-filter: blur(14px) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Form / Button
+|--------------------------------------------------------------------------
+*/
+
+.fi-input-wrp,
+.fi-select-input,
+.fi-text-input,
+.fi-search-input {
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.70) !important;
+    border: 1px solid rgba(255, 255, 255, 0.78) !important;
+    box-shadow:
+        0 10px 24px rgba(15, 23, 42, 0.05),
+        inset 0 1px 0 rgba(255,255,255,0.85) !important;
+    backdrop-filter: blur(14px) !important;
+}
+
+.fi-btn {
+    border-radius: 999px !important;
+    font-weight: 850 !important;
+}
+
+.fi-btn-color-primary {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #0f766e, #14b8a6) !important;
+    box-shadow: 0 16px 36px rgba(15, 118, 110, 0.20) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Floating Compact Sidebar
+|--------------------------------------------------------------------------
+*/
+
+@media (min-width: 1024px) {
+    .fi-sidebar {
+        position: fixed !important;
+        top: 1rem !important;
+        bottom: 1rem !important;
+        left: 0.9rem !important;
+
+        width: 13.2rem !important;
+        height: calc(100vh - 2rem) !important;
+
+        border-radius: 1.65rem !important;
+        overflow: visible !important;
+
+        background:
+            radial-gradient(circle at 38% 8%, rgba(255,255,255,0.68), transparent 28%),
+            radial-gradient(circle at 90% 82%, rgba(20,184,166,0.14), transparent 36%),
+            linear-gradient(145deg, rgba(255,255,255,0.62), rgba(255,255,255,0.34)) !important;
+
+        border: 1px solid rgba(255,255,255,0.76) !important;
+
+        box-shadow:
+            0 24px 64px rgba(15, 23, 42, 0.12),
+            inset 0 1px 0 rgba(255,255,255,0.9) !important;
+
+        backdrop-filter: blur(30px) saturate(160%) !important;
+        -webkit-backdrop-filter: blur(30px) saturate(160%) !important;
+    }
+
+    .fi-sidebar::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        border-radius: inherit;
+        overflow: hidden;
+        background:
+            linear-gradient(
+                115deg,
+                transparent 0 46%,
+                rgba(255,255,255,0.34) 46.2% 47%,
+                transparent 47.4% 100%
+            );
+    }
+
+    .fi-sidebar > * {
+        position: relative !important;
+        z-index: 1 !important;
+    }
+
+    .fi-main-ctn {
+        margin-left: 14.9rem !important;
+    }
+
+    .fi-main {
+        padding-left: 1.2rem !important;
+        padding-right: 1.2rem !important;
+    }
+
+    .fi-topbar {
+        left: 14.9rem !important;
+    }
+
+    .fi-sidebar-header {
+        min-height: 4.15rem !important;
+        padding: 0.85rem 0.85rem 0.35rem !important;
+        background: transparent !important;
+        border-bottom: 0 !important;
+    }
+
+    .fi-sidebar-header .fi-logo,
+    .fi-sidebar-header a {
+        color: #0f172a !important;
+        font-size: 1.12rem !important;
+        font-weight: 950 !important;
+        letter-spacing: -0.04em !important;
+    }
+
+    .fi-sidebar-nav {
+        padding: 0.3rem 0.65rem 0.65rem !important;
+        gap: 0.25rem !important;
+    }
+
+    .fi-sidebar-nav-groups {
+        gap: 0.25rem !important;
+    }
+
+    .fi-sidebar-group {
+        margin-top: 0.15rem !important;
+        margin-bottom: 0.1rem !important;
+        padding: 0 !important;
+    }
+
+    .fi-sidebar-group-button {
+        min-height: 1.85rem !important;
+        padding-top: 0.15rem !important;
+        padding-bottom: 0.15rem !important;
+        margin-top: 0.18rem !important;
+        margin-bottom: 0.16rem !important;
+    }
+
+    .fi-sidebar-group-label {
+        margin-top: 0.22rem !important;
+        margin-bottom: 0.18rem !important;
+        padding: 0 0.2rem !important;
+        color: rgba(71, 85, 105, 0.76) !important;
+        font-size: 0.68rem !important;
+        font-weight: 950 !important;
+        line-height: 1.1 !important;
+        letter-spacing: 0.03em !important;
+    }
+
+    .fi-sidebar-item {
+        margin-top: 0 !important;
+        margin-bottom: 0.08rem !important;
+    }
+
+    .fi-sidebar-item a {
+        min-height: 2.18rem !important;
+        padding: 0.3rem 0.6rem !important;
+        border-radius: 0.95rem !important;
+        color: rgba(15, 23, 42, 0.72) !important;
+        font-size: 0.8rem !important;
+        font-weight: 760 !important;
+        line-height: 1.15 !important;
+        transition:
+            transform 180ms ease,
+            background 180ms ease,
+            box-shadow 180ms ease,
+            color 180ms ease !important;
+    }
+
+    .fi-sidebar-item-label {
+        line-height: 1.15 !important;
+    }
+
+    .fi-sidebar-item svg {
+        width: 1rem !important;
+        height: 1rem !important;
+    }
+
+    .fi-sidebar-item a:hover {
+        transform: translateX(3px) !important;
+        color: #0f766e !important;
+        background: rgba(255,255,255,0.62) !important;
+        box-shadow:
+            0 12px 28px rgba(15, 23, 42, 0.07),
+            inset 0 1px 0 rgba(255,255,255,0.82) !important;
+    }
+
+    .fi-sidebar-item-active a,
+    .fi-sidebar-item.fi-active a {
+        color: #d93b0b !important;
+        background: rgba(255,255,255,0.88) !important;
+        box-shadow:
+            0 18px 42px rgba(15, 23, 42, 0.10),
+            inset 0 1px 0 rgba(255,255,255,0.95) !important;
+    }
+
+    .fi-sidebar-item-active svg,
+    .fi-sidebar-item.fi-active svg,
+    .fi-sidebar-item a:hover svg {
+        color: #0f766e !important;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Hide Sidebar Search
+|--------------------------------------------------------------------------
+*/
+
+@media (min-width: 1024px) {
+    .fi-sidebar .fi-global-search,
+    .fi-sidebar .fi-global-search-field,
+    .fi-sidebar [data-global-search],
+    .fi-sidebar form[role="search"],
+    .fi-sidebar .fi-input-wrp:has(input[type="search"]),
+    .fi-sidebar .fi-input-wrp:has(input[placeholder*="Search"]),
+    .fi-sidebar .fi-input-wrp:has(input[placeholder*="search"]) {
+        display: none !important;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Sidebar Footer / User Dropdown Center
+|--------------------------------------------------------------------------
+*/
+
+@media (min-width: 1024px) {
+    .fi-sidebar-footer {
+        position: relative !important;
+        z-index: 100 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 0.55rem 0.65rem 0.8rem !important;
+        overflow: visible !important;
+    }
+
+    .fi-sidebar-footer .fi-dropdown {
+        position: relative !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    .fi-sidebar .fi-user-menu {
+        position: relative !important;
+        z-index: 120 !important;
+        width: calc(100% - 0.4rem) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        min-height: 2.8rem !important;
+        border-radius: 1.1rem !important;
+        background: rgba(255,255,255,0.58) !important;
+        border: 1px solid rgba(255,255,255,0.76) !important;
+        box-shadow:
+            0 16px 38px rgba(15, 23, 42, 0.08),
+            inset 0 1px 0 rgba(255,255,255,0.88) !important;
+        backdrop-filter: blur(18px) saturate(150%) !important;
+        -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
+    }
+
+    .fi-sidebar .fi-dropdown-panel,
+    .fi-sidebar [role="menu"] {
+        position: absolute !important;
+        left: 50% !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: calc(100% + 0.7rem) !important;
+        transform: translateX(-50%) !important;
+
+        width: calc(100% - 1.2rem) !important;
+        min-width: calc(100% - 1.2rem) !important;
+        max-width: calc(100% - 1.2rem) !important;
+
+        border-radius: 1rem !important;
+        overflow: hidden !important;
+        z-index: 9999 !important;
+
+        background:
+            linear-gradient(145deg, rgba(255,255,255,0.96), rgba(248,250,252,0.92)) !important;
+        border: 1px solid rgba(255,255,255,0.82) !important;
+        box-shadow:
+            0 24px 56px rgba(15, 23, 42, 0.18),
+            inset 0 1px 0 rgba(255,255,255,0.92) !important;
+        backdrop-filter: blur(22px) saturate(150%) !important;
+        -webkit-backdrop-filter: blur(22px) saturate(150%) !important;
+    }
+
+    .fi-dropdown-list {
+        padding: 0.45rem !important;
+    }
+
+    .fi-dropdown-list-item {
+        min-height: 2.2rem !important;
+        border-radius: 0.75rem !important;
+        color: #334155 !important;
+        font-size: 0.82rem !important;
+        font-weight: 760 !important;
+    }
+
+    .fi-dropdown-list-item:hover {
+        background: rgba(15, 118, 110, 0.08) !important;
+        color: #0f766e !important;
+    }
+
+    .fi-dropdown-list-item-icon {
+        color: #94a3b8 !important;
+    }
+
+    .fi-dropdown-list-item:hover .fi-dropdown-list-item-icon {
+        color: #0f766e !important;
+    }
+
+    .fi-theme-switcher {
+        width: 100% !important;
+        padding: 0.35rem !important;
+        border-radius: 0.8rem !important;
+        background: rgba(241,245,249,0.92) !important;
+        border: 1px solid rgba(226,232,240,0.92) !important;
+    }
+
+    .fi-theme-switcher-btn {
+        border-radius: 0.65rem !important;
+        color: #94a3b8 !important;
+        transition: 0.18s ease !important;
+    }
+
+    .fi-theme-switcher-btn:hover {
+        color: #0f766e !important;
+        background: rgba(255,255,255,0.86) !important;
+    }
+
+    .fi-theme-switcher-btn[aria-pressed="true"],
+    .fi-theme-switcher-btn.fi-active {
+        color: #0f766e !important;
+        background: #ffffff !important;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08) !important;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Mode Base
+|--------------------------------------------------------------------------
+*/
+
+.dark {
+    --dark-text-main: #ecfeff;
+    --dark-text-soft: rgba(226, 232, 240, 0.82);
+    --dark-text-muted: rgba(203, 213, 225, 0.72);
+    --dark-border-soft: rgba(148, 163, 184, 0.30);
+}
+
+.dark .fi-body {
+    color: #e5f7f5 !important;
+    background:
+        radial-gradient(circle at 18% 12%, rgba(20, 184, 166, 0.22), transparent 28%),
+        radial-gradient(circle at 86% 14%, rgba(14, 116, 144, 0.24), transparent 30%),
+        radial-gradient(circle at 80% 78%, rgba(6, 78, 59, 0.32), transparent 34%),
+        linear-gradient(135deg, #061a1a 0%, #0f172a 48%, #082f2d 100%) !important;
+}
+
+.dark .fi-body::before {
+    opacity: 0.16 !important;
+    background-image:
+        linear-gradient(rgba(45, 212, 191, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45, 212, 191, 0.12) 1px, transparent 1px) !important;
+}
+
+.dark .fi-body::after {
+    background:
+        linear-gradient(115deg, transparent 0 18%, rgba(255,255,255,0.09) 18.2% 18.7%, transparent 19% 100%),
+        linear-gradient(128deg, transparent 0 58%, rgba(255,255,255,0.07) 58.2% 58.8%, transparent 59% 100%),
+        radial-gradient(circle at 48% 4%, rgba(20,184,166,0.12), transparent 22%) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Sidebar
+|--------------------------------------------------------------------------
+*/
+
+@media (min-width: 1024px) {
+    .dark .fi-sidebar {
+        background:
+            radial-gradient(circle at 38% 8%, rgba(255,255,255,0.11), transparent 28%),
+            radial-gradient(circle at 90% 82%, rgba(20,184,166,0.18), transparent 36%),
+            linear-gradient(145deg, rgba(15,23,42,0.74), rgba(6,78,59,0.42)) !important;
+        border: 1px solid rgba(148, 163, 184, 0.22) !important;
+        box-shadow:
+            0 24px 64px rgba(0, 0, 0, 0.36),
+            inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    }
+
+    .dark .fi-sidebar-header .fi-logo,
+    .dark .fi-sidebar-header a {
+        color: #ecfeff !important;
+    }
+
+    .dark .fi-sidebar-group-label {
+        color: rgba(203, 213, 225, 0.78) !important;
+    }
+
+    .dark .fi-sidebar-item a {
+        color: rgba(226, 232, 240, 0.76) !important;
+    }
+
+    .dark .fi-sidebar-item a:hover {
+        color: #5eead4 !important;
+        background: rgba(15, 23, 42, 0.52) !important;
+    }
+
+    .dark .fi-sidebar-item-active a,
+    .dark .fi-sidebar-item.fi-active a {
+        color: #5eead4 !important;
+        background: rgba(15, 23, 42, 0.72) !important;
+        box-shadow:
+            0 18px 42px rgba(0, 0, 0, 0.28),
+            inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    }
+
+    .dark .fi-sidebar .fi-user-menu {
+        background: rgba(15,23,42,0.68) !important;
+        border: 1px solid rgba(148, 163, 184, 0.22) !important;
+        color: #e5f7f5 !important;
+    }
+
+    .dark .fi-sidebar .fi-dropdown-panel,
+    .dark .fi-sidebar [role="menu"] {
+        background:
+            linear-gradient(145deg, rgba(15,23,42,0.96), rgba(2,44,34,0.92)) !important;
+        border: 1px solid rgba(148, 163, 184, 0.24) !important;
+        box-shadow:
+            0 24px 56px rgba(0, 0, 0, 0.42),
+            inset 0 1px 0 rgba(255,255,255,0.10) !important;
+    }
+
+    .dark .fi-dropdown-list-item,
+    .dark .fi-dropdown-list-item-label {
+        color: #e2e8f0 !important;
+    }
+
+    .dark .fi-dropdown-list-item:hover,
+    .dark .fi-dropdown-list-item:hover .fi-dropdown-list-item-label {
+        background: rgba(20,184,166,0.14) !important;
+        color: #5eead4 !important;
+    }
+
+    .dark .fi-theme-switcher {
+        background: rgba(2, 6, 23, 0.72) !important;
+        border: 1px solid rgba(148, 163, 184, 0.22) !important;
+    }
+
+    .dark .fi-theme-switcher-btn {
+        color: #94a3b8 !important;
+    }
+
+    .dark .fi-theme-switcher-btn:hover {
+        color: #5eead4 !important;
+        background: rgba(15,23,42,0.86) !important;
+    }
+
+    .dark .fi-theme-switcher-btn[aria-pressed="true"],
+    .dark .fi-theme-switcher-btn.fi-active {
+        color: #5eead4 !important;
+        background: rgba(15,23,42,0.96) !important;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Dashboard Cards
+|--------------------------------------------------------------------------
+*/
+
+.dark .fi-header-heading,
+.dark .dashboard-lux-title,
+.dark .dashboard-lux-label,
+.dark .dashboard-lux-value,
+.dark .metric-lux-title,
+.dark .powerbi-panel-title,
+.dark .category-title,
+.dark .stock-risk-title,
+.dark .heatmap-pbi-title,
+.dark .product-quadrant-title,
+.dark .recent-pbi-title {
+    color: var(--dark-text-main) !important;
+}
+
+.dark .dashboard-lux-desc,
+.dark .metric-lux-desc,
+.dark .powerbi-panel-desc,
+.dark .category-subtitle,
+.dark .stock-risk-subtitle,
+.dark .heatmap-pbi-subtitle,
+.dark .product-quadrant-subtitle,
+.dark .recent-pbi-subtitle,
+.dark .revenue-chart-note {
+    color: var(--dark-text-soft) !important;
+}
+
+.dark .dashboard-lux-hero,
+.dark .dashboard-lux-card,
+.dark .metric-lux-card,
+.dark .powerbi-panel,
+.dark .fi-section,
+.dark .fi-ta-ctn,
+.dark .fi-card {
+    background:
+        linear-gradient(145deg, rgba(15,23,42,0.76), rgba(6,78,59,0.36)) !important;
+    border: 1px solid rgba(148, 163, 184, 0.22) !important;
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.32),
+        inset 0 1px 0 rgba(255,255,255,0.10) !important;
+}
+
+.dark .dashboard-lux-card {
+    background:
+        radial-gradient(circle at top right, rgba(20,184,166,0.18), transparent 32%),
+        linear-gradient(145deg, rgba(15,23,42,0.82), rgba(6,78,59,0.42)) !important;
+}
+
+.dark .dashboard-lux-caption {
+    background: rgba(15, 23, 42, 0.72) !important;
+    color: #5eead4 !important;
+    border: 1px solid rgba(94, 234, 212, 0.22) !important;
+}
+
+.dark .dashboard-trend {
+    color: var(--dark-text-soft) !important;
+}
+
+.dark .dashboard-trend.down {
+    color: #fca5a5 !important;
+}
+
+.dark .dashboard-trend.up {
+    color: #86efac !important;
+}
+
+.dark .kpi-stock-legend,
+.dark .kpi-stock-legend span {
+    color: var(--dark-text-soft) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Metric
+|--------------------------------------------------------------------------
+*/
+
+.dark .metric-lux-header {
+    background:
+        radial-gradient(circle at right top, rgba(20,184,166,0.16), transparent 30%),
+        linear-gradient(135deg, rgba(15,23,42,0.78), rgba(6,78,59,0.34)) !important;
+    border-bottom: 1px solid var(--dark-border-soft) !important;
+}
+
+.dark .metric-section-label {
+    color: var(--dark-text-soft) !important;
+}
+
+.dark .metric-period-link,
+.dark .metric-lux-item {
+    color: var(--dark-text-soft) !important;
+    background: rgba(15,23,42,0.72) !important;
+    border: 1px solid var(--dark-border-soft) !important;
+}
+
+.dark .metric-period-link.active,
+.dark .metric-lux-item.active {
+    color: #ecfeff !important;
+    background: linear-gradient(135deg, #0f766e, #14b8a6) !important;
+    border-color: rgba(94,234,212,0.42) !important;
+}
+
+.dark .metric-lux-label {
+    color: var(--dark-text-soft) !important;
+}
+
+.dark .metric-lux-item.active .metric-lux-label {
+    color: #ecfeff !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Top Product Performance
+|--------------------------------------------------------------------------
+*/
+
+.dark .powerbi-top-chart {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.dark .powerbi-top-label,
+.dark .powerbi-top-value {
+    color: #f8fafc !important;
+    font-weight: 950 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.45) !important;
+}
+
+.dark .powerbi-axis-line span {
+    color: #dbeafe !important;
+    font-weight: 950 !important;
+}
+
+.dark .powerbi-axis-line {
+    border-top-color: rgba(148, 163, 184, 0.28) !important;
+}
+
+.dark .powerbi-top-bar-bg {
+    background:
+        linear-gradient(90deg, rgba(226, 232, 240, 0.16) 1px, transparent 1px),
+        transparent !important;
+    background-size: 25% 100% !important;
+}
+
+.dark .powerbi-top-bar {
+    background: linear-gradient(90deg, #38bdf8, #5eead4) !important;
+    box-shadow: 0 8px 20px rgba(45, 212, 191, 0.35) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Sales Trend
+|--------------------------------------------------------------------------
+*/
+
+.dark .revenue-wide-chart-box {
+    background:
+        linear-gradient(180deg, rgba(15,23,42,0.82), rgba(6,78,59,0.38)),
+        radial-gradient(circle at top right, rgba(20,184,166,0.14), transparent 34%) !important;
+    border-color: var(--dark-border-soft) !important;
+}
+
+.dark .revenue-wide-chart-svg line {
+    stroke: rgba(203, 213, 225, 0.24) !important;
+}
+
+.dark .revenue-data-label {
+    fill: #ecfeff !important;
+}
+
+.dark .revenue-wide-axis span {
+    color: var(--dark-text-soft) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Category
+|--------------------------------------------------------------------------
+*/
+
+.dark .category-row {
+    background: rgba(15, 23, 42, 0.78) !important;
+    border: 1px solid rgba(148, 163, 184, 0.34) !important;
+}
+
+.dark .category-name,
+.dark .category-share {
+    color: #f8fafc !important;
+    font-weight: 950 !important;
+}
+
+.dark .category-value {
+    color: #e2e8f0 !important;
+    font-weight: 850 !important;
+}
+
+.dark .category-center-label,
+.dark .category-center-note {
+    color: #475569 !important;
+    font-weight: 950 !important;
+}
+
+.dark .category-center-value {
+    color: #0f172a !important;
+    font-weight: 950 !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Stock Risk
+|--------------------------------------------------------------------------
+*/
+
+.dark .stock-risk-box,
+.dark .stock-risk-distribution,
+.dark .stock-risk-item {
+    background: rgba(15,23,42,0.72) !important;
+    border-color: var(--dark-border-soft) !important;
+}
+
+.dark .stock-risk-box-label,
+.dark .stock-risk-legend-item,
+.dark .stock-risk-legend-item span,
+.dark .stock-risk-stock,
+.dark .stock-risk-subtitle {
+    color: #e2e8f0 !important;
+    font-weight: 850 !important;
+}
+
+.dark .stock-risk-box-value,
+.dark .stock-risk-name {
+    color: #f8fafc !important;
+    font-weight: 950 !important;
+}
+
+.dark .stock-risk-track,
+.dark .stock-risk-bar {
+    background: rgba(226, 232, 240, 0.26) !important;
+}
+
+.dark .stock-risk-status {
+    font-weight: 950 !important;
+    text-shadow: none !important;
+}
+
+.dark .stock-risk-status.critical {
+    background: #fecaca !important;
+    color: #7f1d1d !important;
+}
+
+.dark .stock-risk-status.low {
+    background: #fed7aa !important;
+    color: #7c2d12 !important;
+}
+
+.dark .stock-risk-status.warning {
+    background: #fef9c3 !important;
+    color: #713f12 !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Heatmap
+|--------------------------------------------------------------------------
+*/
+
+.dark .heatmap-insight-box,
+.dark .heatmap-pbi-canvas {
+    background: rgba(15,23,42,0.72) !important;
+    border-color: var(--dark-border-soft) !important;
+}
+
+.dark .heatmap-pbi-hour,
+.dark .heatmap-pbi-day,
+.dark .heatmap-pbi-footer,
+.dark .heatmap-pbi-footer span {
+    color: #e2e8f0 !important;
+    font-weight: 900 !important;
+}
+
+.dark .heatmap-insight-label {
+    color: #cbd5e1 !important;
+    font-weight: 950 !important;
+}
+
+.dark .heatmap-insight-value {
+    color: #f8fafc !important;
+    font-weight: 950 !important;
+}
+
+.dark .heatmap-pbi-cell[data-level="0"] {
+    background: rgba(248, 250, 252, 0.88) !important;
+    border-color: rgba(248, 250, 252, 0.34) !important;
+}
+
+.dark .heatmap-pbi-cell[data-level="1"] {
+    background: #ccfbf1 !important;
+}
+
+.dark .heatmap-pbi-cell[data-level="2"] {
+    background: #99f6e4 !important;
+}
+
+.dark .heatmap-pbi-cell[data-level="3"] {
+    background: #5eead4 !important;
+}
+
+.dark .heatmap-pbi-cell[data-level="4"] {
+    background: #14b8a6 !important;
+}
+
+.dark .heatmap-pbi-cell[data-level="5"] {
+    background: #0f766e !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Recent Sales
+|--------------------------------------------------------------------------
+*/
+
+.dark .recent-pbi-card {
+    background: rgba(15,23,42,0.72) !important;
+    border-color: var(--dark-border-soft) !important;
+}
+
+.dark .recent-pbi-code,
+.dark .recent-pbi-total {
+    color: #f8fafc !important;
+    font-weight: 950 !important;
+}
+
+.dark .recent-pbi-meta,
+.dark .recent-pbi-time {
+    color: #e2e8f0 !important;
+    font-weight: 950 !important;
+}
+
+.dark .recent-pbi-time::after {
+    background: rgba(94, 234, 212, 0.28) !important;
+}
+
+.dark .recent-pbi-track {
+    background: rgba(226, 232, 240, 0.26) !important;
+}
+
+.dark .recent-pbi-fill {
+    background: linear-gradient(90deg, #14b8a6, #5eead4) !important;
+}
+
+.dark .recent-pbi-status {
+    background: #dcfce7 !important;
+    color: #14532d !important;
+    font-weight: 950 !important;
+    text-shadow: none !important;
+}
+
+.dark .recent-pbi-status::before {
+    background: #16a34a !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Product Quadrant
+|--------------------------------------------------------------------------
+*/
+
+.dark .product-quadrant-box,
+.dark .product-quadrant-canvas {
+    background: rgba(15,23,42,0.72) !important;
+    border-color: var(--dark-border-soft) !important;
+}
+
+.dark .product-quadrant-box-label,
+.dark .product-quadrant-subtitle,
+.dark .product-quadrant-axis-x,
+.dark .product-quadrant-axis-y {
+    color: #e2e8f0 !important;
+    font-weight: 950 !important;
+}
+
+.dark .product-quadrant-box-value {
+    color: #f8fafc !important;
+}
+
+.dark .product-quadrant-mid-x,
+.dark .product-quadrant-mid-y {
+    background: rgba(203, 213, 225, 0.28) !important;
+}
+
+.dark .product-quadrant-label,
+.dark .product-bubble-label {
+    color: #0f172a !important;
+    background: rgba(236, 254, 255, 0.92) !important;
+    border-color: rgba(236, 254, 255, 0.75) !important;
+    font-weight: 950 !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark Chips / Empty State
+|--------------------------------------------------------------------------
+*/
+
+.dark .category-chip,
+.dark .stock-risk-chip,
+.dark .heatmap-pbi-chip,
+.dark .product-quadrant-chip,
+.dark .recent-pbi-chip,
+.dark .dashboard-lux-badge {
+    background: rgba(15,23,42,0.72) !important;
+    color: #5eead4 !important;
+    border: 1px solid rgba(94,234,212,0.24) !important;
+}
+
+.dark .category-empty,
+.dark .stock-risk-empty,
+.dark .recent-pbi-empty,
+.dark .product-quadrant-empty,
+.dark .empty-state {
+    color: #e2e8f0 !important;
+    background: rgba(15, 23, 42, 0.78) !important;
+    border-color: rgba(148, 163, 184, 0.36) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Scrollbar
+|--------------------------------------------------------------------------
+*/
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(15, 118, 110, 0.45) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(15, 118, 110, 0.32);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(15, 118, 110, 0.52);
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Responsive
+|--------------------------------------------------------------------------
+*/
+
+@media (max-width: 1500px) {
+    .dashboard-lux-hero {
+        min-height: 220px !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .fi-main {
+        padding-inline: 1rem !important;
+    }
+
+    .dashboard-lux-hero {
+        border-radius: 1.7rem !important;
+        padding: 1.5rem !important;
+    }
+
+    .dashboard-lux-hero::before {
+        width: 300px !important;
+        height: 300px !important;
+        right: -80px !important;
+        top: -90px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .fi-section,
+    .fi-ta-ctn,
+    .fi-card,
+    .dashboard-lux-card,
+    .metric-lux-card,
+    .powerbi-panel {
+        border-radius: 1.25rem !important;
+    }
+
+    .dashboard-lux-title {
+        font-size: 2.1rem !important;
+    }
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard Top Alignment Strong Fix
+|--------------------------------------------------------------------------
+| Menaikkan dashboard agar sejajar dengan bagian atas sidebar floating.
+|--------------------------------------------------------------------------
+*/
+
+@media (min-width: 1024px) {
+    .fi-main {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    .fi-page {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .fi-page > section,
+    .fi-page > div {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .fi-wi-widgets {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .dashboard-lux-wrapper {
+        margin-top: -1rem !important;
+        padding-top: 0 !important;
+    }
+
+    .dashboard-lux-hero {
+        margin-top: 0 !important;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard Top Alignment Balanced Fix
+|--------------------------------------------------------------------------
+| Posisi dashboard dibuat naik sedikit, tapi tidak sampai menempel atas.
+|--------------------------------------------------------------------------
+*/
+
+@media (min-width: 1024px) {
+    .fi-main {
+        padding-top: 0.85rem !important;
+        margin-top: 0 !important;
+    }
+
+    .fi-page {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .fi-page > section,
+    .fi-page > div {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .fi-wi-widgets {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .dashboard-lux-wrapper {
+    margin-top: 0.30rem !important;
+    padding-top: 0 !important;
+    }
+
+    .dashboard-lux-hero {
+        margin-top: 0 !important;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Hide Only Page Title Text, Keep Action Buttons
+|--------------------------------------------------------------------------
+| Menghilangkan breadcrumb, title, dan deskripsi halaman,
+| tapi tombol seperti + New Kategori / + Product tetap muncul.
+|--------------------------------------------------------------------------
+*/
+
+.fi-header {
+    margin-bottom: 1.25rem !important;
+}
+
+.fi-header .fi-breadcrumbs,
+.fi-header-heading,
+.fi-header-subheading {
+    display: none !important;
+}
+
+/* Pastikan tombol action kanan tetap tampil */
+.fi-header-actions,
+.fi-header .fi-ac {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Kalau header cuma berisi tombol, posisikan tombol tetap ke kanan */
+.fi-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+}
+
+/* Khusus dashboard, header tetap boleh hilang penuh karena dashboard sudah punya hero sendiri */
+.fi-page:has(.dashboard-lux-wrapper) .fi-header {
+    display: none !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Hide Filament Resource Page Header
+|--------------------------------------------------------------------------
+| Menghapus bagian atas seperti breadcrumb, title Kategori,
+| deskripsi halaman, dan tombol area header.
+|--------------------------------------------------------------------------
+*/
+
+.fi-header {
+    display: none !important;
+}
+
+.fi-main {
+    padding-top: 1rem !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Breezy Profile Page - Final Compact Luxury
+|--------------------------------------------------------------------------
+| Versi final:
+| - ukuran card lebih compact
+| - jarak antar section lebih lega
+| - konten tidak terlalu melebar ke samping
+| - tetap menyatu dengan style dashboard admin
+|--------------------------------------------------------------------------
+*/
+
+.fi-page:has(.ng-profile-card) {
+    width: 100% !important;
+}
+
+.fi-page:has(.ng-profile-card) .fi-header {
+    display: none !important;
+}
+
+.fi-page:has(.ng-profile-card) .fi-main {
+    padding-top: 0.85rem !important;
+    padding-bottom: 2rem !important;
+}
+
+.fi-page:has(.ng-profile-card) .fi-page-content {
+    display: grid !important;
+    gap: 1.35rem !important;
+    max-width: 1180px !important;
+    margin-inline: auto !important;
+    width: 100% !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Card utama profile
+|--------------------------------------------------------------------------
+*/
+
+.ng-profile-card {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(250px, 285px) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 1.3rem;
+    min-height: auto !important;
+    border-radius: 1.7rem;
+    padding: 1.2rem;
+    background:
+        radial-gradient(circle at 94% 12%, rgba(20,184,166,0.11), transparent 28%),
+        radial-gradient(circle at 14% 90%, rgba(255,255,255,0.82), transparent 30%),
+        linear-gradient(145deg, rgba(255,255,255,0.78), rgba(255,255,255,0.52));
+    border: 1px solid rgba(255,255,255,0.84);
+    box-shadow:
+        0 22px 56px rgba(15, 23, 42, 0.08),
+        inset 0 1px 0 rgba(255,255,255,0.92);
+    backdrop-filter: blur(28px) saturate(155%);
+    -webkit-backdrop-filter: blur(28px) saturate(155%);
+}
+
+.ng-profile-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            118deg,
+            transparent 0 22%,
+            rgba(255,255,255,0.28) 22.2% 22.8%,
+            transparent 23.2% 100%
+        );
+}
+
+.ng-profile-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Kolom kiri
+|--------------------------------------------------------------------------
+*/
+
+.ng-profile-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 100%;
+    padding: 0.25rem 0.35rem;
+}
+
+.ng-profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    padding: 0.48rem 0.72rem;
+    border-radius: 999px;
+    color: #0f766e;
+    background: rgba(255,255,255,0.72);
+    border: 1px solid rgba(255,255,255,0.88);
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+    font-size: 0.68rem;
+    font-weight: 950;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.ng-profile-badge span {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: #0f766e;
+    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.14);
+}
+
+.ng-profile-title {
+    margin: 0.8rem 0 0;
+    color: #0f172a;
+    font-size: clamp(1.35rem, 1.8vw, 2rem);
+    line-height: 1.06;
+    font-weight: 950;
+    letter-spacing: -0.055em;
+}
+
+.ng-profile-desc {
+    margin: 0.65rem 0 0;
+    max-width: 290px;
+    color: rgba(71, 85, 105, 0.82);
+    font-size: 0.86rem;
+    line-height: 1.65;
+}
+
+.ng-profile-mini {
+    width: fit-content;
+    min-width: 180px;
+    border-radius: 1rem;
+    padding: 0.8rem 0.9rem;
+    background:
+        linear-gradient(145deg, rgba(255,255,255,0.72), rgba(255,255,255,0.42));
+    border: 1px solid rgba(255,255,255,0.82);
+    box-shadow:
+        0 14px 34px rgba(15, 23, 42, 0.06),
+        inset 0 1px 0 rgba(255,255,255,0.88);
+}
+
+.ng-profile-mini span {
+    display: block;
+    color: rgba(71, 85, 105, 0.78);
+    font-size: 0.7rem;
+    font-weight: 850;
+}
+
+.ng-profile-mini strong {
+    display: block;
+    margin-top: 0.25rem;
+    color: #0f766e;
+    font-size: 1.12rem;
+    line-height: 1.1;
+    font-weight: 950;
+}
+
+.ng-profile-mini small {
+    display: block;
+    margin-top: 0.2rem;
+    color: rgba(71, 85, 105, 0.70);
+    font-size: 0.69rem;
+    font-weight: 750;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Kolom kanan / form
+|--------------------------------------------------------------------------
+*/
+
+.ng-profile-form {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.3rem;
+    padding: 1.1rem 1.15rem;
+    background:
+        linear-gradient(145deg, rgba(255,255,255,0.84), rgba(255,255,255,0.60));
+    border: 1px solid rgba(255,255,255,0.88);
+    box-shadow:
+        0 16px 42px rgba(15, 23, 42, 0.06),
+        inset 0 1px 0 rgba(255,255,255,0.94);
+    backdrop-filter: blur(22px) saturate(155%);
+    -webkit-backdrop-filter: blur(22px) saturate(155%);
+}
+
+.ng-profile-form .fi-fo-field-wrp-label span,
+.ng-profile-form label {
+    color: #0f172a !important;
+    font-size: 0.78rem !important;
+    font-weight: 850 !important;
+}
+
+.ng-profile-form .space-y-5 > :not([hidden]) ~ :not([hidden]),
+.ng-profile-form .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.9rem !important;
+}
+
+.ng-profile-form .fi-fo-field-wrp {
+    gap: 0.35rem !important;
+}
+
+.ng-profile-form .fi-input-wrp,
+.ng-profile-form input,
+.ng-profile-form textarea {
+    min-height: 2.65rem !important;
+    border-radius: 1rem !important;
+    background: rgba(255,255,255,0.90) !important;
+    border: 1px solid rgba(255,255,255,0.94) !important;
+    box-shadow:
+        0 10px 24px rgba(15, 23, 42, 0.04),
+        inset 0 1px 0 rgba(255,255,255,0.96) !important;
+}
+
+.ng-profile-form .fi-input-wrp:focus-within {
+    border-color: rgba(20,184,166,0.52) !important;
+    box-shadow:
+        0 0 0 4px rgba(20,184,166,0.10),
+        0 12px 26px rgba(15,23,42,0.06) !important;
+}
+
+.ng-profile-form .fi-input {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+}
+
+.ng-profile-action {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.8rem;
+}
+
+.ng-profile-submit,
+.ng-profile-form .fi-btn-color-primary,
+.ng-profile-form .fi-btn-color-danger {
+    min-height: 2.45rem !important;
+    border-radius: 999px !important;
+    padding-inline: 1rem !important;
+    border: 0 !important;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #fb923c 0%, #f97316 45%, #ea580c 100%) !important;
+    box-shadow:
+        0 14px 30px rgba(234, 88, 12, 0.20),
+        inset 0 1px 0 rgba(255,255,255,0.30) !important;
+    font-size: 0.8rem !important;
+    font-weight: 950 !important;
+}
+
+.ng-profile-submit:hover,
+.ng-profile-form .fi-btn-color-primary:hover,
+.ng-profile-form .fi-btn-color-danger:hover {
+    transform: translateY(-1px) !important;
+    box-shadow:
+        0 18px 36px rgba(234, 88, 12, 0.28),
+        inset 0 1px 0 rgba(255,255,255,0.34) !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Avatar upload
+|--------------------------------------------------------------------------
+*/
+
+.ng-profile-form .fi-fo-file-upload {
+    max-width: 165px !important;
+}
+
+.ng-profile-form .fi-fo-file-upload img {
+    object-fit: cover !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Browser sessions
+|--------------------------------------------------------------------------
+*/
+
+.ng-profile-card-session .ng-profile-form {
+    min-height: 160px !important;
+}
+
+.ng-profile-card-session .ng-profile-form p {
+    font-size: 0.84rem !important;
+    line-height: 1.6 !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Bersihkan elemen bawaan yang tidak perlu
+|--------------------------------------------------------------------------
+*/
+
+.ng-profile-form .fi-section,
+.ng-profile-form .fi-card {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dark mode
+|--------------------------------------------------------------------------
+*/
+
+.dark .ng-profile-card {
+    background:
+        radial-gradient(circle at 94% 12%, rgba(20,184,166,0.18), transparent 28%),
+        linear-gradient(145deg, rgba(15,23,42,0.78), rgba(6,78,59,0.38));
+    border-color: rgba(148,163,184,0.24);
+    box-shadow:
+        0 24px 58px rgba(0, 0, 0, 0.34),
+        inset 0 1px 0 rgba(255,255,255,0.10);
+}
+
+.dark .ng-profile-badge {
+    color: #5eead4;
+    background: rgba(15,23,42,0.68);
+    border-color: rgba(148,163,184,0.22);
+}
+
+.dark .ng-profile-badge span {
+    background: #5eead4;
+    box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.14);
+}
+
+.dark .ng-profile-title {
+    color: #ecfeff;
+}
+
+.dark .ng-profile-desc {
+    color: rgba(226,232,240,0.78);
+}
+
+.dark .ng-profile-mini {
+    background: rgba(15,23,42,0.68);
+    border-color: rgba(148,163,184,0.22);
+}
+
+.dark .ng-profile-mini span,
+.dark .ng-profile-mini small {
+    color: rgba(203,213,225,0.74);
+}
+
+.dark .ng-profile-mini strong {
+    color: #5eead4;
+}
+
+.dark .ng-profile-form {
+    background:
+        linear-gradient(145deg, rgba(15,23,42,0.78), rgba(6,78,59,0.30));
+    border-color: rgba(148,163,184,0.24);
+    box-shadow:
+        0 18px 44px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.10);
+}
+
+.dark .ng-profile-form .fi-fo-field-wrp-label span,
+.dark .ng-profile-form label {
+    color: #ecfeff !important;
+}
+
+.dark .ng-profile-form .fi-input-wrp,
+.dark .ng-profile-form input,
+.dark .ng-profile-form textarea {
+    color: #ecfeff !important;
+    background: rgba(15,23,42,0.72) !important;
+    border-color: rgba(148,163,184,0.28) !important;
+}
+
+.dark .ng-profile-form .fi-input {
+    color: #ecfeff !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Responsive
+|--------------------------------------------------------------------------
+*/
+
+@media (max-width: 1100px) {
+    .fi-page:has(.ng-profile-card) .fi-page-content {
+        max-width: 100% !important;
+    }
+
+    .ng-profile-card {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    .ng-profile-desc {
+        max-width: 100% !important;
+    }
+
+    .ng-profile-mini {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .ng-profile-card {
+        border-radius: 1.3rem !important;
+        padding: 1rem !important;
+    }
+
+    .ng-profile-form {
+        border-radius: 1.05rem !important;
+        padding: 0.95rem !important;
+    }
+
+    .ng-profile-title {
+        font-size: 1.45rem !important;
+    }
+
+    .ng-profile-form .fi-input-wrp,
+    .ng-profile-form input,
+    .ng-profile-form textarea {
+        min-height: 2.5rem !important;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Breezy Profile Card Gap Fix
+|--------------------------------------------------------------------------
+| Memberi jarak antar kotak Profile, Password, dan Browser Sessions.
+|--------------------------------------------------------------------------
+*/
+
+.fi-page:has(.ng-profile-card) .fi-page-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.75rem !important;
+    max-width: 1180px !important;
+    margin-inline: auto !important;
+    width: 100% !important;
+}
+
+/* Hilangkan margin/padding bawaan yang bikin card saling nempel */
+.fi-page:has(.ng-profile-card) .fi-page-content > * {
+    margin-top: 0 !important;
+}
+
+/* Tambahkan jarak khusus antar card */
+.ng-profile-card {
+    margin-bottom: 1.75rem !important;
+}
+
+/* Card terakhir tidak perlu margin bawah terlalu besar */
+.ng-profile-card:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Supaya card tidak terlalu tinggi dan tidak terlalu lebar */
+.fi-page:has(.ng-profile-card) {
+    max-width: 1180px !important;
+    margin-inline: auto !important;
+}
+
+/* Jarak dalam card tetap rapi */
+.ng-profile-card {
+    padding: 1.25rem !important;
+    gap: 1.35rem !important;
+}
+
+/* Kalau masih terasa terlalu mepet, bagian kanan form juga diberi ruang */
+.ng-profile-form {
+    padding: 1.25rem 1.35rem !important;
+}

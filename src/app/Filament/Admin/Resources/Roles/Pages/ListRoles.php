@@ -6,7 +6,6 @@ namespace App\Filament\Admin\Resources\Roles\Pages;
 
 use App\Filament\Admin\Resources\Roles\RoleResource;
 use App\Filament\Admin\Resources\Roles\Widgets\RoleAnalyticsWidget;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListRoles extends ListRecords
@@ -24,13 +23,16 @@ class ListRoles extends ListRecords
         ];
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Header Actions
+    |--------------------------------------------------------------------------
+    | Tombol New Role di header Filament dihilangkan.
+    | Tombol New Role sekarang dipindahkan ke widget hijau.
+    |--------------------------------------------------------------------------
+    */
     protected function getHeaderActions(): array
     {
-        return [
-            CreateAction::make()
-                ->label('New Role')
-                ->icon('heroicon-o-plus')
-                ->color('primary'),
-        ];
+        return [];
     }
 }

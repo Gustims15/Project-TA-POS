@@ -44,6 +44,10 @@
             gap: 24px;
         }
 
+        .product-lux-main {
+            min-width: 0;
+        }
+
         .product-lux-badge {
             display: inline-flex;
             align-items: center;
@@ -84,8 +88,8 @@
             line-height: 1.7;
         }
 
-        .product-lux-mini {
-            min-width: 220px;
+        .product-lux-action-panel {
+            min-width: 240px;
             border-radius: 22px;
             padding: 18px;
             background: rgba(255,255,255,0.16);
@@ -93,20 +97,71 @@
             backdrop-filter: blur(12px);
         }
 
-        .product-lux-mini span {
+        .product-lux-action-panel span {
             display: block;
             color: rgba(255,255,255,0.78);
             font-size: 12px;
             font-weight: 700;
         }
 
-        .product-lux-mini strong {
+        .product-lux-action-panel strong {
             display: block;
             margin-top: 8px;
             color: white;
-            font-size: 30px;
-            line-height: 1;
+            font-size: 22px;
+            line-height: 1.15;
             font-weight: 950;
+            letter-spacing: -0.03em;
+        }
+
+        .product-lux-action-panel small {
+            display: block;
+            margin-top: 8px;
+            color: rgba(255,255,255,0.82);
+            font-size: 12px;
+            line-height: 1.45;
+            font-weight: 700;
+        }
+
+        .product-lux-create-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 16px;
+            padding: 11px 16px;
+            border-radius: 999px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 42%, #ea580c 100%);
+            box-shadow:
+                0 16px 34px rgba(234, 88, 12, 0.28),
+                inset 0 1px 0 rgba(255,255,255,0.30);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 950;
+            transition: 0.2s ease;
+        }
+
+        .product-lux-create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 20px 42px rgba(234, 88, 12, 0.36),
+                inset 0 1px 0 rgba(255,255,255,0.34);
+        }
+
+        .product-lux-create-btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.18);
+            color: #ffffff;
+            font-size: 18px;
+            line-height: 1;
+            font-weight: 900;
         }
 
         .product-lux-grid {
@@ -144,10 +199,21 @@
             opacity: 0.15;
         }
 
-        .product-lux-card.products::after { background: #10b981; }
-        .product-lux-card.active::after { background: #3b82f6; }
-        .product-lux-card.stock::after { background: #f97316; }
-        .product-lux-card.category::after { background: #8b5cf6; }
+        .product-lux-card.products::after {
+            background: #10b981;
+        }
+
+        .product-lux-card.active::after {
+            background: #3b82f6;
+        }
+
+        .product-lux-card.stock::after {
+            background: #f97316;
+        }
+
+        .product-lux-card.category::after {
+            background: #8b5cf6;
+        }
 
         .product-lux-card-label {
             margin: 0;
@@ -175,14 +241,34 @@
             font-weight: 800;
         }
 
-        .products .product-lux-card-caption { background: #ecfdf5; color: #047857; }
-        .active .product-lux-card-caption { background: #eff6ff; color: #1d4ed8; }
-        .stock .product-lux-card-caption { background: #fff7ed; color: #c2410c; }
-        .category .product-lux-card-caption { background: #f5f3ff; color: #6d28d9; }
+        .products .product-lux-card-caption {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .active .product-lux-card-caption {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .stock .product-lux-card-caption {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .category .product-lux-card-caption {
+            background: #f5f3ff;
+            color: #6d28d9;
+        }
 
         @media (max-width: 1100px) {
             .product-lux-hero-top {
                 flex-direction: column;
+            }
+
+            .product-lux-action-panel {
+                width: 100%;
+                min-width: 0;
             }
 
             .product-lux-grid {
@@ -209,7 +295,7 @@
     <div class="product-lux-wrapper">
         <section class="product-lux-hero">
             <div class="product-lux-hero-top">
-                <div>
+                <div class="product-lux-main">
                     <div class="product-lux-badge">
                         <span class="product-lux-dot"></span>
                         Ngunjuk POS Product
@@ -226,35 +312,66 @@
                     </p>
                 </div>
 
-                <div class="product-lux-mini">
-                    <span>Total Stok Keseluruhan</span>
-                    <strong>{{ number_format($summary['total_stock'], 0, ',', '.') }}</strong>
+                <div class="product-lux-action-panel">
+                    <span>Aksi Cepat Produk</span>
+
+                    <strong>
+                        Tambah Produk Baru
+                    </strong>
+
+                    <small>
+                        Tambahkan menu minuman baru lengkap dengan kategori, ukuran, harga, stok, dan gambar produk.
+                    </small>
+
+                    <a
+                        href="{{ \App\Filament\Admin\Resources\Products\ProductResource::getUrl('create') }}"
+                        class="product-lux-create-btn"
+                    >
+                        <span class="product-lux-create-btn-icon">+</span>
+                        New Produk
+                    </a>
                 </div>
             </div>
         </section>
 
         <div class="product-lux-grid">
             <div class="product-lux-card products">
-                <p class="product-lux-card-label">Total Produk</p>
+                <p class="product-lux-card-label">
+                    Total Produk
+                </p>
+
                 <p class="product-lux-card-value">
                     {{ number_format($summary['total_products'], 0, ',', '.') }}
                 </p>
-                <p class="product-lux-card-caption">Semua data produk</p>
+
+                <p class="product-lux-card-caption">
+                    Semua data produk
+                </p>
             </div>
 
             <div class="product-lux-card active">
-                <p class="product-lux-card-label">Produk Aktif</p>
+                <p class="product-lux-card-label">
+                    Produk Aktif
+                </p>
+
                 <p class="product-lux-card-value">
                     {{ number_format($summary['active_products'], 0, ',', '.') }}
                 </p>
-                <p class="product-lux-card-caption">Tampil di kasir</p>
+
+                <p class="product-lux-card-caption">
+                    Tampil di kasir
+                </p>
             </div>
 
             <div class="product-lux-card stock">
-                <p class="product-lux-card-label">Stok Bermasalah</p>
+                <p class="product-lux-card-label">
+                    Stok Bermasalah
+                </p>
+
                 <p class="product-lux-card-value">
                     {{ number_format($summary['out_of_stock_products'] + $summary['low_stock_products'], 0, ',', '.') }}
                 </p>
+
                 <p class="product-lux-card-caption">
                     {{ number_format($summary['out_of_stock_products'], 0, ',', '.') }} habis,
                     {{ number_format($summary['low_stock_products'], 0, ',', '.') }} menipis
@@ -262,11 +379,17 @@
             </div>
 
             <div class="product-lux-card category">
-                <p class="product-lux-card-label">Total Kategori</p>
+                <p class="product-lux-card-label">
+                    Total Kategori
+                </p>
+
                 <p class="product-lux-card-value">
                     {{ number_format($summary['total_categories'], 0, ',', '.') }}
                 </p>
-                <p class="product-lux-card-caption">Kategori produk</p>
+
+                <p class="product-lux-card-caption">
+                    Kategori produk
+                </p>
             </div>
         </div>
     </div>

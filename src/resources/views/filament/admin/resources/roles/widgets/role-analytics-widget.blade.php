@@ -44,6 +44,10 @@
             gap: 24px;
         }
 
+        .role-lux-main {
+            min-width: 0;
+        }
+
         .role-lux-badge {
             display: inline-flex;
             align-items: center;
@@ -84,7 +88,7 @@
             line-height: 1.7;
         }
 
-        .role-lux-mini {
+        .role-lux-action-panel {
             min-width: 260px;
             border-radius: 22px;
             padding: 18px;
@@ -93,28 +97,93 @@
             backdrop-filter: blur(12px);
         }
 
-        .role-lux-mini span {
+        .role-lux-action-panel span {
             display: block;
             color: rgba(255,255,255,0.78);
             font-size: 12px;
             font-weight: 700;
         }
 
-        .role-lux-mini strong {
+        .role-lux-action-panel strong {
             display: block;
             margin-top: 8px;
             color: white;
             font-size: 24px;
             line-height: 1.15;
             font-weight: 950;
+            letter-spacing: -0.03em;
         }
 
-        .role-lux-mini small {
+        .role-lux-action-panel small {
             display: block;
             margin-top: 8px;
             color: rgba(255,255,255,0.82);
             font-size: 12px;
+            line-height: 1.45;
             font-weight: 700;
+        }
+
+        .role-lux-create-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 16px;
+            padding: 11px 16px;
+            border-radius: 999px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 42%, #ea580c 100%);
+            box-shadow:
+                0 16px 34px rgba(234, 88, 12, 0.28),
+                inset 0 1px 0 rgba(255,255,255,0.30);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 950;
+            transition: 0.2s ease;
+        }
+
+        .role-lux-create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 20px 42px rgba(234, 88, 12, 0.36),
+                inset 0 1px 0 rgba(255,255,255,0.34);
+        }
+
+        .role-lux-create-btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.18);
+            color: #ffffff;
+            font-size: 18px;
+            line-height: 1;
+            font-weight: 900;
+        }
+
+        .role-lux-top-info {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.20);
+        }
+
+        .role-lux-top-info span {
+            font-size: 11px;
+            color: rgba(255,255,255,0.70);
+        }
+
+        .role-lux-top-info strong {
+            margin-top: 5px;
+            font-size: 15px;
+            line-height: 1.2;
+        }
+
+        .role-lux-top-info small {
+            margin-top: 4px;
+            font-size: 11px;
         }
 
         .role-lux-grid {
@@ -152,10 +221,21 @@
             opacity: 0.15;
         }
 
-        .role-lux-card.roles::after { background: #10b981; }
-        .role-lux-card.permission::after { background: #3b82f6; }
-        .role-lux-card.guard::after { background: #f97316; }
-        .role-lux-card.security::after { background: #8b5cf6; }
+        .role-lux-card.roles::after {
+            background: #10b981;
+        }
+
+        .role-lux-card.permission::after {
+            background: #3b82f6;
+        }
+
+        .role-lux-card.guard::after {
+            background: #f97316;
+        }
+
+        .role-lux-card.security::after {
+            background: #8b5cf6;
+        }
 
         .role-lux-card-label {
             margin: 0;
@@ -183,14 +263,34 @@
             font-weight: 800;
         }
 
-        .roles .role-lux-card-caption { background: #ecfdf5; color: #047857; }
-        .permission .role-lux-card-caption { background: #eff6ff; color: #1d4ed8; }
-        .guard .role-lux-card-caption { background: #fff7ed; color: #c2410c; }
-        .security .role-lux-card-caption { background: #f5f3ff; color: #6d28d9; }
+        .roles .role-lux-card-caption {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .permission .role-lux-card-caption {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .guard .role-lux-card-caption {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .security .role-lux-card-caption {
+            background: #f5f3ff;
+            color: #6d28d9;
+        }
 
         @media (max-width: 1100px) {
             .role-lux-hero-top {
                 flex-direction: column;
+            }
+
+            .role-lux-action-panel {
+                width: 100%;
+                min-width: 0;
             }
 
             .role-lux-grid {
@@ -217,7 +317,7 @@
     <div class="role-lux-wrapper">
         <section class="role-lux-hero">
             <div class="role-lux-hero-top">
-                <div>
+                <div class="role-lux-main">
                     <div class="role-lux-badge">
                         <span class="role-lux-dot"></span>
                         Ngunjuk POS Access Control
@@ -233,45 +333,95 @@
                     </p>
                 </div>
 
-                <div class="role-lux-mini">
-                    <span>Role dengan Permission Terbanyak</span>
-                    <strong>{{ \Illuminate\Support\Str::headline($summary['top_role_name']) }}</strong>
-                    <small>{{ number_format($summary['top_role_permissions'], 0, ',', '.') }} permission</small>
+                <div class="role-lux-action-panel">
+                    <span>Aksi Cepat Role</span>
+
+                    <strong>
+                        Tambah Role Baru
+                    </strong>
+
+                    <small>
+                        Buat role baru untuk mengatur hak akses pengguna pada sistem POS Ngunjuk.
+                    </small>
+
+                    <a
+                        href="{{ \App\Filament\Admin\Resources\Roles\RoleResource::getUrl('create') }}"
+                        class="role-lux-create-btn"
+                    >
+                        <span class="role-lux-create-btn-icon">+</span>
+                        New Role
+                    </a>
+
+                    <div class="role-lux-top-info">
+                        <span>Role permission terbanyak</span>
+
+                        <strong>
+                            {{ \Illuminate\Support\Str::headline($summary['top_role_name']) }}
+                        </strong>
+
+                        <small>
+                            {{ number_format($summary['top_role_permissions'], 0, ',', '.') }} permission
+                        </small>
+                    </div>
                 </div>
             </div>
         </section>
 
         <div class="role-lux-grid">
             <div class="role-lux-card roles">
-                <p class="role-lux-card-label">Total Roles</p>
+                <p class="role-lux-card-label">
+                    Total Roles
+                </p>
+
                 <p class="role-lux-card-value">
                     {{ number_format($summary['total_roles'], 0, ',', '.') }}
                 </p>
-                <p class="role-lux-card-caption">Semua role sistem</p>
+
+                <p class="role-lux-card-caption">
+                    Semua role sistem
+                </p>
             </div>
 
             <div class="role-lux-card permission">
-                <p class="role-lux-card-label">Total Permissions</p>
+                <p class="role-lux-card-label">
+                    Total Permissions
+                </p>
+
                 <p class="role-lux-card-value">
                     {{ number_format($summary['total_permissions'], 0, ',', '.') }}
                 </p>
-                <p class="role-lux-card-caption">Hak akses tersedia</p>
+
+                <p class="role-lux-card-caption">
+                    Hak akses tersedia
+                </p>
             </div>
 
             <div class="role-lux-card guard">
-                <p class="role-lux-card-label">Guard Web</p>
+                <p class="role-lux-card-label">
+                    Guard Web
+                </p>
+
                 <p class="role-lux-card-value">
                     {{ number_format($summary['web_roles'], 0, ',', '.') }}
                 </p>
-                <p class="role-lux-card-caption">Role guard web</p>
+
+                <p class="role-lux-card-caption">
+                    Role guard web
+                </p>
             </div>
 
             <div class="role-lux-card security">
-                <p class="role-lux-card-label">Access Control</p>
+                <p class="role-lux-card-label">
+                    Access Control
+                </p>
+
                 <p class="role-lux-card-value">
                     Shield
                 </p>
-                <p class="role-lux-card-caption">Filament permission</p>
+
+                <p class="role-lux-card-caption">
+                    Filament permission
+                </p>
             </div>
         </div>
     </div>

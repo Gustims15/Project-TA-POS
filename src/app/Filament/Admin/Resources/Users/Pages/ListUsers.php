@@ -6,9 +6,7 @@ namespace App\Filament\Admin\Resources\Users\Pages;
 
 use App\Filament\Admin\Resources\Users\UserResource;
 use App\Filament\Admin\Resources\Users\Widgets\UserAnalyticsWidget;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Icons\Heroicon;
 
 final class ListUsers extends ListRecords
 {
@@ -25,13 +23,16 @@ final class ListUsers extends ListRecords
         ];
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Header Actions
+    |--------------------------------------------------------------------------
+    | Tombol Add New User di header Filament dihilangkan.
+    | Tombol Add New User sekarang dipindahkan ke widget hijau.
+    |--------------------------------------------------------------------------
+    */
     protected function getHeaderActions(): array
     {
-        return [
-            CreateAction::make()
-                ->label('Add New User')
-                ->icon(Heroicon::Plus)
-                ->color('primary'),
-        ];
+        return [];
     }
 }

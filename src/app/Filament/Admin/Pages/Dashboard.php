@@ -16,7 +16,7 @@ class Dashboard extends BaseDashboard
 {
     protected static ?string $navigationLabel = 'Dashboard POS Ngunjuk';
 
-    protected static ?string $title = 'Dashboard POS Ngunjuk';
+    protected static ?string $title = '';
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-home';
 

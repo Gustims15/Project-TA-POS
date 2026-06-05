@@ -57,7 +57,7 @@
 
         .hero-content {
             display: grid;
-            grid-template-columns: 1fr 360px;
+            grid-template-columns: 1fr 380px;
             gap: 26px;
             align-items: end;
         }
@@ -154,6 +154,56 @@
 
         .month-info strong {
             color: var(--primary);
+        }
+
+        .report-download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            width: 100%;
+            margin-top: 16px;
+            padding: 12px 16px;
+            border: 0;
+            border-radius: 999px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #16a34a 0%, #10b981 45%, #0d9488 100%);
+            box-shadow:
+                0 16px 34px rgba(5, 150, 105, 0.28),
+                inset 0 1px 0 rgba(255,255,255,0.30);
+            font-size: 13px;
+            font-weight: 950;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .report-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 20px 42px rgba(5, 150, 105, 0.36),
+                inset 0 1px 0 rgba(255,255,255,0.34);
+        }
+
+        .report-download-btn:disabled {
+            cursor: wait;
+            opacity: 0.75;
+            transform: none;
+        }
+
+        .report-download-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 21px;
+            height: 21px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.18);
+            color: #ffffff;
+        }
+
+        .report-download-icon svg {
+            width: 15px;
+            height: 15px;
         }
 
         .luxury-summary-grid {
@@ -529,6 +579,28 @@
                         <span>Periode aktif</span>
                         <strong>{{ $selectedMonthLabel }}</strong>
                     </div>
+
+                    <button
+                        type="button"
+                        class="report-download-btn"
+                        wire:click="exportSelectedMonth"
+                        wire:loading.attr="disabled"
+                        wire:target="exportSelectedMonth"
+                    >
+                        <span class="report-download-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+                            </svg>
+                        </span>
+
+                        <span wire:loading.remove wire:target="exportSelectedMonth">
+                            Download Laporan Bulan Ini
+                        </span>
+
+                        <span wire:loading wire:target="exportSelectedMonth">
+                            Menyiapkan Laporan...
+                        </span>
+                    </button>
                 </form>
             </div>
         </div>

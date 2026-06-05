@@ -85,7 +85,7 @@
         }
 
         .category-lux-mini {
-            min-width: 240px;
+            min-width: 260px;
             border-radius: 22px;
             padding: 18px;
             background: rgba(255,255,255,0.16);
@@ -115,6 +115,47 @@
             color: rgba(255,255,255,0.82);
             font-size: 12px;
             font-weight: 700;
+        }
+
+        .category-lux-create-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 16px;
+            padding: 11px 16px;
+            border-radius: 999px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 42%, #ea580c 100%);
+            box-shadow:
+                0 16px 34px rgba(234, 88, 12, 0.28),
+                inset 0 1px 0 rgba(255,255,255,0.30);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 950;
+            transition: 0.2s ease;
+        }
+
+        .category-lux-create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 20px 42px rgba(234, 88, 12, 0.36),
+                inset 0 1px 0 rgba(255,255,255,0.34);
+        }
+
+        .category-lux-create-btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.18);
+            color: #ffffff;
+            font-size: 18px;
+            line-height: 1;
+            font-weight: 900;
         }
 
         .category-lux-grid {
@@ -152,10 +193,21 @@
             opacity: 0.15;
         }
 
-        .category-lux-card.total::after { background: #10b981; }
-        .category-lux-card.active::after { background: #3b82f6; }
-        .category-lux-card.product::after { background: #f97316; }
-        .category-lux-card.inactive::after { background: #ef4444; }
+        .category-lux-card.total::after {
+            background: #10b981;
+        }
+
+        .category-lux-card.active::after {
+            background: #3b82f6;
+        }
+
+        .category-lux-card.product::after {
+            background: #f97316;
+        }
+
+        .category-lux-card.inactive::after {
+            background: #ef4444;
+        }
 
         .category-lux-card-label {
             margin: 0;
@@ -183,14 +235,34 @@
             font-weight: 800;
         }
 
-        .total .category-lux-card-caption { background: #ecfdf5; color: #047857; }
-        .active .category-lux-card-caption { background: #eff6ff; color: #1d4ed8; }
-        .product .category-lux-card-caption { background: #fff7ed; color: #c2410c; }
-        .inactive .category-lux-card-caption { background: #fef2f2; color: #b91c1c; }
+        .total .category-lux-card-caption {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .active .category-lux-card-caption {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .product .category-lux-card-caption {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .inactive .category-lux-card-caption {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
 
         @media (max-width: 1100px) {
             .category-lux-hero-top {
                 flex-direction: column;
+            }
+
+            .category-lux-mini {
+                width: 100%;
+                min-width: 0;
             }
 
             .category-lux-grid {
@@ -235,43 +307,81 @@
 
                 <div class="category-lux-mini">
                     <span>Kategori Terbanyak Produk</span>
-                    <strong>{{ $summary['top_category_name'] }}</strong>
-                    <small>{{ number_format($summary['top_category_products'], 0, ',', '.') }} produk</small>
+
+                    <strong>
+                        {{ $summary['top_category_name'] }}
+                    </strong>
+
+                    <small>
+                        {{ number_format($summary['top_category_products'], 0, ',', '.') }} produk
+                    </small>
+
+                    <a
+                        href="{{ \App\Filament\Admin\Resources\Categories\CategoryResource::getUrl('create') }}"
+                        class="category-lux-create-btn"
+                    >
+                        <span class="category-lux-create-btn-icon">+</span>
+                        New Kategori
+                    </a>
                 </div>
             </div>
         </section>
 
         <div class="category-lux-grid">
             <div class="category-lux-card total">
-                <p class="category-lux-card-label">Total Kategori</p>
+                <p class="category-lux-card-label">
+                    Total Kategori
+                </p>
+
                 <p class="category-lux-card-value">
                     {{ number_format($summary['total_categories'], 0, ',', '.') }}
                 </p>
-                <p class="category-lux-card-caption">Semua kategori</p>
+
+                <p class="category-lux-card-caption">
+                    Semua kategori
+                </p>
             </div>
 
             <div class="category-lux-card active">
-                <p class="category-lux-card-label">Kategori Aktif</p>
+                <p class="category-lux-card-label">
+                    Kategori Aktif
+                </p>
+
                 <p class="category-lux-card-value">
                     {{ number_format($summary['active_categories'], 0, ',', '.') }}
                 </p>
-                <p class="category-lux-card-caption">Tampil pada sistem</p>
+
+                <p class="category-lux-card-caption">
+                    Tampil pada sistem
+                </p>
             </div>
 
             <div class="category-lux-card product">
-                <p class="category-lux-card-label">Total Produk</p>
+                <p class="category-lux-card-label">
+                    Total Produk
+                </p>
+
                 <p class="category-lux-card-value">
                     {{ number_format($summary['total_products'], 0, ',', '.') }}
                 </p>
-                <p class="category-lux-card-caption">Produk terhubung</p>
+
+                <p class="category-lux-card-caption">
+                    Produk terhubung
+                </p>
             </div>
 
             <div class="category-lux-card inactive">
-                <p class="category-lux-card-label">Kategori Nonaktif</p>
+                <p class="category-lux-card-label">
+                    Kategori Nonaktif
+                </p>
+
                 <p class="category-lux-card-value">
                     {{ number_format($summary['inactive_categories'], 0, ',', '.') }}
                 </p>
-                <p class="category-lux-card-caption">Tidak aktif</p>
+
+                <p class="category-lux-card-caption">
+                    Tidak aktif
+                </p>
             </div>
         </div>
     </div>
