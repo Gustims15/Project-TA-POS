@@ -21,10 +21,14 @@
 <body>
   <main class="app-shell single-content">
     <aside class="sidebar">
-      <div class="brand">
-        <span>Ngun</span>juk
-      </div>
+      <div class="brand brand-with-logo">
+      <img src="{{ asset('images/ngunjuk-logo.png') }}" alt="Logo Ngunjuk" class="brand-logo">
 
+      <div class="brand-text">
+        <strong><span>Ngu</span>njuk</strong>
+        <small>POS SYSTEM</small>
+      </div>
+    </div>
       <nav class="nav-menu" aria-label="Menu utama">
         <a class="nav-item" href="{{ route('frontend.home') }}">
           <span class="nav-icon">⌂</span>
@@ -97,25 +101,20 @@
           </button>
         </div>
 
-        <div class="history-stats">
+        <div class="history-stats history-stats-daily">
           <article class="stat-card">
-            <span>Total Order</span>
+            <span>Total Produk Terjual Hari Ini</span>
+            <strong id="statProductsSold">0</strong>
+          </article>
+
+          <article class="stat-card">
+            <span>Total Order Hari Ini</span>
             <strong id="statOrders">0</strong>
           </article>
 
           <article class="stat-card">
-            <span>Total Penjualan</span>
+            <span>Total Penjualan Hari Ini</span>
             <strong id="statSales">Rp 0</strong>
-          </article>
-
-          <article class="stat-card">
-            <span>Order Selesai</span>
-            <strong id="statDone">0</strong>
-          </article>
-
-          <article class="stat-card">
-            <span>Rata-rata Order</span>
-            <strong id="statAverage">Rp 0</strong>
           </article>
         </div>
 

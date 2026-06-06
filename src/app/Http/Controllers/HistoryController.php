@@ -82,17 +82,23 @@ class HistoryController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Summary global history
+        | Summary harian history
         |--------------------------------------------------------------------------
-        | Bagian kartu statistik dibuat menghitung SEMUA order,
-        | bukan hanya order hari ini.
+        | 3 kartu statistik ini hanya menghitung transaksi hari ini.
+        | Besok otomatis reset karena berdasarkan ordered_at hari berjalan.
         */
-        $summaryQuery = Order::query();
+        $todayOrders = Order::query()
+            ->with('items')
+            ->whereDate('ordered_at', today())
+            ->get();
 
-        $totalOrder = (clone $summaryQuery)->count();
-        $totalSales = (clone $summaryQuery)->sum('total_price');
-        $doneOrder = (clone $summaryQuery)->where('status', 'Selesai')->count();
-        $averageOrder = $totalOrder > 0 ? (int) round($totalSales / $totalOrder) : 0;
+        $todayProductsSold = $todayOrders->sum(function (Order $order): int {
+            return (int) $order->items->sum('quantity');
+        });
+
+        $todayTotalOrder = $todayOrders->count();
+
+        $todayTotalSales = (int) $todayOrders->sum('total_price');
 
         return response()->json([
             'success' => true,
@@ -124,10 +130,9 @@ class HistoryController extends Controller
                 ];
             })->values(),
             'summary' => [
-                'total_order' => $totalOrder,
-                'total_sales' => $totalSales,
-                'done_order' => $doneOrder,
-                'average_order' => $averageOrder,
+                'today_products_sold' => $todayProductsSold,
+                'today_total_order' => $todayTotalOrder,
+                'today_total_sales' => $todayTotalSales,
             ],
         ]);
     }

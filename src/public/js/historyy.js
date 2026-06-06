@@ -12,10 +12,9 @@ const historyPrevPage = document.querySelector('#historyPrevPage');
 const historyNextPage = document.querySelector('#historyNextPage');
 const historyPageInfo = document.querySelector('#historyPageInfo');
 
+  const statProductsSold = document.querySelector('#statProductsSold');
   const statOrders = document.querySelector('#statOrders');
   const statSales = document.querySelector('#statSales');
-  const statDone = document.querySelector('#statDone');
-  const statAverage = document.querySelector('#statAverage');
 
   const exportHistory = document.querySelector('#exportHistory');
   const toast = document.querySelector('#toast');
@@ -189,20 +188,16 @@ const perPage = 10;
   };
 
   const renderSummary = summary => {
+    if (statProductsSold) {
+      statProductsSold.textContent = `${summary?.today_products_sold ?? 0} item`;
+    }
+
     if (statOrders) {
-      statOrders.textContent = summary?.total_order ?? 0;
+      statOrders.textContent = summary?.today_total_order ?? 0;
     }
 
     if (statSales) {
-      statSales.textContent = formatRupiah(summary?.total_sales ?? 0);
-    }
-
-    if (statDone) {
-      statDone.textContent = summary?.done_order ?? 0;
-    }
-
-    if (statAverage) {
-      statAverage.textContent = formatRupiah(summary?.average_order ?? 0);
+      statSales.textContent = formatRupiah(summary?.today_total_sales ?? 0);
     }
   };
 
@@ -350,10 +345,9 @@ const renderHistory = orders => {
       console.error(error);
 
       renderSummary({
-        total_order: 0,
-        total_sales: 0,
-        done_order: 0,
-        average_order: 0
+        today_products_sold: 0,
+        today_total_order: 0,
+        today_total_sales: 0
       });
 
       renderHistory([]);

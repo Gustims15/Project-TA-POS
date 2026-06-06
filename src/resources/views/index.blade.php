@@ -21,8 +21,13 @@
 <body>
   <main class="app-shell">
     <aside class="sidebar">
-      <div class="brand">
-        <span>Ngu</span>njuk
+      <div class="brand brand-with-logo">
+        <img src="{{ asset('images/ngunjuk-logo.png') }}" alt="Logo Ngunjuk" class="brand-logo">
+
+        <div class="brand-text">
+          <strong><span>Ngu</span>njuk</strong>
+          <small>POS SYSTEM</small>
+        </div>
       </div>
 
       <nav class="nav-menu" aria-label="Menu utama">
@@ -84,15 +89,12 @@
         </a>
       </header>
 
-      <section class="menu-area abstract-area">
-        <div class="category-tabs" id="categoryTabs"></div>
+      <section class="menu-area abstract-area pos-luxury-area">
+        <div class="category-tabs luxury-category-tabs" id="categoryTabs"></div>
 
-        <div class="section-title">
-          <h1 id="menuTitle">Coffee menu</h1>
-          <p>Pilih varian minuman dan masukkan ke keranjang.</p>
-        </div>
+        <h1 id="menuTitle" class="sr-only">Coffee menu</h1>
 
-        <div class="product-grid" id="productGrid"></div>
+        <div class="product-grid luxury-product-grid" id="productGrid"></div>
       </section>
     </section>
   </main>
@@ -141,93 +143,93 @@
       <span class="success-eyebrow">Transaksi Berhasil</span>
 
       <div class="success-order-box">
-      <div>
-        <span>Kode Order</span>
-        <strong id="successOrderCode">-</strong>
-      </div>
-    </div>
-
-    <div class="success-order-items" id="successOrderItems"></div>
-
-    <div class="success-order-box">
-      <div>
-        <span>Total Item</span>
-        <strong id="successTotalItem">0 item</strong>
+        <div>
+          <span>Kode Order</span>
+          <strong id="successOrderCode">-</strong>
+        </div>
       </div>
 
-      <div class="success-total-row">
-        <span>Total Harga</span>
-        <strong id="successTotalPrice">Rp 0</strong>
+      <div class="success-order-items" id="successOrderItems"></div>
+
+      <div class="success-order-box">
+        <div>
+          <span>Total Item</span>
+          <strong id="successTotalItem">0 item</strong>
+        </div>
+
+        <div class="success-total-row">
+          <span>Total Harga</span>
+          <strong id="successTotalPrice">Rp 0</strong>
+        </div>
       </div>
-    </div>
 
       <div class="success-actions success-actions-three">
-      <button class="success-secondary-btn" type="button" id="successStayPos">
-        Kembali ke POS
-      </button>
+        <button class="success-secondary-btn" type="button" id="successStayPos">
+          Kembali ke POS
+        </button>
 
-      <button class="success-print-btn" type="button" id="successPrintReceipt">
-        Cetak Struk
-      </button>
+        <button class="success-print-btn" type="button" id="successPrintReceipt">
+          Cetak Struk
+        </button>
 
-      <button class="success-primary-btn" type="button" id="successGoHistory">
-        Lihat History
-      </button>
-    </div>
+        <button class="success-primary-btn" type="button" id="successGoHistory">
+          Lihat History
+        </button>
+      </div>
     </div>
   </section>
 
   <div class="checkout-confirm-backdrop" id="checkoutConfirmBackdrop"></div>
 
-<section class="checkout-confirm-modal" id="checkoutConfirmModal" aria-label="Konfirmasi order">
-  <div class="checkout-confirm-card">
-    <div class="confirm-icon-wrap">
-      <div class="confirm-icon">?</div>
+  <section class="checkout-confirm-modal" id="checkoutConfirmModal" aria-label="Konfirmasi order">
+    <div class="checkout-confirm-card">
+      <div class="confirm-icon-wrap">
+        <div class="confirm-icon">?</div>
+      </div>
+
+      <span class="confirm-eyebrow">Konfirmasi Order</span>
+
+      <div class="confirm-order-items" id="confirmOrderItems"></div>
+
+      <div class="confirm-order-box">
+        <div>
+          <span>Total Item</span>
+          <strong id="confirmTotalItem">0 item</strong>
+        </div>
+
+        <div class="confirm-total-row">
+          <span>Total Harga</span>
+          <strong id="confirmTotalPrice">Rp 0</strong>
+        </div>
+      </div>
+
+      <div class="confirm-actions">
+        <button class="confirm-secondary-btn" type="button" id="cancelCheckout">
+          Batal
+        </button>
+
+        <button class="confirm-primary-btn" type="button" id="confirmCheckout">
+          Konfirmasi Order
+        </button>
+      </div>
     </div>
-
-    <span class="confirm-eyebrow">Konfirmasi Order</span>
-
-    <div class="confirm-order-items" id="confirmOrderItems"></div>
-
-  <div class="confirm-order-box">
-    <div>
-      <span>Total Item</span>
-      <strong id="confirmTotalItem">0 item</strong>
-    </div>
-
-    <div class="confirm-total-row">
-      <span>Total Harga</span>
-      <strong id="confirmTotalPrice">Rp 0</strong>
-    </div>
-  </div>
-
-    <div class="confirm-actions">
-      <button class="confirm-secondary-btn" type="button" id="cancelCheckout">
-        Batal
-      </button>
-
-      <button class="confirm-primary-btn" type="button" id="confirmCheckout">
-        Konfirmasi Order
-      </button>
-    </div>
-  </div>
-</section>
+  </section>
 
   <div class="toast" id="toast">
     Transaksi berhasil disimpan.
   </div>
 
-<script>
-  window.NGUNJUK_ROUTES = {
-    products: "{{ route('api.products.list') }}",
-    orders: "{{ route('api.orders.store') }}",
-    history: "{{ route('frontend.history') }}",
-    storage: "{{ asset('storage') }}"
-  };
+  <script>
+    window.NGUNJUK_ROUTES = {
+      products: "{{ route('api.products.list') }}",
+      orders: "{{ route('api.orders.store') }}",
+      history: "{{ route('frontend.history') }}",
+      storage: "{{ asset('storage') }}"
+    };
 
-  window.NGUNJUK_CSRF_TOKEN = "{{ csrf_token() }}";
-</script>
+    window.NGUNJUK_CSRF_TOKEN = "{{ csrf_token() }}";
+  </script>
 
-<script src="{{ asset('js/script.js') }}"></script>
+  <script src="{{ asset('js/script.js') }}"></script>
 </body>
 </html>

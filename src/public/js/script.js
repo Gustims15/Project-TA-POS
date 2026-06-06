@@ -14,6 +14,7 @@ const itemsTotal = document.querySelector('#itemsTotal');
 const grandTotal = document.querySelector('#grandTotal');
 const placeOrder = document.querySelector('#placeOrder');
 const toast = document.querySelector('#toast');
+
 const checkoutConfirmBackdrop = document.querySelector('#checkoutConfirmBackdrop');
 const checkoutConfirmModal = document.querySelector('#checkoutConfirmModal');
 const confirmTotalItem = document.querySelector('#confirmTotalItem');
@@ -69,49 +70,23 @@ const showToast = message => {
 };
 
 const openCartDrawer = () => {
-  cartDrawer.classList.add('show');
-  cartBackdrop.classList.add('show');
+  cartDrawer?.classList.add('show');
+  cartBackdrop?.classList.add('show');
 };
 
 const closeCartDrawer = () => {
-  cartDrawer.classList.remove('show');
-  cartBackdrop.classList.remove('show');
-};
-
-const openCheckoutSuccessModal = order => {
-  if (!checkoutSuccessModal || !checkoutSuccessBackdrop) {
-    return;
-  }
-
-  lastSavedOrder = order || null;
-
-  const totalItem = Number(order?.total_item || 0);
-  const totalPrice = Number(order?.total_price || 0);
-  const orderItems = Array.isArray(order?.items) ? order.items : [];
-
-  if (successOrderCode) {
-    successOrderCode.textContent = order?.order_code || '-';
-  }
-
-  if (successOrderItems) {
-    successOrderItems.innerHTML = renderModalOrderItems(orderItems, 'success');
-  }
-
-  if (successTotalItem) {
-    successTotalItem.textContent = `${totalItem} item`;
-  }
-
-  if (successTotalPrice) {
-    successTotalPrice.textContent = formatRupiah(totalPrice);
-  }
-
-  checkoutSuccessModal.classList.add('show');
-  checkoutSuccessBackdrop.classList.add('show');
+  cartDrawer?.classList.remove('show');
+  cartBackdrop?.classList.remove('show');
 };
 
 const closeCheckoutSuccessModal = () => {
   checkoutSuccessModal?.classList.remove('show');
   checkoutSuccessBackdrop?.classList.remove('show');
+};
+
+const closeCheckoutConfirmModal = () => {
+  checkoutConfirmModal?.classList.remove('show');
+  checkoutConfirmBackdrop?.classList.remove('show');
 };
 
 const renderModalOrderItems = (items, type = 'confirm') => {
@@ -164,11 +139,44 @@ const renderModalOrderItems = (items, type = 'confirm') => {
   `;
 };
 
+const openCheckoutSuccessModal = order => {
+  if (!checkoutSuccessModal || !checkoutSuccessBackdrop) {
+    return;
+  }
+
+  lastSavedOrder = order || null;
+
+  const totalItem = Number(order?.total_item || 0);
+  const totalPrice = Number(order?.total_price || 0);
+  const orderItems = Array.isArray(order?.items) ? order.items : [];
+
+  if (successOrderCode) {
+    successOrderCode.textContent = order?.order_code || '-';
+  }
+
+  if (successOrderItems) {
+    successOrderItems.innerHTML = renderModalOrderItems(orderItems, 'success');
+  }
+
+  if (successTotalItem) {
+    successTotalItem.textContent = `${totalItem} item`;
+  }
+
+  if (successTotalPrice) {
+    successTotalPrice.textContent = formatRupiah(totalPrice);
+  }
+
+  checkoutSuccessModal.classList.add('show');
+  checkoutSuccessBackdrop.classList.add('show');
+};
+
 const openCheckoutConfirmModal = () => {
   if (!cart.length) {
     showToast('Cart masih kosong.');
     return;
   }
+
+  closeCartDrawer();
 
   if (confirmOrderItems) {
     confirmOrderItems.innerHTML = renderModalOrderItems(cart, 'confirm');
@@ -182,13 +190,10 @@ const openCheckoutConfirmModal = () => {
     confirmTotalPrice.textContent = formatRupiah(cartTotalPrice());
   }
 
-  checkoutConfirmModal?.classList.add('show');
-  checkoutConfirmBackdrop?.classList.add('show');
-};
-
-const closeCheckoutConfirmModal = () => {
-  checkoutConfirmModal?.classList.remove('show');
-  checkoutConfirmBackdrop?.classList.remove('show');
+  setTimeout(() => {
+    checkoutConfirmModal?.classList.add('show');
+    checkoutConfirmBackdrop?.classList.add('show');
+  }, 180);
 };
 
 cancelCheckout?.addEventListener('click', closeCheckoutConfirmModal);
@@ -208,6 +213,7 @@ document.addEventListener('keydown', event => {
   if (event.key === 'Escape') {
     closeCheckoutSuccessModal();
     closeCheckoutConfirmModal();
+    closeCartDrawer();
   }
 });
 
@@ -242,7 +248,7 @@ const normalizeProduct = product => {
     id: Number(product.id),
     category_id: Number(product.category_id),
     category: product.category?.name || 'Menu',
-    name: product.name,
+    name: product.name || '-',
     description: product.description || '-',
     stock: Number(product.stock || 0),
     image: getProductImage(product),
@@ -281,6 +287,24 @@ const getSelectedSize = productId => {
   };
 };
 
+const cartTotalQuantity = () => {
+  return cart.reduce((total, item) => total + Number(item.quantity || 0), 0);
+};
+
+const cartTotalPrice = () => {
+  return cart.reduce((total, item) => {
+    return total + Number(item.price || 0) * Number(item.quantity || 0);
+  }, 0);
+};
+
+const setDefaultActiveCategory = () => {
+  activeCategory =
+    categories.find(category => category.toLowerCase() === 'teh') ||
+    categories.find(category => category.toLowerCase().includes('teh')) ||
+    categories[0] ||
+    '';
+};
+
 const loadProducts = async () => {
   try {
     const response = await fetch(window.NGUNJUK_ROUTES.products, {
@@ -298,8 +322,8 @@ const loadProducts = async () => {
 
     products = result.data.map(normalizeProduct);
     categories = [...new Set(products.map(product => product.category))];
-    activeCategory = categories[0] || '';
 
+    setDefaultActiveCategory();
     renderCategories();
     renderProducts();
   } catch (error) {
@@ -309,6 +333,10 @@ const loadProducts = async () => {
 };
 
 const renderCategories = () => {
+  if (!categoryTabs) {
+    return;
+  }
+
   categoryTabs.innerHTML = '';
 
   categories.forEach(category => {
@@ -319,6 +347,11 @@ const renderCategories = () => {
 
     button.addEventListener('click', () => {
       activeCategory = category;
+
+      if (searchInput) {
+        searchInput.value = '';
+      }
+
       renderCategories();
       renderProducts();
     });
@@ -328,18 +361,36 @@ const renderCategories = () => {
 };
 
 const renderProducts = () => {
+  if (!productGrid) {
+    return;
+  }
+
   const keyword = searchInput?.value.toLowerCase().trim() || '';
+  const isSearching = keyword.length > 0;
 
   const filteredProducts = products.filter(product => {
-    const matchCategory = product.category === activeCategory;
-    const matchSearch =
-      product.name.toLowerCase().includes(keyword) ||
-      product.description.toLowerCase().includes(keyword);
+    const productName = String(product.name || '').toLowerCase();
+    const productDescription = String(product.description || '').toLowerCase();
+    const productCategory = String(product.category || '').toLowerCase();
 
-    return matchCategory && matchSearch;
+    const matchSearch =
+      productName.includes(keyword) ||
+      productDescription.includes(keyword) ||
+      productCategory.includes(keyword);
+
+    if (isSearching) {
+      return matchSearch;
+    }
+
+    return product.category === activeCategory;
   });
 
-  menuTitle.textContent = `${activeCategory || 'Menu'} menu`;
+  if (menuTitle) {
+    menuTitle.textContent = isSearching
+      ? `Hasil pencarian "${keyword}"`
+      : `${activeCategory || 'Menu'} menu`;
+  }
+
   productGrid.innerHTML = '';
 
   if (!filteredProducts.length) {
@@ -370,10 +421,10 @@ const renderProducts = () => {
               class="size-btn ${defaultSize && size.id === defaultSize.id ? 'active' : ''}"
               data-product-id="${product.id}"
               data-size-id="${size.id}"
-              data-size-name="${size.name}"
+              data-size-name="${escapeHTML(size.name)}"
               data-price="${size.price}"
             >
-              ${size.name}
+              ${escapeHTML(size.name)}
             </button>
           `).join('')}
         </div>
@@ -382,14 +433,14 @@ const renderProducts = () => {
         <div class="size-row">
           <span class="size-label">Size</span>
           <span class="regular-size">
-            ${defaultSize ? defaultSize.name : 'Regular'} / satu ukuran
+            ${defaultSize ? escapeHTML(defaultSize.name) : 'Regular'} / satu ukuran
           </span>
         </div>
       `;
 
     card.innerHTML = `
       <div class="drink-img">
-        <img src="${product.image}" alt="${escapeHTML(product.name)}">
+        <img src="${escapeHTML(product.image)}" alt="${escapeHTML(product.name)}">
       </div>
 
       <div class="product-info">
@@ -460,6 +511,27 @@ const setQuantity = (productId, quantity) => {
   }
 
   quantityElement.textContent = Math.max(1, quantity);
+};
+
+const addToCart = item => {
+  const existingItem = cart.find(cartItem => {
+    return cartItem.product_id === item.product_id &&
+      cartItem.product_size_id === item.product_size_id;
+  });
+
+  if (existingItem) {
+    const newQuantity = existingItem.quantity + item.quantity;
+
+    if (newQuantity > item.stock) {
+      showToast('Jumlah cart melebihi stok tersedia.');
+      return;
+    }
+
+    existingItem.quantity = newQuantity;
+    return;
+  }
+
+  cart.push(item);
 };
 
 productGrid?.addEventListener('click', event => {
@@ -549,41 +621,21 @@ productGrid?.addEventListener('click', event => {
     addButton.textContent = 'Added to cart';
     addButton.classList.add('added');
 
+    setTimeout(() => {
+      addButton.textContent = 'Add to Cart';
+      addButton.classList.remove('added');
+    }, 1200);
+
     showToast('Produk berhasil ditambahkan ke cart.');
     renderCart();
   }
 });
 
-const addToCart = item => {
-  const existingItem = cart.find(cartItem => {
-    return cartItem.product_id === item.product_id &&
-      cartItem.product_size_id === item.product_size_id;
-  });
-
-  if (existingItem) {
-    const newQuantity = existingItem.quantity + item.quantity;
-
-    if (newQuantity > item.stock) {
-      showToast('Jumlah cart melebihi stok tersedia.');
-      return;
-    }
-
-    existingItem.quantity = newQuantity;
+const renderCart = () => {
+  if (!cartList) {
     return;
   }
 
-  cart.push(item);
-};
-
-const cartTotalQuantity = () => {
-  return cart.reduce((total, item) => total + item.quantity, 0);
-};
-
-const cartTotalPrice = () => {
-  return cart.reduce((total, item) => total + item.price * item.quantity, 0);
-};
-
-const renderCart = () => {
   cartList.innerHTML = '';
 
   if (!cart.length) {
@@ -659,7 +711,9 @@ const renderCart = () => {
     cartList.appendChild(cartItem);
   });
 
-  cartCount.textContent = cartTotalQuantity();
+  if (cartCount) {
+    cartCount.textContent = cartTotalQuantity();
+  }
 
   if (itemsTotal?.previousElementSibling) {
     itemsTotal.previousElementSibling.textContent = 'Total Item';
@@ -669,8 +723,13 @@ const renderCart = () => {
     grandTotal.previousElementSibling.textContent = 'Total Harga';
   }
 
-  itemsTotal.textContent = `${cartTotalQuantity()} item`;
-  grandTotal.textContent = formatRupiah(cartTotalPrice());
+  if (itemsTotal) {
+    itemsTotal.textContent = `${cartTotalQuantity()} item`;
+  }
+
+  if (grandTotal) {
+    grandTotal.textContent = formatRupiah(cartTotalPrice());
+  }
 };
 
 cartList?.addEventListener('input', event => {
@@ -1033,8 +1092,10 @@ const submitOrder = async () => {
     }))
   };
 
-  placeOrder.disabled = true;
-  placeOrder.textContent = 'Memproses...';
+  if (placeOrder) {
+    placeOrder.disabled = true;
+    placeOrder.textContent = 'Memproses...';
+  }
 
   try {
     const response = await fetch(window.NGUNJUK_ROUTES.orders, {
@@ -1067,17 +1128,23 @@ const submitOrder = async () => {
     console.error(error);
     showToast(error.message || 'Gagal menyimpan transaksi.');
   } finally {
-    placeOrder.disabled = false;
-    placeOrder.textContent = 'Place an order';
+    if (placeOrder) {
+      placeOrder.disabled = false;
+      placeOrder.textContent = 'Place an order';
+    }
   }
 };
 
 placeOrder?.addEventListener('click', openCheckoutConfirmModal);
+
 confirmCheckout?.addEventListener('click', () => {
   closeCheckoutConfirmModal();
   submitOrder();
 });
-searchInput?.addEventListener('input', renderProducts);
+
+searchInput?.addEventListener('input', () => {
+  renderProducts();
+});
 
 renderCart();
 loadProducts();

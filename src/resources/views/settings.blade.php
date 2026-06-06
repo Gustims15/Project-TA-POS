@@ -19,10 +19,14 @@
 <body>
   <main class="app-shell single-content">
     <aside class="sidebar">
-      <div class="brand">
-        <span>Ngun</span>juk
-      </div>
+      <div class="brand brand-with-logo">
+      <img src="{{ asset('images/ngunjuk-logo.png') }}" alt="Logo Ngunjuk" class="brand-logo">
 
+      <div class="brand-text">
+        <strong><span>Ngu</span>njuk</strong>
+        <small>POS SYSTEM</small>
+      </div>
+    </div>
       <nav class="nav-menu" aria-label="Menu utama">
         <a class="nav-item" href="{{ route('frontend.home') }}">
           <span class="nav-icon">⌂</span>
