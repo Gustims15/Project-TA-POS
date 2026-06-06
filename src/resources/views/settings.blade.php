@@ -59,10 +59,6 @@
         <h2>Settings</h2>
 
         <div class="topbar-spacer"></div>
-
-        <a class="cart-toggle page-link-btn" href="{{ route('frontend.home') }}">
-          🛒 POS Menu
-        </a>
       </header>
 
       <section class="settings-area">

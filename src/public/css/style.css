@@ -6188,3 +6188,2375 @@ body:has(.pos-luxury-area):not(:has(.history-area)):not(:has(.settings-area)) {
   font-size: 8.5px !important;
   letter-spacing: 0.22em !important;
 }
+
+/* =========================================================
+   HISTORY PAGE WITHOUT TOPBAR
+   Menghapus ruang kosong atas pada halaman history.
+========================================================= */
+
+body:has(.history-area) .content {
+  padding-top: 0 !important;
+}
+
+body:has(.history-area) .history-area {
+  padding-top: 44px !important;
+  min-height: calc(100vh - 32px) !important;
+}
+
+/* Jika masih ada topbar di history karena cache / belum terhapus */
+body:has(.history-area) .topbar {
+  display: none !important;
+}
+
+/* Header history lebih fokus dan rapi */
+body:has(.history-area) .history-head {
+  margin-top: 0 !important;
+}
+
+/* Area history jadi full fokus */
+body:has(.history-area) .content {
+  background:
+    radial-gradient(circle at 92% 88%, rgba(255, 139, 89, 0.08) 0 320px, transparent 326px),
+    linear-gradient(135deg, rgba(255, 250, 246, 0.9), rgba(255, 238, 225, 0.78)) !important;
+}
+
+/* =========================================================
+   SETTINGS WITHOUT POS MENU BUTTON
+========================================================= */
+
+body:has(.settings-area) .topbar {
+  justify-content: flex-start !important;
+}
+
+body:has(.settings-area) .topbar-spacer {
+  display: none !important;
+}
+
+/* =========================================================
+   HISTORY DETAIL / STRUK FOCUS MODE
+   Saat detail struk dibuka: sidebar tidak kelihatan,
+   modal fokus penuh, scrollbar disembunyikan tapi tetap bisa scroll.
+========================================================= */
+
+/* Backdrop detail struk dibuat menutup semua layar */
+.invoice-modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 500 !important;
+  background: rgba(24, 24, 28, 0.58) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Modal detail struk full focus di tengah layar */
+.invoice-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 510 !important;
+  display: none !important;
+  place-items: center !important;
+  padding: 24px !important;
+  overflow: hidden !important;
+}
+
+/* Saat modal muncul */
+.invoice-modal.show {
+  display: grid !important;
+}
+
+/* Card struk dibuat fokus dan rapi */
+.invoice-modal-card {
+  width: min(720px, 94vw) !important;
+  max-height: calc(100vh - 48px) !important;
+  border-radius: 28px !important;
+  background: linear-gradient(180deg, #ffffff, #fff8f3) !important;
+  box-shadow:
+    0 34px 100px rgba(24, 24, 28, 0.28),
+    0 18px 48px rgba(255, 139, 89, 0.12) !important;
+
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+
+  /* Firefox: scrollbar disembunyikan */
+  scrollbar-width: none !important;
+}
+
+/* Chrome/Edge/Safari: scrollbar disembunyikan */
+.invoice-modal-card::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+/* Isi preview juga jangan memunculkan scrollbar sendiri */
+.invoice-preview {
+  overflow: visible !important;
+}
+
+/* Pastikan sidebar/topbar/content tidak muncul di atas modal */
+.sidebar,
+.content,
+.topbar,
+.history-area {
+  z-index: auto !important;
+}
+
+/* Tombol close tetap kelihatan */
+.invoice-close-btn {
+  position: relative !important;
+  z-index: 520 !important;
+}
+
+/* =========================================================
+   POS BACKGROUND ORANGE LUXURY
+   Ganti background halaman POS memakai gambar gradasi orange.
+   Simpan gambar di: public/images/pos-orange-bg.png
+   File CSS ini berada di: public/css/style.css
+   ========================================================= */
+
+body {
+  background: #fff3e6 url("../images/pos-orange-bg.png") center center / cover no-repeat fixed !important;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background: rgba(255, 247, 238, 0.08);
+}
+
+/* Shell utama dibuat transparan agar gambar background terlihat penuh */
+.app-shell,
+.app-shell:not(.single-content) {
+  background: transparent !important;
+}
+
+/* Area konten kanan dibuat glass tipis, bukan warna solid */
+.content {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 246, 238, 0.28)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.56) !important;
+  box-shadow:
+    0 28px 90px rgba(128, 70, 32, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(14px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(130%) !important;
+}
+
+/* Background area menu jangan menutup gambar utama */
+.menu-area,
+.abstract-area,
+.pos-luxury-area {
+  background: transparent !important;
+}
+
+/* Hilangkan layer gradasi lama supaya gambar background tidak ketutup */
+.abstract-area::before,
+.menu-area.pos-luxury-area::before {
+  background:
+    radial-gradient(circle at 88% 86%, rgba(255, 112, 38, 0.08) 0 300px, transparent 308px),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 183, 121, 0.08)) !important;
+  opacity: 1 !important;
+}
+
+/* Sidebar dibuat seperti glass widget di atas background */
+.sidebar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 247, 239, 0.56)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.78) !important;
+  box-shadow:
+    0 32px 90px rgba(126, 72, 38, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(22px) saturate(145%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(145%) !important;
+}
+
+/* Topbar juga dibuat transparan/glass kalau masih tampil di POS */
+.topbar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(255, 247, 239, 0.38)) !important;
+  border-color: rgba(255, 255, 255, 0.58) !important;
+  box-shadow: 0 20px 60px rgba(132, 75, 38, 0.08) !important;
+  backdrop-filter: blur(22px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(140%) !important;
+}
+
+/* Search, category, dan card dibuat tetap kebaca di atas background orange */
+.search-box,
+.category-tabs button,
+.product-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(255, 247, 241, 0.66)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.76) !important;
+  box-shadow:
+    0 18px 46px rgba(119, 70, 40, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(18px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(140%) !important;
+}
+
+.product-card:hover {
+  box-shadow:
+    0 26px 70px rgba(119, 70, 40, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+}
+
+/* Cart drawer tetap bersih dan menyatu dengan tema */
+.cart-drawer,
+.checkout-confirm-card,
+.checkout-success-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 247, 241, 0.84)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+}
+
+
+/* =========================================================
+   POS CLEAR GREY GLASS WIDGETS - Home, History, Settings
+   Tujuan: mengganti widget putih menjadi clear/abu-abu transparan
+   seperti contoh dashboard glassmorphism.
+   ========================================================= */
+
+:root {
+  --glass-grey: rgba(226, 235, 237, 0.46);
+  --glass-grey-soft: rgba(241, 246, 246, 0.34);
+  --glass-grey-strong: rgba(210, 223, 226, 0.58);
+  --glass-border: rgba(255, 255, 255, 0.58);
+  --glass-border-soft: rgba(255, 255, 255, 0.34);
+  --glass-shadow: 0 28px 70px rgba(55, 70, 78, 0.16);
+  --glass-shadow-soft: 0 16px 40px rgba(55, 70, 78, 0.10);
+  --glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.76);
+}
+
+body {
+  background: #fff3e6 url("../images/pos-orange-bg.png") center center / cover no-repeat fixed !important;
+}
+
+.app-shell,
+.app-shell:not(.single-content),
+.content,
+.menu-area,
+.abstract-area,
+.pos-luxury-area,
+.history-area,
+.settings-area {
+  background: transparent !important;
+}
+
+.content {
+  border: 1px solid rgba(255, 255, 255, 0.44) !important;
+  box-shadow:
+    0 34px 95px rgba(80, 73, 68, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.56) !important;
+  backdrop-filter: blur(10px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(120%) !important;
+}
+
+/* Hilangkan layer putih/orange lama yang bikin widget terlihat solid */
+.abstract-area::before,
+.menu-area.pos-luxury-area::before {
+  background:
+    radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.14) 0 210px, transparent 216px),
+    radial-gradient(circle at 90% 88%, rgba(210, 224, 226, 0.26) 0 260px, transparent 268px),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(210, 224, 226, 0.08)) !important;
+  opacity: 1 !important;
+}
+
+/* Wrapper utama sidebar dan topbar dibuat clear grey glass */
+.sidebar,
+.topbar {
+  background:
+    linear-gradient(145deg, rgba(238, 244, 245, 0.48), rgba(210, 223, 226, 0.30)) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow), var(--glass-inner) !important;
+  backdrop-filter: blur(26px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(125%) !important;
+}
+
+.sidebar::before {
+  background:
+    radial-gradient(circle at 14% 16%, rgba(255, 255, 255, 0.60) 0 90px, transparent 94px),
+    radial-gradient(circle at 22% 88%, rgba(210, 224, 226, 0.28) 0 180px, transparent 186px) !important;
+  opacity: 0.75 !important;
+}
+
+/* Logo box, menu, search, profile */
+.brand-with-logo,
+.search-box,
+.profile-mini,
+.nav-item,
+.history-search,
+.history-filter select,
+.form-row input,
+.form-row select {
+  background:
+    linear-gradient(145deg, rgba(246, 249, 249, 0.56), rgba(216, 229, 232, 0.34)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.52) !important;
+  box-shadow:
+    0 14px 34px rgba(55, 70, 78, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(125%) !important;
+}
+
+.nav-item.active,
+.nav-item:hover {
+  color: var(--primary-dark) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.70), rgba(216, 229, 232, 0.42)) !important;
+  box-shadow:
+    0 18px 42px rgba(55, 70, 78, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78) !important;
+}
+
+/* Category pills: clear grey, active tetap orange */
+.category-tabs button,
+.luxury-category-tabs button {
+  color: #252a31 !important;
+  background:
+    linear-gradient(145deg, rgba(239, 245, 246, 0.58), rgba(211, 224, 227, 0.36)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.54) !important;
+  box-shadow:
+    0 16px 36px rgba(55, 70, 78, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(125%) !important;
+}
+
+.category-tabs button.active,
+.category-tabs button:hover,
+.luxury-category-tabs button.active,
+.luxury-category-tabs button:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #ff7a43, #ff9a62) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  box-shadow:
+    0 18px 42px rgba(255, 105, 43, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+
+/* Home product cards: bukan putih, tapi clear abu-abu transparan */
+.product-card,
+.cart-empty,
+.product-empty,
+.cart-item,
+.success-order-box,
+.confirm-order-box,
+.confirm-item-card,
+.success-item-card {
+  background:
+    linear-gradient(145deg, rgba(238, 244, 245, 0.52), rgba(211, 224, 227, 0.34)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.52) !important;
+  box-shadow:
+    0 24px 58px rgba(55, 70, 78, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(26px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(125%) !important;
+}
+
+.product-card::after {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(255, 255, 255, 0.46) 0 80px, transparent 84px),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.24), transparent 56%) !important;
+  opacity: 0.9 !important;
+}
+
+.product-card:hover {
+  transform: translateY(-4px) !important;
+  background:
+    linear-gradient(145deg, rgba(244, 248, 248, 0.62), rgba(211, 224, 227, 0.42)) !important;
+  box-shadow:
+    0 34px 78px rgba(55, 70, 78, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78) !important;
+}
+
+.product-card .drink-img,
+.drink-img,
+.cart-img {
+  background:
+    linear-gradient(145deg, rgba(245, 249, 249, 0.54), rgba(199, 214, 218, 0.34)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.50) !important;
+  box-shadow:
+    0 18px 32px rgba(55, 70, 78, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(18px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(120%) !important;
+}
+
+.qty-btn,
+.add-btn,
+.size-btn,
+.reset-profile-btn,
+.close-cart {
+  background:
+    linear-gradient(145deg, rgba(246, 249, 249, 0.64), rgba(211, 224, 227, 0.40)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.56) !important;
+  box-shadow:
+    0 12px 26px rgba(55, 70, 78, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.76) !important;
+  backdrop-filter: blur(16px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(125%) !important;
+}
+
+.add-btn:hover:not(:disabled),
+.add-btn.added,
+.cart-toggle,
+.order-btn,
+.export-btn,
+.success-primary-btn,
+.confirm-primary-btn,
+.success-print-btn {
+  background: linear-gradient(135deg, #ff7440, #ff9b63) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.30) !important;
+  box-shadow:
+    0 20px 44px rgba(255, 101, 40, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26) !important;
+}
+
+/* History page glass widgets */
+.history-head,
+.stat-card,
+.history-table-wrap,
+.history-pagination,
+.history-item-card,
+.history-detail-card,
+.history-item-summary,
+.history-extra-item-card,
+.invoice-card,
+.invoice-detail-card {
+  background:
+    linear-gradient(145deg, rgba(238, 244, 245, 0.54), rgba(211, 224, 227, 0.36)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.52) !important;
+  box-shadow:
+    0 24px 62px rgba(55, 70, 78, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(26px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(125%) !important;
+}
+
+.history-table th {
+  background: rgba(225, 235, 237, 0.46) !important;
+  color: #5e6670 !important;
+}
+
+.history-table td,
+.history-table th {
+  border-bottom-color: rgba(255, 255, 255, 0.32) !important;
+}
+
+.history-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* Settings page glass widgets */
+.profile-panel,
+.profile-form-panel,
+.profile-grid div,
+.settings-form-head,
+.form-row,
+.settings-card,
+.settings-section {
+  background:
+    linear-gradient(145deg, rgba(238, 244, 245, 0.54), rgba(211, 224, 227, 0.36)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.52) !important;
+  box-shadow:
+    0 24px 62px rgba(55, 70, 78, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(26px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(125%) !important;
+}
+
+.profile-cover {
+  background:
+    radial-gradient(circle at 12% 25%, rgba(255, 255, 255, 0.58) 0 90px, transparent 96px),
+    radial-gradient(circle at 85% 18%, rgba(255, 128, 72, 0.22) 0 140px, transparent 148px),
+    linear-gradient(135deg, rgba(224, 236, 238, 0.60), rgba(255, 199, 160, 0.38)) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.40) !important;
+}
+
+/* Cart / modal juga disamakan */
+.cart-drawer,
+.checkout-confirm-card,
+.checkout-success-card,
+.receipt-modal,
+.receipt-card {
+  background:
+    linear-gradient(145deg, rgba(238, 244, 245, 0.72), rgba(211, 224, 227, 0.54)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.56) !important;
+  box-shadow:
+    0 34px 88px rgba(42, 53, 62, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.76) !important;
+  backdrop-filter: blur(30px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(130%) !important;
+}
+
+.cart-backdrop,
+.checkout-confirm-backdrop,
+.checkout-success-backdrop {
+  background: rgba(38, 47, 55, 0.28) !important;
+  backdrop-filter: blur(7px) !important;
+  -webkit-backdrop-filter: blur(7px) !important;
+}
+
+/* Supaya teks tetap jelas di atas widget abu-abu */
+.product-head h3,
+.history-head h1,
+.profile-main h1,
+.cart-drawer-head h2,
+.settings-form-head h2,
+.history-table td,
+.product-info,
+.profile-grid strong {
+  color: #222831 !important;
+}
+
+.description,
+.regular-size,
+.profile-mini p,
+.history-head p,
+.profile-main p,
+.settings-form-head p,
+.cart-item-meta,
+.summary span,
+.stat-card span,
+.profile-grid span {
+  color: rgba(59, 65, 72, 0.62) !important;
+}
+
+/* Responsive tetap aman */
+@media (max-width: 760px) {
+  .sidebar,
+  .topbar,
+  .product-card,
+  .stat-card,
+  .history-table-wrap,
+  .profile-panel,
+  .profile-form-panel {
+    backdrop-filter: blur(20px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(120%) !important;
+  }
+}
+
+/* =========================================================
+   FIX CLEAR GLASS - HILANGKAN BACKGROUND LAMA WIDGET POS
+   Tempel kode ini PALING BAWAH di public/css/style.css
+========================================================= */
+
+:root {
+  --glass-gray: rgba(230, 237, 238, 0.34);
+  --glass-gray-strong: rgba(224, 231, 232, 0.46);
+  --glass-border: rgba(255, 255, 255, 0.62);
+  --glass-shadow: 0 24px 70px rgba(58, 68, 72, 0.13);
+  --glass-shadow-soft: 0 16px 42px rgba(58, 68, 72, 0.09);
+}
+
+/* MATIKAN SEMUA BACKGROUND LAMA YANG MENUTUP BACKGROUND UTAMA */
+.content,
+.menu-area,
+.abstract-area,
+.menu-area.abstract-area,
+.menu-area.pos-luxury-area,
+.history-area,
+.settings-area {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.abstract-area::before,
+.abstract-area::after,
+.menu-area::before,
+.menu-area::after,
+.menu-area.pos-luxury-area::before,
+.menu-area.pos-luxury-area::after,
+.history-area::before,
+.history-area::after,
+.settings-area::before,
+.settings-area::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+}
+
+/* SHELL UTAMA TETAP MENAMPILKAN BACKGROUND ORANGE */
+body,
+.app-shell {
+  background-image: url('/images/pos-orange-bg.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+.app-shell {
+  background-color: transparent !important;
+}
+
+/* SIDEBAR GLASS ABU-ABU CLEAR */
+.sidebar {
+  background:
+    linear-gradient(145deg, rgba(238, 244, 244, 0.38), rgba(221, 229, 231, 0.24)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.68) !important;
+  box-shadow: var(--glass-shadow) !important;
+  backdrop-filter: blur(28px) saturate(135%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(135%) !important;
+}
+
+/* TOPBAR GLASS CLEAR, BUKAN PUTIH */
+.topbar {
+  background:
+    linear-gradient(145deg, rgba(238, 244, 244, 0.34), rgba(222, 230, 232, 0.20)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.54) !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  box-shadow: 0 18px 52px rgba(58, 68, 72, 0.08) !important;
+  backdrop-filter: blur(28px) saturate(135%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(135%) !important;
+}
+
+/* SEARCH DAN PROFILE DIBUAT KACA ABU-ABU */
+.search-box,
+.profile-mini,
+.category-tabs button,
+.luxury-category-tabs button,
+.nav-item,
+.logout-button {
+  background:
+    linear-gradient(145deg, rgba(238, 244, 244, 0.48), rgba(219, 228, 230, 0.28)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.62) !important;
+  box-shadow:
+    0 12px 34px rgba(58, 68, 72, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(24px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(130%) !important;
+}
+
+.nav-item.active,
+.nav-item:hover,
+.category-tabs button.active,
+.category-tabs button:hover,
+.luxury-category-tabs button.active,
+.luxury-category-tabs button:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #ff7e45, #ff9a62) !important;
+  border-color: rgba(255, 255, 255, 0.44) !important;
+  box-shadow: 0 18px 42px rgba(255, 126, 69, 0.28) !important;
+}
+
+/* PRODUCT CARD: HAPUS BACKGROUND PUTIH LAMA, GANTI CLEAR GREY GLASS */
+.product-card,
+.stat-card,
+.history-table-wrap,
+.profile-panel,
+.profile-form-panel,
+.profile-grid div,
+.cart-empty,
+.product-empty,
+.checkout-success-card,
+.checkout-confirm-card,
+.cart-drawer,
+.cart-item,
+.success-order-box,
+.confirm-order-box,
+.success-item-card,
+.confirm-item-card {
+  background:
+    linear-gradient(145deg, rgba(238, 244, 244, 0.38), rgba(219, 227, 229, 0.22)) !important;
+  background-color: rgba(228, 236, 237, 0.28) !important;
+  border: 1px solid rgba(255, 255, 255, 0.58) !important;
+  box-shadow:
+    var(--glass-shadow-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.18) !important;
+  backdrop-filter: blur(26px) saturate(135%) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(135%) !important;
+}
+
+.product-card::before,
+.product-card::after,
+.cart-item::before,
+.cart-item::after,
+.stat-card::before,
+.stat-card::after,
+.profile-panel::before,
+.profile-panel::after,
+.history-table-wrap::before,
+.history-table-wrap::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+}
+
+.product-card:hover,
+.stat-card:hover {
+  transform: translateY(-3px) !important;
+  background:
+    linear-gradient(145deg, rgba(242, 247, 247, 0.46), rgba(221, 229, 231, 0.30)) !important;
+  border-color: rgba(255, 255, 255, 0.76) !important;
+  box-shadow:
+    0 28px 78px rgba(58, 68, 72, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+}
+
+/* FOTO PRODUK JUGA JANGAN PUTIH POLOS */
+.product-card .drink-img,
+.drink-img,
+.cart-img {
+  background:
+    linear-gradient(145deg, rgba(228, 237, 238, 0.45), rgba(205, 217, 220, 0.30)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.56) !important;
+  box-shadow:
+    0 14px 34px rgba(58, 68, 72, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.68) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
+
+/* TOMBOL DI DALAM CARD */
+.qty-btn,
+.add-btn,
+.size-btn,
+.reset-profile-btn,
+.history-search,
+.history-filter select,
+.form-row input,
+.form-row select {
+  background:
+    linear-gradient(145deg, rgba(238, 244, 244, 0.50), rgba(220, 229, 231, 0.30)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.62) !important;
+  box-shadow:
+    0 10px 26px rgba(58, 68, 72, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
+
+.add-btn,
+.price,
+.stock-badge {
+  color: #f0642f !important;
+}
+
+.add-btn:hover:not(:disabled),
+.add-btn.added,
+.cart-toggle,
+.order-btn,
+.export-btn,
+.confirm-primary-btn,
+.success-primary-btn,
+.success-print-btn {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #ff7540, #ff9a62) !important;
+  border-color: rgba(255, 255, 255, 0.42) !important;
+  box-shadow: 0 18px 42px rgba(255, 117, 64, 0.30) !important;
+}
+
+.stock-badge {
+  background: rgba(255, 117, 64, 0.12) !important;
+  border: 1px solid rgba(255, 117, 64, 0.14) !important;
+}
+
+/* HISTORY TABLE: HILANGKAN PUTIH */
+.history-table th {
+  background: rgba(221, 229, 231, 0.34) !important;
+}
+
+.history-table tbody tr:hover {
+  background: rgba(238, 244, 244, 0.30) !important;
+}
+
+.history-search,
+.history-filter select {
+  color: var(--text) !important;
+}
+
+/* SETTINGS COVER JANGAN ORANGE BLOK LAMA */
+.profile-cover {
+  background:
+    linear-gradient(145deg, rgba(238, 244, 244, 0.42), rgba(220, 229, 231, 0.26)) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.52) !important;
+}
+
+/* MODAL BACKDROP DAN MODAL CLEAR */
+.checkout-success-backdrop,
+.checkout-confirm-backdrop,
+.cart-backdrop {
+  background: rgba(24, 30, 34, 0.22) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* HILANGKAN SCROLLBAR TRACK PUTIH/OREN LAMA */
+.product-grid::-webkit-scrollbar-track,
+.luxury-product-grid::-webkit-scrollbar-track,
+.category-tabs::-webkit-scrollbar-track,
+.luxury-category-tabs::-webkit-scrollbar-track {
+  background: rgba(222, 230, 232, 0.20) !important;
+}
+
+.product-grid::-webkit-scrollbar-thumb,
+.luxury-product-grid::-webkit-scrollbar-thumb,
+.category-tabs::-webkit-scrollbar-thumb,
+.luxury-category-tabs::-webkit-scrollbar-thumb {
+  background: rgba(170, 187, 190, 0.55) !important;
+}
+
+/* =========================================================
+   FIX POS - HILANGKAN EFEK BLUR PADA WIDGET / GLASS CARD
+   Tempelkan di PALING BAWAH public/css/style.css
+   ========================================================= */
+
+/* Matikan blur pada semua elemen utama POS */
+.sidebar,
+.topbar,
+.menu-area,
+.abstract-area,
+.pos-luxury-area,
+.search-box,
+.profile-mini,
+.category-tabs button,
+.product-card,
+.drink-img,
+.cart-toggle,
+.add-btn,
+.qty-btn,
+.cart-drawer,
+.cart-item,
+.cart-empty,
+.summary,
+.checkout-confirm-card,
+.checkout-success-card,
+.toast,
+.history-area,
+.settings-area,
+.history-search,
+.history-filter select,
+.history-table-wrap,
+.stat-card,
+.profile-panel,
+.profile-grid div,
+.profile-form-panel,
+.form-row input,
+.form-row select {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+/* Widget tetap transparan abu-abu, tapi tanpa blur */
+.product-card,
+.stat-card,
+.history-table-wrap,
+.profile-panel,
+.profile-grid div,
+.profile-form-panel,
+.cart-item,
+.checkout-confirm-card,
+.checkout-success-card {
+  background: rgba(228, 231, 229, 0.42) !important;
+  border: 1px solid rgba(255, 255, 255, 0.58) !important;
+  box-shadow:
+    0 18px 42px rgba(52, 55, 56, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.70) !important;
+}
+
+/* Area besar POS tetap bening dan tidak ngeblur */
+.content,
+.menu-area,
+.abstract-area,
+.pos-luxury-area {
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Sidebar dan topbar tanpa blur, tetap clear grey */
+.sidebar,
+.topbar {
+  background: rgba(229, 232, 230, 0.34) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-color: rgba(255, 255, 255, 0.58) !important;
+  box-shadow:
+    0 18px 50px rgba(52, 55, 56, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.68) !important;
+}
+
+/* Search dan profile tanpa blur */
+.search-box,
+.profile-mini,
+.category-tabs button,
+.add-btn,
+.qty-btn,
+.drink-img {
+  background: rgba(232, 235, 233, 0.44) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.62) !important;
+  box-shadow:
+    0 10px 24px rgba(52, 55, 56, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.68) !important;
+}
+
+/* Tombol aktif tetap orange */
+.nav-item.active,
+.nav-item:hover,
+.category-tabs button.active,
+.category-tabs button:hover,
+.cart-toggle,
+.order-btn,
+.export-btn,
+.add-btn:hover:not(:disabled),
+.add-btn.added {
+  background: linear-gradient(135deg, #ff7c45, #ff9a64) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Product image box tanpa blur */
+.product-card .drink-img,
+.drink-img,
+.cart-img {
+  background: rgba(220, 226, 224, 0.46) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Hilangkan overlay/pseudo efek lama yang membuat area terlihat kabur */
+.abstract-area::before,
+.abstract-area::after,
+.menu-area::before,
+.menu-area::after,
+.pos-luxury-area::before,
+.pos-luxury-area::after,
+.product-card::before,
+.product-card::after,
+.sidebar::before,
+.sidebar::after,
+.topbar::before,
+.topbar::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* =========================================================
+   FIX: Widget lebih clear, tidak terlalu putih, tanpa blur
+   Tempel PALING BAWAH public/css/style.css
+   ========================================================= */
+
+:root {
+  --glass-clear: rgba(214, 219, 215, 0.24);
+  --glass-clear-strong: rgba(205, 211, 207, 0.32);
+  --glass-clear-soft: rgba(225, 226, 220, 0.20);
+  --glass-border: rgba(255, 255, 255, 0.62);
+  --glass-shadow: 0 18px 42px rgba(85, 72, 60, 0.10);
+}
+
+body,
+.app-shell,
+.content,
+.menu-area,
+.history-area,
+.settings-area {
+  background-color: transparent !important;
+}
+
+body::before,
+.app-shell::before {
+  filter: none !important;
+}
+
+/* Matikan blur semua widget */
+.sidebar,
+.topbar,
+.menu-area,
+.history-area,
+.settings-area,
+.product-card,
+.category-tabs button,
+.search-box,
+.profile-mini,
+.stat-card,
+.history-search,
+.history-filter select,
+.history-table-wrap,
+.profile-panel,
+.profile-grid div,
+.profile-form-panel,
+.cart-drawer,
+.checkout-confirm-card,
+.checkout-success-card,
+.cart-item,
+.cart-empty,
+.add-btn,
+.qty-btn,
+.size-btn,
+.drink-img,
+.cart-img {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Container besar kanan dan kiri dibuat lebih clear abu-abu, bukan putih susu */
+.sidebar,
+.menu-area,
+.history-area,
+.settings-area {
+  background:
+    linear-gradient(135deg, rgba(226, 224, 214, 0.24), rgba(213, 219, 216, 0.18)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+.content {
+  background: transparent !important;
+}
+
+.topbar {
+  background:
+    linear-gradient(135deg, rgba(224, 226, 218, 0.18), rgba(218, 222, 217, 0.12)) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.48) !important;
+  box-shadow: none !important;
+}
+
+/* Hilangkan layer putih/oren lama di area POS */
+.abstract-area,
+.pos-luxury-area,
+.menu-area.abstract-area,
+.menu-area.pos-luxury-area {
+  background: transparent !important;
+}
+
+.abstract-area::before,
+.abstract-area::after,
+.pos-luxury-area::before,
+.pos-luxury-area::after,
+.menu-area::before,
+.menu-area::after,
+.history-area::before,
+.history-area::after,
+.settings-area::before,
+.settings-area::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Card produk: lebih gelap sedikit, clear, tidak putih */
+.product-card,
+.stat-card,
+.history-table-wrap,
+.profile-panel,
+.profile-form-panel,
+.checkout-confirm-card,
+.checkout-success-card,
+.cart-drawer {
+  background:
+    linear-gradient(135deg, rgba(215, 218, 212, 0.30), rgba(236, 230, 219, 0.18)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.64) !important;
+  box-shadow: 0 18px 40px rgba(78, 65, 52, 0.09) !important;
+}
+
+.product-card:hover,
+.stat-card:hover {
+  background:
+    linear-gradient(135deg, rgba(210, 215, 211, 0.34), rgba(234, 226, 214, 0.21)) !important;
+  box-shadow: 0 22px 48px rgba(78, 65, 52, 0.12) !important;
+}
+
+/* Kategori, search, input filter: clear abu-abu seperti contoh */
+.category-tabs button,
+.search-box,
+.history-search,
+.history-filter select,
+.profile-mini,
+.nav-item,
+.logout-button,
+.add-btn,
+.qty-btn,
+.size-btn,
+.reset-profile-btn,
+.form-row input,
+.form-row select {
+  background:
+    linear-gradient(135deg, rgba(215, 219, 216, 0.34), rgba(238, 232, 222, 0.18)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.68) !important;
+  box-shadow: 0 12px 28px rgba(75, 65, 55, 0.055) !important;
+}
+
+.category-tabs button.active,
+.category-tabs button:hover,
+.nav-item.active,
+.nav-item:hover {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #ff8654, #ff7447) !important;
+  border-color: rgba(255, 255, 255, 0.52) !important;
+  box-shadow: 0 14px 30px rgba(255, 116, 71, 0.22) !important;
+}
+
+/* Tombol Add to Cart jangan putih, tetap clear */
+.add-btn {
+  color: #ff6f3d !important;
+  font-weight: 800 !important;
+}
+
+.add-btn:hover:not(:disabled),
+.add-btn.added {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #ff8654, #ff7447) !important;
+  border-color: transparent !important;
+}
+
+/* Area gambar produk jangan terlalu putih */
+.product-card .drink-img,
+.drink-img,
+.cart-img {
+  background:
+    linear-gradient(135deg, rgba(198, 206, 204, 0.30), rgba(235, 230, 218, 0.18)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.58) !important;
+  box-shadow: 0 14px 28px rgba(62, 55, 48, 0.08) !important;
+}
+
+/* History table supaya tidak full putih */
+.history-table th {
+  background: rgba(206, 214, 211, 0.28) !important;
+  color: #5e6670 !important;
+}
+
+.history-table td {
+  background: rgba(235, 229, 219, 0.08) !important;
+}
+
+.history-table tbody tr:hover {
+  background: rgba(214, 219, 215, 0.18) !important;
+}
+
+.history-order-card,
+.history-item-card,
+.order-item-card,
+[class*="history"] .item-card,
+[class*="order"] .item-card {
+  background:
+    linear-gradient(135deg, rgba(207, 214, 211, 0.30), rgba(236, 229, 218, 0.16)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.58) !important;
+  box-shadow: 0 12px 26px rgba(64, 56, 49, 0.065) !important;
+}
+
+/* Settings */
+.profile-grid div,
+.form-row input,
+.form-row select {
+  background:
+    linear-gradient(135deg, rgba(213, 218, 214, 0.30), rgba(238, 230, 219, 0.16)) !important;
+}
+
+/* Modal dan cart item */
+.cart-item,
+.confirm-item-card,
+.success-item-card,
+.confirm-order-box,
+.success-order-box {
+  background:
+    linear-gradient(135deg, rgba(213, 218, 214, 0.32), rgba(238, 230, 219, 0.18)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.60) !important;
+  box-shadow: 0 12px 26px rgba(65, 56, 48, 0.07) !important;
+}
+
+/* Kurangi efek putih di bawah container */
+.menu-area,
+.history-area,
+.settings-area {
+  background-color: rgba(218, 219, 212, 0.16) !important;
+}
+
+/* =========================================================
+   FINAL FIX HISTORY - HILANGKAN PUTIH BESAR
+   Tempel PALING BAWAH style.css
+========================================================= */
+
+/* Body tetap pakai background orange utama */
+body:has(.history-area) {
+  background:
+    url("/images/pos-orange-bg.png") center center / cover no-repeat fixed !important;
+}
+
+/* Hilangkan putih besar dari app shell dan content */
+body:has(.history-area) .app-shell,
+body:has(.history-area) .content {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* Area utama history jangan pakai panel putih */
+body:has(.history-area) .history-area {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* Matikan pseudo layer yang mungkin bikin putih */
+body:has(.history-area) .content::before,
+body:has(.history-area) .content::after,
+body:has(.history-area) .history-area::before,
+body:has(.history-area) .history-area::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+}
+
+/* Header History jangan jadi kotak putih */
+body:has(.history-area) .history-head {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Kartu statistik dibuat clear abu-abu, bukan putih */
+body:has(.history-area) .stat-card {
+  background: rgba(170, 176, 170, 0.18) !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 16px 34px rgba(80, 55, 36, 0.07) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Search dan select lebih clear */
+body:has(.history-area) .history-search,
+body:has(.history-area) .history-filter select {
+  background: rgba(170, 176, 170, 0.16) !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.42) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    0 10px 26px rgba(80, 55, 36, 0.045) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Wrapper tabel jangan putih */
+body:has(.history-area) .history-table-wrap {
+  background: rgba(150, 157, 153, 0.16) !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.40) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    0 20px 42px rgba(80, 55, 36, 0.07) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Tabel jangan punya warna putih */
+body:has(.history-area) .history-table,
+body:has(.history-area) .history-table tbody,
+body:has(.history-area) .history-table tr,
+body:has(.history-area) .history-table td {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Header tabel dibuat abu clear */
+body:has(.history-area) .history-table th {
+  background: rgba(135, 142, 138, 0.20) !important;
+  background-image: none !important;
+  color: rgba(47, 48, 55, 0.72) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Row tabel transparan */
+body:has(.history-area) .history-table tbody tr {
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+body:has(.history-area) .history-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Garis tabel halus */
+body:has(.history-area) .history-table th,
+body:has(.history-area) .history-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Card item dalam kolom Item jangan putih */
+body:has(.history-area) .history-table td div,
+body:has(.history-area) .history-table td article,
+body:has(.history-area) .history-table td section {
+  background-color: transparent !important;
+}
+
+/* Ini target kotak item seperti Es Teh Original */
+body:has(.history-area) .history-table td div[class],
+body:has(.history-area) .history-table td .order-item,
+body:has(.history-area) .history-table td .history-item,
+body:has(.history-area) .history-table td .history-item-summary,
+body:has(.history-area) .history-table td .item-summary {
+  background: rgba(150, 157, 153, 0.18) !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 8px 20px rgba(80, 55, 36, 0.04) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Tapi jangan rusak tombol/badge status */
+body:has(.history-area) .status,
+body:has(.history-area) .status-pill {
+  background: #eafff3 !important;
+  color: #1f9b5b !important;
+  border: 1px solid rgba(31, 155, 91, 0.14) !important;
+}
+
+/* Tombol detail */
+body:has(.history-area) .history-table a,
+body:has(.history-area) .history-table button {
+  background: rgba(255, 247, 242, 0.42) !important;
+  color: #ff7040 !important;
+  border: 1px solid rgba(255, 112, 64, 0.22) !important;
+  box-shadow: none !important;
+}
+
+/* Export tetap orange */
+body:has(.history-area) .export-btn {
+  background: linear-gradient(135deg, #ff8758, #ff7040) !important;
+  color: #ffffff !important;
+  border: 0 !important;
+  box-shadow: 0 18px 36px rgba(255, 112, 64, 0.22) !important;
+}
+
+/* Sidebar tetap seperti home, bukan putih penuh */
+body:has(.history-area) .sidebar {
+  background: rgba(180, 184, 178, 0.12) !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.46) !important;
+  box-shadow: 0 20px 48px rgba(80, 55, 36, 0.08) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* =========================================================
+   HISTORY CLEAN LAYOUT - RAPI, CLEAR, TIDAK TERLALU PUTIH
+   Tempel PALING BAWAH public/css/style.css
+========================================================= */
+
+body:has(.history-area) {
+  background: url('/images/pos-orange-bg.png') center center / cover no-repeat fixed !important;
+}
+
+body:has(.history-area) .app-shell,
+body:has(.history-area) .content,
+body:has(.history-area) .history-area {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+body:has(.history-area) .history-area {
+  min-height: calc(100vh - 34px) !important;
+  margin: 18px 24px 18px 20px !important;
+  padding: 42px 44px 48px !important;
+  border-radius: 28px !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+  background: rgba(176, 166, 148, 0.14) !important;
+  box-shadow: 0 24px 58px rgba(87, 55, 33, 0.08) !important;
+  overflow: hidden !important;
+}
+
+body:has(.history-area) .history-area::before,
+body:has(.history-area) .history-area::after,
+body:has(.history-area) .content::before,
+body:has(.history-area) .content::after {
+  content: none !important;
+  display: none !important;
+}
+
+body:has(.history-area) .history-head {
+  margin: 0 0 26px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body:has(.history-area) .history-head h1 {
+  font-size: 32px !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.8px !important;
+  color: #20232b !important;
+}
+
+body:has(.history-area) .eyebrow {
+  color: #f06f3f !important;
+  letter-spacing: 0.10em !important;
+  font-size: 12px !important;
+}
+
+body:has(.history-area) .export-btn {
+  height: 56px !important;
+  padding: 0 30px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #ff8959, #ff6f42) !important;
+  color: #ffffff !important;
+  box-shadow: 0 18px 34px rgba(255, 111, 66, 0.24) !important;
+}
+
+body:has(.history-area) .history-stats {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  margin-bottom: 22px !important;
+}
+
+body:has(.history-area) .stat-card {
+  min-height: 112px !important;
+  padding: 22px 24px !important;
+  border-radius: 22px !important;
+  background: rgba(188, 184, 170, 0.20) !important;
+  background-image: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(155,160,154,0.08)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.40) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.32), 0 12px 28px rgba(80,55,36,0.06) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body:has(.history-area) .stat-card span {
+  color: rgba(45, 48, 55, 0.48) !important;
+  font-weight: 800 !important;
+  font-size: 12px !important;
+}
+
+body:has(.history-area) .stat-card strong {
+  display: block !important;
+  margin-top: 6px !important;
+  color: #1f222b !important;
+  font-size: 27px !important;
+  letter-spacing: -0.7px !important;
+}
+
+body:has(.history-area) .history-filter {
+  display: grid !important;
+  grid-template-columns: minmax(320px, 1fr) 180px 180px !important;
+  gap: 14px !important;
+  margin-bottom: 20px !important;
+}
+
+body:has(.history-area) .history-search,
+body:has(.history-area) .history-filter select {
+  height: 54px !important;
+  border-radius: 17px !important;
+  background: rgba(180, 180, 170, 0.18) !important;
+  border: 1px solid rgba(255,255,255,0.38) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 8px 20px rgba(80,55,36,0.045) !important;
+  color: #2c3038 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body:has(.history-area) .history-search input::placeholder {
+  color: rgba(45,48,55,0.52) !important;
+}
+
+body:has(.history-area) .history-table-wrap {
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  background: rgba(178, 170, 154, 0.16) !important;
+  border: 1px solid rgba(255,255,255,0.36) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.24), 0 16px 38px rgba(80,55,36,0.06) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body:has(.history-area) .history-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background: transparent !important;
+}
+
+body:has(.history-area) .history-table th {
+  padding: 18px 22px !important;
+  background: rgba(104, 110, 103, 0.18) !important;
+  color: rgba(36, 39, 46, 0.70) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.22) !important;
+}
+
+body:has(.history-area) .history-table td {
+  padding: 18px 22px !important;
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255,255,255,0.14) !important;
+  color: #252a33 !important;
+  vertical-align: middle !important;
+}
+
+body:has(.history-area) .history-table tbody tr {
+  background: rgba(255,255,255,0.015) !important;
+  transition: 0.2s ease !important;
+}
+
+body:has(.history-area) .history-table tbody tr:hover {
+  background: rgba(255,255,255,0.07) !important;
+}
+
+/* Rapikan semua kotak item dalam kolom Item */
+body:has(.history-area) .history-table td div[class*="item"],
+body:has(.history-area) .history-table td div[class*="order"],
+body:has(.history-area) .history-item-summary,
+body:has(.history-area) .order-item-card,
+body:has(.history-area) .history-order-item,
+body:has(.history-area) .item-summary {
+  max-width: 330px !important;
+  border-radius: 16px !important;
+  padding: 12px 14px !important;
+  background: rgba(120, 126, 119, 0.16) !important;
+  border: 1px solid rgba(255,255,255,0.28) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 18px rgba(80,55,36,0.035) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body:has(.history-area) .history-table td div[class*="item"] div,
+body:has(.history-area) .history-table td div[class*="order"] div {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body:has(.history-area) .history-table td strong,
+body:has(.history-area) .history-table td b {
+  color: #20242c !important;
+}
+
+body:has(.history-area) .history-table td small,
+body:has(.history-area) .history-table td span {
+  color: rgba(45,48,55,0.56) !important;
+}
+
+body:has(.history-area) .history-table .more-items,
+body:has(.history-area) .history-table span[class*="more"],
+body:has(.history-area) .history-table .item-more {
+  display: inline-flex !important;
+  margin-top: 8px !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 244, 236, 0.42) !important;
+  border: 1px solid rgba(255,112,64,0.20) !important;
+  color: #ff7040 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+}
+
+body:has(.history-area) .status,
+body:has(.history-area) .status-pill,
+body:has(.history-area) .status.selesai,
+body:has(.history-area) .status-pill.done {
+  min-width: 86px !important;
+  padding: 8px 14px !important;
+  border-radius: 999px !important;
+  background: rgba(232,255,244,0.76) !important;
+  border: 1px solid rgba(22,160,96,0.14) !important;
+  color: #15975a !important;
+  font-weight: 900 !important;
+}
+
+body:has(.history-area) .history-table a,
+body:has(.history-area) .history-table button,
+body:has(.history-area) .detail-btn,
+body:has(.history-area) .receipt-btn {
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  border-radius: 999px !important;
+  background: rgba(255,246,239,0.52) !important;
+  border: 1px solid rgba(255,112,64,0.24) !important;
+  color: #ff7040 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  box-shadow: none !important;
+}
+
+body:has(.history-area) .history-empty {
+  background: rgba(180, 180, 170, 0.18) !important;
+  border: 1px dashed rgba(255,255,255,0.38) !important;
+  color: rgba(45,48,55,0.62) !important;
+}
+
+body:has(.history-area) .sidebar {
+  background: rgba(170, 160, 143, 0.12) !important;
+  border: 1px solid rgba(255,255,255,0.45) !important;
+  box-shadow: 0 20px 48px rgba(80,55,36,0.07) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+@media (max-width: 1180px) {
+  body:has(.history-area) .history-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body:has(.history-area) .history-filter {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 780px) {
+  body:has(.history-area) .history-area {
+    margin: 14px !important;
+    padding: 28px 20px !important;
+  }
+
+  body:has(.history-area) .history-stats {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* =========================================================
+   SETTINGS PAGE - RAPIIHKAN TAMPILAN
+   Tempel PALING BAWAH style.css
+========================================================= */
+
+body:has(.settings-area) .content {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+body:has(.settings-area) .settings-area {
+  padding: 34px 36px 44px !important;
+  background: transparent !important;
+}
+
+/* Judul halaman settings */
+body:has(.settings-area) .settings-area > h1,
+body:has(.settings-area) .settings-area .page-title,
+body:has(.settings-area) .settings-area .settings-title {
+  margin-bottom: 22px !important;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  color: #26272d !important;
+  letter-spacing: -0.4px !important;
+}
+
+/* Panel profil utama */
+body:has(.settings-area) .profile-panel {
+  max-width: 980px !important;
+  border-radius: 30px !important;
+  background: rgba(185, 190, 184, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.42) !important;
+  box-shadow:
+    0 18px 40px rgba(80, 55, 36, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+  overflow: hidden !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Cover atas jangan terlalu tinggi */
+body:has(.settings-area) .profile-cover {
+  height: 135px !important;
+  background:
+    linear-gradient(135deg, rgba(255, 214, 184, 0.18), rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.04) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Area avatar + nama */
+body:has(.settings-area) .profile-main {
+  align-items: center !important;
+  gap: 18px !important;
+  padding: 0 30px 20px !important;
+  transform: translateY(-26px) !important;
+  margin-bottom: -8px !important;
+}
+
+body:has(.settings-area) .profile-avatar {
+  width: 84px !important;
+  height: 84px !important;
+  border: 6px solid rgba(255, 255, 255, 0.86) !important;
+  background: linear-gradient(135deg, #a65f35, #d88a57) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 24px rgba(80, 55, 36, 0.14) !important;
+}
+
+body:has(.settings-area) .profile-main h1,
+body:has(.settings-area) .profile-main h2,
+body:has(.settings-area) .profile-main strong {
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  margin-bottom: 4px !important;
+  color: #26272d !important;
+}
+
+body:has(.settings-area) .profile-main p,
+body:has(.settings-area) .profile-main small,
+body:has(.settings-area) .profile-main .subtitle {
+  color: rgba(38, 39, 45, 0.62) !important;
+  font-size: 14px !important;
+}
+
+/* Grid info profil */
+body:has(.settings-area) .profile-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  padding: 0 30px 30px !important;
+}
+
+body:has(.settings-area) .profile-grid > div {
+  padding: 18px 18px 16px !important;
+  border-radius: 18px !important;
+  background: rgba(185, 190, 184, 0.13) !important;
+  border: 1px solid rgba(255, 255, 255, 0.40) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    0 10px 24px rgba(80, 55, 36, 0.05) !important;
+}
+
+body:has(.settings-area) .profile-grid span {
+  margin-bottom: 7px !important;
+  color: rgba(38, 39, 45, 0.52) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+body:has(.settings-area) .profile-grid strong,
+body:has(.settings-area) .profile-grid p,
+body:has(.settings-area) .profile-grid .value {
+  color: #2a2b31 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
+/* Panel form bawah */
+body:has(.settings-area) .profile-form-panel {
+  max-width: 980px !important;
+  margin-top: 22px !important;
+  padding: 26px 28px 28px !important;
+  border-radius: 28px !important;
+  background: rgba(185, 190, 184, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.42) !important;
+  box-shadow:
+    0 18px 40px rgba(80, 55, 36, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+body:has(.settings-area) .settings-form-head {
+  margin-bottom: 18px !important;
+  padding-bottom: 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+body:has(.settings-area) .settings-form-head .eyebrow {
+  color: #f47a45 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+}
+
+body:has(.settings-area) .settings-form-head h2 {
+  margin: 6px 0 8px !important;
+  font-size: 22px !important;
+  color: #26272d !important;
+  line-height: 1.2 !important;
+}
+
+body:has(.settings-area) .settings-form-head p {
+  color: rgba(38, 39, 45, 0.58) !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+/* Form */
+body:has(.settings-area) .settings-form {
+  display: grid !important;
+  gap: 16px !important;
+}
+
+body:has(.settings-area) .form-row {
+  gap: 8px !important;
+}
+
+body:has(.settings-area) .form-row label {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: rgba(38, 39, 45, 0.74) !important;
+}
+
+body:has(.settings-area) .form-row input,
+body:has(.settings-area) .form-row select,
+body:has(.settings-area) textarea {
+  width: 100% !important;
+  min-height: 52px !important;
+  padding: 14px 16px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.44) !important;
+  background: rgba(190, 194, 188, 0.16) !important;
+  color: #2a2b31 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 8px 18px rgba(80, 55, 36, 0.04) !important;
+  outline: none !important;
+}
+
+body:has(.settings-area) .form-row input:focus,
+body:has(.settings-area) .form-row select:focus,
+body:has(.settings-area) textarea:focus {
+  border-color: rgba(255, 127, 80, 0.42) !important;
+  box-shadow:
+    0 0 0 4px rgba(255, 127, 80, 0.09),
+    0 10px 22px rgba(80, 55, 36, 0.05) !important;
+  background: rgba(200, 204, 198, 0.18) !important;
+}
+
+/* Tombol */
+body:has(.settings-area) .form-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  margin-top: 6px !important;
+}
+
+body:has(.settings-area) .form-actions button,
+body:has(.settings-area) .save-profile-btn,
+body:has(.settings-area) .submit-profile-btn {
+  min-height: 48px !important;
+  padding: 0 22px !important;
+  border-radius: 14px !important;
+  border: 0 !important;
+  background: linear-gradient(135deg, #ff8758, #ff7040) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  box-shadow: 0 14px 28px rgba(255, 112, 64, 0.20) !important;
+}
+
+body:has(.settings-area) .reset-profile-btn {
+  min-height: 48px !important;
+  padding: 0 18px !important;
+  border-radius: 14px !important;
+  background: rgba(255, 245, 239, 0.52) !important;
+  color: #c86432 !important;
+  border: 1px solid rgba(255, 112, 64, 0.18) !important;
+  box-shadow: none !important;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  body:has(.settings-area) .profile-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body:has(.settings-area) .profile-main {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  body:has(.settings-area) .profile-form-panel,
+  body:has(.settings-area) .profile-panel {
+    max-width: 100% !important;
+  }
+}
+
+/* =========================================================
+   SETTINGS FORM - RAPIIHKAN BAGIAN BAWAH
+   Tempel PALING BAWAH style.css
+========================================================= */
+
+body:has(.settings-area) .profile-form-panel {
+  max-width: 980px !important;
+  margin-top: 24px !important;
+  padding: 28px 28px 26px !important;
+  border-radius: 28px !important;
+  background: rgba(175, 181, 175, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.42) !important;
+  box-shadow:
+    0 20px 42px rgba(80, 55, 36, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+/* Header panel form */
+body:has(.settings-area) .settings-form-head {
+  margin-bottom: 22px !important;
+  padding: 0 0 16px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+body:has(.settings-area) .settings-form-head .eyebrow {
+  display: inline-block !important;
+  margin-bottom: 8px !important;
+  color: #f47a45 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+body:has(.settings-area) .settings-form-head h2 {
+  margin: 0 0 8px !important;
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  color: #26272d !important;
+}
+
+body:has(.settings-area) .settings-form-head p {
+  margin: 0 !important;
+  max-width: 760px !important;
+  color: rgba(38, 39, 45, 0.60) !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+}
+
+/* Layout form jadi 2 kolom agar tidak memanjang */
+body:has(.settings-area) .settings-form {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px 16px !important;
+  align-items: start !important;
+}
+
+/* Setiap field */
+body:has(.settings-area) .form-row {
+  display: grid !important;
+  gap: 8px !important;
+  padding: 14px 14px 16px !important;
+  border-radius: 20px !important;
+  background: rgba(190, 194, 188, 0.10) !important;
+  border: 1px solid rgba(255, 255, 255, 0.26) !important;
+}
+
+/* Label */
+body:has(.settings-area) .form-row label {
+  margin: 0 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: rgba(38, 39, 45, 0.78) !important;
+}
+
+/* Input / select */
+body:has(.settings-area) .form-row input,
+body:has(.settings-area) .form-row select,
+body:has(.settings-area) .form-row textarea {
+  width: 100% !important;
+  min-height: 52px !important;
+  padding: 14px 16px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.40) !important;
+  background: rgba(220, 223, 217, 0.18) !important;
+  color: #2a2b31 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 8px 18px rgba(80, 55, 36, 0.04) !important;
+  outline: none !important;
+}
+
+body:has(.settings-area) .form-row input:focus,
+body:has(.settings-area) .form-row select:focus,
+body:has(.settings-area) .form-row textarea:focus {
+  border-color: rgba(255, 127, 80, 0.42) !important;
+  background: rgba(226, 229, 223, 0.20) !important;
+  box-shadow:
+    0 0 0 4px rgba(255, 127, 80, 0.08),
+    0 10px 20px rgba(80, 55, 36, 0.05) !important;
+}
+
+/* Tombol action dijadikan rapi satu baris */
+body:has(.settings-area) .form-actions {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+  margin-top: 4px !important;
+  padding-top: 8px !important;
+}
+
+/* Tombol simpan jangan full lebar */
+body:has(.settings-area) .form-actions button,
+body:has(.settings-area) .save-profile-btn,
+body:has(.settings-area) .submit-profile-btn {
+  min-width: 220px !important;
+  width: auto !important;
+  min-height: 52px !important;
+  padding: 0 28px !important;
+  border-radius: 16px !important;
+  border: 0 !important;
+  background: linear-gradient(135deg, #ff8758, #ff7040) !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 16px 28px rgba(255, 112, 64, 0.22) !important;
+}
+
+/* Reset button */
+body:has(.settings-area) .reset-profile-btn {
+  min-width: 160px !important;
+  width: auto !important;
+  min-height: 52px !important;
+  padding: 0 22px !important;
+  border-radius: 16px !important;
+  background: rgba(255, 244, 238, 0.55) !important;
+  color: #c86432 !important;
+  border: 1px solid rgba(255, 112, 64, 0.18) !important;
+  box-shadow: none !important;
+  font-weight: 700 !important;
+}
+
+/* Hover tombol */
+body:has(.settings-area) .form-actions button:hover,
+body:has(.settings-area) .save-profile-btn:hover,
+body:has(.settings-area) .submit-profile-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 20px 32px rgba(255, 112, 64, 0.26) !important;
+}
+
+body:has(.settings-area) .reset-profile-btn:hover {
+  background: rgba(255, 239, 230, 0.72) !important;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  body:has(.settings-area) .settings-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  body:has(.settings-area) .form-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  body:has(.settings-area) .form-actions button,
+  body:has(.settings-area) .save-profile-btn,
+  body:has(.settings-area) .submit-profile-btn,
+  body:has(.settings-area) .reset-profile-btn {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+}
+
+/* =========================================================
+   SETTINGS - FIX BAGIAN YANG MASIH KELEWATAN
+   Tempel PALING BAWAH style.css
+========================================================= */
+
+/* Area settings utama */
+body:has(.settings-area) .settings-area {
+  background: transparent !important;
+  padding: 34px 36px 44px !important;
+}
+
+/* Hilangkan background lama yang masih nempel */
+body:has(.settings-area) .content,
+body:has(.settings-area) .content::before,
+body:has(.settings-area) .content::after,
+body:has(.settings-area) .settings-area::before,
+body:has(.settings-area) .settings-area::after {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* Panel profil atas */
+body:has(.settings-area) .profile-panel {
+  max-width: 980px !important;
+  margin-bottom: 22px !important;
+  border-radius: 30px !important;
+  overflow: hidden !important;
+  background: rgba(175, 181, 175, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.42) !important;
+  box-shadow:
+    0 18px 40px rgba(80, 55, 36, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+/* Cover profil */
+body:has(.settings-area) .profile-cover {
+  height: 128px !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 214, 184, 0.10)),
+    rgba(255, 255, 255, 0.02) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Area avatar + nama */
+body:has(.settings-area) .profile-main {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  padding: 0 30px 20px !important;
+  transform: translateY(-24px) !important;
+  margin-bottom: -6px !important;
+  background: transparent !important;
+}
+
+body:has(.settings-area) .profile-avatar {
+  width: 82px !important;
+  height: 82px !important;
+  border-radius: 50% !important;
+  border: 5px solid rgba(255, 255, 255, 0.86) !important;
+  background: linear-gradient(135deg, #a85f36, #d88958) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 24px rgba(80, 55, 36, 0.12) !important;
+}
+
+body:has(.settings-area) .profile-main h1,
+body:has(.settings-area) .profile-main h2,
+body:has(.settings-area) .profile-main strong {
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  color: #26272d !important;
+  margin-bottom: 4px !important;
+}
+
+body:has(.settings-area) .profile-main p,
+body:has(.settings-area) .profile-main small {
+  color: rgba(38, 39, 45, 0.58) !important;
+  font-size: 14px !important;
+}
+
+/* Card info profil atas */
+body:has(.settings-area) .profile-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  padding: 0 30px 30px !important;
+}
+
+body:has(.settings-area) .profile-grid > div {
+  padding: 18px 18px 16px !important;
+  border-radius: 18px !important;
+  background: rgba(190, 194, 188, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.34) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.20),
+    0 8px 18px rgba(80, 55, 36, 0.04) !important;
+}
+
+body:has(.settings-area) .profile-grid span {
+  display: block !important;
+  margin-bottom: 7px !important;
+  color: rgba(38, 39, 45, 0.52) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+body:has(.settings-area) .profile-grid strong,
+body:has(.settings-area) .profile-grid p,
+body:has(.settings-area) .profile-grid .value {
+  color: #2a2b31 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+}
+
+/* Panel form bawah */
+body:has(.settings-area) .profile-form-panel {
+  max-width: 980px !important;
+  margin-top: 22px !important;
+  padding: 28px !important;
+  border-radius: 28px !important;
+  background: rgba(175, 181, 175, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.42) !important;
+  box-shadow:
+    0 18px 40px rgba(80, 55, 36, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26) !important;
+}
+
+/* Header form supaya tidak mentah */
+body:has(.settings-area) .settings-form-head {
+  margin-bottom: 22px !important;
+  padding: 0 0 16px !important;
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+body:has(.settings-area) .settings-form-head h2 {
+  margin: 6px 0 8px !important;
+  font-size: 22px !important;
+  color: #26272d !important;
+}
+
+body:has(.settings-area) .settings-form-head p {
+  max-width: 760px !important;
+  color: rgba(38, 39, 45, 0.58) !important;
+  line-height: 1.6 !important;
+}
+
+/* Form 2 kolom */
+body:has(.settings-area) .settings-form {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+body:has(.settings-area) .form-row {
+  display: grid !important;
+  gap: 8px !important;
+  padding: 14px !important;
+  border-radius: 20px !important;
+  background: rgba(190, 194, 188, 0.10) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+}
+
+body:has(.settings-area) .form-row label {
+  margin: 0 !important;
+  color: rgba(38, 39, 45, 0.76) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+/* Input */
+body:has(.settings-area) .form-row input,
+body:has(.settings-area) .form-row select,
+body:has(.settings-area) .form-row textarea {
+  min-height: 52px !important;
+  padding: 14px 16px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.40) !important;
+  background: rgba(220, 223, 217, 0.18) !important;
+  color: #2a2b31 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.20),
+    0 8px 16px rgba(80, 55, 36, 0.03) !important;
+}
+
+/* Tombol action */
+body:has(.settings-area) .form-actions {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  gap: 14px !important;
+  margin-top: 6px !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+}
+
+body:has(.settings-area) .save-profile-btn,
+body:has(.settings-area) .submit-profile-btn,
+body:has(.settings-area) .form-actions button[type="submit"] {
+  min-width: 220px !important;
+  min-height: 52px !important;
+  width: auto !important;
+  padding: 0 28px !important;
+  border-radius: 16px !important;
+  border: 0 !important;
+  background: linear-gradient(135deg, #ff8758, #ff7040) !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 16px 28px rgba(255, 112, 64, 0.22) !important;
+}
+
+body:has(.settings-area) .reset-profile-btn {
+  min-width: 160px !important;
+  min-height: 52px !important;
+  width: auto !important;
+  padding: 0 22px !important;
+  border-radius: 16px !important;
+  background: rgba(255, 244, 238, 0.55) !important;
+  color: #c86432 !important;
+  border: 1px solid rgba(255, 112, 64, 0.18) !important;
+  box-shadow: none !important;
+  font-weight: 700 !important;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  body:has(.settings-area) .profile-grid,
+  body:has(.settings-area) .settings-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  body:has(.settings-area) .form-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  body:has(.settings-area) .save-profile-btn,
+  body:has(.settings-area) .submit-profile-btn,
+  body:has(.settings-area) .reset-profile-btn,
+  body:has(.settings-area) .form-actions button {
+    width: 100% !important;
+  }
+}
+
+/* =========================================================
+   FIX SETTINGS FORM HEADER - HILANGKAN KOTAK MENTAH
+   Tempel PALING BAWAH style.css
+========================================================= */
+
+body:has(.settings-area) .profile-form-panel .settings-form-head {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 0 18px !important;
+  margin: 0 0 22px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22) !important;
+}
+
+body:has(.settings-area) .profile-form-panel .settings-form-head .eyebrow {
+  display: inline-flex !important;
+  align-items: center !important;
+  width: fit-content !important;
+  margin: 0 0 10px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #ff7040 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.09em !important;
+  text-transform: uppercase !important;
+}
+
+body:has(.settings-area) .profile-form-panel .settings-form-head h2 {
+  margin: 0 0 8px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #25262d !important;
+  font-size: 25px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.4px !important;
+}
+
+body:has(.settings-area) .profile-form-panel .settings-form-head p {
+  max-width: 760px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: rgba(38, 39, 45, 0.62) !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+}
+
+/* Pastikan anak-anak header tidak ikut punya kotak */
+body:has(.settings-area) .profile-form-panel .settings-form-head * {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-top: 0 !important;
+  box-shadow: none !important;
+}

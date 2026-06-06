@@ -57,43 +57,11 @@
     </aside>
 
     <section class="content">
-      <header class="topbar">
-        <label class="search-box" for="historySearchTop">
-          <span>⌕</span>
-          <input
-            id="historySearchTop"
-            type="search"
-            placeholder="Search order ID atau produk..."
-            autocomplete="off"
-          >
-        </label>
-
-        <div class="topbar-spacer"></div>
-
-        <a class="cart-toggle page-link-btn" href="{{ route('frontend.home') }}">
-          🛒 POS Menu
-        </a>
-
-        <a class="profile-mini" href="{{ route('frontend.settings') }}">
-          <div class="avatar">
-            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-          </div>
-
-          <div>
-            <strong>{{ auth()->user()->name }}</strong>
-            <p>{{ auth()->user()->email }}</p>
-          </div>
-        </a>
-      </header>
-
       <section class="history-area">
         <div class="history-head">
           <div>
             <span class="eyebrow">Riwayat Transaksi</span>
             <h1>History Order</h1>
-            <p>
-              History menampilkan data transaksi. Tabel bisa difilter berdasarkan hari ini, kemarin, minggu ini, bulan ini, atau semua order.
-            </p>
           </div>
 
           <button class="export-btn" type="button" id="exportHistory">
@@ -189,7 +157,6 @@
       <div class="invoice-modal-head">
         <div>
           <span class="eyebrow">Detail Transaksi</span>
-          <h2>Struk Order</h2>
           <p id="invoiceOrderCode">-</p>
         </div>
 
@@ -201,7 +168,6 @@
       <div class="invoice-preview" id="invoicePreview">
         <div class="invoice-brand">
           <h3>Ngunjuk POS</h3>
-          <p>Sistem Informasi Kasir UMKM Ngunjuk</p>
         </div>
 
         <div class="invoice-meta">
