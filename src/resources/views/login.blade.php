@@ -13,22 +13,16 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=login-orange-luxury-final">
 </head>
 
 <body class="login-page">
+  <div class="login-blur-bg" aria-hidden="true"></div>
+
   <main class="luxury-login-shell" aria-label="Halaman login Ngunjuk POS">
     <section class="luxury-login-hero">
       <div class="luxury-hero-glow luxury-hero-glow-one"></div>
       <div class="luxury-hero-glow luxury-hero-glow-two"></div>
-
-      <div class="luxury-brand-row">
-        <div class="brand luxury-login-brand">
-          <span>Ngun</span>juk
-        </div>
-
-        <span class="luxury-brand-badge">POS System</span>
-      </div>
 
       <div class="luxury-hero-content">
         <span class="luxury-line-accent"></span>
@@ -39,9 +33,6 @@
         </h1>
 
         <div class="luxury-title-divider">
-          <span></span>
-          <i></i>
-          <span></span>
         </div>
 
         <p>

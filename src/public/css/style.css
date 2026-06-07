@@ -2819,7 +2819,7 @@ img {
   inset: 0;
   z-index: 50;
   background: rgba(31, 31, 36, 0.38);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(9px);
   opacity: 0;
   pointer-events: none;
   transition: 0.25s ease;
@@ -3051,7 +3051,7 @@ img {
   inset: 0;
   z-index: 48;
   background: rgba(31, 31, 36, 0.38);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(9px);
   opacity: 0;
   pointer-events: none;
   transition: 0.25s ease;
@@ -5784,7 +5784,7 @@ body:has(.pos-luxury-area):not(:has(.history-area)):not(:has(.settings-area)) {
   inset: 0 !important;
   z-index: 200 !important;
   background: rgba(31, 31, 36, 0.42) !important;
-  backdrop-filter: blur(5px) !important;
+  backdrop-filter: blur(9px) !important;
 }
 
 /* Drawer cart harus paling atas */
@@ -6698,7 +6698,7 @@ body {
 .checkout-confirm-backdrop,
 .checkout-success-backdrop {
   background: rgba(38, 47, 55, 0.28) !important;
-  backdrop-filter: blur(7px) !important;
+  backdrop-filter: blur(9px) !important;
   -webkit-backdrop-filter: blur(7px) !important;
 }
 
@@ -8560,3 +8560,420 @@ body:has(.settings-area) .profile-form-panel .settings-form-head * {
   border-top: 0 !important;
   box-shadow: none !important;
 }
+
+/* =========================================================
+   FINAL FIX LOGIN BACKGROUND BLUR
+   Background login pakai layer sendiri
+   POS utama tidak ikut blur
+   Tempel PALING BAWAH public/css/style.css
+========================================================= */
+
+body.login-page {
+  position: relative !important;
+  min-height: 100vh !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+
+  /* Matikan background gradient login lama */
+  background: #fff3e6 !important;
+  background-image: none !important;
+}
+
+/* Matikan pseudo background lama login yang bikin background jadi polos */
+body.login-page::before,
+body.login-page::after {
+  display: none !important;
+  content: none !important;
+}
+
+.login-blur-bg {
+  position: fixed !important;
+  inset: -18px !important;
+  z-index: -2 !important;
+  pointer-events: none !important;
+
+  background-image: url("/images/pos-orange-bg.png") !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+
+  /* Blur dibuat tipis */
+  filter: blur(9px) saturate(112%) brightness(1.02) !important;
+  transform: scale(1.025) !important;
+}
+
+/* Overlay tipis supaya hasil blur tetap soft dan elegan */
+.login-blur-bg::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+
+  /* Overlay dibuat sangat tipis supaya background masih kelihatan */
+  background:
+    linear-gradient(135deg, rgba(255, 246, 238, 0.06), rgba(255, 255, 255, 0.03)) !important;
+}
+
+/* Supaya card login tetap tajam, tidak blur */
+body.login-page .luxury-login-shell {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Halaman POS utama tetap normal */
+body:not(.login-page),
+body:not(.login-page) .app-shell {
+  background-image: url("/images/pos-orange-bg.png") !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+/* =========================================================
+   RESET BACKGROUND LAMA LOGIN HERO
+   Menghapus bulet, garis lingkaran, shape lama, dan layer glow lama
+========================================================= */
+
+.luxury-login-hero {
+  position: relative !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  padding: 68px 66px !important;
+
+  /* background baru polos dulu */
+  background:
+    linear-gradient(135deg, #fff7ee 0%, #ffe0c7 48%, #ffad67 100%) !important;
+}
+
+/* HAPUS SEMUA BACKGROUND LAMA */
+.luxury-login-hero::before,
+.luxury-login-hero::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* HAPUS SHAPE / GLOW LAMA */
+.luxury-hero-glow,
+.luxury-hero-glow-one,
+.luxury-hero-glow-two {
+  display: none !important;
+}
+
+/* HAPUS GARIS / OMBak LAMA YANG MENEMPEL KE CONTENT */
+.luxury-hero-content::before,
+.luxury-hero-content::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* pastikan isi tetap muncul */
+.luxury-brand-row,
+.luxury-hero-content,
+.luxury-hero-footer {
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+/* =========================================================
+   FORCE LOGIN HERO DESIGN - ORANGE WAVE LUXURY
+   Ditaruh langsung di login.blade.php supaya pasti kebaca
+========================================================= */
+
+body.login-page {
+  min-height: 100vh !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 34px !important;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(255, 255, 255, 0.72) 0 160px, transparent 420px),
+    radial-gradient(circle at 92% 88%, rgba(255, 101, 22, 0.28) 0 220px, transparent 520px),
+    linear-gradient(135deg, #fff8ef 0%, #ffe2c5 45%, #ffad62 100%) !important;
+}
+
+body.login-page::before {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.38) 1px, transparent 1.4px);
+  background-size: 22px 22px !important;
+  opacity: 0.42 !important;
+  mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.72), transparent 88%) !important;
+}
+
+.luxury-login-shell {
+  position: relative !important;
+  width: min(1320px, 96vw) !important;
+  min-height: 720px !important;
+  display: grid !important;
+  grid-template-columns: 1fr 0.98fr !important;
+  overflow: hidden !important;
+  border-radius: 34px !important;
+  background: rgba(255, 255, 255, 0.76) !important;
+  border: 1px solid rgba(255, 255, 255, 0.82) !important;
+  box-shadow:
+    0 38px 96px rgba(105, 58, 27, 0.18),
+    0 14px 36px rgba(105, 58, 27, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+/* PANEL KIRI */
+.luxury-login-hero {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+  padding: 68px 66px !important;
+  color: #252832 !important;
+  background:
+    linear-gradient(135deg, #fff8f0 0%, #fee4c7 44%, #ffae63 100%) !important;
+}
+
+/* layer titik + cahaya diagonal */
+.luxury-login-hero::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.32) 1px, transparent 1.35px) 0 0 / 22px 22px,
+    linear-gradient(
+      128deg,
+      transparent 0 57%,
+      rgba(255, 255, 255, 0.20) 57.5% 58.3%,
+      transparent 58.8% 100%
+    ),
+    radial-gradient(
+      ellipse at 100% 4%,
+      rgba(255, 126, 38, 0.26) 0%,
+      rgba(255, 174, 100, 0.14) 38%,
+      transparent 66%
+    ) !important;
+}
+
+/* glow orange kanan atas */
+.luxury-login-hero::after {
+  content: "" !important;
+  position: absolute !important;
+  top: -14% !important;
+  right: -18% !important;
+  width: 62% !important;
+  height: 42% !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  border: none !important;
+  border-radius: 0 0 0 100% !important;
+  background:
+    linear-gradient(135deg, rgba(255, 224, 190, 0.12), rgba(255, 99, 22, 0.34)) !important;
+  filter: blur(10px) !important;
+}
+
+/* konten tetap di atas */
+.luxury-brand-row,
+.luxury-hero-content,
+.luxury-hero-footer {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* layer ombak */
+.luxury-hero-glow {
+  position: absolute !important;
+  pointer-events: none !important;
+  filter: none !important;
+  z-index: 2 !important;
+}
+
+/* ombak orange dasar bawah */
+.luxury-hero-glow-one {
+  display: block !important;
+  left: -24% !important;
+  right: -12% !important;
+  top: auto !important;
+  bottom: -27% !important;
+  width: auto !important;
+  height: 43% !important;
+  border-radius: 55% 45% 0 0 / 78% 66% 0 0 !important;
+  background:
+    linear-gradient(
+      112deg,
+      rgba(255, 255, 255, 0.30) 0%,
+      rgba(255, 218, 170, 0.18) 24%,
+      rgba(255, 145, 58, 0.52) 58%,
+      rgba(255, 80, 10, 0.92) 100%
+    ) !important;
+  transform: rotate(-4deg) !important;
+  box-shadow:
+    inset 0 22px 54px rgba(255, 255, 255, 0.12),
+    0 -20px 60px rgba(255, 112, 31, 0.15) !important;
+}
+
+/* ombak orange kanan bawah */
+.luxury-hero-glow-two {
+  display: block !important;
+  left: auto !important;
+  right: -34% !important;
+  top: auto !important;
+  bottom: -16% !important;
+  width: 86% !important;
+  height: 52% !important;
+  border-radius: 56% 44% 0 0 / 78% 62% 0 0 !important;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 241, 220, 0.18) 0%,
+      rgba(255, 193, 124, 0.30) 26%,
+      rgba(255, 130, 43, 0.68) 62%,
+      rgba(244, 72, 7, 0.96) 100%
+    ) !important;
+  transform: rotate(-9deg) !important;
+  box-shadow:
+    inset 0 22px 48px rgba(255, 255, 255, 0.10),
+    0 -22px 60px rgba(255, 93, 18, 0.18) !important;
+}
+
+/* garis ombak putih */
+.luxury-hero-content::before {
+  content: "" !important;
+  position: absolute !important;
+  left: -180px !important;
+  right: -440px !important;
+  bottom: -305px !important;
+  height: 380px !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  border-top: 2px solid rgba(255, 255, 255, 0.82) !important;
+  border-radius: 50% 50% 0 0 / 80% 68% 0 0 !important;
+  transform: rotate(4deg) !important;
+}
+
+.luxury-hero-content::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 260px !important;
+  right: -520px !important;
+  bottom: -245px !important;
+  height: 350px !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  border-top: 2px solid rgba(255, 239, 214, 0.86) !important;
+  border-radius: 58% 42% 0 0 / 82% 66% 0 0 !important;
+  transform: rotate(-9deg) !important;
+}
+
+/* brand */
+.luxury-login-brand {
+  margin-bottom: 0 !important;
+  color: #20242f !important;
+  font-size: 34px !important;
+  font-weight: 900 !important;
+  letter-spacing: -1.3px !important;
+}
+
+.luxury-login-brand span {
+  color: #f2642a !important;
+}
+
+.luxury-brand-badge {
+  min-height: 54px !important;
+  padding: 0 30px !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.84), rgba(255,240,226,0.76)) !important;
+  border: 1px solid rgba(255,255,255,0.74) !important;
+  color: #b75b24 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.10em !important;
+  box-shadow:
+    0 16px 34px rgba(112, 62, 31, 0.10),
+    inset 0 1px 0 rgba(255,255,255,0.92) !important;
+}
+
+/* konten */
+.luxury-hero-content {
+  position: relative !important;
+  max-width: 620px !important;
+  margin-top: 124px !important;
+}
+
+.luxury-line-accent {
+  display: block !important;
+  width: 96px !important;
+  height: 5px !important;
+  margin-bottom: 28px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, #f05f25 0%, #ff8c37 55%, #f2c063 100%) !important;
+}
+
+.luxury-hero-content h1 {
+  margin: 0 !important;
+  color: #1f2430 !important;
+  font-family: "Playfair Display", Georgia, serif !important;
+  font-size: clamp(54px, 5vw, 78px) !important;
+  line-height: 0.96 !important;
+  letter-spacing: -1.8px !important;
+}
+
+.luxury-hero-content h1 strong {
+  display: block !important;
+  font-weight: 800 !important;
+}
+
+.luxury-hero-content h1 span {
+  color: #e56f36 !important;
+}
+
+.luxury-title-divider {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 320px !important;
+  margin: 30px 0 28px 122px !important;
+}
+
+.luxury-title-divider span {
+  height: 1px !important;
+  flex: 1 !important;
+  background: linear-gradient(90deg, transparent, rgba(223, 160, 61, 0.76), transparent) !important;
+}
+
+.luxury-title-divider i {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 3px !important;
+  background: linear-gradient(135deg, #f7b44d, #ee7d2d) !important;
+  transform: rotate(45deg) !important;
+}
+
+.luxury-hero-content p {
+  max-width: 560px !important;
+  color: #5e5d64 !important;
+  font-size: 17px !important;
+  line-height: 1.82 !important;
+  font-weight: 600 !important;
+}
+
+.luxury-login-bubbles {
+  display: none !important;
+}
+
+.luxury-hero-footer {
+  position: absolute !important;
+  left: 66px !important;
+  right: 66px !important;
+  bottom: 46px !important;
+  color: rgba(47, 48, 55, 0.70) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.12em !important;
+}
+
+.luxury-hero-footer span {
+  color: #ef6a2d !important;
+}
+
