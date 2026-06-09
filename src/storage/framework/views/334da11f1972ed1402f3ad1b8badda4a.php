@@ -18,8 +18,8 @@
   <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
 </head>
 
-<body>
-  <main class="app-shell single-content">
+<body class="history-page">
+  <main class="app-shell">
     <aside class="sidebar">
       <div class="brand brand-with-logo">
       <img src="<?php echo e(asset('images/ngunjuk-logo.png')); ?>" alt="Logo Ngunjuk" class="brand-logo">
