@@ -56,6 +56,26 @@ const escapeHTML = value => {
     .replaceAll("'", '&#039;');
 };
 
+const formatReceiptDateTime = value => {
+  if (!value) {
+    return '-';
+  }
+
+  const date = new Date(String(value).replace(' ', 'T'));
+
+  if (Number.isNaN(date.getTime())) {
+    return escapeHTML(value);
+  }
+
+  return new Intl.DateTimeFormat('id-ID', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date);
+};
+
 const showToast = message => {
   if (!toast) {
     return;
@@ -124,13 +144,14 @@ const renderModalOrderItems = (items, type = 'confirm') => {
               <b>${formatRupiah(subtotal)}</b>
             </div>
 
-            ${note
-              ? `
-                <div class="${type}-item-note">
-                  Catatan: ${note}
-                </div>
-              `
-              : ''
+            ${
+              note
+                ? `
+                  <div class="${type}-item-note">
+                    Catatan: ${note}
+                  </div>
+                `
+                : ''
             }
           </div>
         `;
@@ -801,11 +822,15 @@ cartList?.addEventListener('click', event => {
 const buildCheckoutReceiptHtml = order => {
   const totalItem = Number(order?.total_item || 0);
   const totalPrice = Number(order?.total_price || 0);
-  const orderedAt = order?.ordered_at || new Date().toISOString();
-
+  const orderedAt = order?.ordered_at || order?.ordered_at_human || new Date().toISOString();
   const items = Array.isArray(order?.items) ? order.items : [];
 
   const itemRows = items.map(item => {
+    const productName = item.product_name || item.name || '-';
+    const sizeName = item.size_name || item.size || 'Regular';
+    const quantity = Number(item.quantity || 0);
+    const price = Number(item.price || item.unit_price || 0);
+    const subtotal = Number(item.subtotal || price * quantity || 0);
     const note = item.note
       ? `<div class="note">Catatan: ${escapeHTML(item.note)}</div>`
       : '';
@@ -813,19 +838,19 @@ const buildCheckoutReceiptHtml = order => {
     return `
       <div class="item">
         <div class="item-title">
-          <strong>${escapeHTML(item.product_name || item.name || '-')}</strong>
+          <strong>${escapeHTML(productName)}</strong>
         </div>
 
         <div class="item-meta">
-          <span>${escapeHTML(item.size_name || item.size || 'Regular')} x${Number(item.quantity || 0)}</span>
-          <span>${formatRupiah(item.price || 0)}</span>
+          <span>${escapeHTML(sizeName)} x${quantity}</span>
+          <span>${formatRupiah(price)}</span>
         </div>
 
         ${note}
 
         <div class="item-subtotal">
           <span>Subtotal</span>
-          <strong>${formatRupiah(item.subtotal || 0)}</strong>
+          <strong>${formatRupiah(subtotal)}</strong>
         </div>
       </div>
     `;
@@ -999,13 +1024,7 @@ const buildCheckoutReceiptHtml = order => {
 
           <div>
             <span>Waktu</span>
-            <strong>${new Intl.DateTimeFormat('id-ID', {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            }).format(new Date(String(orderedAt).replace(' ', 'T')))}</strong>
+            <strong>${formatReceiptDateTime(orderedAt)}</strong>
           </div>
 
           <div>
