@@ -1,337 +1,264 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         <style>
-            .product-quadrant-pbi {
-                min-height: 460px;
+            .product-ranking-card {
+                min-height: 430px;
             }
 
-            .product-quadrant-head {
+            .product-ranking-header {
                 display: flex;
+                align-items: flex-start;
                 justify-content: space-between;
-                gap: 14px;
-                margin-bottom: 16px;
+                gap: 16px;
+                margin-bottom: 18px;
             }
 
-            .product-quadrant-title {
+            .product-ranking-title {
                 margin: 0;
                 color: #0f172a;
-                font-size: 15px;
+                font-size: 16px;
                 font-weight: 950;
-                letter-spacing: -0.03em;
+                letter-spacing: -0.035em;
             }
 
-            .product-quadrant-subtitle {
+            .product-ranking-subtitle {
                 margin: 5px 0 0;
                 color: #64748b;
-                font-size: 11px;
-                font-weight: 700;
-                line-height: 1.5;
+                font-size: 12px;
+                font-weight: 650;
+                line-height: 1.55;
             }
 
-            .product-quadrant-chip {
-                height: fit-content;
-                padding: 7px 10px;
-                border-radius: 999px;
-                background: #f5f3ff;
-                color: #6d28d9;
-                font-size: 10px;
-                font-weight: 950;
+            .product-ranking-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
                 white-space: nowrap;
+                border-radius: 999px;
+                padding: 8px 12px;
+                color: #9a3412;
+                background: linear-gradient(135deg, rgba(255, 247, 237, 0.96), rgba(254, 215, 170, 0.72));
+                border: 1px solid rgba(251, 146, 60, 0.28);
+                font-size: 11px;
+                font-weight: 900;
             }
 
-            .product-quadrant-summary {
+            .product-ranking-summary {
                 display: grid;
                 grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 10px;
-                margin-bottom: 14px;
+                gap: 12px;
+                margin-bottom: 18px;
             }
 
-            .product-quadrant-box {
-                border-radius: 16px;
-                padding: 12px 13px;
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
+            .product-ranking-summary-card {
+                border-radius: 20px;
+                padding: 14px 15px;
+                background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
+                border: 1px solid rgba(226, 232, 240, 0.8);
+                box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
             }
 
-            .product-quadrant-box-label {
-                color: #64748b;
+            .product-ranking-summary-label {
+                color: #94a3b8;
                 font-size: 10px;
                 font-weight: 900;
-                text-transform: uppercase;
                 letter-spacing: 0.08em;
+                text-transform: uppercase;
             }
 
-            .product-quadrant-box-value {
-                margin-top: 5px;
+            .product-ranking-summary-value {
+                margin-top: 7px;
                 color: #0f172a;
                 font-size: 17px;
                 font-weight: 950;
                 letter-spacing: -0.04em;
-                white-space: nowrap;
+            }
+
+            .product-ranking-list {
+                display: grid;
+                gap: 11px;
+            }
+
+            .product-ranking-item {
+                display: grid;
+                grid-template-columns: 38px minmax(0, 1fr) 150px;
+                gap: 12px;
+                align-items: center;
+                border-radius: 18px;
+                padding: 12px;
+                background: rgba(248, 250, 252, 0.74);
+                border: 1px solid rgba(226, 232, 240, 0.78);
+            }
+
+            .product-ranking-number {
+                width: 34px;
+                height: 34px;
+                display: grid;
+                place-items: center;
+                border-radius: 13px;
+                color: #9a3412;
+                background: linear-gradient(135deg, rgba(255, 247, 237, 1), rgba(254, 215, 170, 0.7));
+                border: 1px solid rgba(251, 146, 60, 0.28);
+                font-size: 12px;
+                font-weight: 950;
+            }
+
+            .product-ranking-name {
+                color: #0f172a;
+                font-size: 13px;
+                font-weight: 900;
+                line-height: 1.25;
+            }
+
+            .product-ranking-meta {
+                margin-top: 5px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                color: #64748b;
+                font-size: 10px;
+                font-weight: 750;
+            }
+
+            .product-ranking-bar-wrap {
+                margin-top: 9px;
+                height: 8px;
                 overflow: hidden;
-                text-overflow: ellipsis;
+                border-radius: 999px;
+                background: rgba(226, 232, 240, 0.95);
             }
 
-            .product-quadrant-canvas {
-                position: relative;
-                min-height: 330px;
-                border-radius: 22px;
-                background:
-                    linear-gradient(90deg, rgba(148,163,184,0.14) 1px, transparent 1px),
-                    linear-gradient(0deg, rgba(148,163,184,0.14) 1px, transparent 1px),
-                    linear-gradient(180deg, rgba(248,250,252,0.95), rgba(255,255,255,1));
-                background-size: 25% 100%, 100% 25%, 100% 100%;
-                border: 1px solid #e2e8f0;
-                overflow: hidden;
+            .product-ranking-bar {
+                height: 100%;
+                border-radius: inherit;
+                background: linear-gradient(90deg, #fb923c, #f97316, #16a34a);
             }
 
-            .product-quadrant-mid-x,
-            .product-quadrant-mid-y {
-                position: absolute;
-                z-index: 2;
-                background: rgba(15, 23, 42, 0.16);
+            .product-ranking-value {
+                text-align: right;
             }
 
-            .product-quadrant-mid-x {
-                left: 0;
-                right: 0;
-                top: 50%;
-                height: 1px;
+            .product-ranking-metric {
+                color: #0f172a;
+                font-size: 13px;
+                font-weight: 950;
             }
 
-            .product-quadrant-mid-y {
-                top: 0;
-                bottom: 0;
-                left: 50%;
-                width: 1px;
-            }
-
-            .product-quadrant-axis-x,
-            .product-quadrant-axis-y {
-                position: absolute;
+            .product-ranking-share {
+                margin-top: 4px;
                 color: #94a3b8;
                 font-size: 10px;
-                font-weight: 950;
-                text-transform: uppercase;
-                letter-spacing: 0.08em;
-                z-index: 3;
-            }
-
-            .product-quadrant-axis-x {
-                right: 16px;
-                bottom: 10px;
-            }
-
-            .product-quadrant-axis-y {
-                left: 12px;
-                top: 12px;
-            }
-
-            .product-quadrant-label {
-                position: absolute;
-                z-index: 1;
-                padding: 6px 8px;
-                border-radius: 999px;
-                color: rgba(15, 23, 42, 0.44);
-                background: rgba(255,255,255,0.72);
-                border: 1px solid rgba(226,232,240,0.85);
-                font-size: 10px;
-                font-weight: 950;
-                text-transform: uppercase;
-                letter-spacing: 0.06em;
-                pointer-events: none;
-            }
-
-            .product-quadrant-label.star {
-                right: 16px;
-                top: 16px;
-            }
-
-            .product-quadrant-label.profit {
-                left: 16px;
-                top: 16px;
-            }
-
-            .product-quadrant-label.fast {
-                right: 16px;
-                bottom: 34px;
-            }
-
-            .product-quadrant-label.under {
-                left: 16px;
-                bottom: 34px;
-            }
-
-            .product-bubble-wrap {
-                position: absolute;
-                left: var(--x);
-                top: var(--y);
-                transform: translate(-50%, -50%);
-                z-index: 5;
-            }
-
-            .product-bubble {
-                width: var(--size);
-                height: var(--size);
-                border-radius: 999px;
-                background: linear-gradient(135deg, #0f766e, #14b8a6);
-                border: 3px solid white;
-                box-shadow: 0 10px 24px rgba(15, 118, 110, 0.24);
-                cursor: default;
-                transition: 0.18s ease;
-            }
-
-            .product-bubble-wrap:hover {
-                z-index: 30;
-            }
-
-            .product-bubble-wrap:hover .product-bubble {
-                transform: scale(1.12);
-                box-shadow: 0 16px 34px rgba(15, 118, 110, 0.34);
-            }
-
-            .product-bubble-label {
-                position: absolute;
-                left: 50%;
-                top: calc(100% + 4px);
-                transform: translateX(-50%);
-                max-width: 92px;
-                padding: 3px 6px;
-                border-radius: 999px;
-                background: rgba(255,255,255,0.88);
-                border: 1px solid #e2e8f0;
-                color: #334155;
-                font-size: 9px;
-                font-weight: 900;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                box-shadow: 0 8px 16px rgba(15,23,42,0.08);
-            }
-
-            .product-bubble-wrap:hover::after {
-                content: attr(data-tooltip);
-                position: absolute;
-                left: 50%;
-                bottom: calc(100% + 10px);
-                transform: translateX(-50%);
-                width: max-content;
-                max-width: 280px;
-                padding: 9px 11px;
-                border-radius: 13px;
-                background: #0f172a;
-                color: white;
-                font-size: 10px;
                 font-weight: 800;
-                line-height: 1.45;
-                white-space: pre-line;
-                box-shadow: 0 16px 32px rgba(15, 23, 42, 0.25);
             }
 
-            .product-quadrant-empty {
-                min-height: 330px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            .product-ranking-empty {
+                display: grid;
+                min-height: 220px;
+                place-items: center;
                 border-radius: 20px;
-                background: #f8fafc;
-                border: 1px dashed #cbd5e1;
-                color: #64748b;
-                font-size: 12px;
+                color: #94a3b8;
+                background: rgba(248, 250, 252, 0.74);
+                border: 1px dashed rgba(148, 163, 184, 0.5);
+                font-size: 13px;
                 font-weight: 800;
+                text-align: center;
             }
 
-            @media (max-width: 800px) {
-                .product-quadrant-summary {
+            @media (max-width: 900px) {
+                .product-ranking-header,
+                .product-ranking-summary {
                     grid-template-columns: 1fr;
                 }
 
-                .product-bubble-label {
-                    display: none;
+                .product-ranking-header {
+                    flex-direction: column;
+                }
+
+                .product-ranking-item {
+                    grid-template-columns: 34px minmax(0, 1fr);
+                }
+
+                .product-ranking-value {
+                    grid-column: 2;
+                    text-align: left;
                 }
             }
         </style>
 
-        <div class="product-quadrant-pbi">
-            <div class="product-quadrant-head">
+        <div class="product-ranking-card">
+            <div class="product-ranking-header">
                 <div>
-                    <h3 class="product-quadrant-title">
-                        Product Performance Quadrant
-                    </h3>
-
-                    <p class="product-quadrant-subtitle">
-                        Scatter quadrant berdasarkan units sold dan revenue pada {{ strtolower($periodLabel) }}.
+                    <h3 class="product-ranking-title">Top Product Ranking</h3>
+                    <p class="product-ranking-subtitle">
+                        Ranking 10 produk terbaik berdasarkan {{ $activeMetricLabel }} pada {{ strtolower($periodLabel) }}.
                     </p>
                 </div>
 
-                <span class="product-quadrant-chip">
-                    Quadrant Analysis
-                </span>
+                <div class="product-ranking-badge">
+                    Metric: {{ $activeMetricLabel }}
+                </div>
             </div>
 
-            <div class="product-quadrant-summary">
-                <div class="product-quadrant-box">
-                    <div class="product-quadrant-box-label">Best Product</div>
-                    <div class="product-quadrant-box-value" title="{{ $bestProductName }}">
-                        {{ $bestProductName }}
-                    </div>
+            <div class="product-ranking-summary">
+                <div class="product-ranking-summary-card">
+                    <div class="product-ranking-summary-label">Best Product</div>
+                    <div class="product-ranking-summary-value">{{ $bestProductName }}</div>
                 </div>
 
-                <div class="product-quadrant-box">
-                    <div class="product-quadrant-box-label">Top Revenue</div>
-                    <div class="product-quadrant-box-value">
-                        {{ $bestProductRevenue }}
-                    </div>
+                <div class="product-ranking-summary-card">
+                    <div class="product-ranking-summary-label">Top Value</div>
+                    <div class="product-ranking-summary-value">{{ $bestProductValue }}</div>
                 </div>
 
-                <div class="product-quadrant-box">
-                    <div class="product-quadrant-box-label">Products Analyzed</div>
-                    <div class="product-quadrant-box-value">
-                        {{ number_format($totalProductsAnalyzed, 0, ',', '.') }}
+                <div class="product-ranking-summary-card">
+                    <div class="product-ranking-summary-label">Products Analyzed</div>
+                    <div class="product-ranking-summary-value">
+                        {{ number_format($totalProductsAnalyzed, 0, ',', '.') }} produk
                     </div>
                 </div>
             </div>
 
             @if (count($items) > 0)
-                <div class="product-quadrant-canvas">
-                    <div class="product-quadrant-mid-x"></div>
-                    <div class="product-quadrant-mid-y"></div>
-
-                    <div class="product-quadrant-axis-y">Revenue</div>
-                    <div class="product-quadrant-axis-x">Units Sold</div>
-
-                    <div class="product-quadrant-label star">Star Product</div>
-                    <div class="product-quadrant-label profit">Profit Driver</div>
-                    <div class="product-quadrant-label fast">Fast Moving</div>
-                    <div class="product-quadrant-label under">Underperformer</div>
-
+                <div class="product-ranking-list">
                     @foreach ($items as $item)
-                        <div
-                            class="product-bubble-wrap"
-                            style="
-                                --x: {{ $item['x'] }}%;
-                                --y: {{ $item['y'] }}%;
-                                --size: {{ $item['size'] }}px;
-                            "
-                            data-tooltip="{{ $item['name'] }}
-{{ $item['formatted_units'] }}
-{{ $item['formatted_revenue'] }}
-{{ $item['formatted_orders'] }}
-{{ $item['quadrant'] }}"
-                        >
-                            <div class="product-bubble"></div>
+                        <div class="product-ranking-item">
+                            <div class="product-ranking-number">
+                                #{{ $item['rank'] }}
+                            </div>
 
-                            @if ($item['show_label'])
-                                <div class="product-bubble-label" title="{{ $item['name'] }}">
-                                    {{ $item['short_name'] }}
+                            <div>
+                                <div class="product-ranking-name">{{ $item['name'] }}</div>
+
+                                <div class="product-ranking-meta">
+                                    <span>{{ $item['revenue_formatted'] }}</span>
+                                    <span>•</span>
+                                    <span>{{ $item['units_formatted'] }}</span>
+                                    <span>•</span>
+                                    <span>{{ $item['orders_formatted'] }}</span>
                                 </div>
-                            @endif
+
+                                <div class="product-ranking-bar-wrap">
+                                    <div
+                                        class="product-ranking-bar"
+                                        style="width: {{ $item['bar_width'] }}%;"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="product-ranking-value">
+                                <div class="product-ranking-metric">
+                                    {{ $item['metric_formatted'] }}
+                                </div>
+                                <div class="product-ranking-share">
+                                    {{ number_format($item['contribution'], 1, ',', '.') }}% kontribusi
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                 </div>
             @else
-                <div class="product-quadrant-empty">
-                    Belum ada data performa produk pada periode ini.
+                <div class="product-ranking-empty">
+                    Belum ada data produk untuk divisualisasikan pada periode ini.
                 </div>
             @endif
         </div>

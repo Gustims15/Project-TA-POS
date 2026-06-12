@@ -51,13 +51,10 @@ class Dashboard extends BaseDashboard
 
         return [
             DashboardLuxuryOverviewWidget::class,
-
             CategoryContributionChart::class,
             RestockPriorityChart::class,
-
             SalesHeatmapWidget::class,
             RecentSalesTimeline::class,
-
             ProductPerformanceMatrix::class,
         ];
     }

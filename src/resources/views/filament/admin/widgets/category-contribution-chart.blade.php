@@ -1,206 +1,250 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         <style>
-            .category-pbi {
-                min-height: 380px;
+            .category-contribution-card {
+                min-height: 420px;
             }
 
-            .category-head {
+            .category-contribution-head {
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-start;
                 gap: 14px;
-                margin-bottom: 18px;
+                margin-bottom: 16px;
             }
 
-            .category-title {
+            .category-contribution-title {
                 margin: 0;
                 color: #0f172a;
                 font-size: 15px;
                 font-weight: 950;
-                letter-spacing: -0.03em;
+                letter-spacing: -0.035em;
             }
 
-            .category-subtitle {
+            .category-contribution-subtitle {
                 margin: 5px 0 0;
                 color: #64748b;
                 font-size: 11px;
-                font-weight: 700;
-                line-height: 1.5;
+                font-weight: 650;
+                line-height: 1.45;
             }
 
-            .category-chip {
-                height: fit-content;
-                padding: 7px 10px;
+            .category-contribution-badge {
                 border-radius: 999px;
-                background: #eff6ff;
-                color: #1d4ed8;
+                padding: 8px 10px;
+                color: #9a3412;
+                background: #fff7ed;
+                border: 1px solid rgba(251, 146, 60, 0.25);
                 font-size: 10px;
                 font-weight: 950;
                 white-space: nowrap;
             }
 
-            .category-body {
+            .category-contribution-main {
                 display: grid;
-                grid-template-columns: 210px minmax(0, 1fr);
-                gap: 20px;
+                grid-template-columns: 190px minmax(0, 1fr);
+                gap: 18px;
                 align-items: center;
             }
 
             .category-donut-wrap {
-                position: relative;
-                width: 210px;
-                height: 210px;
-                margin: 0 auto;
+                display: grid;
+                place-items: center;
             }
 
             .category-donut {
-                position: absolute;
-                inset: 0;
+                position: relative;
+                width: 170px;
+                height: 170px;
                 border-radius: 999px;
-                background: var(--donut-gradient);
-                box-shadow: 0 18px 42px rgba(15, 23, 42, 0.10);
+                box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
             }
 
             .category-donut::after {
                 content: "";
                 position: absolute;
-                inset: 42px;
-                border-radius: 999px;
+                inset: 31px;
+                border-radius: inherit;
                 background: #ffffff;
-                box-shadow: inset 0 0 0 1px #e2e8f0;
+                box-shadow: inset 0 0 0 1px rgba(226, 232, 240, 0.8);
             }
 
-            .category-center {
+            .category-donut-center {
                 position: absolute;
-                inset: 62px;
+                inset: 0;
                 z-index: 2;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
+                display: grid;
+                place-items: center;
                 text-align: center;
+                padding: 48px;
             }
 
-            .category-center-label {
+            .category-donut-label {
+                color: #94a3b8;
+                font-size: 9px;
+                font-weight: 950;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .category-donut-value {
+                margin-top: 4px;
+                color: #0f172a;
+                font-size: 25px;
+                font-weight: 950;
+                letter-spacing: -0.06em;
+            }
+
+            .category-donut-name {
+                margin-top: 4px;
                 color: #64748b;
                 font-size: 10px;
-                font-weight: 950;
-                text-transform: uppercase;
-                letter-spacing: 0.08em;
+                font-weight: 850;
+                line-height: 1.25;
             }
 
-            .category-center-value {
+            .category-summary-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+                margin-bottom: 14px;
+            }
+
+            .category-summary-box {
+                border-radius: 17px;
+                padding: 12px;
+                background: rgba(248, 250, 252, 0.86);
+                border: 1px solid rgba(226, 232, 240, 0.86);
+            }
+
+            .category-summary-label {
+                color: #94a3b8;
+                font-size: 9px;
+                font-weight: 950;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .category-summary-value {
                 margin-top: 6px;
                 color: #0f172a;
-                font-size: 28px;
-                line-height: 1;
+                font-size: 14px;
                 font-weight: 950;
-                letter-spacing: -0.05em;
+                letter-spacing: -0.035em;
             }
 
-            .category-center-note {
-                margin-top: 5px;
-                color: #94a3b8;
-                font-size: 10px;
-                font-weight: 850;
-            }
-
-            .category-legend {
+            .category-list {
                 display: grid;
                 gap: 10px;
             }
 
-            .category-row {
+            .category-item {
                 display: grid;
-                grid-template-columns: 12px minmax(0, 1fr) auto;
+                grid-template-columns: minmax(0, 1fr) auto;
+                gap: 12px;
                 align-items: center;
-                gap: 10px;
-                padding: 8px 9px;
-                border-radius: 14px;
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
+                border-radius: 16px;
+                padding: 11px;
+                background: rgba(255, 255, 255, 0.92);
+                border: 1px solid rgba(226, 232, 240, 0.78);
             }
 
-            .category-color {
-                width: 11px;
-                height: 11px;
+            .category-name-row {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .category-dot {
+                width: 10px;
+                height: 10px;
+                flex: 0 0 auto;
                 border-radius: 999px;
-                background: var(--category-color);
-                box-shadow: 0 0 0 4px color-mix(in srgb, var(--category-color) 16%, transparent);
-            }
-
-            .category-info {
-                min-width: 0;
             }
 
             .category-name {
                 color: #0f172a;
                 font-size: 12px;
                 font-weight: 950;
-                white-space: nowrap;
+                line-height: 1.25;
+            }
+
+            .category-bar-wrap {
+                margin-top: 8px;
+                height: 7px;
                 overflow: hidden;
-                text-overflow: ellipsis;
+                border-radius: 999px;
+                background: rgba(226, 232, 240, 0.95);
+            }
+
+            .category-bar {
+                height: 100%;
+                border-radius: inherit;
             }
 
             .category-value {
-                margin-top: 2px;
-                color: #64748b;
-                font-size: 10px;
-                font-weight: 850;
-                white-space: nowrap;
-            }
-
-            .category-share {
+                text-align: right;
                 color: #0f172a;
-                font-size: 13px;
+                font-size: 11px;
                 font-weight: 950;
                 white-space: nowrap;
             }
 
+            .category-share {
+                margin-top: 3px;
+                color: #94a3b8;
+                font-size: 10px;
+                font-weight: 850;
+            }
+
             .category-empty {
-                min-height: 260px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 18px;
-                background: #f8fafc;
-                border: 1px dashed #cbd5e1;
-                color: #64748b;
+                min-height: 280px;
+                display: grid;
+                place-items: center;
+                border-radius: 20px;
+                color: #94a3b8;
+                background: rgba(248, 250, 252, 0.78);
+                border: 1px dashed rgba(148, 163, 184, 0.48);
+                text-align: center;
                 font-size: 12px;
                 font-weight: 800;
             }
 
             @media (max-width: 900px) {
-                .category-body {
+                .category-contribution-main {
+                    grid-template-columns: 1fr;
+                }
+
+                .category-summary-grid {
                     grid-template-columns: 1fr;
                 }
             }
         </style>
 
-        <div class="category-pbi">
-            <div class="category-head">
+        <div class="category-contribution-card">
+            <div class="category-contribution-head">
                 <div>
-                    <h3 class="category-title">Category Contribution</h3>
-                    <p class="category-subtitle">
-                        Komposisi kontribusi kategori berdasarkan {{ strtolower($metricLabel) }} pada {{ strtolower($periodLabel) }}.
+                    <h3 class="category-contribution-title">Category Contribution</h3>
+                    <p class="category-contribution-subtitle">
+                        Komposisi kontribusi kategori berdasarkan {{ strtolower($metricLabel) }}
+                        pada {{ strtolower($periodLabel) }}.
                     </p>
                 </div>
 
-                <span class="category-chip">Donut Chart</span>
+                <div class="category-contribution-badge">
+                    {{ $metricLabel }}
+                </div>
             </div>
 
             @if (count($items) > 0)
                 @php
                     $colors = [
-                        '#2563eb',
-                        '#0f766e',
                         '#f97316',
+                        '#16a34a',
+                        '#2563eb',
                         '#8b5cf6',
                         '#e11d48',
                         '#0891b2',
-                        '#ca8a04',
-                        '#16a34a',
                     ];
 
                     $segments = [];
@@ -219,55 +263,75 @@
                         $segments[] = '#e2e8f0 ' . $start . '% 100%';
                     }
 
-                    $topCategory = $items[0] ?? null;
                     $donutGradient = 'conic-gradient(' . implode(', ', $segments) . ')';
                 @endphp
 
-                <div class="category-body">
+                <div class="category-contribution-main">
                     <div class="category-donut-wrap">
-                        <div
-                            class="category-donut"
-                            style="--donut-gradient: {{ $donutGradient }};"
-                        ></div>
-
-                        <div class="category-center">
-                            <div class="category-center-label">Top Share</div>
-                            <div class="category-center-value">
-                                {{ $topCategory['share'] ?? 0 }}%
-                            </div>
-                            <div class="category-center-note">
-                                {{ $topCategory['name'] ?? '-' }}
+                        <div class="category-donut" style="background: {{ $donutGradient }};">
+                            <div class="category-donut-center">
+                                <div>
+                                    <div class="category-donut-label">Top Share</div>
+                                    <div class="category-donut-value">
+                                        {{ number_format((float) $topCategoryShare, 1, ',', '.') }}%
+                                    </div>
+                                    <div class="category-donut-name">
+                                        {{ $topCategoryName }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="category-legend">
-                        @foreach ($items as $index => $item)
-                            @php
-                                $color = $colors[$index % count($colors)];
-                            @endphp
+                    <div>
+                        <div class="category-summary-grid">
+                            <div class="category-summary-box">
+                                <div class="category-summary-label">Top Category</div>
+                                <div class="category-summary-value">{{ $topCategoryName }}</div>
+                            </div>
 
-                            <div
-                                class="category-row"
-                                style="--category-color: {{ $color }};"
-                            >
-                                <span class="category-color"></span>
+                            <div class="category-summary-box">
+                                <div class="category-summary-label">Total Value</div>
+                                <div class="category-summary-value">{{ $totalCategoryValue }}</div>
+                            </div>
+                        </div>
 
-                                <div class="category-info">
-                                    <div class="category-name" title="{{ $item['name'] }}">
-                                        {{ $item['name'] }}
+                        <div class="category-list">
+                            @foreach ($items as $index => $item)
+                                @php
+                                    $color = $colors[$index % count($colors)];
+                                @endphp
+
+                                <div class="category-item">
+                                    <div>
+                                        <div class="category-name-row">
+                                            <span
+                                                class="category-dot"
+                                                style="background: {{ $color }};"
+                                            ></span>
+
+                                            <div class="category-name">
+                                                {{ $item['name'] }}
+                                            </div>
+                                        </div>
+
+                                        <div class="category-bar-wrap">
+                                            <div
+                                                class="category-bar"
+                                                style="width: {{ $item['width'] }}%; background: {{ $color }};"
+                                            ></div>
+                                        </div>
                                     </div>
 
                                     <div class="category-value">
                                         {{ $item['formatted'] }}
+                                        <div class="category-share">
+                                            {{ number_format((float) $item['share'], 1, ',', '.') }}%
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="category-share">
-                                    {{ $item['share'] }}%
-                                </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             @else

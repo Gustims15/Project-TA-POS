@@ -7,6 +7,7 @@ namespace App\Filament\Admin\Widgets;
 use App\Filament\Admin\Widgets\Concerns\HasDashboardMetric;
 use App\Models\Order;
 use Filament\Widgets\Widget;
+use Illuminate\Support\Facades\DB;
 
 class RecentSalesTimeline extends Widget
 {
@@ -23,13 +24,13 @@ class RecentSalesTimeline extends Widget
     protected function getViewData(): array
     {
         $query = Order::query()
-            ->where('status', 'Selesai')
-            ->latest('ordered_at');
+            ->where('status', 'Selesai');
 
         $this->applyDashboardPeriodFilterToOrderQuery($query);
 
-        $orders = $query
-            ->limit(5)
+        $orders = (clone $query)
+            ->orderByDesc(DB::raw('COALESCE(ordered_at, created_at)'))
+            ->limit(6)
             ->get([
                 'id',
                 'order_code',
@@ -45,6 +46,8 @@ class RecentSalesTimeline extends Widget
         return [
             'orders' => $orders,
             'maxRevenue' => $maxRevenue,
+            'totalOrders' => (int) (clone $query)->count(),
+            'totalRevenue' => (int) (clone $query)->sum('total_price'),
             'periodLabel' => $this->getDashboardPeriodLabel(),
         ];
     }

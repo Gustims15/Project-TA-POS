@@ -23,6 +23,9 @@ class ProductPerformanceMatrix extends Widget
 
     protected function getViewData(): array
     {
+        $metric = $this->getDashboardMetric();
+        $sortColumn = $this->getDashboardMetricSortColumn();
+
         $query = OrderItem::query()
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->where('orders.status', 'Selesai');
@@ -37,94 +40,62 @@ class ProductPerformanceMatrix extends Widget
                 DB::raw('COUNT(DISTINCT order_items.order_id) as orders_count'),
             ])
             ->groupBy('order_items.product_name')
-            ->orderByDesc('revenue')
-            ->limit(12)
+            ->orderByDesc($sortColumn)
+            ->limit(10)
             ->get();
 
-        $maxUnits = max((float) $products->max('units_sold'), 1);
-        $maxRevenue = max((float) $products->max('revenue'), 1);
-        $maxOrders = max((int) $products->max('orders_count'), 1);
+        $totalMetric = (float) $products->sum($sortColumn);
+        $maxMetric = max((float) $products->max($sortColumn), 1);
 
         $items = $products
             ->values()
-            ->map(function ($product, int $index) use ($maxUnits, $maxRevenue, $maxOrders): array {
-                $unitsSold = (float) $product->units_sold;
-                $revenue = (float) $product->revenue;
-                $ordersCount = (int) $product->orders_count;
-
-                $x = ($unitsSold / $maxUnits) * 100;
-                $y = 100 - (($revenue / $maxRevenue) * 100);
-                $size = 12 + (($ordersCount / $maxOrders) * 22);
-
-                $quadrant = $this->getQuadrantLabel($unitsSold, $revenue, $maxUnits, $maxRevenue);
+            ->map(function ($product, int $index) use ($metric, $sortColumn, $totalMetric, $maxMetric): array {
+                $metricValue = (float) $product->{$sortColumn};
 
                 return [
+                    'rank' => $index + 1,
                     'name' => (string) $product->product_name,
-                    'short_name' => $this->shortenProductName((string) $product->product_name),
-                    'units_sold' => $unitsSold,
-                    'revenue' => $revenue,
-                    'orders_count' => $ordersCount,
-                    'formatted_units' => number_format((int) $unitsSold, 0, ',', '.') . ' item',
-                    'formatted_revenue' => 'Rp ' . number_format((int) $revenue, 0, ',', '.'),
-                    'formatted_orders' => number_format($ordersCount, 0, ',', '.') . ' order',
-                    'x' => round(max(6, min($x, 94)), 2),
-                    'y' => round(max(8, min($y, 88)), 2),
-                    'size' => round(max(14, min($size, 36)), 2),
-                    'quadrant' => $quadrant,
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Label Rules
-                    |--------------------------------------------------------------------------
-                    | Power BI style tidak harus menampilkan semua label.
-                    | Label hanya ditampilkan untuk produk penting agar chart tidak terlalu penuh.
-                    */
-                    'show_label' => $index < 8 || in_array($quadrant, ['Star Product', 'Profit Driver'], true),
+                    'units_sold' => (int) $product->units_sold,
+                    'orders_count' => (int) $product->orders_count,
+                    'revenue' => (int) $product->revenue,
+                    'metric_value' => $metricValue,
+                    'metric_formatted' => $this->formatMetricValue($metric, $metricValue),
+                    'revenue_formatted' => $this->formatRupiah((int) $product->revenue),
+                    'units_formatted' => number_format((int) $product->units_sold, 0, ',', '.') . ' item',
+                    'orders_formatted' => number_format((int) $product->orders_count, 0, ',', '.') . ' order',
+                    'bar_width' => round(($metricValue / $maxMetric) * 100, 2),
+                    'contribution' => $totalMetric > 0
+                        ? round(($metricValue / $totalMetric) * 100, 1)
+                        : 0,
                 ];
             })
             ->toArray();
 
-        $bestProduct = collect($items)
-            ->sortByDesc('revenue')
-            ->first();
+        $bestProduct = $items[0] ?? null;
 
         return [
             'items' => $items,
             'periodLabel' => $this->getDashboardPeriodLabel(),
+            'activeMetric' => $metric,
+            'activeMetricLabel' => $this->getDashboardMetricLabel(),
             'bestProductName' => $bestProduct['name'] ?? '-',
-            'bestProductRevenue' => $bestProduct['formatted_revenue'] ?? 'Rp 0',
+            'bestProductValue' => $bestProduct['metric_formatted'] ?? '-',
             'totalProductsAnalyzed' => count($items),
         ];
     }
 
-    private function getQuadrantLabel(float $units, float $revenue, float $maxUnits, float $maxRevenue): string
+    private function formatMetricValue(string $metric, float $value): string
     {
-        $isHighUnits = $units >= ($maxUnits * 0.5);
-        $isHighRevenue = $revenue >= ($maxRevenue * 0.5);
-
-        if ($isHighUnits && $isHighRevenue) {
-            return 'Star Product';
-        }
-
-        if ($isHighUnits && ! $isHighRevenue) {
-            return 'Fast Moving Low Value';
-        }
-
-        if (! $isHighUnits && $isHighRevenue) {
-            return 'Profit Driver';
-        }
-
-        return 'Underperformer';
+        return match ($metric) {
+            'orders' => number_format((int) $value, 0, ',', '.') . ' order',
+            'revenue' => $this->formatRupiah((int) $value),
+            'units' => number_format((int) $value, 0, ',', '.') . ' item',
+            default => number_format((int) $value, 0, ',', '.') . ' item',
+        };
     }
 
-    private function shortenProductName(string $name): string
+    private function formatRupiah(int $value): string
     {
-        $name = trim($name);
-
-        if (mb_strlen($name) <= 14) {
-            return $name;
-        }
-
-        return mb_substr($name, 0, 13) . '…';
+        return 'Rp ' . number_format($value, 0, ',', '.');
     }
 }

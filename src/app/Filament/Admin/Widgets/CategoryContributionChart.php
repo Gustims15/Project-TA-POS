@@ -33,55 +33,66 @@ class CategoryContributionChart extends Widget
         };
 
         $query = OrderItem::query()
-            ->join('products', 'order_items.product_id', '=', 'products.id')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->leftJoin('products', 'order_items.product_id', '=', 'products.id')
+            ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
             ->where('orders.status', 'Selesai');
 
         $this->applyDashboardPeriodFilterToOrderQuery($query);
 
         $categories = $query
             ->select([
-                'categories.name as name',
+                DB::raw("COALESCE(categories.name, 'Tanpa Kategori') as name"),
                 $metricSelect,
             ])
-            ->groupBy('categories.id', 'categories.name')
+            ->groupByRaw("COALESCE(categories.name, 'Tanpa Kategori')")
             ->orderByDesc('metric_total')
-            ->limit(8)
+            ->limit(6)
             ->get();
 
+        $totalValue = (float) $categories->sum('metric_total');
         $maxValue = max((float) $categories->max('metric_total'), 1);
-        $totalValue = max((float) $categories->sum('metric_total'), 1);
 
         $items = $categories
             ->values()
-            ->map(function ($category) use ($maxValue, $totalValue): array {
+            ->map(function ($category, int $index) use ($metric, $totalValue, $maxValue): array {
                 $value = (float) $category->metric_total;
 
                 return [
+                    'rank' => $index + 1,
                     'name' => (string) $category->name,
                     'value' => $value,
-                    'formatted' => $this->formatMetricValue($value),
+                    'formatted' => $this->formatMetricValue($metric, $value),
                     'width' => round(($value / $maxValue) * 100, 2),
-                    'share' => round(($value / $totalValue) * 100, 1),
+                    'share' => $totalValue > 0 ? round(($value / $totalValue) * 100, 1) : 0,
                 ];
             })
             ->toArray();
+
+        $topCategory = $items[0] ?? null;
 
         return [
             'items' => $items,
             'metricLabel' => $this->getDashboardMetricLabel(),
             'periodLabel' => $this->getDashboardPeriodLabel(),
+            'topCategoryName' => $topCategory['name'] ?? '-',
+            'topCategoryShare' => $topCategory['share'] ?? 0,
+            'totalCategoryValue' => $this->formatMetricValue($metric, $totalValue),
         ];
     }
 
-    private function formatMetricValue(int|float $value): string
+    private function formatMetricValue(string $metric, int|float $value): string
     {
-        return match ($this->getDashboardMetric()) {
-            'revenue' => 'Rp ' . number_format((int) $value, 0, ',', '.'),
+        return match ($metric) {
+            'revenue' => $this->formatRupiah((int) $value),
             'orders' => number_format((int) $value, 0, ',', '.') . ' order',
             'units' => number_format((int) $value, 0, ',', '.') . ' item',
             default => number_format((int) $value, 0, ',', '.') . ' item',
         };
+    }
+
+    private function formatRupiah(int $value): string
+    {
+        return 'Rp ' . number_format($value, 0, ',', '.');
     }
 }

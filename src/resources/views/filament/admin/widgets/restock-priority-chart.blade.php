@@ -1,19 +1,19 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         <style>
-            .stock-risk-pbi {
-                min-height: 380px;
+            .stock-alert-card {
+                min-height: 420px;
             }
 
-            .stock-risk-head {
+            .stock-alert-head {
                 display: flex;
-                align-items: flex-start;
                 justify-content: space-between;
+                align-items: flex-start;
                 gap: 14px;
                 margin-bottom: 16px;
             }
 
-            .stock-risk-title {
+            .stock-alert-title {
                 margin: 0;
                 color: #0f172a;
                 font-size: 15px;
@@ -21,327 +21,276 @@
                 letter-spacing: -0.03em;
             }
 
-            .stock-risk-subtitle {
+            .stock-alert-subtitle {
                 margin: 5px 0 0;
                 color: #64748b;
                 font-size: 11px;
-                font-weight: 700;
-                line-height: 1.5;
+                font-weight: 650;
+                line-height: 1.45;
             }
 
-            .stock-risk-chip {
-                height: fit-content;
-                padding: 7px 10px;
+            .stock-alert-badge {
                 border-radius: 999px;
-                background: #fef2f2;
-                color: #b91c1c;
+                padding: 8px 10px;
+                color: #991b1b;
+                background: rgba(254, 226, 226, 0.86);
+                border: 1px solid rgba(248, 113, 113, 0.26);
                 font-size: 10px;
                 font-weight: 950;
                 white-space: nowrap;
             }
 
-            .stock-risk-summary {
+            .stock-alert-summary {
                 display: grid;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 10px;
                 margin-bottom: 14px;
             }
 
-            .stock-risk-box {
-                border-radius: 16px;
-                padding: 12px 13px;
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
+            .stock-alert-summary-box {
+                border-radius: 17px;
+                padding: 12px;
+                background: rgba(248, 250, 252, 0.86);
+                border: 1px solid rgba(226, 232, 240, 0.86);
             }
 
-            .stock-risk-box-label {
-                color: #64748b;
-                font-size: 10px;
-                font-weight: 900;
-                text-transform: uppercase;
-                letter-spacing: 0.08em;
-            }
-
-            .stock-risk-box-value {
-                margin-top: 5px;
-                color: #0f172a;
-                font-size: 22px;
-                line-height: 1;
+            .stock-alert-summary-label {
+                color: #94a3b8;
+                font-size: 9px;
                 font-weight: 950;
-                letter-spacing: -0.05em;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
             }
 
-            .stock-risk-distribution {
-                border-radius: 18px;
-                padding: 14px;
-                background: linear-gradient(180deg, #f8fafc, #ffffff);
-                border: 1px solid #e2e8f0;
-                margin-bottom: 14px;
+            .stock-alert-summary-value {
+                margin-top: 6px;
+                color: #0f172a;
+                font-size: 17px;
+                font-weight: 950;
+                letter-spacing: -0.035em;
             }
 
-            .stock-risk-bar {
-                display: flex;
-                height: 18px;
+            .stock-alert-distribution {
                 overflow: hidden;
+                height: 12px;
+                display: flex;
                 border-radius: 999px;
-                background: #e2e8f0;
+                background: rgba(226, 232, 240, 0.95);
+                margin-bottom: 12px;
             }
 
-            .stock-risk-segment {
-                min-width: 4px;
-                height: 100%;
+            .stock-alert-segment.safe {
+                background: #22c55e;
             }
 
-            .stock-risk-segment.safe {
-                background: #0f766e;
+            .stock-alert-segment.warning {
+                background: #f59e0b;
             }
 
-            .stock-risk-segment.warning {
-                background: #eab308;
-            }
-
-            .stock-risk-segment.low {
+            .stock-alert-segment.low {
                 background: #f97316;
             }
 
-            .stock-risk-segment.critical {
-                background: #dc2626;
+            .stock-alert-segment.critical {
+                background: #ef4444;
             }
 
-            .stock-risk-legend {
+            .stock-alert-legend {
                 display: grid;
                 grid-template-columns: repeat(4, minmax(0, 1fr));
                 gap: 8px;
-                margin-top: 12px;
+                margin-bottom: 16px;
             }
 
-            .stock-risk-legend-item {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                min-width: 0;
+            .stock-alert-legend-item {
+                border-radius: 14px;
+                padding: 9px;
+                background: rgba(248, 250, 252, 0.78);
+                border: 1px solid rgba(226, 232, 240, 0.76);
+            }
+
+            .stock-alert-legend-label {
                 color: #64748b;
-                font-size: 10px;
-                font-weight: 850;
+                font-size: 9px;
+                font-weight: 900;
             }
 
-            .stock-risk-dot {
-                width: 9px;
-                height: 9px;
-                border-radius: 999px;
-                flex: none;
+            .stock-alert-legend-value {
+                margin-top: 4px;
+                color: #0f172a;
+                font-size: 13px;
+                font-weight: 950;
             }
 
-            .stock-risk-dot.safe {
-                background: #0f766e;
-            }
-
-            .stock-risk-dot.warning {
-                background: #eab308;
-            }
-
-            .stock-risk-dot.low {
-                background: #f97316;
-            }
-
-            .stock-risk-dot.critical {
-                background: #dc2626;
-            }
-
-            .stock-risk-list {
+            .stock-alert-list {
                 display: grid;
-                gap: 9px;
+                gap: 10px;
             }
 
-            .stock-risk-item {
-                display: grid;
-                grid-template-columns: minmax(0, 1fr) auto;
-                gap: 12px;
-                align-items: center;
-                border-radius: 15px;
-                padding: 10px 11px;
-                background: #ffffff;
-                border: 1px solid #e2e8f0;
-                box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+            .stock-alert-item {
+                border-radius: 17px;
+                padding: 12px;
+                background: rgba(255, 255, 255, 0.92);
+                border: 1px solid rgba(226, 232, 240, 0.8);
+                box-shadow: 0 10px 24px rgba(15, 23, 42, 0.045);
             }
 
-            .stock-risk-name {
+            .stock-alert-item-head {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .stock-alert-product {
                 color: #0f172a;
                 font-size: 12px;
                 font-weight: 950;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                line-height: 1.25;
             }
 
-            .stock-risk-meta {
-                margin-top: 6px;
-                display: grid;
-                grid-template-columns: minmax(0, 1fr) auto;
-                gap: 8px;
-                align-items: center;
-            }
-
-            .stock-risk-track {
-                height: 8px;
-                border-radius: 999px;
-                background: #e2e8f0;
-                overflow: hidden;
-            }
-
-            .stock-risk-fill {
-                height: 100%;
-                min-width: 4px;
-                border-radius: 999px;
-            }
-
-            .stock-risk-fill.warning {
-                background: linear-gradient(90deg, #eab308, #facc15);
-            }
-
-            .stock-risk-fill.low {
-                background: linear-gradient(90deg, #f97316, #fb923c);
-            }
-
-            .stock-risk-fill.critical {
-                background: linear-gradient(90deg, #dc2626, #ef4444);
-            }
-
-            .stock-risk-stock {
+            .stock-alert-stock {
+                margin-top: 4px;
                 color: #64748b;
                 font-size: 10px;
-                font-weight: 900;
-                white-space: nowrap;
+                font-weight: 800;
             }
 
-            .stock-risk-status {
-                padding: 5px 8px;
+            .stock-alert-status {
                 border-radius: 999px;
+                padding: 5px 8px;
                 font-size: 9px;
                 font-weight: 950;
                 white-space: nowrap;
             }
 
-            .stock-risk-status.warning {
-                background: #fef9c3;
-                color: #a16207;
+            .stock-alert-status.warning {
+                color: #92400e;
+                background: rgba(254, 243, 199, 0.95);
             }
 
-            .stock-risk-status.low {
-                background: #ffedd5;
-                color: #c2410c;
+            .stock-alert-status.low {
+                color: #9a3412;
+                background: rgba(255, 237, 213, 0.95);
             }
 
-            .stock-risk-status.critical {
-                background: #fee2e2;
+            .stock-alert-status.critical {
                 color: #991b1b;
+                background: rgba(254, 226, 226, 0.95);
             }
 
-            .stock-risk-empty {
-                min-height: 145px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 16px;
-                background: #f8fafc;
-                border: 1px dashed #cbd5e1;
-                color: #64748b;
+            .stock-alert-progress {
+                overflow: hidden;
+                height: 7px;
+                margin-top: 10px;
+                border-radius: 999px;
+                background: rgba(226, 232, 240, 0.94);
+            }
+
+            .stock-alert-progress-fill {
+                height: 100%;
+                border-radius: inherit;
+                background: linear-gradient(90deg, #ef4444, #f97316, #f59e0b);
+            }
+
+            .stock-alert-empty {
+                min-height: 180px;
+                display: grid;
+                place-items: center;
+                border-radius: 18px;
+                color: #16a34a;
+                background: rgba(240, 253, 244, 0.78);
+                border: 1px dashed rgba(34, 197, 94, 0.42);
+                text-align: center;
                 font-size: 12px;
                 font-weight: 850;
-                text-align: center;
-                padding: 18px;
             }
 
-            @media (max-width: 720px) {
-                .stock-risk-summary,
-                .stock-risk-legend {
+            @media (max-width: 900px) {
+                .stock-alert-legend {
                     grid-template-columns: repeat(2, minmax(0, 1fr));
                 }
             }
         </style>
 
-        <div class="stock-risk-pbi">
-            <div class="stock-risk-head">
+        <div class="stock-alert-card">
+            <div class="stock-alert-head">
                 <div>
-                    <h3 class="stock-risk-title">Stock Risk</h3>
-                    <p class="stock-risk-subtitle">
-                        Distribusi risiko stok dan prioritas produk yang perlu segera diperhatikan.
+                    <h3 class="stock-alert-title">Low Stock Alert</h3>
+                    <p class="stock-alert-subtitle">
+                        Pantau produk dengan stok rendah agar restock bisa dilakukan lebih cepat.
                     </p>
                 </div>
 
-                <span class="stock-risk-chip">Stock Alert</span>
+                <div class="stock-alert-badge">
+                    Stock Risk
+                </div>
             </div>
 
-            <div class="stock-risk-summary">
-                <div class="stock-risk-box">
-                    <div class="stock-risk-box-label">Risk Products</div>
-                    <div class="stock-risk-box-value">
+            <div class="stock-alert-summary">
+                <div class="stock-alert-summary-box">
+                    <div class="stock-alert-summary-label">Risk Products</div>
+                    <div class="stock-alert-summary-value">
                         {{ number_format($riskProducts, 0, ',', '.') }}
                     </div>
                 </div>
 
-                <div class="stock-risk-box">
-                    <div class="stock-risk-box-label">Total Products</div>
-                    <div class="stock-risk-box-value">
+                <div class="stock-alert-summary-box">
+                    <div class="stock-alert-summary-label">Total Products</div>
+                    <div class="stock-alert-summary-value">
                         {{ number_format($totalProducts, 0, ',', '.') }}
                     </div>
                 </div>
             </div>
 
-            <div class="stock-risk-distribution">
-                <div class="stock-risk-bar">
-                    @foreach ($distribution as $segment)
-                        <div
-                            class="stock-risk-segment {{ $segment['class'] }}"
-                            style="width: {{ max((float) $segment['width'], $segment['count'] > 0 ? 4 : 0) }}%;"
-                            title="{{ $segment['label'] }} - {{ $segment['count'] }} produk"
-                        ></div>
-                    @endforeach
-                </div>
+            <div class="stock-alert-distribution">
+                @foreach ($distribution as $segment)
+                    <div
+                        class="stock-alert-segment {{ $segment['class'] }}"
+                        style="width: {{ $segment['width'] }}%;"
+                    ></div>
+                @endforeach
+            </div>
 
-                <div class="stock-risk-legend">
-                    @foreach ($distribution as $segment)
-                        <div class="stock-risk-legend-item">
-                            <span class="stock-risk-dot {{ $segment['class'] }}"></span>
-                            <span>
-                                {{ $segment['label'] }} {{ number_format($segment['count'], 0, ',', '.') }}
-                            </span>
+            <div class="stock-alert-legend">
+                @foreach ($distribution as $segment)
+                    <div class="stock-alert-legend-item">
+                        <div class="stock-alert-legend-label">{{ $segment['label'] }}</div>
+                        <div class="stock-alert-legend-value">
+                            {{ number_format($segment['count'], 0, ',', '.') }}
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endforeach
             </div>
 
             @if (count($items) > 0)
-                <div class="stock-risk-list">
+                <div class="stock-alert-list">
                     @foreach ($items as $item)
-                        <div class="stock-risk-item">
-                            <div>
-                                <div class="stock-risk-name" title="{{ $item['name'] }}">
-                                    {{ $item['name'] }}
+                        <div class="stock-alert-item">
+                            <div class="stock-alert-item-head">
+                                <div>
+                                    <div class="stock-alert-product">{{ $item['name'] }}</div>
+                                    <div class="stock-alert-stock">
+                                        Sisa stok {{ number_format($item['stock'], 0, ',', '.') }}/{{ $item['safeLimit'] }}
+                                    </div>
                                 </div>
 
-                                <div class="stock-risk-meta">
-                                    <div class="stock-risk-track">
-                                        <div
-                                            class="stock-risk-fill {{ $item['statusClass'] }}"
-                                            style="width: {{ max((float) $item['width'], $item['stock'] > 0 ? 6 : 4) }}%;"
-                                        ></div>
-                                    </div>
-
-                                    <div class="stock-risk-stock">
-                                        {{ number_format($item['stock'], 0, ',', '.') }}/{{ $item['safeLimit'] }}
-                                    </div>
+                                <div class="stock-alert-status {{ $item['statusClass'] }}">
+                                    {{ $item['status'] }}
                                 </div>
                             </div>
 
-                            <span class="stock-risk-status {{ $item['statusClass'] }}">
-                                {{ $item['status'] }}
-                            </span>
+                            <div class="stock-alert-progress">
+                                <div
+                                    class="stock-alert-progress-fill"
+                                    style="width: {{ $item['width'] }}%;"
+                                ></div>
+                            </div>
                         </div>
                     @endforeach
                 </div>
             @else
-                <div class="stock-risk-empty">
+                <div class="stock-alert-empty">
                     Semua produk berada di atas batas risiko stok.
                 </div>
             @endif

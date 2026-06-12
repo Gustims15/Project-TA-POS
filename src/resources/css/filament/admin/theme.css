@@ -2076,3 +2076,78 @@
 .ng-profile-form {
     padding: 1.25rem 1.35rem !important;
 }
+
+/* =========================================================
+   ADMIN BACKGROUND SAME AS POS
+   Menyamakan background admin dashboard dengan background POS
+   ========================================================= */
+
+.fi-body {
+    position: relative !important;
+    background: #fff3e6 url("/images/pos-orange-bg.png") center center / cover no-repeat fixed !important;
+}
+
+/* Overlay lembut seperti POS */
+.fi-body::before {
+    content: "" !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: -2 !important;
+    pointer-events: none !important;
+    background:
+        radial-gradient(circle at 8% 8%, rgba(255, 255, 255, 0.36) 0 220px, transparent 226px),
+        radial-gradient(circle at 88% 18%, rgba(255, 156, 91, 0.18) 0 260px, transparent 268px),
+        radial-gradient(circle at 94% 92%, rgba(164, 82, 32, 0.16) 0 360px, transparent 368px),
+        linear-gradient(135deg, rgba(255, 244, 235, 0.1), rgba(255, 198, 139, 0.08)) !important;
+}
+
+/* Supaya background admin tidak ketutup warna bawaan Filament */
+.fi-main,
+.fi-main-ctn,
+.fi-page,
+.fi-page-content {
+    background: transparent !important;
+}
+
+/* Widget tetap glass seperti POS */
+.fi-section {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border: 1px solid rgba(150, 86, 42, 0.2) !important;
+    box-shadow:
+        0 18px 46px rgba(125, 72, 31, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.26) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(116%) !important;
+    backdrop-filter: blur(10px) saturate(116%) !important;
+}
+
+/* Sidebar dibuat ikut rasa POS */
+.fi-sidebar {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-right: 1px solid rgba(150, 86, 42, 0.2) !important;
+    box-shadow:
+        0 18px 46px rgba(125, 72, 31, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.26) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(116%) !important;
+    backdrop-filter: blur(10px) saturate(116%) !important;
+}
+
+/* Topbar jika muncul */
+.fi-topbar {
+    background: rgba(255, 255, 255, 0.18) !important;
+    border-bottom: 1px solid rgba(150, 86, 42, 0.14) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(116%) !important;
+    backdrop-filter: blur(10px) saturate(116%) !important;
+}
+
+/* Dark mode jangan dipaksa hitam dulu agar tetap sama dengan POS */
+.dark .fi-body {
+    background: #fff3e6 url("/images/pos-orange-bg.png") center center / cover no-repeat fixed !important;
+}
+
+.dark .fi-main,
+.dark .fi-main-ctn,
+.dark .fi-page,
+.dark .fi-page-content {
+    background: transparent !important;
+}
+

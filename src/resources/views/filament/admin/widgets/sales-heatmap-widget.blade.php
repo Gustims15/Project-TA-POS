@@ -1,268 +1,249 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         <style>
-            .heatmap-pbi {
-                min-height: 390px;
+            .sales-heatmap-card {
+                min-height: 420px;
             }
 
-            .heatmap-pbi-head {
+            .sales-heatmap-head {
                 display: flex;
-                align-items: flex-start;
                 justify-content: space-between;
+                align-items: flex-start;
                 gap: 14px;
-                margin-bottom: 14px;
+                margin-bottom: 16px;
             }
 
-            .heatmap-pbi-title {
+            .sales-heatmap-title {
                 margin: 0;
                 color: #0f172a;
                 font-size: 15px;
                 font-weight: 950;
-                letter-spacing: -0.03em;
+                letter-spacing: -0.035em;
             }
 
-            .heatmap-pbi-subtitle {
+            .sales-heatmap-subtitle {
                 margin: 5px 0 0;
                 color: #64748b;
                 font-size: 11px;
-                font-weight: 700;
+                font-weight: 650;
+                line-height: 1.45;
             }
 
-            .heatmap-pbi-chip {
-                padding: 7px 10px;
+            .sales-heatmap-badge {
                 border-radius: 999px;
-                background: #ecfdf5;
-                color: #047857;
+                padding: 8px 10px;
+                color: #166534;
+                background: rgba(220, 252, 231, 0.86);
+                border: 1px solid rgba(34, 197, 94, 0.22);
                 font-size: 10px;
                 font-weight: 950;
                 white-space: nowrap;
             }
 
-            .heatmap-insights {
+            .sales-heatmap-insights {
                 display: grid;
                 grid-template-columns: repeat(4, minmax(0, 1fr));
-                gap: 9px;
-                margin-bottom: 14px;
+                gap: 10px;
+                margin-bottom: 15px;
             }
 
-            .heatmap-insight-box {
-                border-radius: 15px;
-                padding: 10px 11px;
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
+            .sales-heatmap-insight {
+                border-radius: 17px;
+                padding: 12px;
+                background: rgba(248, 250, 252, 0.86);
+                border: 1px solid rgba(226, 232, 240, 0.86);
             }
 
-            .heatmap-insight-label {
-                color: #64748b;
+            .sales-heatmap-insight-label {
+                color: #94a3b8;
                 font-size: 9px;
                 font-weight: 950;
-                text-transform: uppercase;
                 letter-spacing: 0.08em;
+                text-transform: uppercase;
             }
 
-            .heatmap-insight-value {
-                margin-top: 5px;
+            .sales-heatmap-insight-value {
+                margin-top: 6px;
                 color: #0f172a;
                 font-size: 13px;
                 font-weight: 950;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                letter-spacing: -0.02em;
             }
 
-            .heatmap-pbi-canvas {
-                border-radius: 20px;
-                padding: 16px;
-                background:
-                    linear-gradient(180deg, rgba(248,250,252,0.95), rgba(255,255,255,1));
-                border: 1px solid #e2e8f0;
+            .sales-heatmap-table-wrap {
                 overflow-x: auto;
+                border-radius: 20px;
+                padding: 12px;
+                background: rgba(248, 250, 252, 0.72);
+                border: 1px solid rgba(226, 232, 240, 0.8);
             }
 
-            .heatmap-pbi-grid {
-                min-width: 760px;
+            .sales-heatmap-grid {
                 display: grid;
-                grid-template-columns: 58px repeat(15, minmax(34px, 1fr));
                 gap: 7px;
+                min-width: 760px;
+                align-items: center;
             }
 
-            .heatmap-pbi-hour {
-                color: #64748b;
+            .sales-heatmap-axis {
+                color: #94a3b8;
                 font-size: 10px;
                 font-weight: 950;
                 text-align: center;
             }
 
-            .heatmap-pbi-day {
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                color: #334155;
+            .sales-heatmap-day {
+                color: #64748b;
                 font-size: 10px;
                 font-weight: 950;
             }
 
-            .heatmap-pbi-cell {
+            .sales-heatmap-cell {
                 position: relative;
-                min-width: 34px;
-                height: 32px;
-                border-radius: 9px;
-                background: #f8fafc;
-                border: 1px solid rgba(15, 118, 110, 0.08);
-                cursor: default;
-                transition: 0.18s ease;
+                height: 31px;
+                border-radius: 10px;
+                border: 1px solid rgba(255, 255, 255, 0.68);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
             }
 
-            .heatmap-pbi-cell:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
-                z-index: 12;
+            .sales-heatmap-cell.level-0 {
+                background: #f1f5f9;
             }
 
-            .heatmap-pbi-cell[data-level="0"] {
-                background: #f8fafc;
+            .sales-heatmap-cell.level-1 {
+                background: #dcfce7;
             }
 
-            .heatmap-pbi-cell[data-level="1"] {
-                background: #d1fae5;
+            .sales-heatmap-cell.level-2 {
+                background: #bbf7d0;
             }
 
-            .heatmap-pbi-cell[data-level="2"] {
-                background: #99f6e4;
+            .sales-heatmap-cell.level-3 {
+                background: #fed7aa;
             }
 
-            .heatmap-pbi-cell[data-level="3"] {
-                background: #5eead4;
+            .sales-heatmap-cell.level-4 {
+                background: #fb923c;
             }
 
-            .heatmap-pbi-cell[data-level="4"] {
-                background: #14b8a6;
+            .sales-heatmap-cell.level-5 {
+                background: #f97316;
             }
 
-            .heatmap-pbi-cell[data-level="5"] {
-                background: #0f766e;
-            }
-
-            .heatmap-pbi-cell:hover::after {
+            .sales-heatmap-cell:hover::after {
                 content: attr(data-tooltip);
                 position: absolute;
+                z-index: 10;
                 left: 50%;
-                bottom: calc(100% + 9px);
+                bottom: calc(100% + 8px);
                 transform: translateX(-50%);
-                z-index: 30;
                 width: max-content;
-                max-width: 240px;
+                max-width: 180px;
+                border-radius: 10px;
                 padding: 8px 10px;
-                border-radius: 12px;
+                color: #ffffff;
                 background: #0f172a;
-                color: white;
                 font-size: 10px;
                 font-weight: 850;
-                line-height: 1.45;
                 white-space: nowrap;
-                box-shadow: 0 14px 30px rgba(15, 23, 42, 0.26);
+                box-shadow: 0 14px 28px rgba(15, 23, 42, 0.24);
             }
 
-            .heatmap-pbi-footer {
+            .sales-heatmap-legend {
                 display: flex;
+                justify-content: flex-end;
                 align-items: center;
-                justify-content: space-between;
-                gap: 14px;
-                margin-top: 14px;
-                color: #64748b;
+                gap: 8px;
+                margin-top: 12px;
+                color: #94a3b8;
                 font-size: 10px;
                 font-weight: 850;
             }
 
-            .heatmap-pbi-legend {
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-                gap: 8px;
-            }
-
-            .heatmap-pbi-legend-box {
-                width: 20px;
-                height: 10px;
+            .sales-heatmap-legend-bar {
+                width: 120px;
+                height: 9px;
                 border-radius: 999px;
-            }
-
-            .heatmap-pbi-legend-box.low {
-                background: #d1fae5;
-            }
-
-            .heatmap-pbi-legend-box.mid {
-                background: #5eead4;
-            }
-
-            .heatmap-pbi-legend-box.high {
-                background: #0f766e;
+                background: linear-gradient(90deg, #f1f5f9, #dcfce7, #fed7aa, #fb923c, #f97316);
+                border: 1px solid rgba(226, 232, 240, 0.8);
             }
 
             @media (max-width: 900px) {
-                .heatmap-insights {
+                .sales-heatmap-insights {
                     grid-template-columns: repeat(2, minmax(0, 1fr));
                 }
+            }
 
-                .heatmap-pbi-grid {
-                    min-width: 720px;
+            @media (max-width: 640px) {
+                .sales-heatmap-head {
+                    flex-direction: column;
+                }
+
+                .sales-heatmap-insights {
+                    grid-template-columns: 1fr;
                 }
             }
         </style>
 
-        <div class="heatmap-pbi">
-            <div class="heatmap-pbi-head">
+        <div class="sales-heatmap-card">
+            <div class="sales-heatmap-head">
                 <div>
-                    <h3 class="heatmap-pbi-title">
-                        Sales Heatmap
-                    </h3>
-
-                    <p class="heatmap-pbi-subtitle">
-                        Intensitas {{ strtolower($metricLabel) }} berdasarkan hari dan jam.
+                    <h3 class="sales-heatmap-title">Sales Heatmap</h3>
+                    <p class="sales-heatmap-subtitle">
+                        Intensitas {{ strtolower($metricLabel) }} berdasarkan hari dan jam operasional minggu ini.
                     </p>
                 </div>
 
-                <span class="heatmap-pbi-chip">
-                    Heatmap
-                </span>
+                <div class="sales-heatmap-badge">
+                    {{ $weekLabel }}
+                </div>
             </div>
 
-            <div class="heatmap-insights">
-                <div class="heatmap-insight-box">
-                    <div class="heatmap-insight-label">Peak Day</div>
-                    <div class="heatmap-insight-value">{{ $insights['peak_day'] }}</div>
+            <div class="sales-heatmap-insights">
+                <div class="sales-heatmap-insight">
+                    <div class="sales-heatmap-insight-label">Peak Day</div>
+                    <div class="sales-heatmap-insight-value">
+                        {{ $insights['peak_day'] }}
+                    </div>
                 </div>
 
-                <div class="heatmap-insight-box">
-                    <div class="heatmap-insight-label">Peak Hour</div>
-                    <div class="heatmap-insight-value">{{ $insights['peak_hour'] }}</div>
+                <div class="sales-heatmap-insight">
+                    <div class="sales-heatmap-insight-label">Peak Hour</div>
+                    <div class="sales-heatmap-insight-value">
+                        {{ $insights['peak_hour'] }}
+                    </div>
                 </div>
 
-                <div class="heatmap-insight-box">
-                    <div class="heatmap-insight-label">Peak Value</div>
-                    <div class="heatmap-insight-value">{{ $insights['peak_value'] }}</div>
+                <div class="sales-heatmap-insight">
+                    <div class="sales-heatmap-insight-label">Peak Value</div>
+                    <div class="sales-heatmap-insight-value">
+                        {{ $insights['peak_value'] }}
+                    </div>
                 </div>
 
-                <div class="heatmap-insight-box">
-                    <div class="heatmap-insight-label">Quiet Time</div>
-                    <div class="heatmap-insight-value">
-                        {{ $insights['quiet_day'] }} {{ $insights['quiet_hour'] }}
+                <div class="sales-heatmap-insight">
+                    <div class="sales-heatmap-insight-label">Total Metric</div>
+                    <div class="sales-heatmap-insight-value">
+                        {{ $totalValue }}
                     </div>
                 </div>
             </div>
 
-            <div class="heatmap-pbi-canvas">
-                <div class="heatmap-pbi-grid">
+            <div class="sales-heatmap-table-wrap">
+                <div
+                    class="sales-heatmap-grid"
+                    style="grid-template-columns: 54px repeat({{ count($hours) }}, minmax(36px, 1fr));"
+                >
                     <div></div>
 
                     @foreach ($hours as $hour)
-                        <div class="heatmap-pbi-hour">
+                        <div class="sales-heatmap-axis">
                             {{ $hour }}
                         </div>
                     @endforeach
 
                     @foreach ($matrix as $row)
-                        <div class="heatmap-pbi-day">
+                        <div class="sales-heatmap-day">
                             {{ $row['day'] }}
                         </div>
 
@@ -281,23 +262,16 @@
                             @endphp
 
                             <div
-                                class="heatmap-pbi-cell"
-                                data-level="{{ $level }}"
-                                data-tooltip="{{ $row['day'] }} {{ $cell['hour'] }} - {{ $cell['label'] }}"
+                                class="sales-heatmap-cell level-{{ $level }}"
+                                data-tooltip="{{ $row['day'] }} {{ $cell['hour'] }} • {{ $cell['label'] }}"
                             ></div>
                         @endforeach
                     @endforeach
                 </div>
-            </div>
 
-            <div class="heatmap-pbi-footer">
-                <span>{{ $metricLabel }} intensity</span>
-
-                <div class="heatmap-pbi-legend">
+                <div class="sales-heatmap-legend">
                     <span>Rendah</span>
-                    <span class="heatmap-pbi-legend-box low"></span>
-                    <span class="heatmap-pbi-legend-box mid"></span>
-                    <span class="heatmap-pbi-legend-box high"></span>
+                    <div class="sales-heatmap-legend-bar"></div>
                     <span>Tinggi</span>
                 </div>
             </div>
