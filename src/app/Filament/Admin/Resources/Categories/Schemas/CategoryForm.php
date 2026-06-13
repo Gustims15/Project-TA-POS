@@ -15,10 +15,12 @@ class CategoryForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
                 Section::make('Informasi Kategori')
                     ->description('Lengkapi data kategori produk agar menu minuman lebih mudah dikelompokkan pada sistem POS.')
                     ->icon('heroicon-o-tag')
+                    ->columnSpanFull()
                     ->schema([
                         TextInput::make('name')
                             ->label('Nama Kategori')
@@ -42,9 +44,13 @@ class CategoryForm
                         Toggle::make('is_active')
                             ->label('Kategori Aktif')
                             ->helperText('Kategori aktif dapat digunakan dan ditampilkan pada sistem.')
-                            ->default(true),
+                            ->default(true)
+                            ->columnSpanFull(),
                     ])
-                    ->columns(2),
+                    ->columns([
+                        'default' => 1,
+                        'md' => 2,
+                    ]),
             ]);
     }
 }

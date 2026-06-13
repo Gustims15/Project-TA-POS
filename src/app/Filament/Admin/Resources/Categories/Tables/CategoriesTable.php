@@ -22,47 +22,49 @@ class CategoriesTable
                     ->searchable()
                     ->sortable()
                     ->html()
-                    ->formatStateUsing(fn (?string $state): string => '
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <div style="
-                                display:grid;
-                                place-items:center;
-                                width:38px;
-                                height:38px;
-                                border-radius:14px;
-                                background:#ecfdf5;
-                                color:#047857;
-                                font-weight:950;
-                                border:1px solid #bbf7d0;
-                            ">
-                                ' . e(mb_strtoupper(mb_substr((string) ($state ?? '-'), 0, 1))) . '
-                            </div>
+                    ->formatStateUsing(function (?string $state): string {
+                        $name = $state ?: '-';
+                        $initial = mb_strtoupper(mb_substr($name, 0, 1));
 
-                            <div style="display:flex; flex-direction:column; gap:4px;">
-                                <span style="
-                                    color:#0f172a;
+                        return '
+                            <div style="display:flex;align-items:center;gap:12px;min-width:210px;">
+                                <div style="
+                                    width:42px;
+                                    height:42px;
+                                    border-radius:15px;
+                                    display:grid;
+                                    place-items:center;
+                                    color:#fff;
+                                    font-size:15px;
                                     font-weight:950;
-                                    font-size:14px;
-                                    letter-spacing:-0.01em;
+                                    background:linear-gradient(135deg,#ff9d18,#ee6500);
+                                    box-shadow:0 12px 24px rgba(238,101,0,.22);
                                 ">
-                                    ' . e($state ?? '-') . '
-                                </span>
+                                    ' . e($initial) . '
+                                </div>
 
-                                <span style="
-                                    width:fit-content;
-                                    border-radius:999px;
-                                    padding:4px 8px;
-                                    background:#f8fafc;
-                                    border:1px solid #e2e8f0;
-                                    color:#64748b;
-                                    font-size:11px;
-                                    font-weight:850;
-                                ">
-                                    Kategori Ngunjuk
-                                </span>
+                                <div style="min-width:0;">
+                                    <div style="
+                                        color:#23160d;
+                                        font-size:13px;
+                                        font-weight:950;
+                                        line-height:1.25;
+                                    ">
+                                        ' . e($name) . '
+                                    </div>
+
+                                    <div style="
+                                        margin-top:3px;
+                                        color:#8b7057;
+                                        font-size:11px;
+                                        font-weight:750;
+                                    ">
+                                        Kategori produk POS
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    '),
+                        ';
+                    }),
 
                 TextColumn::make('slug')
                     ->label('Slug')
@@ -72,14 +74,14 @@ class CategoriesTable
                         <span style="
                             display:inline-flex;
                             align-items:center;
+                            min-height:30px;
+                            padding:0 11px;
                             border-radius:999px;
-                            padding:7px 11px;
-                            background:#eff6ff;
-                            border:1px solid #bfdbfe;
-                            color:#1d4ed8;
-                            font-size:12px;
-                            font-weight:850;
-                            white-space:nowrap;
+                            color:#c25500;
+                            background:rgba(249,115,22,.12);
+                            border:1px solid rgba(249,115,22,.22);
+                            font-size:11px;
+                            font-weight:900;
                         ">
                             ' . e($state ?? '-') . '
                         </span>
@@ -104,46 +106,40 @@ class CategoriesTable
                         $count = (int) $state;
 
                         if ($count <= 0) {
-                            $bg = '#f8fafc';
-                            $border = '#e2e8f0';
+                            $bg = 'rgba(148,163,184,.12)';
+                            $border = 'rgba(148,163,184,.24)';
                             $color = '#64748b';
                             $caption = 'Kosong';
                         } elseif ($count <= 5) {
-                            $bg = '#fff7ed';
-                            $border = '#fed7aa';
-                            $color = '#c2410c';
+                            $bg = 'rgba(249,115,22,.12)';
+                            $border = 'rgba(249,115,22,.22)';
+                            $color = '#c25500';
                             $caption = 'Sedikit';
                         } else {
-                            $bg = '#ecfdf5';
-                            $border = '#bbf7d0';
-                            $color = '#047857';
+                            $bg = 'rgba(16,185,129,.13)';
+                            $border = 'rgba(16,185,129,.24)';
+                            $color = '#078657';
                             $caption = 'Aktif';
                         }
 
                         return '
-                            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-                                <span style="
-                                    display:inline-flex;
-                                    justify-content:center;
-                                    min-width:42px;
-                                    border-radius:12px;
-                                    padding:7px 10px;
-                                    background:' . $bg . ';
-                                    border:1px solid ' . $border . ';
-                                    color:' . $color . ';
-                                    font-weight:950;
-                                    font-size:13px;
-                                ">
-                                    ' . number_format($count, 0, ',', '.') . '
-                                </span>
-
-                                <span style="
-                                    color:' . $color . ';
-                                    font-size:11px;
-                                    font-weight:850;
-                                ">
-                                    ' . $caption . '
-                                </span>
+                            <div style="
+                                display:inline-flex;
+                                align-items:center;
+                                justify-content:center;
+                                gap:8px;
+                                min-height:32px;
+                                min-width:116px;
+                                padding:0 12px;
+                                border-radius:999px;
+                                background:' . $bg . ';
+                                border:1px solid ' . $border . ';
+                                color:' . $color . ';
+                                font-size:11px;
+                                font-weight:950;
+                            ">
+                                <span>' . number_format($count, 0, ',', '.') . '</span>
+                                <span style="opacity:.78;">' . $caption . '</span>
                             </div>
                         ';
                     }),

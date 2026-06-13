@@ -14,7 +14,7 @@ class CategoryAnalyticsWidget extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected function getViewData(): array
+    public function getViewData(): array
     {
         $totalCategories = Category::query()->count();
 
@@ -33,12 +33,19 @@ class CategoryAnalyticsWidget extends Widget
             ->orderByDesc('products_count')
             ->first();
 
+        $emptyCategories = Category::query()
+            ->withCount('products')
+            ->get()
+            ->where('products_count', 0)
+            ->count();
+
         return [
             'summary' => [
                 'total_categories' => (int) $totalCategories,
                 'active_categories' => (int) $activeCategories,
                 'inactive_categories' => (int) $inactiveCategories,
                 'total_products' => (int) $totalProducts,
+                'empty_categories' => (int) $emptyCategories,
                 'top_category_name' => $topCategory?->name ?? '-',
                 'top_category_products' => (int) ($topCategory?->products_count ?? 0),
             ],
