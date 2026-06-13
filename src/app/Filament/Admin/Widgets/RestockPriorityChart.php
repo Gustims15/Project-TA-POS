@@ -13,8 +13,8 @@ class RestockPriorityChart extends Widget
 
     protected int|string|array $columnSpan = [
         'default' => 1,
-        'md' => 1,
-        'xl' => 6,
+        'md' => 6,
+        'xl' => 4,
     ];
 
     protected function getViewData(): array
@@ -53,7 +53,7 @@ class RestockPriorityChart extends Widget
             ->where('stock', '<=', 5)
             ->orderBy('stock')
             ->orderBy('name')
-            ->limit(6)
+            ->limit(2)
             ->get(['name', 'stock'])
             ->map(fn (Product $product): array => $this->makeStockItem($product, $safeLimit))
             ->toArray();

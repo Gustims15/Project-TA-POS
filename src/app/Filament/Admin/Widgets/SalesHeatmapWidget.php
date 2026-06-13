@@ -18,14 +18,20 @@ class SalesHeatmapWidget extends Widget
 
     protected int|string|array $columnSpan = [
         'default' => 1,
-        'md' => 2,
-        'xl' => 8,
+        'md' => 6,
+        'xl' => 12,
     ];
 
     protected function getViewData(): array
     {
         $metric = $this->getDashboardMetric();
-        $hours = range(8, 22);
+
+        /*
+         * Jam dibuat tetap dari 08.00 - 22.00.
+         * Ini cocok untuk POS minuman dan tetap compact.
+         */
+        $hours = range(4, 16);
+
         $days = $this->getCurrentWeekDays();
 
         $startOfWeek = now()->copy()->startOfWeek()->startOfDay();
@@ -37,6 +43,7 @@ class SalesHeatmapWidget extends Widget
         $matrix = [];
         $maxValue = 1;
         $totalValue = 0;
+
         $peakCell = null;
         $quietCell = null;
 
@@ -108,6 +115,7 @@ class SalesHeatmapWidget extends Widget
     private function getCurrentWeekDays(): array
     {
         $labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+
         $startOfWeek = now()->copy()->startOfWeek();
         $days = [];
 

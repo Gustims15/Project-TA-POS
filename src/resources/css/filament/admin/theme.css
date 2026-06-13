@@ -2151,3 +2151,730 @@
     background: transparent !important;
 }
 
+/* ==========================================================
+   POWER BI COMPACT DASHBOARD - NGUNJUK POS
+   ========================================================== */
+
+.fi-main {
+    background:
+        radial-gradient(circle at top left, rgba(251, 146, 60, 0.16), transparent 32rem),
+        radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.08), transparent 34rem),
+        linear-gradient(135deg, #fff7ed 0%, #f8fafc 45%, #ffffff 100%) !important;
+}
+
+.fi-page,
+.fi-wi-widgets {
+    gap: 0.75rem !important;
+}
+
+.fi-wi-widget {
+    margin: 0 !important;
+}
+
+.fi-section,
+.fi-wi-widget > section {
+    border-radius: 1.35rem !important;
+    border: 1px solid rgba(148, 163, 184, 0.22) !important;
+    background: rgba(255, 255, 255, 0.82) !important;
+    box-shadow:
+        0 18px 48px rgba(15, 23, 42, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: blur(18px) !important;
+    overflow: hidden !important;
+}
+
+.fi-section-content {
+    padding: 0.95rem !important;
+}
+
+.fi-header,
+.fi-page-header,
+.fi-breadcrumbs,
+.fi-header-heading,
+.fi-header-subheading {
+    display: none !important;
+}
+
+/* ===== Overview compact ===== */
+
+.pbi-overview-shell {
+    border-radius: 1.45rem;
+    padding: 1rem;
+    background:
+        linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)),
+        radial-gradient(circle at top right, rgba(251, 146, 60, 0.36), transparent 18rem);
+    color: #ffffff;
+    box-shadow: 0 22px 55px rgba(15, 23, 42, 0.18);
+}
+
+.pbi-overview-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem;
+    align-items: start;
+    margin-bottom: 0.9rem;
+}
+
+.pbi-eyebrow {
+    width: max-content;
+    padding: 0.28rem 0.62rem;
+    border-radius: 999px;
+    background: rgba(251, 146, 60, 0.18);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    color: #fed7aa;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.pbi-overview-header h2 {
+    margin-top: 0.42rem;
+    font-size: clamp(1.3rem, 1.8vw, 1.85rem);
+    line-height: 1.1;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+}
+
+.pbi-overview-header p {
+    margin-top: 0.35rem;
+    max-width: 44rem;
+    color: rgba(226, 232, 240, 0.82);
+    font-size: 0.82rem;
+}
+
+.pbi-filter-panel {
+    display: grid;
+    gap: 0.55rem;
+    min-width: 25rem;
+}
+
+.pbi-filter-block > span {
+    display: block;
+    margin-bottom: 0.28rem;
+    color: rgba(226, 232, 240, 0.72);
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.pbi-segment {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.32rem;
+    padding: 0.32rem;
+    border-radius: 0.9rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pbi-segment a {
+    padding: 0.38rem 0.6rem;
+    border-radius: 0.68rem;
+    color: rgba(226, 232, 240, 0.86);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.pbi-segment a:hover,
+.pbi-segment a.is-active {
+    color: #111827;
+    background: linear-gradient(135deg, #fb923c, #facc15);
+    box-shadow: 0 10px 22px rgba(251, 146, 60, 0.25);
+}
+
+.pbi-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.7rem;
+}
+
+.pbi-kpi-card {
+    min-height: 7.1rem;
+    border-radius: 1.1rem;
+    padding: 0.82rem;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.pbi-kpi-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.65rem;
+    align-items: start;
+}
+
+.pbi-kpi-top span {
+    color: rgba(226, 232, 240, 0.72);
+    font-size: 0.73rem;
+    font-weight: 800;
+}
+
+.pbi-kpi-top strong {
+    color: #ffffff;
+    font-size: 1.08rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    text-align: right;
+}
+
+.pbi-mini-bars {
+    display: flex;
+    align-items: end;
+    gap: 0.18rem;
+    height: 2.2rem;
+    margin-top: 0.7rem;
+}
+
+.pbi-mini-bars i {
+    display: block;
+    flex: 1;
+    min-height: 0.2rem;
+    border-radius: 999px 999px 0.25rem 0.25rem;
+    background: linear-gradient(180deg, #fdba74, #f97316);
+    opacity: 0.85;
+}
+
+.pbi-kpi-bottom {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.58rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.pbi-kpi-bottom.up {
+    color: #86efac;
+}
+
+.pbi-kpi-bottom.down {
+    color: #fecaca;
+}
+
+.pbi-kpi-bottom.flat {
+    color: #cbd5e1;
+}
+
+.pbi-stock-stack {
+    display: flex;
+    height: 0.78rem;
+    margin-top: 1.25rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.13);
+}
+
+.pbi-stock-stack i.safe {
+    background: #22c55e;
+}
+
+.pbi-stock-stack i.low {
+    background: #f59e0b;
+}
+
+.pbi-stock-stack i.out {
+    background: #ef4444;
+}
+
+.pbi-stock-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.78rem;
+    color: rgba(226, 232, 240, 0.78);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+/* ===== Compact all dashboard chart cards ===== */
+
+.fi-wi-widget h2,
+.fi-wi-widget h3 {
+    font-size: 0.95rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.025em !important;
+}
+
+.fi-wi-widget p {
+    font-size: 0.75rem !important;
+    line-height: 1.35 !important;
+}
+
+.fi-wi-widget svg {
+    max-height: 245px !important;
+}
+
+.fi-wi-widget table {
+    font-size: 0.76rem !important;
+}
+
+.fi-wi-widget .fi-ta-content {
+    max-height: 300px !important;
+    overflow: auto !important;
+}
+
+/* ===== Heatmap supaya tidak terlalu tinggi ===== */
+
+.sales-heatmap,
+.heatmap-grid,
+[class*="heatmap"] {
+    max-height: 305px;
+}
+
+[class*="heatmap"] .cell,
+[class*="heatmap"] td,
+[class*="heatmap"] span {
+    border-radius: 0.45rem;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1280px) {
+    .pbi-overview-header {
+        grid-template-columns: 1fr;
+    }
+
+    .pbi-filter-panel {
+        min-width: 0;
+    }
+
+    .pbi-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .pbi-overview-shell {
+        padding: 0.8rem;
+    }
+
+    .pbi-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pbi-kpi-card {
+        min-height: 6.6rem;
+    }
+}
+
+/* ==========================================================
+   FIX POWER BI DASHBOARD VISIBILITY
+   Tambahkan di PALING BAWAH theme.css
+   ========================================================== */
+
+body .fi-main .pbi-overview-shell {
+    position: relative !important;
+    z-index: 5 !important;
+    border-radius: 24px !important;
+    padding: 18px !important;
+    color: #ffffff !important;
+    background:
+        radial-gradient(circle at top right, rgba(251, 146, 60, 0.42), transparent 280px),
+        linear-gradient(135deg, #0f172a 0%, #1e293b 52%, #111827 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow:
+        0 24px 60px rgba(15, 23, 42, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: none !important;
+    opacity: 1 !important;
+}
+
+body .fi-main .pbi-overview-shell * {
+    opacity: 1 !important;
+}
+
+body .fi-main .pbi-eyebrow {
+    color: #fed7aa !important;
+    background: rgba(251, 146, 60, 0.18) !important;
+    border: 1px solid rgba(251, 146, 60, 0.35) !important;
+}
+
+body .fi-main .pbi-overview-header h2 {
+    color: #ffffff !important;
+}
+
+body .fi-main .pbi-overview-header p {
+    color: rgba(226, 232, 240, 0.86) !important;
+}
+
+body .fi-main .pbi-filter-block > span {
+    color: rgba(226, 232, 240, 0.86) !important;
+}
+
+body .fi-main .pbi-segment {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+body .fi-main .pbi-segment a {
+    color: rgba(226, 232, 240, 0.9) !important;
+}
+
+body .fi-main .pbi-segment a.is-active,
+body .fi-main .pbi-segment a:hover {
+    color: #111827 !important;
+    background: linear-gradient(135deg, #fb923c, #facc15) !important;
+    box-shadow: 0 12px 24px rgba(251, 146, 60, 0.28) !important;
+}
+
+body .fi-main .pbi-kpi-card {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.105) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 12px 28px rgba(0, 0, 0, 0.08) !important;
+}
+
+body .fi-main .pbi-kpi-top span {
+    color: rgba(226, 232, 240, 0.88) !important;
+}
+
+body .fi-main .pbi-kpi-top strong {
+    color: #ffffff !important;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.18) !important;
+}
+
+body .fi-main .pbi-kpi-bottom.up {
+    color: #86efac !important;
+}
+
+body .fi-main .pbi-kpi-bottom.down {
+    color: #fecaca !important;
+}
+
+body .fi-main .pbi-kpi-bottom.flat {
+    color: #cbd5e1 !important;
+}
+
+body .fi-main .pbi-mini-bars i {
+    background: linear-gradient(180deg, #fdba74, #f97316) !important;
+}
+
+body .fi-main .pbi-stock-meta {
+    color: rgba(226, 232, 240, 0.88) !important;
+}
+
+body .fi-main .pbi-stock-stack {
+    background: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Supaya card chart di bawah juga lebih terbaca */
+body .fi-main .fi-section,
+body .fi-main .fi-wi-widget > section {
+    background: rgba(255, 255, 255, 0.94) !important;
+    border: 1px solid rgba(148, 163, 184, 0.24) !important;
+    box-shadow: 0 18px 46px rgba(15, 23, 42, 0.08) !important;
+    opacity: 1 !important;
+}
+
+body .fi-main .fi-section *,
+body .fi-main .fi-wi-widget > section * {
+    opacity: 1 !important;
+}
+
+/* Judul chart lebih tegas */
+body .fi-main .fi-wi-widget h2,
+body .fi-main .fi-wi-widget h3,
+body .fi-main .fi-section-header-heading {
+    color: #0f172a !important;
+    font-weight: 900 !important;
+}
+
+body .fi-main .fi-wi-widget p,
+body .fi-main .fi-section-header-description {
+    color: #475569 !important;
+}
+
+/* ==========================================================
+   COMPACT POWER BI STYLE DASHBOARD
+   ========================================================== */
+
+.fi-page,
+.fi-wi-widgets {
+    gap: 12px !important;
+}
+
+.fi-wi-widget {
+    margin: 0 !important;
+}
+
+.fi-section,
+.fi-wi-widget > section {
+    border-radius: 20px !important;
+    overflow: hidden !important;
+}
+
+.fi-section-content {
+    padding: 12px !important;
+}
+
+/* Judul dan teks widget */
+.fi-wi-widget h2,
+.fi-wi-widget h3,
+.fi-section-header-heading {
+    font-size: 15px !important;
+    line-height: 1.2 !important;
+    font-weight: 900 !important;
+    margin-bottom: 2px !important;
+}
+
+.fi-wi-widget p,
+.fi-section-header-description {
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+    margin-bottom: 0 !important;
+    color: #64748b !important;
+}
+
+/* Card body lebih rapat */
+.compact-card,
+.metric-card,
+.powerbi-card {
+    padding: 10px !important;
+    border-radius: 16px !important;
+}
+
+/* Header overview atas */
+.pbi-overview-shell {
+    padding: 14px !important;
+    border-radius: 24px !important;
+}
+
+.pbi-overview-header {
+    gap: 14px !important;
+    margin-bottom: 12px !important;
+}
+
+.pbi-overview-header h2 {
+    font-size: 24px !important;
+    margin-top: 4px !important;
+}
+
+.pbi-overview-header p {
+    font-size: 12px !important;
+    margin-top: 4px !important;
+}
+
+.pbi-filter-panel {
+    gap: 8px !important;
+}
+
+.pbi-filter-block > span {
+    font-size: 11px !important;
+    margin-bottom: 4px !important;
+}
+
+.pbi-segment {
+    padding: 4px !important;
+    gap: 4px !important;
+    border-radius: 12px !important;
+}
+
+.pbi-segment a {
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+    border-radius: 10px !important;
+}
+
+/* KPI atas dibuat lebih kecil */
+.pbi-kpi-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+}
+
+.pbi-kpi-card {
+    min-height: 96px !important;
+    padding: 10px !important;
+    border-radius: 16px !important;
+}
+
+.pbi-kpi-top strong {
+    font-size: 16px !important;
+}
+
+.pbi-kpi-top span {
+    font-size: 11px !important;
+}
+
+.pbi-mini-bars {
+    height: 24px !important;
+    margin-top: 8px !important;
+}
+
+.pbi-kpi-bottom {
+    margin-top: 8px !important;
+    font-size: 11px !important;
+}
+
+.pbi-stock-meta {
+    font-size: 11px !important;
+    margin-top: 8px !important;
+}
+
+/* Widget chart dibuat lebih pendek */
+.monthly-trend-chart svg,
+.category-contribution-chart svg,
+.product-performance-matrix svg,
+.sales-heatmap-widget svg {
+    max-height: 220px !important;
+}
+
+/* Container chart */
+.chart-shell,
+.chart-card-shell {
+    padding: 10px !important;
+}
+
+/* Summary box dalam widget diperkecil */
+.summary-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.summary-card {
+    min-height: 72px !important;
+    padding: 10px !important;
+    border-radius: 14px !important;
+}
+
+.summary-card .label {
+    font-size: 10px !important;
+    margin-bottom: 4px !important;
+}
+
+.summary-card .value {
+    font-size: 14px !important;
+    font-weight: 900 !important;
+}
+
+.summary-card .sub {
+    font-size: 11px !important;
+}
+
+/* Top Product biar tidak kepanjangan */
+.product-ranking-list {
+    display: grid !important;
+    gap: 8px !important;
+}
+
+.product-ranking-item {
+    padding: 10px !important;
+    border-radius: 14px !important;
+}
+
+.product-ranking-item .title {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+}
+
+.product-ranking-item .meta {
+    font-size: 11px !important;
+}
+
+.product-ranking-item .amount {
+    font-size: 13px !important;
+    font-weight: 900 !important;
+}
+
+.product-bar {
+    height: 8px !important;
+    border-radius: 999px !important;
+    margin-top: 6px !important;
+}
+
+/* Low stock biar lebih compact */
+.low-stock-list {
+    display: grid !important;
+    gap: 8px !important;
+}
+
+.low-stock-item {
+    padding: 10px !important;
+    border-radius: 14px !important;
+}
+
+.low-stock-item .title {
+    font-size: 12px !important;
+    font-weight: 800 !important;
+}
+
+.low-stock-item .meta {
+    font-size: 11px !important;
+}
+
+.low-stock-progress {
+    height: 7px !important;
+    margin-top: 6px !important;
+    border-radius: 999px !important;
+}
+
+/* Heatmap dibuat pendek */
+.heatmap-card {
+    padding: 12px !important;
+}
+
+.heatmap-summary {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+}
+
+.heatmap-summary .summary-card {
+    min-height: 64px !important;
+}
+
+.heatmap-grid {
+    max-height: 235px !important;
+    overflow: auto !important;
+}
+
+.heatmap-row {
+    gap: 6px !important;
+}
+
+.heatmap-cell {
+    height: 26px !important;
+    border-radius: 8px !important;
+    font-size: 10px !important;
+}
+
+/* Kurangi tinggi tabel/daftar */
+.fi-wi-widget table td,
+.fi-wi-widget table th {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    font-size: 12px !important;
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+    .pbi-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .heatmap-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .pbi-kpi-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .summary-grid,
+    .heatmap-summary {
+        grid-template-columns: 1fr !important;
+    }
+
+    .pbi-overview-header {
+        grid-template-columns: 1fr !important;
+    }
+}

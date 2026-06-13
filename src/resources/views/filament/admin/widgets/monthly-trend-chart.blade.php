@@ -1,262 +1,278 @@
 <x-filament-widgets::widget>
-    <x-filament::section>
+    @once
         <style>
-            .monthly-trend-pbi {
-                min-height: 380px;
+            .pbi-widget-card {
+                overflow: hidden;
+                border-radius: 20px;
+                background: rgba(255, 255, 255, 0.96);
+                border: 1px solid rgba(226, 232, 240, 0.9);
+                box-shadow: 0 16px 38px rgba(15, 23, 42, 0.08);
             }
 
-            .monthly-trend-head {
+            .pbi-widget-inner {
+                padding: 14px;
+            }
+
+            .pbi-widget-header {
                 display: flex;
                 align-items: flex-start;
                 justify-content: space-between;
-                gap: 14px;
-                margin-bottom: 16px;
+                gap: 12px;
+                margin-bottom: 10px;
             }
 
-            .monthly-trend-title {
+            .pbi-widget-title {
                 margin: 0;
                 color: #0f172a;
                 font-size: 15px;
-                font-weight: 950;
-                letter-spacing: -0.03em;
+                font-weight: 900;
+                line-height: 1.15;
+                letter-spacing: -0.035em;
             }
 
-            .monthly-trend-subtitle {
-                margin: 5px 0 0;
+            .pbi-widget-subtitle {
+                margin-top: 3px;
                 color: #64748b;
                 font-size: 11px;
                 font-weight: 700;
+                line-height: 1.35;
             }
 
-            .monthly-trend-chip {
-                padding: 7px 10px;
-                border-radius: 999px;
-                background: #ecfdf5;
-                color: #047857;
-                font-size: 10px;
-                font-weight: 950;
+            .pbi-chip {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
                 white-space: nowrap;
-            }
-
-            .monthly-trend-summary {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 10px;
-                margin-bottom: 14px;
-            }
-
-            .monthly-trend-box {
-                border-radius: 16px;
-                padding: 12px 13px;
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
-            }
-
-            .monthly-trend-box-label {
-                color: #64748b;
+                border-radius: 999px;
+                padding: 6px 10px;
+                color: #047857;
+                background: #ecfdf5;
+                border: 1px solid #d1fae5;
                 font-size: 10px;
                 font-weight: 900;
-                text-transform: uppercase;
-                letter-spacing: 0.08em;
             }
 
-            .monthly-trend-box-value {
+            .pbi-summary-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+
+            .pbi-summary-box {
+                min-height: 58px;
+                border-radius: 14px;
+                padding: 9px 10px;
+                background: linear-gradient(180deg, #ffffff, #f8fafc);
+                border: 1px solid rgba(226, 232, 240, 0.9);
+            }
+
+            .pbi-summary-label {
+                color: #94a3b8;
+                font-size: 9px;
+                font-weight: 900;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+            }
+
+            .pbi-summary-value {
                 margin-top: 5px;
                 color: #0f172a;
-                font-size: 18px;
+                font-size: 15px;
                 font-weight: 950;
+                line-height: 1.1;
                 letter-spacing: -0.04em;
             }
 
-            .monthly-trend-growth {
-                margin-top: 5px;
-                font-size: 11px;
+            .pbi-summary-note {
+                margin-top: 3px;
+                color: #047857;
+                font-size: 10px;
                 font-weight: 900;
             }
 
-            .monthly-trend-growth.up {
-                color: #059669;
-            }
-
-            .monthly-trend-growth.down {
-                color: #dc2626;
-            }
-
-            .monthly-trend-growth.neutral {
-                color: #64748b;
-            }
-
-            .monthly-trend-chart-box {
-                border-radius: 20px;
-                padding: 14px 12px 10px;
+            .pbi-chart-box {
+                height: 205px;
+                border-radius: 18px;
+                padding: 8px 10px 4px;
                 background:
-                    linear-gradient(180deg, rgba(240,253,250,0.9), rgba(255,255,255,1)),
-                    radial-gradient(circle at top right, rgba(20,184,166,0.12), transparent 32%);
-                border: 1px solid #dbeafe;
+                    linear-gradient(180deg, rgba(240, 253, 250, 0.72), rgba(255, 255, 255, 0.92));
+                border: 1px solid rgba(209, 250, 229, 0.9);
                 overflow: hidden;
             }
 
-            .monthly-trend-svg {
+            .pbi-svg {
                 width: 100%;
-                height: 285px;
+                height: 100%;
                 display: block;
-                overflow: visible;
             }
 
-            .monthly-trend-label {
+            .pbi-axis-label {
+                fill: #64748b;
+                font-size: 10px;
+                font-weight: 800;
+            }
+
+            .pbi-point-label {
                 fill: #0f172a;
-                font-size: 11px;
+                font-size: 10px;
                 font-weight: 900;
             }
 
-            .monthly-trend-axis {
-                display: grid;
-                grid-template-columns: repeat({{ max(count($points), 1) }}, minmax(0, 1fr));
-                gap: 4px;
-                margin-top: 6px;
-                padding: 0 10px;
+            .pbi-grid-line {
+                stroke: rgba(148, 163, 184, 0.22);
+                stroke-width: 1;
             }
 
-            .monthly-trend-axis span {
-                color: #64748b;
-                font-size: 10px;
-                font-weight: 850;
-                text-align: center;
-                white-space: nowrap;
+            .pbi-tooltip-dot {
+                fill: #065f46;
+                stroke: #ffffff;
+                stroke-width: 3;
             }
 
-            @media (max-width: 700px) {
-                .monthly-trend-summary {
+            @media (max-width: 768px) {
+                .pbi-summary-grid {
                     grid-template-columns: 1fr;
                 }
 
-                .monthly-trend-svg {
-                    height: 240px;
-                }
-
-                .monthly-trend-label {
-                    font-size: 9px;
+                .pbi-chart-box {
+                    height: 190px;
                 }
             }
         </style>
+    @endonce
 
-        <div class="monthly-trend-pbi">
-            <div class="monthly-trend-head">
+    @php
+        $growthDirection = $growth['direction'] ?? 'flat';
+
+        $growthIcon = match ($growthDirection) {
+            'up' => '▲',
+            'down' => '▼',
+            default => '●',
+        };
+
+        $growthColor = match ($growthDirection) {
+            'up' => '#047857',
+            'down' => '#dc2626',
+            default => '#64748b',
+        };
+
+        $baselineY = ($paddingTop ?? 32) + ($plotHeight ?? 180);
+    @endphp
+
+    <div class="pbi-widget-card monthly-trend-chart">
+        <div class="pbi-widget-inner">
+            <div class="pbi-widget-header">
                 <div>
-                    <h3 class="monthly-trend-title">
-                        Monthly {{ $metricLabel }} Trend
-                    </h3>
-
-                    <p class="monthly-trend-subtitle">
-                        Tren {{ strtolower($metricLabel) }} dalam 12 bulan terakhir.
-                    </p>
+                    <h3 class="pbi-widget-title">Monthly {{ $metricLabel ?? 'Trend' }} Trend</h3>
+                    <div class="pbi-widget-subtitle">
+                        Tren {{ strtolower($metricLabel ?? 'data') }} dalam 12 bulan terakhir.
+                    </div>
                 </div>
 
-                <span class="monthly-trend-chip">
-                    Monthly Trend
+                <span class="pbi-chip">
+                    {{ $periodLabel ?? 'Monthly Trend' }}
                 </span>
             </div>
 
-            <div class="monthly-trend-summary">
-                <div class="monthly-trend-box">
-                    <div class="monthly-trend-box-label">Bulan Terbaru</div>
-                    <div class="monthly-trend-box-value">{{ $currentValue }}</div>
+            <div class="pbi-summary-grid">
+                <div class="pbi-summary-box">
+                    <div class="pbi-summary-label">Bulan terbaru</div>
+                    <div class="pbi-summary-value">{{ $currentValue ?? '-' }}</div>
                 </div>
 
-                <div class="monthly-trend-box">
-                    <div class="monthly-trend-box-label">Perubahan</div>
-                    <div class="monthly-trend-box-value">
-                        {{ $growth['direction'] === 'up' ? '▲' : ($growth['direction'] === 'down' ? '▼' : '●') }}
-                        {{ number_format((float) $growth['value'], 1, ',', '.') }}%
+                <div class="pbi-summary-box">
+                    <div class="pbi-summary-label">Perubahan</div>
+                    <div class="pbi-summary-value" style="color: {{ $growthColor }}">
+                        {{ $growthIcon }} {{ $growth['label'] ?? '0%' }}
                     </div>
-
-                    <div class="monthly-trend-growth {{ $growth['direction'] }}">
-                        {{ $growth['label'] }}
+                    <div class="pbi-summary-note">
+                        dibanding periode sebelumnya
                     </div>
                 </div>
             </div>
 
-            <div class="monthly-trend-chart-box">
+            <div class="pbi-chart-box">
                 <svg
-                    class="monthly-trend-svg"
-                    viewBox="0 0 {{ $chartWidth }} {{ $chartHeight }}"
-                    preserveAspectRatio="none"
+                    class="pbi-svg"
+                    viewBox="0 0 {{ $chartWidth ?? 860 }} {{ $chartHeight ?? 260 }}"
+                    role="img"
+                    aria-label="Monthly trend chart"
                 >
                     <defs>
-                        <linearGradient id="monthlyTrendAreaGradient" x1="0" x2="0" y1="0" y2="1">
-                            <stop offset="0%" stop-color="#0f766e" stop-opacity="0.36" />
-                            <stop offset="100%" stop-color="#0f766e" stop-opacity="0.08" />
+                        <linearGradient id="monthlyAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#059669" stop-opacity="0.24" />
+                            <stop offset="100%" stop-color="#059669" stop-opacity="0.02" />
+                        </linearGradient>
+
+                        <linearGradient id="monthlyLineGradient" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#047857" />
+                            <stop offset="100%" stop-color="#064e3b" />
                         </linearGradient>
                     </defs>
 
-                    @for ($i = 0; $i <= $gridLines; $i++)
+                    @for ($i = 0; $i <= ($gridLines ?? 4); $i++)
                         @php
-                            $y = $paddingTop + (($plotHeight / $gridLines) * $i);
+                            $y = ($paddingTop ?? 32) + (($plotHeight ?? 180) / max(($gridLines ?? 4), 1)) * $i;
                         @endphp
 
                         <line
-                            x1="{{ $paddingLeft }}"
+                            x1="{{ $paddingLeft ?? 28 }}"
                             y1="{{ $y }}"
-                            x2="{{ $chartWidth - $paddingRight }}"
+                            x2="{{ ($chartWidth ?? 860) - ($paddingRight ?? 28) }}"
                             y2="{{ $y }}"
-                            stroke="#e2e8f0"
-                            stroke-width="1"
+                            class="pbi-grid-line"
                         />
                     @endfor
 
-                    @if ($areaPath !== '')
+                    @if (! empty($areaPath))
                         <path
                             d="{{ $areaPath }}"
-                            fill="url(#monthlyTrendAreaGradient)"
+                            fill="url(#monthlyAreaGradient)"
                         />
                     @endif
 
-                    @if ($linePath !== '')
+                    @if (! empty($linePath))
                         <path
                             d="{{ $linePath }}"
                             fill="none"
-                            stroke="#064e3b"
+                            stroke="url(#monthlyLineGradient)"
                             stroke-width="5"
                             stroke-linecap="round"
                             stroke-linejoin="round"
                         />
                     @endif
 
-                    @foreach ($points as $point)
-                        @php
-                            $labelY = $point['y'] - 14;
-
-                            if ($labelY < 14) {
-                                $labelY = $point['y'] + 24;
-                            }
-                        @endphp
-
+                    @foreach (($points ?? []) as $point)
                         <circle
                             cx="{{ $point['x'] }}"
                             cy="{{ $point['y'] }}"
-                            r="7"
-                            fill="#064e3b"
-                            stroke="#ffffff"
-                            stroke-width="3"
+                            r="6"
+                            class="pbi-tooltip-dot"
                         />
+
+                        @if (($point['value'] ?? 0) > 0)
+                            <text
+                                x="{{ $point['x'] }}"
+                                y="{{ max(($point['y'] ?? 0) - 12, 15) }}"
+                                text-anchor="middle"
+                                class="pbi-point-label"
+                            >
+                                {{ $point['formatted'] ?? '' }}
+                            </text>
+                        @endif
 
                         <text
                             x="{{ $point['x'] }}"
-                            y="{{ $labelY }}"
+                            y="{{ $baselineY + 28 }}"
                             text-anchor="middle"
-                            class="monthly-trend-label"
+                            class="pbi-axis-label"
                         >
-                            {{ $point['formatted'] }}
+                            {{ $point['label'] ?? '' }}
                         </text>
                     @endforeach
                 </svg>
-
-                <div class="monthly-trend-axis">
-                    @foreach ($points as $point)
-                        <span>{{ $point['label'] }}</span>
-                    @endforeach
-                </div>
             </div>
         </div>
-    </x-filament::section>
+    </div>
 </x-filament-widgets::widget>

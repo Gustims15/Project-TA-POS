@@ -1,299 +1,109 @@
 <x-filament-widgets::widget>
-    <x-filament::section>
-        <style>
-            .stock-alert-card {
-                min-height: 420px;
-            }
-
-            .stock-alert-head {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                gap: 14px;
-                margin-bottom: 16px;
-            }
-
-            .stock-alert-title {
-                margin: 0;
-                color: #0f172a;
-                font-size: 15px;
-                font-weight: 950;
-                letter-spacing: -0.03em;
-            }
-
-            .stock-alert-subtitle {
-                margin: 5px 0 0;
-                color: #64748b;
-                font-size: 11px;
-                font-weight: 650;
-                line-height: 1.45;
-            }
-
-            .stock-alert-badge {
-                border-radius: 999px;
-                padding: 8px 10px;
-                color: #991b1b;
-                background: rgba(254, 226, 226, 0.86);
-                border: 1px solid rgba(248, 113, 113, 0.26);
-                font-size: 10px;
-                font-weight: 950;
-                white-space: nowrap;
-            }
-
-            .stock-alert-summary {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 10px;
-                margin-bottom: 14px;
-            }
-
-            .stock-alert-summary-box {
-                border-radius: 17px;
-                padding: 12px;
-                background: rgba(248, 250, 252, 0.86);
-                border: 1px solid rgba(226, 232, 240, 0.86);
-            }
-
-            .stock-alert-summary-label {
-                color: #94a3b8;
-                font-size: 9px;
-                font-weight: 950;
-                letter-spacing: 0.08em;
-                text-transform: uppercase;
-            }
-
-            .stock-alert-summary-value {
-                margin-top: 6px;
-                color: #0f172a;
-                font-size: 17px;
-                font-weight: 950;
-                letter-spacing: -0.035em;
-            }
-
-            .stock-alert-distribution {
-                overflow: hidden;
-                height: 12px;
-                display: flex;
-                border-radius: 999px;
-                background: rgba(226, 232, 240, 0.95);
-                margin-bottom: 12px;
-            }
-
-            .stock-alert-segment.safe {
-                background: #22c55e;
-            }
-
-            .stock-alert-segment.warning {
-                background: #f59e0b;
-            }
-
-            .stock-alert-segment.low {
-                background: #f97316;
-            }
-
-            .stock-alert-segment.critical {
-                background: #ef4444;
-            }
-
-            .stock-alert-legend {
-                display: grid;
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-                gap: 8px;
-                margin-bottom: 16px;
-            }
-
-            .stock-alert-legend-item {
-                border-radius: 14px;
-                padding: 9px;
-                background: rgba(248, 250, 252, 0.78);
-                border: 1px solid rgba(226, 232, 240, 0.76);
-            }
-
-            .stock-alert-legend-label {
-                color: #64748b;
-                font-size: 9px;
-                font-weight: 900;
-            }
-
-            .stock-alert-legend-value {
-                margin-top: 4px;
-                color: #0f172a;
-                font-size: 13px;
-                font-weight: 950;
-            }
-
-            .stock-alert-list {
-                display: grid;
-                gap: 10px;
-            }
-
-            .stock-alert-item {
-                border-radius: 17px;
-                padding: 12px;
-                background: rgba(255, 255, 255, 0.92);
-                border: 1px solid rgba(226, 232, 240, 0.8);
-                box-shadow: 0 10px 24px rgba(15, 23, 42, 0.045);
-            }
-
-            .stock-alert-item-head {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .stock-alert-product {
-                color: #0f172a;
-                font-size: 12px;
-                font-weight: 950;
-                line-height: 1.25;
-            }
-
-            .stock-alert-stock {
-                margin-top: 4px;
-                color: #64748b;
-                font-size: 10px;
-                font-weight: 800;
-            }
-
-            .stock-alert-status {
-                border-radius: 999px;
-                padding: 5px 8px;
-                font-size: 9px;
-                font-weight: 950;
-                white-space: nowrap;
-            }
-
-            .stock-alert-status.warning {
-                color: #92400e;
-                background: rgba(254, 243, 199, 0.95);
-            }
-
-            .stock-alert-status.low {
-                color: #9a3412;
-                background: rgba(255, 237, 213, 0.95);
-            }
-
-            .stock-alert-status.critical {
-                color: #991b1b;
-                background: rgba(254, 226, 226, 0.95);
-            }
-
-            .stock-alert-progress {
-                overflow: hidden;
-                height: 7px;
-                margin-top: 10px;
-                border-radius: 999px;
-                background: rgba(226, 232, 240, 0.94);
-            }
-
-            .stock-alert-progress-fill {
-                height: 100%;
-                border-radius: inherit;
-                background: linear-gradient(90deg, #ef4444, #f97316, #f59e0b);
-            }
-
-            .stock-alert-empty {
-                min-height: 180px;
-                display: grid;
-                place-items: center;
-                border-radius: 18px;
-                color: #16a34a;
-                background: rgba(240, 253, 244, 0.78);
-                border: 1px dashed rgba(34, 197, 94, 0.42);
-                text-align: center;
-                font-size: 12px;
-                font-weight: 850;
-            }
-
-            @media (max-width: 900px) {
-                .stock-alert-legend {
-                    grid-template-columns: repeat(2, minmax(0, 1fr));
-                }
-            }
-        </style>
-
-        <div class="stock-alert-card">
-            <div class="stock-alert-head">
+    <div class="pbi-widget-card restock-priority-chart">
+        <div class="pbi-widget-inner">
+            <div class="pbi-widget-header">
                 <div>
-                    <h3 class="stock-alert-title">Low Stock Alert</h3>
-                    <p class="stock-alert-subtitle">
-                        Pantau produk dengan stok rendah agar restock bisa dilakukan lebih cepat.
-                    </p>
+                    <h3 class="pbi-widget-title">Low Stock Alert</h3>
+                    <div class="pbi-widget-subtitle">
+                        Produk dengan stok rendah agar restock tidak terlambat.
+                    </div>
                 </div>
 
-                <div class="stock-alert-badge">
+                <span class="pbi-chip" style="color:#be123c;background:#fff1f2;border-color:#fecdd3;">
                     Stock Risk
+                </span>
+            </div>
+
+            <div class="pbi-summary-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+                <div class="pbi-summary-box">
+                    <div class="pbi-summary-label">Risk products</div>
+                    <div class="pbi-summary-value">{{ $riskProducts ?? 0 }}</div>
+                </div>
+
+                <div class="pbi-summary-box">
+                    <div class="pbi-summary-label">Total products</div>
+                    <div class="pbi-summary-value">{{ $totalProducts ?? 0 }}</div>
                 </div>
             </div>
 
-            <div class="stock-alert-summary">
-                <div class="stock-alert-summary-box">
-                    <div class="stock-alert-summary-label">Risk Products</div>
-                    <div class="stock-alert-summary-value">
-                        {{ number_format($riskProducts, 0, ',', '.') }}
-                    </div>
-                </div>
+            <div style="height:9px;border-radius:999px;background:#e2e8f0;overflow:hidden;margin-bottom:9px;display:flex;">
+                @foreach (($distribution ?? []) as $dist)
+                    @php
+                        $color = match ($dist['class'] ?? '') {
+                            'safe' => '#22c55e',
+                            'warning' => '#f59e0b',
+                            'low' => '#fb923c',
+                            'critical' => '#ef4444',
+                            default => '#94a3b8',
+                        };
+                    @endphp
 
-                <div class="stock-alert-summary-box">
-                    <div class="stock-alert-summary-label">Total Products</div>
-                    <div class="stock-alert-summary-value">
-                        {{ number_format($totalProducts, 0, ',', '.') }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="stock-alert-distribution">
-                @foreach ($distribution as $segment)
                     <div
-                        class="stock-alert-segment {{ $segment['class'] }}"
-                        style="width: {{ $segment['width'] }}%;"
+                        title="{{ $dist['label'] ?? '-' }}: {{ $dist['count'] ?? 0 }}"
+                        style="height:100%;width:{{ $dist['width'] ?? 0 }}%;background:{{ $color }};"
                     ></div>
                 @endforeach
             </div>
 
-            <div class="stock-alert-legend">
-                @foreach ($distribution as $segment)
-                    <div class="stock-alert-legend-item">
-                        <div class="stock-alert-legend-label">{{ $segment['label'] }}</div>
-                        <div class="stock-alert-legend-value">
-                            {{ number_format($segment['count'], 0, ',', '.') }}
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:10px;">
+                @foreach (($distribution ?? []) as $dist)
+                    <div style="border-radius:12px;padding:8px;background:#ffffff;border:1px solid rgba(226,232,240,.9);">
+                        <div style="color:#64748b;font-size:9px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            {{ $dist['label'] ?? '-' }}
+                        </div>
+                        <div style="margin-top:3px;color:#0f172a;font-size:13px;font-weight:950;">
+                            {{ $dist['count'] ?? 0 }}
                         </div>
                     </div>
                 @endforeach
             </div>
 
-            @if (count($items) > 0)
-                <div class="stock-alert-list">
-                    @foreach ($items as $item)
-                        <div class="stock-alert-item">
-                            <div class="stock-alert-item-head">
-                                <div>
-                                    <div class="stock-alert-product">{{ $item['name'] }}</div>
-                                    <div class="stock-alert-stock">
-                                        Sisa stok {{ number_format($item['stock'], 0, ',', '.') }}/{{ $item['safeLimit'] }}
-                                    </div>
-                                </div>
+            <div class="low-stock-list" style="display:grid;gap:7px;">
+                @forelse (($items ?? []) as $item)
+                    @php
+                        $statusClass = $item['statusClass'] ?? 'warning';
 
-                                <div class="stock-alert-status {{ $item['statusClass'] }}">
-                                    {{ $item['status'] }}
+                        $statusColor = match ($statusClass) {
+                            'critical' => '#ef4444',
+                            'low' => '#f97316',
+                            'warning' => '#f59e0b',
+                            default => '#64748b',
+                        };
+
+                        $statusBg = match ($statusClass) {
+                            'critical' => '#fff1f2',
+                            'low' => '#fff7ed',
+                            'warning' => '#fef9c3',
+                            default => '#f8fafc',
+                        };
+                    @endphp
+
+                    <div class="low-stock-item" style="padding:9px 10px;border-radius:14px;background:#ffffff;border:1px solid rgba(226,232,240,.88);">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="min-width:0;">
+                                <div class="title" style="color:#0f172a;font-size:12px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    {{ $item['name'] ?? '-' }}
+                                </div>
+                                <div class="meta" style="margin-top:2px;color:#64748b;font-size:10px;font-weight:800;">
+                                    Sisa stok {{ $item['stock'] ?? 0 }}/{{ $item['safeLimit'] ?? $safeLimit ?? 10 }}
                                 </div>
                             </div>
 
-                            <div class="stock-alert-progress">
-                                <div
-                                    class="stock-alert-progress-fill"
-                                    style="width: {{ $item['width'] }}%;"
-                                ></div>
-                            </div>
+                            <span style="border-radius:999px;padding:4px 7px;background:{{ $statusBg }};color:{{ $statusColor }};font-size:9px;font-weight:950;">
+                                {{ $item['status'] ?? '-' }}
+                            </span>
                         </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="stock-alert-empty">
-                    Semua produk berada di atas batas risiko stok.
-                </div>
-            @endif
+
+                        <div class="low-stock-progress" style="height:7px;margin-top:7px;border-radius:999px;background:#e2e8f0;overflow:hidden;">
+                            <div style="width:{{ $item['width'] ?? 0 }}%;height:100%;border-radius:999px;background:{{ $statusColor }};"></div>
+                        </div>
+                    </div>
+                @empty
+                    <div style="border-radius:14px;padding:16px;background:#f0fdf4;border:1px dashed #bbf7d0;text-align:center;color:#047857;font-size:12px;font-weight:900;">
+                        Semua stok masih aman.
+                    </div>
+                @endforelse
+            </div>
         </div>
-    </x-filament::section>
+    </div>
 </x-filament-widgets::widget>

@@ -17,8 +17,8 @@ class ProductPerformanceMatrix extends Widget
 
     protected int|string|array $columnSpan = [
         'default' => 1,
-        'md' => 2,
-        'xl' => 12,
+        'md' => 6,
+        'xl' => 8,
     ];
 
     protected function getViewData(): array
@@ -41,7 +41,7 @@ class ProductPerformanceMatrix extends Widget
             ])
             ->groupBy('order_items.product_name')
             ->orderByDesc($sortColumn)
-            ->limit(10)
+            ->limit(4)
             ->get();
 
         $totalMetric = (float) $products->sum($sortColumn);

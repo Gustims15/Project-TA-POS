@@ -17,8 +17,8 @@ class CategoryContributionChart extends Widget
 
     protected int|string|array $columnSpan = [
         'default' => 1,
-        'md' => 1,
-        'xl' => 6,
+        'md' => 6,
+        'xl' => 4,
     ];
 
     protected function getViewData(): array
@@ -47,7 +47,7 @@ class CategoryContributionChart extends Widget
             ])
             ->groupByRaw("COALESCE(categories.name, 'Tanpa Kategori')")
             ->orderByDesc('metric_total')
-            ->limit(6)
+            ->limit(5)
             ->get();
 
         $totalValue = (float) $categories->sum('metric_total');
