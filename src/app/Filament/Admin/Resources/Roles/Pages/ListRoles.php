@@ -12,9 +12,10 @@ class ListRoles extends ListRecords
 {
     protected static string $resource = RoleResource::class;
 
-    protected ?string $heading = 'Roles';
-
-    protected ?string $subheading = 'Kelola role dan permission untuk mengatur hak akses pengguna sistem POS Ngunjuk.';
+    public function getTitle(): string
+    {
+        return '';
+    }
 
     protected function getHeaderWidgets(): array
     {
@@ -23,14 +24,6 @@ class ListRoles extends ListRecords
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Header Actions
-    |--------------------------------------------------------------------------
-    | Tombol New Role di header Filament dihilangkan.
-    | Tombol New Role sekarang dipindahkan ke widget hijau.
-    |--------------------------------------------------------------------------
-    */
     protected function getHeaderActions(): array
     {
         return [];

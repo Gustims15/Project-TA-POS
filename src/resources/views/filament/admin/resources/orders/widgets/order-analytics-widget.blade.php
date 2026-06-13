@@ -1,263 +1,506 @@
+@php
+    $cards = [
+        [
+            'label' => 'Total Revenue',
+            'value' => 'Rp ' . number_format($summary['total_revenue'], 0, ',', '.'),
+            'caption' => 'Dari order selesai',
+            'icon' => '▣',
+            'color' => '#f97316',
+        ],
+        [
+            'label' => 'Total Orders',
+            'value' => number_format($summary['total_orders'], 0, ',', '.'),
+            'caption' => 'Semua transaksi',
+            'icon' => '✓',
+            'color' => '#10b981',
+        ],
+        [
+            'label' => 'Units Sold',
+            'value' => number_format($summary['units_sold'], 0, ',', '.'),
+            'caption' => 'Item terjual',
+            'icon' => '◇',
+            'color' => '#3b82f6',
+        ],
+        [
+            'label' => 'Avg Order',
+            'value' => 'Rp ' . number_format($summary['avg_order'], 0, ',', '.'),
+            'caption' => 'Rata-rata order',
+            'icon' => '↗',
+            'color' => '#8b5cf6',
+        ],
+        [
+            'label' => 'Order Hari Ini',
+            'value' => number_format($summary['today_orders'], 0, ',', '.'),
+            'caption' => 'Transaksi hari ini',
+            'icon' => '!',
+            'color' => '#ef4444',
+        ],
+    ];
+@endphp
+
 <x-filament-widgets::widget>
-    <style>
-        .order-lux-wrapper {
-            --primary: #0f766e;
-            --primary-light: #14b8a6;
-            --emerald: #10b981;
-            --dark: #0f172a;
-            --muted: #64748b;
-            --border: #e2e8f0;
-            --soft: #f8fafc;
-            margin-bottom: 22px;
-        }
-
-        .order-lux-hero {
-            position: relative;
-            overflow: hidden;
-            border-radius: 30px;
-            padding: 30px;
-            color: white;
-            background:
-                radial-gradient(circle at top right, rgba(255,255,255,0.32), transparent 28%),
-                radial-gradient(circle at bottom left, rgba(255,255,255,0.18), transparent 28%),
-                linear-gradient(135deg, #0f766e 0%, #0d9488 45%, #10b981 100%);
-            box-shadow: 0 28px 70px rgba(15, 118, 110, 0.22);
-            isolation: isolate;
-        }
-
-        .order-lux-hero::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.09) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.09) 1px, transparent 1px);
-            background-size: 34px 34px;
-            opacity: 0.24;
-            z-index: -1;
-        }
-
-        .order-lux-hero-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 24px;
-        }
-
-        .order-lux-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            width: fit-content;
-            padding: 9px 14px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.25);
-            backdrop-filter: blur(10px);
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
-
-        .order-lux-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 999px;
-            background: #bbf7d0;
-            box-shadow: 0 0 0 5px rgba(187,247,208,0.22);
-        }
-
-        .order-lux-title {
-            margin: 16px 0 0;
-            font-size: 34px;
-            line-height: 1.08;
-            font-weight: 950;
-            letter-spacing: -0.04em;
-        }
-
-        .order-lux-desc {
-            margin: 12px 0 0;
-            max-width: 760px;
-            color: rgba(255,255,255,0.86);
-            font-size: 14px;
-            line-height: 1.7;
-        }
-
-        .order-lux-mini {
-            min-width: 210px;
-            border-radius: 22px;
-            padding: 18px;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.24);
-            backdrop-filter: blur(12px);
-        }
-
-        .order-lux-mini span {
-            display: block;
-            color: rgba(255,255,255,0.78);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .order-lux-mini strong {
-            display: block;
-            margin-top: 8px;
-            color: white;
-            font-size: 30px;
-            line-height: 1;
-            font-weight: 950;
-        }
-
-        .order-lux-grid {
+    <div class="ng-order-page" style="
+        width: 100%;
+        padding: 18px 18px 12px;
+        font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        color: #24180f;
+    ">
+        <div style="
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .order-lux-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 24px;
-            padding: 20px;
-            background: white;
-            border: 1px solid rgba(226,232,240,0.95);
-            box-shadow: 0 16px 40px rgba(15,23,42,0.07);
-            min-height: 145px;
-        }
-
-        .order-lux-card::after {
-            content: "";
-            position: absolute;
-            width: 118px;
-            height: 118px;
-            top: -52px;
-            right: -42px;
-            border-radius: 999px;
-            opacity: 0.15;
-        }
-
-        .order-lux-card.revenue::after { background: #10b981; }
-        .order-lux-card.orders::after { background: #3b82f6; }
-        .order-lux-card.units::after { background: #f97316; }
-        .order-lux-card.avg::after { background: #64748b; }
-
-        .order-lux-card-label {
-            margin: 0;
-            color: #64748b;
-            font-size: 13px;
-            font-weight: 850;
-        }
-
-        .order-lux-card-value {
-            margin: 18px 0 0;
-            color: #020617;
-            font-size: 30px;
-            line-height: 1;
-            font-weight: 950;
-            letter-spacing: -0.045em;
-        }
-
-        .order-lux-card-caption {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 14px;
-            border-radius: 999px;
-            padding: 7px 11px;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .revenue .order-lux-card-caption { background: #ecfdf5; color: #047857; }
-        .orders .order-lux-card-caption { background: #eff6ff; color: #1d4ed8; }
-        .units .order-lux-card-caption { background: #fff7ed; color: #c2410c; }
-        .avg .order-lux-card-caption { background: #f8fafc; color: #475569; }
-
-        @media (max-width: 1100px) {
-            .order-lux-hero-top {
-                flex-direction: column;
-            }
-
-            .order-lux-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 700px) {
-            .order-lux-hero {
-                padding: 24px;
+            grid-template-columns: minmax(0, 1.35fr) minmax(340px, .65fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        ">
+            <div style="
+                min-height: 126px;
+                padding: 20px 22px;
                 border-radius: 24px;
-            }
+                border: 1px solid rgba(255, 255, 255, .56);
+                background: rgba(255, 247, 235, .18);
+                box-shadow:
+                    0 20px 48px rgba(101, 58, 21, .10),
+                    0 0 0 1px rgba(255, 255, 255, .10) inset,
+                    inset 0 1px 0 rgba(255, 255, 255, .56);
+                backdrop-filter: blur(13px);
+                overflow: hidden;
+            ">
 
-            .order-lux-title {
-                font-size: 28px;
-            }
+                <h1 style="
+                    margin: 0;
+                    color: #21160d;
+                    font-size: 30px;
+                    line-height: 1.05;
+                    font-weight: 950;
+                    letter-spacing: -.04em;
+                ">
+                    Order Management
+                </h1>
 
-            .order-lux-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+                <p style="
+                    max-width: 760px;
+                    margin: 7px 0 0;
+                    color: #765d45;
+                    font-size: 12px;
+                    font-weight: 650;
+                    line-height: 1.5;
+                ">
+                    Pantau seluruh transaksi kasir, item yang dibeli, total pendapatan, jumlah item terjual, status order, dan waktu transaksi.
+                </p>
+            </div>
 
-    <div class="order-lux-wrapper">
-        <section class="order-lux-hero">
-            <div class="order-lux-hero-top">
-                <div>
-                    <div class="order-lux-badge">
-                        <span class="order-lux-dot"></span>
-                        Ngunjuk POS Order
-                    </div>
+            <div style="
+                min-height: 126px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 14px;
+                padding: 20px 22px;
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, .56);
+                background: rgba(255, 247, 235, .18);
+                box-shadow:
+                    0 20px 48px rgba(101, 58, 21, .10),
+                    0 0 0 1px rgba(255, 255, 255, .10) inset,
+                    inset 0 1px 0 rgba(255, 255, 255, .56);
+                backdrop-filter: blur(13px);
+                overflow: hidden;
+            ">
+                <div style="min-width: 0;">
+                    <span style="
+                        display: block;
+                        color: #765d45;
+                        font-size: 11px;
+                        font-weight: 850;
+                    ">
+                        Order Terbaru
+                    </span>
 
-                    <h2 class="order-lux-title">
-                        Order Management Analytics
-                    </h2>
+                    <strong style="
+                        display: block;
+                        max-width: 280px;
+                        margin: 7px 0;
+                        overflow: hidden;
+                        color: #21160d;
+                        font-size: 22px;
+                        line-height: 1.1;
+                        font-weight: 950;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    ">
+                        {{ $summary['latest_order_code'] }}
+                    </strong>
 
-                    <p class="order-lux-desc">
-                        Pantau seluruh transaksi kasir, detail item yang dibeli, total pendapatan,
-                        jumlah item terjual, dan status order dalam satu halaman admin yang rapi.
-                    </p>
+                    <small style="
+                        display: block;
+                        color: #765d45;
+                        font-size: 11px;
+                        font-weight: 850;
+                    ">
+                        {{ $summary['latest_order_time'] }}
+                    </small>
                 </div>
 
-                <div class="order-lux-mini">
-                    <span>Order Hari Ini</span>
-                    <strong>{{ number_format($summary['today_orders'], 0, ',', '.') }}</strong>
+                <div style="
+                    display: inline-grid;
+                    place-items: center;
+                    min-width: 94px;
+                    min-height: 54px;
+                    padding: 10px 14px;
+                    border-radius: 18px;
+                    color: #fff;
+                    background: linear-gradient(135deg, #ff9d18, #ee6500);
+                    box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
+                    font-weight: 950;
+                ">
+                    <span style="font-size: 11px;">Hari Ini</span>
+                    <strong style="font-size: 18px;">{{ number_format($summary['today_orders'], 0, ',', '.') }}</strong>
                 </div>
-            </div>
-        </section>
-
-        <div class="order-lux-grid">
-            <div class="order-lux-card revenue">
-                <p class="order-lux-card-label">Total Revenue</p>
-                <p class="order-lux-card-value">
-                    Rp {{ number_format($summary['total_revenue'], 0, ',', '.') }}
-                </p>
-                <p class="order-lux-card-caption">Dari order selesai</p>
-            </div>
-
-            <div class="order-lux-card orders">
-                <p class="order-lux-card-label">Total Orders</p>
-                <p class="order-lux-card-value">
-                    {{ number_format($summary['total_orders'], 0, ',', '.') }}
-                </p>
-                <p class="order-lux-card-caption">Semua transaksi</p>
-            </div>
-
-            <div class="order-lux-card units">
-                <p class="order-lux-card-label">Units Sold</p>
-                <p class="order-lux-card-value">
-                    {{ number_format($summary['units_sold'], 0, ',', '.') }}
-                </p>
-                <p class="order-lux-card-caption">Item terjual</p>
-            </div>
-
-            <div class="order-lux-card avg">
-                <p class="order-lux-card-label">Avg Order</p>
-                <p class="order-lux-card-value">
-                    Rp {{ number_format($summary['avg_order'], 0, ',', '.') }}
-                </p>
-                <p class="order-lux-card-caption">Rata-rata order</p>
             </div>
         </div>
+
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        ">
+            @foreach ($cards as $card)
+                <div style="
+                    min-height: 90px;
+                    display: flex;
+                    align-items: center;
+                    gap: 11px;
+                    padding: 14px 14px;
+                    border-radius: 20px;
+                    border: 1px solid rgba(255, 255, 255, .54);
+                    background: rgba(255, 247, 235, .16);
+                    box-shadow:
+                        0 18px 42px rgba(101, 58, 21, .09),
+                        0 0 0 1px rgba(255, 255, 255, .10) inset,
+                        inset 0 1px 0 rgba(255, 255, 255, .52);
+                    backdrop-filter: blur(13px);
+                    overflow: hidden;
+                ">
+                    <div style="
+                        display: grid;
+                        place-items: center;
+                        flex: 0 0 auto;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 14px;
+                        color: #fff;
+                        background: linear-gradient(135deg, {{ $card['color'] }}, #d95d00);
+                        box-shadow: 0 14px 24px rgba(249, 115, 22, .20);
+                        font-size: 15px;
+                        font-weight: 950;
+                    ">
+                        {{ $card['icon'] }}
+                    </div>
+
+                    <div style="min-width: 0; flex: 1;">
+                        <span style="
+                            display: block;
+                            color: #6f5946;
+                            font-size: 11px;
+                            line-height: 1.2;
+                            font-weight: 900;
+                        ">
+                            {{ $card['label'] }}
+                        </span>
+
+                        <strong style="
+                            display: block;
+                            margin-top: 6px;
+                            color: #23160d;
+                            font-size: 18px;
+                            line-height: 1.15;
+                            font-weight: 950;
+                            letter-spacing: -.03em;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        ">
+                            {{ $card['value'] }}
+                        </strong>
+
+                        <p style="
+                            margin: 6px 0 0;
+                            color: #6f5946;
+                            font-size: 10px;
+                            line-height: 1.25;
+                            font-weight: 850;
+                        ">
+                            {{ $card['caption'] }}
+                        </p>
+                    </div>
+                </div>
+            @endforeach
+        </div>
     </div>
+
+    <style>
+        html,
+        body {
+            overflow-x: hidden !important;
+        }
+
+        body:has(.ng-order-page) {
+            background:
+                linear-gradient(120deg, rgba(255, 248, 237, .10), rgba(255, 224, 185, .02)),
+                url('/images/pos-orange-bg.png'),
+                radial-gradient(circle at 15% 8%, rgba(255, 255, 255, .32) 0 130px, transparent 280px),
+                radial-gradient(circle at 88% 78%, rgba(255, 118, 0, .42) 0 250px, transparent 520px),
+                radial-gradient(circle at 20% 96%, rgba(255, 181, 83, .28) 0 220px, transparent 500px),
+                linear-gradient(135deg, #fff3df 0%, #ffd394 48%, #ff9c45 100%) !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
+        }
+
+        body:has(.ng-order-page) .fi-main,
+        body:has(.ng-order-page) .fi-main-ctn,
+        body:has(.ng-order-page) .fi-page,
+        body:has(.ng-order-page) .fi-page-content {
+            width: 100% !important;
+            max-width: 100% !important;
+            background: transparent !important;
+            overflow-x: hidden !important;
+        }
+
+        body:has(.ng-order-page) .fi-page {
+            padding: 0 !important;
+        }
+
+        body:has(.ng-order-page) .fi-page-header {
+            display: none !important;
+        }
+
+        body:has(.ng-order-page) .fi-main {
+            padding: 0 !important;
+        }
+
+        body:has(.ng-order-page) .fi-sidebar {
+            background: rgba(255, 250, 242, .50) !important;
+            border-right: 1px solid rgba(255, 255, 255, .48) !important;
+            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
+            backdrop-filter: blur(16px) !important;
+        }
+
+        body:has(.ng-order-page) .fi-sidebar-nav {
+            padding: 18px 14px !important;
+        }
+
+        body:has(.ng-order-page) .fi-sidebar-item a {
+            border-radius: 14px !important;
+            color: #6f5844 !important;
+            transition: .2s ease !important;
+        }
+
+        body:has(.ng-order-page) .fi-sidebar-item-active a,
+        body:has(.ng-order-page) .fi-sidebar-item a:hover {
+            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
+            color: #fff !important;
+            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
+        }
+
+        body:has(.ng-order-page) .fi-wi-widget {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        body:has(.ng-order-page) .fi-wi-widget-content {
+            padding: 0 !important;
+        }
+
+        body:has(.ng-order-page) .fi-page-content {
+            gap: 0 !important;
+            row-gap: 0 !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-ctn {
+            margin-left: 18px !important;
+            margin-right: 18px !important;
+            width: calc(100% - 36px) !important;
+            transform: translateY(-4px) !important;
+            border-radius: 24px !important;
+            border: 1px solid rgba(255, 255, 255, .46) !important;
+            background: rgba(255, 247, 235, .14) !important;
+            box-shadow:
+                0 18px 46px rgba(101, 58, 21, .09),
+                inset 0 1px 0 rgba(255, 255, 255, .38) !important;
+            backdrop-filter: blur(12px) !important;
+            overflow: hidden !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta,
+        body:has(.ng-order-page) .fi-section,
+        body:has(.ng-order-page) .fi-ta-content,
+        body:has(.ng-order-page) .fi-ta-table,
+        body:has(.ng-order-page) .fi-ta-table thead,
+        body:has(.ng-order-page) .fi-ta-table tbody {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-header,
+        body:has(.ng-order-page) .fi-ta-toolbar {
+            min-height: 46px !important;
+            padding: 6px 16px !important;
+            background: rgba(255, 247, 235, .10) !important;
+            border-bottom: 1px solid rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-table thead tr {
+            background: rgba(255, 247, 235, .10) !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-row,
+        body:has(.ng-order-page) .fi-ta-cell,
+        body:has(.ng-order-page) .fi-ta-header-cell {
+            background: transparent !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-row {
+            min-height: 54px !important;
+            border-bottom: 1px solid rgba(114, 74, 41, .07) !important;
+            transition: .18s ease !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-row:hover {
+            background: rgba(255, 255, 255, .10) !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-cell {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+            border-color: rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-header-cell {
+            padding-top: 9px !important;
+            padding-bottom: 9px !important;
+            border-color: rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-header-cell-label {
+            color: #4b3525 !important;
+            font-size: 12px !important;
+            font-weight: 950 !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-pagination,
+        body:has(.ng-order-page) .fi-pagination {
+            min-height: 50px !important;
+            padding: 8px 16px !important;
+            background: rgba(255, 247, 235, .10) !important;
+            border-top: 1px solid rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-order-page) .fi-input-wrp,
+        body:has(.ng-order-page) .fi-ta-search-field .fi-input-wrp,
+        body:has(.ng-order-page) .fi-select-input {
+            border-radius: 16px !important;
+            background: rgba(255, 255, 255, .26) !important;
+            border-color: rgba(255, 255, 255, .40) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-search-field {
+            max-width: 280px !important;
+        }
+
+        body:has(.ng-order-page) .fi-ta-search-field .fi-input-wrp {
+            min-height: 36px !important;
+        }
+
+        body:has(.ng-order-page) .fi-btn {
+            border-radius: 14px !important;
+            font-weight: 900 !important;
+        }
+
+        body:has(.ng-order-page) .fi-btn-color-primary {
+            background: linear-gradient(135deg, #ff9d18, #ee6500) !important;
+            box-shadow: 0 12px 22px rgba(238, 101, 0, .22) !important;
+        }
+
+        @media (max-width: 1500px) {
+            [style*="grid-template-columns: repeat(5"] {
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            }
+
+            [style*="grid-template-columns: minmax(0, 1.35fr)"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .ng-order-page {
+                padding: 14px !important;
+            }
+
+            [style*="grid-template-columns: repeat(5"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
+        /* =========================================================
+   FIX TABLE ORDER LEBIH NAIK
+   Merapatkan kolom ID Order ke widget KPI atas
+========================================================= */
+
+/* Hilangkan jarak bawaan antara widget order dan table */
+body:has(.ng-order-page) .fi-page-content {
+    gap: 0 !important;
+    row-gap: 0 !important;
+}
+
+/* Widget order jangan kasih space bawah */
+body:has(.ng-order-page) .fi-wi-widget,
+body:has(.ng-order-page) .fi-wi-widget-content {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Area KPI jangan terlalu banyak padding bawah */
+.ng-order-page {
+    padding-bottom: 0 !important;
+}
+
+.ng-order-page > div:last-of-type {
+    margin-bottom: 0 !important;
+}
+
+/* Table Order dinaikkan */
+body:has(.ng-order-page) .fi-ta-ctn {
+    margin-top: 0 !important;
+    transform: translateY(7px) !important;
+}
+
+/* Header search table dibuat lebih pendek */
+body:has(.ng-order-page) .fi-ta-header,
+body:has(.ng-order-page) .fi-ta-toolbar {
+    min-height: 42px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+}
+
+/* Header ID Order lebih compact */
+body:has(.ng-order-page) .fi-ta-header-cell {
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+}
+
+/* Row tabel tetap rapi */
+body:has(.ng-order-page) .fi-ta-row {
+    min-height: 50px !important;
+}
+
+body:has(.ng-order-page) .fi-ta-cell {
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+}
+    </style>
 </x-filament-widgets::widget>

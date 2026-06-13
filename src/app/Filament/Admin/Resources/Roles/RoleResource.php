@@ -15,6 +15,7 @@ use BezhanSalleh\PluginEssentials\Concerns\Resource as Essentials;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -98,68 +99,79 @@ class RoleResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('filament-shield::filament-shield.column.name'))
+                    ->label('Name')
                     ->weight(FontWeight::Bold)
                     ->searchable()
                     ->sortable()
                     ->html()
-                    ->formatStateUsing(fn (string $state): string => '
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <div style="
-                                display:grid;
-                                place-items:center;
-                                width:40px;
-                                height:40px;
-                                border-radius:14px;
-                                background:#ecfdf5;
-                                color:#047857;
-                                font-weight:950;
-                                border:1px solid #bbf7d0;
-                            ">
-                                ' . e(mb_strtoupper(mb_substr(Str::headline($state), 0, 1))) . '
-                            </div>
+                    ->formatStateUsing(function (string $state): string {
+                        $name = Str::headline($state);
+                        $initial = mb_strtoupper(mb_substr($name, 0, 1));
 
-                            <div style="display:flex; flex-direction:column; gap:4px;">
-                                <span style="
-                                    color:#0f172a;
-                                    font-weight:950;
+                        return '
+                            <div style="display:flex;align-items:center;gap:10px;min-width:220px;">
+                                <div style="
+                                    width:38px;
+                                    height:38px;
+                                    border-radius:14px;
+                                    display:grid;
+                                    place-items:center;
+                                    color:#fff;
                                     font-size:14px;
-                                    letter-spacing:-0.01em;
+                                    font-weight:950;
+                                    background:linear-gradient(135deg,#ff9d18,#ee6500);
+                                    box-shadow:0 12px 24px rgba(238,101,0,.20);
                                 ">
-                                    ' . e(Str::headline($state)) . '
-                                </span>
+                                    ' . e($initial) . '
+                                </div>
 
-                                <span style="
-                                    width:fit-content;
-                                    border-radius:999px;
-                                    padding:4px 8px;
-                                    background:#f8fafc;
-                                    border:1px solid #e2e8f0;
-                                    color:#64748b;
-                                    font-size:11px;
-                                    font-weight:850;
-                                ">
-                                    Role Access
-                                </span>
+                                <div style="min-width:0;">
+                                    <div style="
+                                        color:#23160d;
+                                        font-size:13px;
+                                        font-weight:950;
+                                        line-height:1.25;
+                                    ">
+                                        ' . e($name) . '
+                                    </div>
+
+                                    <div style="
+                                        display:inline-flex;
+                                        align-items:center;
+                                        min-height:24px;
+                                        margin-top:4px;
+                                        padding:0 10px;
+                                        border-radius:999px;
+                                        color:#6f5946;
+                                        background:rgba(255,255,255,.26);
+                                        border:1px solid rgba(255,255,255,.38);
+                                        font-size:10px;
+                                        font-weight:850;
+                                        white-space:nowrap;
+                                    ">
+                                        Role Access
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    '),
+                        ';
+                    }),
 
                 TextColumn::make('guard_name')
-                    ->label(__('filament-shield::filament-shield.column.guard_name'))
+                    ->label('Guard Name')
                     ->html()
                     ->formatStateUsing(fn (?string $state): string => '
                         <span style="
                             display:inline-flex;
                             align-items:center;
                             gap:7px;
+                            min-height:28px;
+                            padding:0 11px;
                             border-radius:999px;
-                            padding:7px 11px;
-                            background:#fff7ed;
-                            border:1px solid #fed7aa;
-                            color:#c2410c;
-                            font-size:12px;
-                            font-weight:900;
+                            color:#c25500;
+                            background:rgba(249,115,22,.12);
+                            border:1px solid rgba(249,115,22,.22);
+                            font-size:10px;
+                            font-weight:950;
                             white-space:nowrap;
                         ">
                             <span style="
@@ -181,7 +193,7 @@ class RoleResource extends Resource
                     ->visible(fn (): bool => static::shield()->isCentralApp() && Utils::isTenancyEnabled()),
 
                 TextColumn::make('permissions_count')
-                    ->label(__('filament-shield::filament-shield.column.permissions'))
+                    ->label('Permissions')
                     ->counts('permissions')
                     ->sortable()
                     ->alignCenter()
@@ -190,19 +202,19 @@ class RoleResource extends Resource
                         $count = (int) $state;
 
                         if ($count <= 0) {
-                            $bg = '#f8fafc';
-                            $border = '#e2e8f0';
+                            $bg = 'rgba(148,163,184,.12)';
+                            $border = 'rgba(148,163,184,.24)';
                             $color = '#64748b';
                             $caption = 'Belum ada';
                         } elseif ($count <= 5) {
-                            $bg = '#eff6ff';
-                            $border = '#bfdbfe';
-                            $color = '#1d4ed8';
+                            $bg = 'rgba(59,130,246,.10)';
+                            $border = 'rgba(59,130,246,.20)';
+                            $color = '#2563eb';
                             $caption = 'Standar';
                         } else {
-                            $bg = '#ecfdf5';
-                            $border = '#bbf7d0';
-                            $color = '#047857';
+                            $bg = 'rgba(16,185,129,.12)';
+                            $border = 'rgba(16,185,129,.22)';
+                            $color = '#078657';
                             $caption = 'Lengkap';
                         }
 
@@ -212,20 +224,22 @@ class RoleResource extends Resource
                                     display:inline-flex;
                                     justify-content:center;
                                     min-width:44px;
-                                    border-radius:12px;
-                                    padding:7px 10px;
+                                    min-height:30px;
+                                    align-items:center;
+                                    border-radius:13px;
+                                    padding:0 10px;
                                     background:' . $bg . ';
                                     border:1px solid ' . $border . ';
                                     color:' . $color . ';
                                     font-weight:950;
-                                    font-size:13px;
+                                    font-size:12px;
                                 ">
                                     ' . number_format($count, 0, ',', '.') . '
                                 </span>
 
                                 <span style="
                                     color:' . $color . ';
-                                    font-size:11px;
+                                    font-size:10px;
                                     font-weight:850;
                                 ">
                                     ' . $caption . '
@@ -235,24 +249,24 @@ class RoleResource extends Resource
                     }),
 
                 TextColumn::make('updated_at')
-                    ->label(__('filament-shield::filament-shield.column.updated_at'))
+                    ->label('Updated At')
                     ->sortable()
                     ->html()
                     ->formatStateUsing(fn ($state): string => '
                         <span style="
                             display:inline-flex;
                             align-items:center;
-                            gap:7px;
+                            min-height:28px;
+                            padding:0 10px;
                             border-radius:999px;
-                            padding:7px 11px;
-                            background:#eff6ff;
-                            border:1px solid #bfdbfe;
-                            color:#1d4ed8;
-                            font-size:12px;
-                            font-weight:850;
+                            color:#2563eb;
+                            background:rgba(59,130,246,.10);
+                            border:1px solid rgba(59,130,246,.20);
+                            font-size:10px;
+                            font-weight:950;
                             white-space:nowrap;
                         ">
-                            📅 ' . e(\Carbon\Carbon::parse($state)->translatedFormat('d M Y H:i')) . '
+                            ' . e(\Carbon\Carbon::parse($state)->translatedFormat('d M Y H:i')) . '
                         </span>
                     '),
             ])
@@ -260,6 +274,11 @@ class RoleResource extends Resource
                 //
             ])
             ->recordActions([
+                ViewAction::make()
+                    ->label('')
+                    ->icon('heroicon-o-eye')
+                    ->color('gray'),
+
                 EditAction::make()
                     ->label('Edit')
                     ->icon('heroicon-o-pencil-square')

@@ -19,10 +19,12 @@ class ProductForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
                 Section::make('Informasi Utama Produk')
                     ->description('Lengkapi informasi dasar produk seperti kategori, nama produk, slug, stok, deskripsi, gambar, dan status aktif.')
                     ->icon('heroicon-o-cube')
+                    ->columnSpanFull()
                     ->schema([
                         Select::make('category_id')
                             ->label('Kategori Produk')
@@ -30,7 +32,8 @@ class ProductForm
                             ->searchable()
                             ->preload()
                             ->native(false)
-                            ->required(),
+                            ->required()
+                            ->helperText('Pilih kategori yang sesuai dengan produk.'),
 
                         TextInput::make('name')
                             ->label('Nama Produk')
@@ -40,14 +43,16 @@ class ProductForm
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (?string $state, callable $set): void {
                                 $set('slug', Str::slug($state ?? ''));
-                            }),
+                            })
+                            ->helperText('Nama produk akan tampil pada halaman kasir POS.'),
 
                         TextInput::make('slug')
                             ->label('Slug Produk')
                             ->placeholder('otomatis-dari-nama-produk')
                             ->required()
                             ->maxLength(255)
-                            ->unique(ignoreRecord: true),
+                            ->unique(ignoreRecord: true)
+                            ->helperText('Slug dibuat otomatis dari nama produk.'),
 
                         TextInput::make('stock')
                             ->label('Stok Produk')
@@ -76,13 +81,18 @@ class ProductForm
                         Toggle::make('is_active')
                             ->label('Produk Aktif')
                             ->helperText('Produk aktif akan tampil pada halaman kasir.')
-                            ->default(true),
+                            ->default(true)
+                            ->columnSpanFull(),
                     ])
-                    ->columns(2),
+                    ->columns([
+                        'default' => 1,
+                        'md' => 2,
+                    ]),
 
                 Section::make('Size dan Harga Produk')
                     ->description('Tambahkan minimal satu size. Untuk produk tanpa pilihan ukuran, gunakan Regular.')
                     ->icon('heroicon-o-currency-dollar')
+                    ->columnSpanFull()
                     ->schema([
                         Repeater::make('sizes')
                             ->label('Daftar Size dan Harga')
@@ -111,7 +121,11 @@ class ProductForm
                                     ->helperText('Size aktif dapat dipilih pada POS.')
                                     ->default(true),
                             ])
-                            ->columns(4)
+                            ->columns([
+                                'default' => 1,
+                                'md' => 2,
+                                'xl' => 4,
+                            ])
                             ->minItems(1)
                             ->defaultItems(1)
                             ->addActionLabel('Tambah Size Baru')

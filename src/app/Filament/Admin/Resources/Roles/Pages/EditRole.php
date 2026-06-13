@@ -5,58 +5,67 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Roles\Pages;
 
 use App\Filament\Admin\Resources\Roles\RoleResource;
-use BezhanSalleh\FilamentShield\Support\Utils;
+use App\Filament\Admin\Resources\Roles\Widgets\RoleFormHeroWidget;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 
 class EditRole extends EditRecord
 {
-    public Collection $permissions;
-
     protected static string $resource = RoleResource::class;
 
-    protected ?string $heading = 'Edit Role';
+    protected ?string $heading = '';
 
-    protected ?string $subheading = 'Perbarui nama role, guard, dan permission yang dapat diakses oleh role ini.';
+    protected ?string $subheading = '';
+
+    public function getTitle(): string
+    {
+        return '';
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            RoleFormHeroWidget::class,
+        ];
+    }
 
     protected function getHeaderActions(): array
     {
         return [
+            ViewAction::make()
+                ->label('Detail Role')
+                ->icon('heroicon-o-eye')
+                ->color('gray'),
+
             DeleteAction::make()
-                ->label('Delete Role')
+                ->label('Hapus Role')
                 ->icon('heroicon-o-trash')
                 ->color('danger'),
         ];
     }
 
-    protected function mutateFormDataBeforeSave(array $data): array
+    protected function getRedirectUrl(): string
     {
-        $this->permissions = collect($data)
-            ->filter(fn (mixed $permission, string $key): bool => ! in_array($key, ['name', 'guard_name', 'select_all', Utils::getTenantModelForeignKey()]))
-            ->values()
-            ->flatten()
-            ->unique();
-
-        if (Utils::isTenancyEnabled() && Arr::has($data, Utils::getTenantModelForeignKey()) && filled($data[Utils::getTenantModelForeignKey()])) {
-            return Arr::only($data, ['name', 'guard_name', Utils::getTenantModelForeignKey()]);
-        }
-
-        return Arr::only($data, ['name', 'guard_name']);
+        return RoleResource::getUrl('index');
     }
 
-    protected function afterSave(): void
+    protected function getSaveFormAction(): Action
     {
-        $permissionModels = collect();
+        return parent::getSaveFormAction()
+            ->label('Simpan Perubahan')
+            ->icon('heroicon-o-check-circle');
+    }
 
-        $this->permissions->each(function (string $permission) use ($permissionModels): void {
-            $permissionModels->push(Utils::getPermissionModel()::firstOrCreate([
-                'name' => $permission,
-                'guard_name' => $this->data['guard_name'],
-            ]));
-        });
+    protected function getCancelFormAction(): Action
+    {
+        return parent::getCancelFormAction()
+            ->label('Batal');
+    }
 
-        $this->record->syncPermissions($permissionModels);
+    protected function getSavedNotificationTitle(): ?string
+    {
+        return 'Role berhasil diperbarui';
     }
 }

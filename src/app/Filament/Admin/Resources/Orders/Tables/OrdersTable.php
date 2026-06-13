@@ -22,25 +22,19 @@ class OrdersTable
                     ->html()
                     ->formatStateUsing(fn (?string $state): string => '
                         <span style="
-                            display: inline-flex;
-                            align-items: center;
-                            gap: 8px;
-                            border-radius: 999px;
-                            padding: 7px 12px;
-                            background: #ecfdf5;
-                            color: #047857;
-                            border: 1px solid #bbf7d0;
-                            font-weight: 800;
-                            font-size: 12px;
-                            white-space: nowrap;
+                            display:inline-flex;
+                            align-items:center;
+                            min-height:30px;
+                            padding:0 12px;
+                            border-radius:999px;
+                            color:#078657;
+                            background:rgba(16,185,129,.12);
+                            border:1px solid rgba(16,185,129,.22);
+                            font-size:11px;
+                            font-weight:950;
+                            white-space:nowrap;
                         ">
-                            <span style="
-                                width: 7px;
-                                height: 7px;
-                                border-radius: 999px;
-                                background: #10b981;
-                            "></span>
-                            ' . e($state ?? '-') . '
+                            • ' . e($state ?? '-') . '
                         </span>
                     '),
 
@@ -56,7 +50,22 @@ class OrdersTable
                         $items = $record->items ?? collect();
 
                         if ($items->isEmpty()) {
-                            return '<span style="color:#94a3b8;font-weight:600;">Tidak ada item</span>';
+                            return '
+                                <span style="
+                                    display:inline-flex;
+                                    min-height:28px;
+                                    align-items:center;
+                                    padding:0 10px;
+                                    border-radius:999px;
+                                    color:#64748b;
+                                    background:rgba(148,163,184,.12);
+                                    border:1px solid rgba(148,163,184,.24);
+                                    font-size:10px;
+                                    font-weight:900;
+                                ">
+                                    Tidak ada item
+                                </span>
+                            ';
                         }
 
                         $maxVisible = 4;
@@ -66,19 +75,21 @@ class OrdersTable
                             ->map(function ($item): string {
                                 return '
                                     <span style="
-                                        display: inline-flex;
-                                        align-items: center;
-                                        border-radius: 999px;
-                                        padding: 6px 10px;
-                                        background: #f8fafc;
-                                        border: 1px solid #e2e8f0;
-                                        color: #334155;
-                                        font-size: 12px;
-                                        font-weight: 700;
-                                        margin: 2px;
-                                        white-space: nowrap;
+                                        display:inline-flex;
+                                        min-height:28px;
+                                        align-items:center;
+                                        padding:0 10px;
+                                        margin-right:5px;
+                                        margin-bottom:4px;
+                                        border-radius:999px;
+                                        color:#4b3525;
+                                        background:rgba(255,255,255,.28);
+                                        border:1px solid rgba(255,255,255,.42);
+                                        font-size:10px;
+                                        font-weight:900;
+                                        white-space:nowrap;
                                     ">
-                                        ' . e($item->product_name) . '
+                                        ' . e($item->product_name ?? '-') . '
                                     </span>
                                 ';
                             })
@@ -89,24 +100,25 @@ class OrdersTable
                         if ($remaining > 0) {
                             $chips .= '
                                 <span style="
-                                    display: inline-flex;
-                                    align-items: center;
-                                    border-radius: 999px;
-                                    padding: 6px 10px;
-                                    background: #eff6ff;
-                                    border: 1px solid #bfdbfe;
-                                    color: #1d4ed8;
-                                    font-size: 12px;
-                                    font-weight: 800;
-                                    margin: 2px;
-                                    white-space: nowrap;
+                                    display:inline-flex;
+                                    min-height:28px;
+                                    align-items:center;
+                                    padding:0 10px;
+                                    margin-bottom:4px;
+                                    border-radius:999px;
+                                    color:#c25500;
+                                    background:rgba(249,115,22,.12);
+                                    border:1px solid rgba(249,115,22,.22);
+                                    font-size:10px;
+                                    font-weight:950;
+                                    white-space:nowrap;
                                 ">
                                     +' . $remaining . ' item
                                 </span>
                             ';
                         }
 
-                        return '<div style="max-width: 720px; line-height: 1.8;">' . $chips . '</div>';
+                        return '<div style="display:flex;align-items:center;flex-wrap:wrap;max-width:520px;">' . $chips . '</div>';
                     }),
 
                 TextColumn::make('total_item')
@@ -116,15 +128,18 @@ class OrdersTable
                     ->html()
                     ->formatStateUsing(fn ($state): string => '
                         <span style="
-                            display: inline-flex;
-                            justify-content: center;
-                            min-width: 42px;
-                            border-radius: 12px;
-                            padding: 7px 10px;
-                            background: #eff6ff;
-                            color: #1d4ed8;
-                            font-weight: 900;
-                            font-size: 13px;
+                            display:inline-flex;
+                            align-items:center;
+                            justify-content:center;
+                            min-width:44px;
+                            min-height:32px;
+                            padding:0 10px;
+                            border-radius:13px;
+                            color:#2563eb;
+                            background:rgba(59,130,246,.10);
+                            border:1px solid rgba(59,130,246,.20);
+                            font-size:11px;
+                            font-weight:950;
                         ">
                             ' . number_format((int) $state, 0, ',', '.') . '
                         </span>
@@ -132,33 +147,99 @@ class OrdersTable
 
                 TextColumn::make('total_price')
                     ->label('Total')
-                    ->money('IDR')
                     ->sortable()
-                    ->weight('bold')
-                    ->color('success'),
+                    ->html()
+                    ->formatStateUsing(fn ($state): string => '
+                        <span style="
+                            display:inline-flex;
+                            align-items:center;
+                            min-height:30px;
+                            padding:0 12px;
+                            border-radius:999px;
+                            color:#078657;
+                            background:rgba(16,185,129,.12);
+                            border:1px solid rgba(16,185,129,.22);
+                            font-size:11px;
+                            font-weight:950;
+                            white-space:nowrap;
+                        ">
+                            Rp ' . number_format((int) $state, 0, ',', '.') . '
+                        </span>
+                    '),
 
                 TextColumn::make('status')
                     ->label('Status')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'Selesai' => 'success',
-                        'Diproses' => 'warning',
-                        'Dibatalkan' => 'danger',
-                        default => 'gray',
-                    })
-                    ->icon(fn (string $state): string => match ($state) {
-                        'Selesai' => 'heroicon-o-check-circle',
-                        'Diproses' => 'heroicon-o-clock',
-                        'Dibatalkan' => 'heroicon-o-x-circle',
-                        default => 'heroicon-o-question-mark-circle',
+                    ->sortable()
+                    ->html()
+                    ->formatStateUsing(function (?string $state): string {
+                        $status = $state ?? '-';
+
+                        if ($status === 'Selesai') {
+                            $bg = 'rgba(16,185,129,.13)';
+                            $border = 'rgba(16,185,129,.24)';
+                            $color = '#078657';
+                            $icon = '✓';
+                        } elseif ($status === 'Diproses') {
+                            $bg = 'rgba(255,159,64,.16)';
+                            $border = 'rgba(255,159,64,.26)';
+                            $color = '#d76a00';
+                            $icon = '⏱';
+                        } elseif ($status === 'Dibatalkan') {
+                            $bg = 'rgba(255,98,98,.13)';
+                            $border = 'rgba(255,98,98,.24)';
+                            $color = '#d73333';
+                            $icon = '×';
+                        } else {
+                            $bg = 'rgba(148,163,184,.12)';
+                            $border = 'rgba(148,163,184,.24)';
+                            $color = '#64748b';
+                            $icon = '?';
+                        }
+
+                        return '
+                            <span style="
+                                display:inline-flex;
+                                align-items:center;
+                                justify-content:center;
+                                gap:6px;
+                                min-height:28px;
+                                padding:0 10px;
+                                border-radius:999px;
+                                color:' . $color . ';
+                                background:' . $bg . ';
+                                border:1px solid ' . $border . ';
+                                font-size:10px;
+                                font-weight:950;
+                                white-space:nowrap;
+                            ">
+                                <span>' . $icon . '</span>
+                                ' . e($status) . '
+                            </span>
+                        ';
                     }),
 
                 TextColumn::make('ordered_at')
                     ->label('Waktu Order')
                     ->dateTime('d M Y H:i')
                     ->sortable()
-                    ->icon('heroicon-o-calendar-days')
-                    ->color('gray'),
+                    ->html()
+                    ->formatStateUsing(fn ($state): string => '
+                        <span style="
+                            display:inline-flex;
+                            align-items:center;
+                            min-height:28px;
+                            padding:0 10px;
+                            border-radius:999px;
+                            color:#6f5946;
+                            background:rgba(255,255,255,.24);
+                            border:1px solid rgba(255,255,255,.38);
+                            font-size:10px;
+                            font-weight:850;
+                            white-space:nowrap;
+                        ">
+                            ' . e(optional($state)->format('d M Y H:i') ?? '-') . '
+                        </span>
+                    '),
             ])
             ->filters([
                 SelectFilter::make('status')

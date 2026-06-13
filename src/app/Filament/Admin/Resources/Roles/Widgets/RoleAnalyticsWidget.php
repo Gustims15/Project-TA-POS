@@ -13,12 +13,13 @@ class RoleAnalyticsWidget extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected function getViewData(): array
+    public function getViewData(): array
     {
         $roleModel = Utils::getRoleModel();
         $permissionModel = Utils::getPermissionModel();
 
         $totalRoles = $roleModel::query()->count();
+
         $totalPermissions = $permissionModel::query()->count();
 
         $webRoles = $roleModel::query()
@@ -30,11 +31,16 @@ class RoleAnalyticsWidget extends Widget
             ->orderByDesc('permissions_count')
             ->first();
 
+        $emptyRoles = $roleModel::query()
+            ->doesntHave('permissions')
+            ->count();
+
         return [
             'summary' => [
                 'total_roles' => (int) $totalRoles,
                 'total_permissions' => (int) $totalPermissions,
                 'web_roles' => (int) $webRoles,
+                'empty_roles' => (int) $emptyRoles,
                 'top_role_name' => $topRole?->name ?? '-',
                 'top_role_permissions' => (int) ($topRole?->permissions_count ?? 0),
             ],

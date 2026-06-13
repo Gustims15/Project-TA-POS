@@ -13,15 +13,17 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Hash;
 
-final class UserForm
+class UserForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
                 Section::make('Profil User')
                     ->description('Lengkapi data profil pengguna sistem POS Ngunjuk.')
                     ->icon(Heroicon::UserCircle)
+                    ->columnSpanFull()
                     ->schema([
                         FileUpload::make('avatar_url')
                             ->label('Avatar')
@@ -33,13 +35,20 @@ final class UserForm
                             ->directory('avatars')
                             ->disk('public')
                             ->visibility('public')
-                            ->columnSpan(2),
+                            ->helperText('Gunakan foto profil yang jelas agar akun mudah dikenali.')
+                            ->columnSpan([
+                                'default' => 1,
+                                'md' => 2,
+                            ]),
 
-                        Grid::make(2)
+                        Grid::make([
+                            'default' => 1,
+                            'md' => 2,
+                        ])
                             ->schema([
                                 TextInput::make('name')
                                     ->label('Nama User')
-                                    ->placeholder('Contoh: Admin')
+                                    ->placeholder('Contoh: Admin Ngunjuk')
                                     ->required()
                                     ->minLength(2)
                                     ->maxLength(255)
@@ -65,13 +74,20 @@ final class UserForm
                                     ->helperText('Pilih role user, misalnya Super Admin atau Karyawan.')
                                     ->columnSpanFull(),
                             ])
-                            ->columnSpan(4),
+                            ->columnSpan([
+                                'default' => 1,
+                                'md' => 4,
+                            ]),
                     ])
-                    ->columns(6),
+                    ->columns([
+                        'default' => 1,
+                        'md' => 6,
+                    ]),
 
                 Section::make('Keamanan Akun')
                     ->description('Atur password user. Saat edit, kosongkan password jika tidak ingin mengganti password.')
                     ->icon(Heroicon::LockClosed)
+                    ->columnSpanFull()
                     ->schema([
                         TextInput::make('password')
                             ->label('Password')
@@ -79,7 +95,7 @@ final class UserForm
                             ->confirmed()
                             ->revealable()
                             ->prefixIcon(Heroicon::FingerPrint)
-                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                            ->dehydrateStateUsing(fn ($state) => filled($state) ? Hash::make($state) : null)
                             ->dehydrated(fn ($state): bool => filled($state))
                             ->required(fn (string $context): bool => $context === 'create')
                             ->helperText('Password wajib diisi saat membuat user baru.'),
@@ -91,7 +107,10 @@ final class UserForm
                             ->revealable()
                             ->prefixIcon(Heroicon::FingerPrint),
                     ])
-                    ->columns(2),
+                    ->columns([
+                        'default' => 1,
+                        'md' => 2,
+                    ]),
             ]);
     }
 }

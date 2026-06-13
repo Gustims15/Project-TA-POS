@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Pages;
 
 use App\Models\Order;
+use BackedEnum;
 use Carbon\Carbon;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
@@ -13,37 +14,36 @@ use UnitEnum;
 
 class MonthlyRevenueReport extends Page
 {
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-down-tray';
+    protected string $view = 'filament.admin.pages.monthly-revenue-report';
 
-    protected static ?string $navigationLabel = 'Export Monthly Revenue';
-
-    protected static ?string $title = 'Export Monthly Revenue';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-down-tray';
 
     protected static string|UnitEnum|null $navigationGroup = 'Transaksi';
 
+    protected static ?string $navigationLabel = 'Export Monthly Revenue';
+
     protected static ?int $navigationSort = 2;
 
-    protected string $view = 'filament.admin.pages.monthly-revenue-report';
+    public function getTitle(): string
+    {
+        return '';
+    }
+
+    public function getHeading(): string
+    {
+        return '';
+    }
 
     public static function canAccess(): bool
     {
-        return auth()->check()
-            && auth()->user()->hasRole('super_admin');
+        return auth()->check() && auth()->user()->hasRole('super_admin');
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->check()
-            && auth()->user()->hasRole('super_admin');
+        return auth()->check() && auth()->user()->hasRole('super_admin');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Header Action
-    |--------------------------------------------------------------------------
-    | Tombol download di header Filament dihilangkan.
-    | Tombol download sekarang dipindahkan ke hero hijau di Blade.
-    */
     protected function getHeaderActions(): array
     {
         return [];
@@ -52,6 +52,7 @@ class MonthlyRevenueReport extends Page
     protected function getViewData(): array
     {
         $selectedMonth = $this->getSelectedMonth();
+
         [$startDate, $endDate] = $this->getMonthRange($selectedMonth);
 
         $orders = Order::query()
@@ -71,6 +72,9 @@ class MonthlyRevenueReport extends Page
             ? (int) round($totalRevenue / $totalOrders)
             : 0;
 
+        $highestOrder = (int) $orders->max('total_price');
+        $lowestOrder = (int) $orders->min('total_price');
+
         return [
             'months' => $this->getAvailableMonths(),
             'selectedMonth' => $selectedMonth,
@@ -81,6 +85,8 @@ class MonthlyRevenueReport extends Page
                 'total_items' => $totalItems,
                 'total_revenue' => $totalRevenue,
                 'avg_order' => $avgOrder,
+                'highest_order' => $highestOrder,
+                'lowest_order' => $lowestOrder,
             ],
         ];
     }
@@ -151,13 +157,6 @@ class MonthlyRevenueReport extends Page
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Export Selected Month
-    |--------------------------------------------------------------------------
-    | Method dibuat public supaya bisa dipanggil dari tombol Blade:
-    | wire:click="exportSelectedMonth"
-    */
     public function exportSelectedMonth(): StreamedResponse
     {
         abort_unless(
@@ -166,6 +165,7 @@ class MonthlyRevenueReport extends Page
         );
 
         $selectedMonth = $this->getSelectedMonth();
+
         [$startDate, $endDate] = $this->getMonthRange($selectedMonth);
 
         $orders = Order::query()
@@ -197,119 +197,85 @@ class MonthlyRevenueReport extends Page
             $totalRevenue,
             $avgOrder
         ): void {
+            echo "\xEF\xBB\xBF";
+
             echo '
                 <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            color: #111827;
-                        }
+                    <head>
+                        <meta charset="UTF-8">
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                            }
 
-                        .title {
-                            font-size: 24px;
-                            font-weight: bold;
-                            color: #0f766e;
-                            text-align: center;
-                        }
+                            table {
+                                border-collapse: collapse;
+                                width: 100%;
+                            }
 
-                        .subtitle {
-                            font-size: 13px;
-                            color: #6b7280;
-                            text-align: center;
-                        }
+                            th {
+                                background: #f97316;
+                                color: #ffffff;
+                                font-weight: bold;
+                                border: 1px solid #d9d9d9;
+                                padding: 8px;
+                            }
 
-                        table {
-                            border-collapse: collapse;
-                            width: 100%;
-                        }
+                            td {
+                                border: 1px solid #d9d9d9;
+                                padding: 8px;
+                            }
 
-                        .summary td {
-                            border: 1px solid #d1d5db;
-                            padding: 10px;
-                        }
+                            .title {
+                                font-size: 18px;
+                                font-weight: bold;
+                            }
 
-                        .summary-label {
-                            background: #ccfbf1;
-                            color: #115e59;
-                            font-weight: bold;
-                        }
+                            .subtitle {
+                                color: #666666;
+                            }
 
-                        .summary-value {
-                            background: #f9fafb;
-                            font-weight: bold;
-                        }
+                            .summary-label {
+                                background: #fff3df;
+                                font-weight: bold;
+                            }
 
-                        .data th {
-                            background: #0f766e;
-                            color: white;
-                            border: 1px solid #0f766e;
-                            padding: 9px;
-                            font-weight: bold;
-                            text-align: center;
-                        }
+                            .total-row {
+                                background: #fff3df;
+                                font-weight: bold;
+                            }
+                        </style>
+                    </head>
 
-                        .data td {
-                            border: 1px solid #d1d5db;
-                            padding: 9px;
-                        }
+                    <body>
+                        <table>
+                            <tr>
+                                <td colspan="6" class="title">LAPORAN MONTHLY REVENUE</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6" class="subtitle">Sistem Informasi Point of Sale UMKM Ngunjuk</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">Periode: ' . e($monthLabel) . '</td>
+                            </tr>
+                            <tr><td colspan="6"></td></tr>
 
-                        .center {
-                            text-align: center;
-                        }
+                            <tr>
+                                <td class="summary-label">Total Orders</td>
+                                <td>' . number_format($totalOrders, 0, ',', '.') . '</td>
+                                <td class="summary-label">Units Sold</td>
+                                <td>' . number_format($totalItems, 0, ',', '.') . '</td>
+                                <td class="summary-label">Avg Order</td>
+                                <td>Rp ' . number_format($avgOrder, 0, ',', '.') . '</td>
+                            </tr>
 
-                        .right {
-                            text-align: right;
-                        }
+                            <tr>
+                                <td class="summary-label">Total Revenue</td>
+                                <td colspan="5">Rp ' . number_format($totalRevenue, 0, ',', '.') . '</td>
+                            </tr>
 
-                        .total td {
-                            background: #ecfdf5;
-                            font-weight: bold;
-                            color: #064e3b;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <table>
-                        <tr>
-                            <td colspan="6" class="title">
-                                LAPORAN MONTHLY REVENUE
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="6" class="subtitle">
-                                Sistem Informasi Point of Sale UMKM Ngunjuk
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="6" class="subtitle">
-                                Periode: ' . e($monthLabel) . '
-                            </td>
-                        </tr>
-                    </table>
+                            <tr><td colspan="6"></td></tr>
 
-                    <br>
-
-                    <table class="summary">
-                        <tr>
-                            <td class="summary-label">Total Orders</td>
-                            <td class="summary-value">' . number_format($totalOrders, 0, ',', '.') . '</td>
-                            <td class="summary-label">Units Sold</td>
-                            <td class="summary-value">' . number_format($totalItems, 0, ',', '.') . '</td>
-                        </tr>
-                        <tr>
-                            <td class="summary-label">Total Revenue</td>
-                            <td class="summary-value">Rp ' . number_format($totalRevenue, 0, ',', '.') . '</td>
-                            <td class="summary-label">Avg Order</td>
-                            <td class="summary-value">Rp ' . number_format($avgOrder, 0, ',', '.') . '</td>
-                        </tr>
-                    </table>
-
-                    <br>
-
-                    <table class="data">
-                        <thead>
                             <tr>
                                 <th>No</th>
                                 <th>ID Order</th>
@@ -318,35 +284,32 @@ class MonthlyRevenueReport extends Page
                                 <th>Total Revenue</th>
                                 <th>Status</th>
                             </tr>
-                        </thead>
-                        <tbody>';
+            ';
 
-            $no = 1;
-
-            foreach ($orders as $order) {
+            foreach ($orders as $index => $order) {
                 $date = $order->ordered_at ?? $order->created_at;
 
                 echo '
                     <tr>
-                        <td class="center">' . $no++ . '</td>
+                        <td>' . ($index + 1) . '</td>
                         <td>' . e($order->order_code ?? ('ORD-' . $order->id)) . '</td>
-                        <td class="center">' . e(Carbon::parse($date)->translatedFormat('d F Y H:i')) . '</td>
-                        <td class="center">' . number_format((int) $order->total_item, 0, ',', '.') . '</td>
-                        <td class="right">Rp ' . number_format((int) $order->total_price, 0, ',', '.') . '</td>
-                        <td class="center">' . e($order->status) . '</td>
-                    </tr>';
+                        <td>' . e(Carbon::parse($date)->translatedFormat('d F Y H:i')) . '</td>
+                        <td>' . number_format((int) $order->total_item, 0, ',', '.') . '</td>
+                        <td>Rp ' . number_format((int) $order->total_price, 0, ',', '.') . '</td>
+                        <td>' . e($order->status) . '</td>
+                    </tr>
+                ';
             }
 
             echo '
-                            <tr class="total">
-                                <td colspan="3" class="center">TOTAL</td>
-                                <td class="center">' . number_format($totalItems, 0, ',', '.') . '</td>
-                                <td class="right">Rp ' . number_format($totalRevenue, 0, ',', '.') . '</td>
+                            <tr class="total-row">
+                                <td colspan="3">TOTAL</td>
+                                <td>' . number_format($totalItems, 0, ',', '.') . '</td>
+                                <td>Rp ' . number_format($totalRevenue, 0, ',', '.') . '</td>
                                 <td></td>
                             </tr>
-                        </tbody>
-                    </table>
-                </body>
+                        </table>
+                    </body>
                 </html>
             ';
         }, $fileName, [

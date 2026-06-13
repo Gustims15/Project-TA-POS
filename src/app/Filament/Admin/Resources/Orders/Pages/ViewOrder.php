@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Orders\Pages;
 
 use App\Filament\Admin\Resources\Orders\OrderResource;
-use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewOrder extends ViewRecord
@@ -14,19 +13,17 @@ class ViewOrder extends ViewRecord
 
     protected string $view = 'filament.admin.resources.orders.pages.view-order';
 
+    protected ?string $heading = '';
+
+    protected ?string $subheading = '';
+
     public function getTitle(): string
     {
-        return 'Detail ' . ($this->record->order_code ?? 'Order');
+        return '';
     }
 
     protected function getHeaderActions(): array
     {
-        return [
-            Action::make('backToOrders')
-                ->label('Kembali ke Order')
-                ->icon('heroicon-o-arrow-left')
-                ->color('gray')
-                ->url(OrderResource::getUrl('index')),
-        ];
+        return [];
     }
 }

@@ -23,9 +23,9 @@ class ProductsTable
                     ->label('Gambar')
                     ->disk('public')
                     ->square()
-                    ->size(54)
+                    ->size(46)
                     ->extraImgAttributes([
-                        'style' => 'border-radius: 16px; object-fit: cover; box-shadow: 0 10px 22px rgba(15,23,42,0.12); border: 1px solid #e2e8f0;',
+                        'style' => 'border-radius: 15px; object-fit: cover; box-shadow: 0 12px 22px rgba(101,58,21,.12); border: 1px solid rgba(255,255,255,.58);',
                     ]),
 
                 TextColumn::make('name')
@@ -33,30 +33,49 @@ class ProductsTable
                     ->searchable()
                     ->sortable()
                     ->html()
-                    ->formatStateUsing(fn (?string $state): string => '
-                        <div style="display:flex; flex-direction:column; gap:4px;">
-                            <span style="
-                                color:#0f172a;
-                                font-weight:900;
-                                font-size:14px;
-                                letter-spacing:-0.01em;
-                            ">
-                                ' . e($state ?? '-') . '
-                            </span>
-                            <span style="
-                                width:fit-content;
-                                border-radius:999px;
-                                padding:4px 8px;
-                                background:#f8fafc;
-                                border:1px solid #e2e8f0;
-                                color:#64748b;
-                                font-size:11px;
-                                font-weight:800;
-                            ">
-                                Produk Ngunjuk
-                            </span>
-                        </div>
-                    '),
+                    ->formatStateUsing(function (?string $state): string {
+                        $name = $state ?: '-';
+                        $initial = mb_strtoupper(mb_substr($name, 0, 1));
+
+                        return '
+                            <div style="display:flex;align-items:center;gap:10px;min-width:210px;">
+                                <div style="
+                                    width:38px;
+                                    height:38px;
+                                    border-radius:14px;
+                                    display:grid;
+                                    place-items:center;
+                                    color:#fff;
+                                    font-size:14px;
+                                    font-weight:950;
+                                    background:linear-gradient(135deg,#ff9d18,#ee6500);
+                                    box-shadow:0 12px 24px rgba(238,101,0,.20);
+                                ">
+                                    ' . e($initial) . '
+                                </div>
+
+                                <div style="min-width:0;">
+                                    <div style="
+                                        color:#23160d;
+                                        font-size:13px;
+                                        font-weight:950;
+                                        line-height:1.25;
+                                    ">
+                                        ' . e($name) . '
+                                    </div>
+
+                                    <div style="
+                                        margin-top:3px;
+                                        color:#8b7057;
+                                        font-size:11px;
+                                        font-weight:750;
+                                    ">
+                                        Produk Ngunjuk
+                                    </div>
+                                </div>
+                            </div>
+                        ';
+                    }),
 
                 TextColumn::make('category.name')
                     ->label('Kategori')
@@ -67,23 +86,17 @@ class ProductsTable
                         <span style="
                             display:inline-flex;
                             align-items:center;
-                            gap:7px;
+                            min-height:28px;
+                            padding:0 11px;
                             border-radius:999px;
-                            padding:7px 11px;
-                            background:#ecfdf5;
-                            border:1px solid #bbf7d0;
-                            color:#047857;
-                            font-size:12px;
-                            font-weight:900;
+                            color:#078657;
+                            background:rgba(16,185,129,.12);
+                            border:1px solid rgba(16,185,129,.22);
+                            font-size:10px;
+                            font-weight:950;
                             white-space:nowrap;
                         ">
-                            <span style="
-                                width:7px;
-                                height:7px;
-                                border-radius:999px;
-                                background:#10b981;
-                            "></span>
-                            ' . e($state ?? '-') . '
+                            • ' . e($state ?? '-') . '
                         </span>
                     '),
 
@@ -94,28 +107,42 @@ class ProductsTable
                         $sizes = $record->sizes ?? collect();
 
                         if ($sizes->isEmpty()) {
-                            return '<span style="color:#94a3b8;font-weight:700;">Belum ada size</span>';
+                            return '
+                                <span style="
+                                    display:inline-flex;
+                                    min-height:26px;
+                                    align-items:center;
+                                    padding:0 10px;
+                                    border-radius:999px;
+                                    color:#64748b;
+                                    background:rgba(148,163,184,.12);
+                                    border:1px solid rgba(148,163,184,.24);
+                                    font-size:10px;
+                                    font-weight:900;
+                                ">
+                                    Belum ada size
+                                </span>
+                            ';
                         }
 
                         return $sizes
                             ->map(function ($size): string {
-                                $label = $size->name ?? '-';
-
                                 return '
                                     <span style="
                                         display:inline-flex;
+                                        min-height:26px;
                                         align-items:center;
+                                        padding:0 10px;
+                                        margin-right:5px;
+                                        margin-bottom:4px;
                                         border-radius:999px;
-                                        padding:6px 10px;
-                                        background:#eff6ff;
-                                        border:1px solid #bfdbfe;
-                                        color:#1d4ed8;
-                                        font-size:12px;
-                                        font-weight:900;
-                                        margin:2px;
-                                        white-space:nowrap;
+                                        color:#2563eb;
+                                        background:rgba(59,130,246,.10);
+                                        border:1px solid rgba(59,130,246,.20);
+                                        font-size:10px;
+                                        font-weight:950;
                                     ">
-                                        ' . e($label) . '
+                                        ' . e($size->name ?? '-') . '
                                     </span>
                                 ';
                             })
@@ -129,7 +156,22 @@ class ProductsTable
                         $sizes = $record->sizes ?? collect();
 
                         if ($sizes->isEmpty()) {
-                            return '<span style="color:#94a3b8;font-weight:700;">Rp 0</span>';
+                            return '
+                                <span style="
+                                    display:inline-flex;
+                                    min-height:26px;
+                                    align-items:center;
+                                    padding:0 10px;
+                                    border-radius:999px;
+                                    color:#64748b;
+                                    background:rgba(148,163,184,.12);
+                                    border:1px solid rgba(148,163,184,.24);
+                                    font-size:10px;
+                                    font-weight:900;
+                                ">
+                                    Rp 0
+                                </span>
+                            ';
                         }
 
                         return $sizes
@@ -137,18 +179,19 @@ class ProductsTable
                                 return '
                                     <span style="
                                         display:inline-flex;
+                                        min-height:26px;
                                         align-items:center;
+                                        padding:0 10px;
+                                        margin-right:5px;
+                                        margin-bottom:4px;
                                         border-radius:999px;
-                                        padding:6px 10px;
-                                        background:#f8fafc;
-                                        border:1px solid #e2e8f0;
-                                        color:#0f172a;
-                                        font-size:12px;
-                                        font-weight:850;
-                                        margin:2px;
-                                        white-space:nowrap;
+                                        color:#4b3525;
+                                        background:rgba(255,255,255,.28);
+                                        border:1px solid rgba(255,255,255,.42);
+                                        font-size:10px;
+                                        font-weight:950;
                                     ">
-                                        Rp ' . number_format((int) $size->price, 0, ',', '.') . '
+                                        Rp ' . number_format((int) ($size->price ?? 0), 0, ',', '.') . '
                                     </span>
                                 ';
                             })
@@ -164,45 +207,39 @@ class ProductsTable
                         $stock = (int) $state;
 
                         if ($stock <= 0) {
-                            $bg = '#fef2f2';
-                            $border = '#fecaca';
-                            $color = '#b91c1c';
+                            $bg = 'rgba(255,98,98,.13)';
+                            $border = 'rgba(255,98,98,.24)';
+                            $color = '#d73333';
                             $label = 'Habis';
                         } elseif ($stock <= 5) {
-                            $bg = '#fff7ed';
-                            $border = '#fed7aa';
-                            $color = '#c2410c';
+                            $bg = 'rgba(255,159,64,.16)';
+                            $border = 'rgba(255,159,64,.26)';
+                            $color = '#d76a00';
                             $label = 'Menipis';
                         } else {
-                            $bg = '#ecfdf5';
-                            $border = '#bbf7d0';
-                            $color = '#047857';
+                            $bg = 'rgba(16,185,129,.13)';
+                            $border = 'rgba(16,185,129,.24)';
+                            $color = '#078657';
                             $label = 'Aman';
                         }
 
                         return '
-                            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-                                <span style="
-                                    display:inline-flex;
-                                    justify-content:center;
-                                    min-width:42px;
-                                    border-radius:12px;
-                                    padding:7px 10px;
-                                    background:' . $bg . ';
-                                    border:1px solid ' . $border . ';
-                                    color:' . $color . ';
-                                    font-weight:950;
-                                    font-size:13px;
-                                ">
-                                    ' . number_format($stock, 0, ',', '.') . '
-                                </span>
-                                <span style="
-                                    color:' . $color . ';
-                                    font-size:11px;
-                                    font-weight:850;
-                                ">
-                                    ' . $label . '
-                                </span>
+                            <div style="
+                                display:inline-grid;
+                                place-items:center;
+                                gap:3px;
+                                min-width:58px;
+                                min-height:40px;
+                                padding:5px 10px;
+                                border-radius:14px;
+                                background:' . $bg . ';
+                                border:1px solid ' . $border . ';
+                                color:' . $color . ';
+                                font-size:10px;
+                                font-weight:950;
+                            ">
+                                <span style="font-size:12px;">' . number_format($stock, 0, ',', '.') . '</span>
+                                <span>' . $label . '</span>
                             </div>
                         ';
                     }),

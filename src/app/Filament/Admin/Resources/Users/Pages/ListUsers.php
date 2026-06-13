@@ -8,13 +8,14 @@ use App\Filament\Admin\Resources\Users\UserResource;
 use App\Filament\Admin\Resources\Users\Widgets\UserAnalyticsWidget;
 use Filament\Resources\Pages\ListRecords;
 
-final class ListUsers extends ListRecords
+class ListUsers extends ListRecords
 {
     protected static string $resource = UserResource::class;
 
-    protected ?string $heading = 'Users';
-
-    protected ?string $subheading = 'Kelola akun super admin dan karyawan yang memiliki akses ke sistem POS Ngunjuk.';
+    public function getTitle(): string
+    {
+        return '';
+    }
 
     protected function getHeaderWidgets(): array
     {
@@ -23,14 +24,6 @@ final class ListUsers extends ListRecords
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Header Actions
-    |--------------------------------------------------------------------------
-    | Tombol Add New User di header Filament dihilangkan.
-    | Tombol Add New User sekarang dipindahkan ke widget hijau.
-    |--------------------------------------------------------------------------
-    */
     protected function getHeaderActions(): array
     {
         return [];

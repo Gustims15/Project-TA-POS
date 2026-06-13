@@ -1,429 +1,458 @@
+@php
+    $createUrl = \App\Filament\Admin\Resources\Users\UserResource::getUrl('create');
+
+    $cards = [
+        [
+            'label' => 'Total Users',
+            'value' => number_format($summary['total_users'], 0, ',', '.'),
+            'caption' => 'Semua akun sistem',
+            'icon' => '▣',
+            'color' => '#f97316',
+        ],
+        [
+            'label' => 'Super Admin',
+            'value' => number_format($summary['super_admins'], 0, ',', '.'),
+            'caption' => 'Akses penuh admin',
+            'icon' => '✓',
+            'color' => '#10b981',
+        ],
+        [
+            'label' => 'Karyawan',
+            'value' => number_format($summary['karyawan'], 0, ',', '.'),
+            'caption' => 'Akses kasir',
+            'icon' => '◇',
+            'color' => '#3b82f6',
+        ],
+        [
+            'label' => 'User Baru',
+            'value' => number_format($summary['new_users'], 0, ',', '.'),
+            'caption' => '30 hari terakhir',
+            'icon' => '↗',
+            'color' => '#8b5cf6',
+        ],
+    ];
+@endphp
+
 <x-filament-widgets::widget>
-    <style>
-        .user-lux-wrapper {
-            --primary: #0f766e;
-            --primary-light: #14b8a6;
-            --emerald: #10b981;
-            --dark: #0f172a;
-            --muted: #64748b;
-            --border: #e2e8f0;
-            --soft: #f8fafc;
-            margin-bottom: 22px;
-        }
+    <div class="ng-user-page" style="
+        width: 100%;
+        padding: 18px 18px 12px;
+        font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        color: #24180f;
+    ">
+        <div style="
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(340px, .65fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        ">
+            <div style="
+                min-height: 126px;
+                padding: 20px 22px;
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, .56);
+                background: rgba(255, 247, 235, .18);
+                box-shadow:
+                    0 20px 48px rgba(101, 58, 21, .10),
+                    0 0 0 1px rgba(255, 255, 255, .10) inset,
+                    inset 0 1px 0 rgba(255, 255, 255, .56);
+                backdrop-filter: blur(13px);
+                overflow: hidden;
+            ">
 
-        .user-lux-hero {
-            position: relative;
-            overflow: hidden;
-            border-radius: 30px;
-            padding: 30px;
-            color: white;
-            background:
-                radial-gradient(circle at top right, rgba(255,255,255,0.32), transparent 28%),
-                radial-gradient(circle at bottom left, rgba(255,255,255,0.18), transparent 28%),
-                linear-gradient(135deg, #0f766e 0%, #0d9488 45%, #10b981 100%);
-            box-shadow: 0 28px 70px rgba(15, 118, 110, 0.22);
-            isolation: isolate;
-        }
+                <h1 style="
+                    margin: 0;
+                    color: #21160d;
+                    font-size: 30px;
+                    line-height: 1.05;
+                    font-weight: 950;
+                    letter-spacing: -.04em;
+                ">
+                    User Management
+                </h1>
 
-        .user-lux-hero::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.09) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.09) 1px, transparent 1px);
-            background-size: 34px 34px;
-            opacity: 0.24;
-            z-index: -1;
-        }
+                <p style="
+                    max-width: 760px;
+                    margin: 7px 0 0;
+                    color: #765d45;
+                    font-size: 12px;
+                    font-weight: 650;
+                    line-height: 1.5;
+                ">
+                    Kelola akun pengguna sistem, role akses, super admin, dan karyawan yang memiliki akses ke sistem POS UMKM Ngunjuk.
+                </p>
+            </div>
 
-        .user-lux-hero-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 24px;
-        }
+            <div style="
+                min-height: 126px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 14px;
+                padding: 20px 22px;
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, .56);
+                background: rgba(255, 247, 235, .18);
+                box-shadow:
+                    0 20px 48px rgba(101, 58, 21, .10),
+                    0 0 0 1px rgba(255, 255, 255, .10) inset,
+                    inset 0 1px 0 rgba(255, 255, 255, .56);
+                backdrop-filter: blur(13px);
+                overflow: hidden;
+            ">
+                <div style="min-width: 0;">
+                    <span style="
+                        display: block;
+                        color: #765d45;
+                        font-size: 11px;
+                        font-weight: 850;
+                    ">
+                        User Terbaru
+                    </span>
 
-        .user-lux-main {
-            min-width: 0;
-        }
+                    <strong style="
+                        display: block;
+                        max-width: 280px;
+                        margin: 7px 0;
+                        overflow: hidden;
+                        color: #21160d;
+                        font-size: 22px;
+                        line-height: 1.1;
+                        font-weight: 950;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    ">
+                        {{ $summary['latest_user_name'] }}
+                    </strong>
 
-        .user-lux-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            width: fit-content;
-            padding: 9px 14px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.25);
-            backdrop-filter: blur(10px);
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
+                    <small style="
+                        display: block;
+                        color: #765d45;
+                        font-size: 11px;
+                        font-weight: 850;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        max-width: 280px;
+                    ">
+                        {{ $summary['latest_user_email'] }}
+                    </small>
 
-        .user-lux-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 999px;
-            background: #bbf7d0;
-            box-shadow: 0 0 0 5px rgba(187,247,208,0.22);
-        }
+                    <small style="
+                        display: block;
+                        margin-top: 4px;
+                        color: #c25500;
+                        font-size: 11px;
+                        font-weight: 900;
+                    ">
+                        {{ $summary['latest_user_role'] }}
+                    </small>
+                </div>
 
-        .user-lux-title {
-            margin: 16px 0 0;
-            font-size: 34px;
-            line-height: 1.08;
-            font-weight: 950;
-            letter-spacing: -0.04em;
-        }
+                <a href="{{ $createUrl }}" style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 42px;
+                    padding: 0 16px;
+                    border-radius: 15px;
+                    color: #fff;
+                    background: linear-gradient(135deg, #ff9d18, #ee6500);
+                    box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
+                    font-size: 12px;
+                    font-weight: 950;
+                    text-decoration: none;
+                    white-space: nowrap;
+                ">
+                    + Add New User
+                </a>
+            </div>
+        </div>
 
-        .user-lux-desc {
-            margin: 12px 0 0;
-            max-width: 780px;
-            color: rgba(255,255,255,0.86);
-            font-size: 14px;
-            line-height: 1.7;
-        }
-
-        .user-lux-action-panel {
-            min-width: 260px;
-            border-radius: 22px;
-            padding: 18px;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.24);
-            backdrop-filter: blur(12px);
-        }
-
-        .user-lux-action-panel span {
-            display: block;
-            color: rgba(255,255,255,0.78);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .user-lux-action-panel strong {
-            display: block;
-            margin-top: 8px;
-            color: white;
-            font-size: 24px;
-            line-height: 1.15;
-            font-weight: 950;
-            letter-spacing: -0.03em;
-        }
-
-        .user-lux-action-panel small {
-            display: block;
-            margin-top: 8px;
-            color: rgba(255,255,255,0.82);
-            font-size: 12px;
-            line-height: 1.45;
-            font-weight: 700;
-        }
-
-        .user-lux-create-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            margin-top: 16px;
-            padding: 11px 16px;
-            border-radius: 999px;
-            color: #ffffff;
-            background: linear-gradient(135deg, #fb923c 0%, #f97316 42%, #ea580c 100%);
-            box-shadow:
-                0 16px 34px rgba(234, 88, 12, 0.28),
-                inset 0 1px 0 rgba(255,255,255,0.30);
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 950;
-            transition: 0.2s ease;
-        }
-
-        .user-lux-create-btn:hover {
-            transform: translateY(-2px);
-            box-shadow:
-                0 20px 42px rgba(234, 88, 12, 0.36),
-                inset 0 1px 0 rgba(255,255,255,0.34);
-        }
-
-        .user-lux-create-btn-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 20px;
-            height: 20px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.18);
-            color: #ffffff;
-            font-size: 18px;
-            line-height: 1;
-            font-weight: 900;
-        }
-
-        .user-lux-latest {
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid rgba(255,255,255,0.20);
-        }
-
-        .user-lux-latest span {
-            font-size: 11px;
-            color: rgba(255,255,255,0.70);
-        }
-
-        .user-lux-latest strong {
-            margin-top: 5px;
-            font-size: 15px;
-            line-height: 1.2;
-        }
-
-        .user-lux-latest small {
-            margin-top: 4px;
-            font-size: 11px;
-        }
-
-        .user-lux-grid {
+        <div style="
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 16px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-bottom: 12px;
+        ">
+            @foreach ($cards as $card)
+                <div style="
+                    min-height: 90px;
+                    display: flex;
+                    align-items: center;
+                    gap: 11px;
+                    padding: 14px 14px;
+                    border-radius: 20px;
+                    border: 1px solid rgba(255, 255, 255, .54);
+                    background: rgba(255, 247, 235, .16);
+                    box-shadow:
+                        0 18px 42px rgba(101, 58, 21, .09),
+                        0 0 0 1px rgba(255, 255, 255, .10) inset,
+                        inset 0 1px 0 rgba(255, 255, 255, .52);
+                    backdrop-filter: blur(13px);
+                    overflow: hidden;
+                ">
+                    <div style="
+                        display: grid;
+                        place-items: center;
+                        flex: 0 0 auto;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 14px;
+                        color: #fff;
+                        background: linear-gradient(135deg, {{ $card['color'] }}, #d95d00);
+                        box-shadow: 0 14px 24px rgba(249, 115, 22, .20);
+                        font-size: 15px;
+                        font-weight: 950;
+                    ">
+                        {{ $card['icon'] }}
+                    </div>
+
+                    <div style="min-width: 0; flex: 1;">
+                        <span style="
+                            display: block;
+                            color: #6f5946;
+                            font-size: 11px;
+                            line-height: 1.2;
+                            font-weight: 900;
+                        ">
+                            {{ $card['label'] }}
+                        </span>
+
+                        <strong style="
+                            display: block;
+                            margin-top: 6px;
+                            color: #23160d;
+                            font-size: 18px;
+                            line-height: 1.15;
+                            font-weight: 950;
+                            letter-spacing: -.03em;
+                        ">
+                            {{ $card['value'] }}
+                        </strong>
+
+                        <p style="
+                            margin: 6px 0 0;
+                            color: #6f5946;
+                            font-size: 10px;
+                            line-height: 1.25;
+                            font-weight: 850;
+                        ">
+                            {{ $card['caption'] }}
+                        </p>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <style>
+        html,
+        body {
+            overflow-x: hidden !important;
         }
 
-        .user-lux-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 24px;
-            padding: 20px;
-            background: white;
-            border: 1px solid rgba(226,232,240,0.95);
-            box-shadow: 0 16px 40px rgba(15,23,42,0.07);
-            min-height: 145px;
-            transition: 0.25s ease;
+        body:has(.ng-user-page) {
+            background:
+                linear-gradient(120deg, rgba(255, 248, 237, .10), rgba(255, 224, 185, .02)),
+                url('/images/pos-orange-bg.png'),
+                radial-gradient(circle at 15% 8%, rgba(255, 255, 255, .32) 0 130px, transparent 280px),
+                radial-gradient(circle at 88% 78%, rgba(255, 118, 0, .42) 0 250px, transparent 520px),
+                radial-gradient(circle at 20% 96%, rgba(255, 181, 83, .28) 0 220px, transparent 500px),
+                linear-gradient(135deg, #fff3df 0%, #ffd394 48%, #ff9c45 100%) !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
         }
 
-        .user-lux-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 24px 55px rgba(15,23,42,0.12);
+        body:has(.ng-user-page) .fi-main,
+        body:has(.ng-user-page) .fi-main-ctn,
+        body:has(.ng-user-page) .fi-page,
+        body:has(.ng-user-page) .fi-page-content {
+            width: 100% !important;
+            max-width: 100% !important;
+            background: transparent !important;
+            overflow-x: hidden !important;
         }
 
-        .user-lux-card::after {
-            content: "";
-            position: absolute;
-            width: 118px;
-            height: 118px;
-            top: -52px;
-            right: -42px;
-            border-radius: 999px;
-            opacity: 0.15;
+        body:has(.ng-user-page) .fi-page {
+            padding: 0 !important;
         }
 
-        .user-lux-card.total::after {
-            background: #10b981;
+        body:has(.ng-user-page) .fi-page-header {
+            display: none !important;
         }
 
-        .user-lux-card.admin::after {
-            background: #3b82f6;
+        body:has(.ng-user-page) .fi-main {
+            padding: 0 !important;
         }
 
-        .user-lux-card.staff::after {
-            background: #f97316;
+        body:has(.ng-user-page) .fi-sidebar {
+            background: rgba(255, 250, 242, .50) !important;
+            border-right: 1px solid rgba(255, 255, 255, .48) !important;
+            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
+            backdrop-filter: blur(16px) !important;
         }
 
-        .user-lux-card.new::after {
-            background: #8b5cf6;
+        body:has(.ng-user-page) .fi-sidebar-nav {
+            padding: 18px 14px !important;
         }
 
-        .user-lux-card-label {
-            margin: 0;
-            color: #64748b;
-            font-size: 13px;
-            font-weight: 850;
+        body:has(.ng-user-page) .fi-sidebar-item a {
+            border-radius: 14px !important;
+            color: #6f5844 !important;
+            transition: .2s ease !important;
         }
 
-        .user-lux-card-value {
-            margin: 18px 0 0;
-            color: #020617;
-            font-size: 30px;
-            line-height: 1;
-            font-weight: 950;
-            letter-spacing: -0.045em;
+        body:has(.ng-user-page) .fi-sidebar-item-active a,
+        body:has(.ng-user-page) .fi-sidebar-item a:hover {
+            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
+            color: #fff !important;
+            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
         }
 
-        .user-lux-card-caption {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 14px;
-            border-radius: 999px;
-            padding: 7px 11px;
-            font-size: 12px;
-            font-weight: 800;
+        body:has(.ng-user-page) .fi-wi-widget {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
         }
 
-        .total .user-lux-card-caption {
-            background: #ecfdf5;
-            color: #047857;
+        body:has(.ng-user-page) .fi-wi-widget-content {
+            padding: 0 !important;
         }
 
-        .admin .user-lux-card-caption {
-            background: #eff6ff;
-            color: #1d4ed8;
+        body:has(.ng-user-page) .fi-page-content {
+            gap: 0 !important;
+            row-gap: 0 !important;
         }
 
-        .staff .user-lux-card-caption {
-            background: #fff7ed;
-            color: #c2410c;
+        body:has(.ng-user-page) .fi-ta-ctn {
+            margin-left: 18px !important;
+            margin-right: 18px !important;
+            width: calc(100% - 36px) !important;
+            transform: translateY(-8px) !important;
+            border-radius: 24px !important;
+            border: 1px solid rgba(255, 255, 255, .46) !important;
+            background: rgba(255, 247, 235, .14) !important;
+            box-shadow:
+                0 18px 46px rgba(101, 58, 21, .09),
+                inset 0 1px 0 rgba(255, 255, 255, .38) !important;
+            backdrop-filter: blur(12px) !important;
+            overflow: hidden !important;
         }
 
-        .new .user-lux-card-caption {
-            background: #f5f3ff;
-            color: #6d28d9;
+        body:has(.ng-user-page) .fi-ta,
+        body:has(.ng-user-page) .fi-section,
+        body:has(.ng-user-page) .fi-ta-content,
+        body:has(.ng-user-page) .fi-ta-table,
+        body:has(.ng-user-page) .fi-ta-table thead,
+        body:has(.ng-user-page) .fi-ta-table tbody {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
         }
 
-        @media (max-width: 1100px) {
-            .user-lux-hero-top {
-                flex-direction: column;
+        body:has(.ng-user-page) .fi-ta-header,
+        body:has(.ng-user-page) .fi-ta-toolbar {
+            min-height: 46px !important;
+            padding: 6px 16px !important;
+            background: rgba(255, 247, 235, .10) !important;
+            border-bottom: 1px solid rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-user-page) .fi-ta-table thead tr {
+            background: rgba(255, 247, 235, .10) !important;
+        }
+
+        body:has(.ng-user-page) .fi-ta-row,
+        body:has(.ng-user-page) .fi-ta-cell,
+        body:has(.ng-user-page) .fi-ta-header-cell {
+            background: transparent !important;
+        }
+
+        body:has(.ng-user-page) .fi-ta-row {
+            min-height: 54px !important;
+            border-bottom: 1px solid rgba(114, 74, 41, .07) !important;
+            transition: .18s ease !important;
+        }
+
+        body:has(.ng-user-page) .fi-ta-row:hover {
+            background: rgba(255, 255, 255, .10) !important;
+        }
+
+        body:has(.ng-user-page) .fi-ta-cell {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+            border-color: rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-user-page) .fi-ta-header-cell {
+            padding-top: 9px !important;
+            padding-bottom: 9px !important;
+            border-color: rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-user-page) .fi-ta-header-cell-label {
+            color: #4b3525 !important;
+            font-size: 12px !important;
+            font-weight: 950 !important;
+        }
+
+        body:has(.ng-user-page) .fi-ta-pagination,
+        body:has(.ng-user-page) .fi-pagination {
+            min-height: 50px !important;
+            padding: 8px 16px !important;
+            background: rgba(255, 247, 235, .10) !important;
+            border-top: 1px solid rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-user-page) .fi-input-wrp,
+        body:has(.ng-user-page) .fi-ta-search-field .fi-input-wrp,
+        body:has(.ng-user-page) .fi-select-input {
+            border-radius: 16px !important;
+            background: rgba(255, 255, 255, .26) !important;
+            border-color: rgba(255, 255, 255, .40) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+
+        body:has(.ng-user-page) .fi-ta-search-field {
+            max-width: 280px !important;
+        }
+
+        body:has(.ng-user-page) .fi-ta-search-field .fi-input-wrp {
+            min-height: 36px !important;
+        }
+
+        body:has(.ng-user-page) .fi-btn {
+            border-radius: 14px !important;
+            font-weight: 900 !important;
+        }
+
+        body:has(.ng-user-page) .fi-btn-color-primary {
+            background: linear-gradient(135deg, #ff9d18, #ee6500) !important;
+            box-shadow: 0 12px 22px rgba(238, 101, 0, .22) !important;
+        }
+
+        @media (max-width: 1500px) {
+            [style*="grid-template-columns: repeat(4"] {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
             }
 
-            .user-lux-action-panel {
-                width: 100%;
-                min-width: 0;
-            }
-
-            .user-lux-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+            [style*="grid-template-columns: minmax(0, 1.35fr)"] {
+                grid-template-columns: 1fr !important;
             }
         }
 
-        @media (max-width: 700px) {
-            .user-lux-hero {
-                padding: 24px;
-                border-radius: 24px;
+        @media (max-width: 900px) {
+            .ng-user-page {
+                padding: 14px !important;
             }
 
-            .user-lux-title {
-                font-size: 28px;
-            }
-
-            .user-lux-grid {
-                grid-template-columns: 1fr;
+            [style*="grid-template-columns: repeat(4"] {
+                grid-template-columns: 1fr !important;
             }
         }
     </style>
-
-    <div class="user-lux-wrapper">
-        <section class="user-lux-hero">
-            <div class="user-lux-hero-top">
-                <div class="user-lux-main">
-                    <div class="user-lux-badge">
-                        <span class="user-lux-dot"></span>
-                        Ngunjuk POS User
-                    </div>
-
-                    <h2 class="user-lux-title">
-                        User Management Analytics
-                    </h2>
-
-                    <p class="user-lux-desc">
-                        Kelola akun pengguna sistem, role akses, admin, dan karyawan.
-                        Halaman ini membantu super admin memantau seluruh user yang memiliki akses
-                        ke sistem POS UMKM Ngunjuk.
-                    </p>
-                </div>
-
-                <div class="user-lux-action-panel">
-                    <span>Aksi Cepat User</span>
-
-                    <strong>
-                        Tambah User Baru
-                    </strong>
-
-                    <small>
-                        Buat akun baru untuk super admin atau karyawan yang akan mengakses sistem POS Ngunjuk.
-                    </small>
-
-                    <a
-                        href="{{ \App\Filament\Admin\Resources\Users\UserResource::getUrl('create') }}"
-                        class="user-lux-create-btn"
-                    >
-                        <span class="user-lux-create-btn-icon">+</span>
-                        Add New User
-                    </a>
-
-                    <div class="user-lux-latest">
-                        <span>User terbaru</span>
-
-                        <strong>
-                            {{ $summary['latest_user_name'] }}
-                        </strong>
-
-                        <small>
-                            {{ $summary['latest_user_email'] }}
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <div class="user-lux-grid">
-            <div class="user-lux-card total">
-                <p class="user-lux-card-label">
-                    Total Users
-                </p>
-
-                <p class="user-lux-card-value">
-                    {{ number_format($summary['total_users'], 0, ',', '.') }}
-                </p>
-
-                <p class="user-lux-card-caption">
-                    Semua akun sistem
-                </p>
-            </div>
-
-            <div class="user-lux-card admin">
-                <p class="user-lux-card-label">
-                    Super Admin
-                </p>
-
-                <p class="user-lux-card-value">
-                    {{ number_format($summary['super_admins'], 0, ',', '.') }}
-                </p>
-
-                <p class="user-lux-card-caption">
-                    Akses penuh admin
-                </p>
-            </div>
-
-            <div class="user-lux-card staff">
-                <p class="user-lux-card-label">
-                    Karyawan
-                </p>
-
-                <p class="user-lux-card-value">
-                    {{ number_format($summary['karyawan'], 0, ',', '.') }}
-                </p>
-
-                <p class="user-lux-card-caption">
-                    Akses kasir
-                </p>
-            </div>
-
-            <div class="user-lux-card new">
-                <p class="user-lux-card-label">
-                    User Baru
-                </p>
-
-                <p class="user-lux-card-value">
-                    {{ number_format($summary['new_users'], 0, ',', '.') }}
-                </p>
-
-                <p class="user-lux-card-caption">
-                    30 hari terakhir
-                </p>
-            </div>
-        </div>
-    </div>
 </x-filament-widgets::widget>

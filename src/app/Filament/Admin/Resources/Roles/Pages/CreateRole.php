@@ -5,47 +5,50 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Roles\Pages;
 
 use App\Filament\Admin\Resources\Roles\RoleResource;
-use BezhanSalleh\FilamentShield\Support\Utils;
+use App\Filament\Admin\Resources\Roles\Widgets\RoleFormHeroWidget;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 
 class CreateRole extends CreateRecord
 {
-    public Collection $permissions;
-
     protected static string $resource = RoleResource::class;
 
-    protected ?string $heading = 'Tambah Role Baru';
+    protected ?string $heading = '';
 
-    protected ?string $subheading = 'Buat role baru dan tentukan permission yang boleh diakses pada sistem POS Ngunjuk.';
+    protected ?string $subheading = '';
 
-    protected function mutateFormDataBeforeCreate(array $data): array
+    public function getTitle(): string
     {
-        $this->permissions = collect($data)
-            ->filter(fn (mixed $permission, string $key): bool => ! in_array($key, ['name', 'guard_name', 'select_all', Utils::getTenantModelForeignKey()]))
-            ->values()
-            ->flatten()
-            ->unique();
-
-        if (Utils::isTenancyEnabled() && Arr::has($data, Utils::getTenantModelForeignKey()) && filled($data[Utils::getTenantModelForeignKey()])) {
-            return Arr::only($data, ['name', 'guard_name', Utils::getTenantModelForeignKey()]);
-        }
-
-        return Arr::only($data, ['name', 'guard_name']);
+        return '';
     }
 
-    protected function afterCreate(): void
+    protected function getHeaderWidgets(): array
     {
-        $permissionModels = collect();
+        return [
+            RoleFormHeroWidget::class,
+        ];
+    }
 
-        $this->permissions->each(function (string $permission) use ($permissionModels): void {
-            $permissionModels->push(Utils::getPermissionModel()::firstOrCreate([
-                'name' => $permission,
-                'guard_name' => $this->data['guard_name'],
-            ]));
-        });
+    protected function getRedirectUrl(): string
+    {
+        return RoleResource::getUrl('index');
+    }
 
-        $this->record->syncPermissions($permissionModels);
+    protected function getCreateFormAction(): Action
+    {
+        return parent::getCreateFormAction()
+            ->label('Simpan Role')
+            ->icon('heroicon-o-check-circle');
+    }
+
+    protected function getCancelFormAction(): Action
+    {
+        return parent::getCancelFormAction()
+            ->label('Batal');
+    }
+
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        return 'Role berhasil dibuat';
     }
 }

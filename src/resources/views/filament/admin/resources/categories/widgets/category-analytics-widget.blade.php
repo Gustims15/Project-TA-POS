@@ -66,24 +66,6 @@
                 backdrop-filter: blur(13px);
                 overflow: hidden;
             ">
-                <span style="
-                    display: inline-flex;
-                    width: fit-content;
-                    padding: 6px 12px;
-                    margin-bottom: 9px;
-                    border-radius: 999px;
-                    background: rgba(255, 255, 255, .42);
-                    border: 1px solid rgba(255, 255, 255, .54);
-                    color: #d95d00;
-                    font-size: 11px;
-                    font-weight: 900;
-                    letter-spacing: .10em;
-                    text-transform: uppercase;
-                    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .62);
-                    backdrop-filter: blur(10px);
-                ">
-                    POS Ngunjuk
-                </span>
 
                 <h1 style="
                     margin: 0;

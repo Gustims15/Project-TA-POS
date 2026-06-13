@@ -7,13 +7,13 @@ namespace App\Filament\Admin\Resources\Users\Widgets;
 use App\Models\User;
 use Filament\Widgets\Widget;
 
-final class UserAnalyticsWidget extends Widget
+class UserAnalyticsWidget extends Widget
 {
     protected string $view = 'filament.admin.resources.users.widgets.user-analytics-widget';
 
     protected int|string|array $columnSpan = 'full';
 
-    protected function getViewData(): array
+    public function getViewData(): array
     {
         $totalUsers = User::query()->count();
 
@@ -34,6 +34,7 @@ final class UserAnalyticsWidget extends Widget
             ->count();
 
         $latestUser = User::query()
+            ->with('roles')
             ->latest()
             ->first();
 
@@ -45,6 +46,9 @@ final class UserAnalyticsWidget extends Widget
                 'new_users' => (int) $newUsers,
                 'latest_user_name' => $latestUser?->name ?? '-',
                 'latest_user_email' => $latestUser?->email ?? '-',
+                'latest_user_role' => $latestUser?->roles?->pluck('name')->map(
+                    fn (string $role): string => str($role)->replace('_', ' ')->title()->toString()
+                )->implode(', ') ?: '-',
             ],
         ];
     }

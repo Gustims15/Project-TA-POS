@@ -1,343 +1,448 @@
 <x-filament-panels::page>
+    @php
+        $summary = $this->getActivitySummary();
+
+        $cards = [
+            [
+                'label' => 'Total Logs',
+                'value' => number_format($summary['total_logs'], 0, ',', '.'),
+                'caption' => 'Semua aktivitas',
+                'icon' => '▣',
+                'color' => '#f97316',
+            ],
+            [
+                'label' => 'Updated Logs',
+                'value' => number_format($summary['updated_logs'], 0, ',', '.'),
+                'caption' => 'Data diperbarui',
+                'icon' => '↗',
+                'color' => '#3b82f6',
+            ],
+            [
+                'label' => 'Created Logs',
+                'value' => number_format($summary['created_logs'], 0, ',', '.'),
+                'caption' => 'Data dibuat',
+                'icon' => '✓',
+                'color' => '#10b981',
+            ],
+            [
+                'label' => 'Deleted Logs',
+                'value' => number_format($summary['deleted_logs'], 0, ',', '.'),
+                'caption' => 'Data dihapus',
+                'icon' => '!',
+                'color' => '#ef4444',
+            ],
+            [
+                'label' => 'Access Logs',
+                'value' => number_format($summary['access_logs'], 0, ',', '.'),
+                'caption' => 'Login / akses',
+                'icon' => '◇',
+                'color' => '#8b5cf6',
+            ],
+        ];
+    @endphp
+
+    <div class="ng-activity-page">
+        <section class="ng-activity-hero">
+            <article class="ng-activity-hero-main">
+                <span class="ng-activity-kicker">POS Ngunjuk</span>
+
+                <h1>Activity Log Analytics</h1>
+
+                <p>
+                    Pantau seluruh aktivitas sistem seperti login, perubahan produk, order, kategori,
+                    user, role, dan riwayat aksi admin atau karyawan yang tercatat otomatis.
+                </p>
+            </article>
+
+            <article class="ng-activity-side-card">
+                <div>
+                    <span>User Teraktif</span>
+                    <strong>{{ $summary['top_user'] }}</strong>
+                    <small>{{ number_format($summary['top_user_total'], 0, ',', '.') }} aktivitas</small>
+                </div>
+
+                <div class="ng-activity-latest">
+                    <span>Aktivitas Terbaru</span>
+                    <strong>{{ str($summary['latest_event'])->headline() }}</strong>
+                    <small>{{ $summary['latest_user'] }} • {{ $summary['latest_time'] }}</small>
+                </div>
+            </article>
+        </section>
+
+        <section class="ng-activity-kpi-grid">
+            @foreach ($cards as $card)
+                <article class="ng-activity-kpi" style="--accent: {{ $card['color'] }};">
+                    <div class="ng-activity-kpi-icon">
+                        {{ $card['icon'] }}
+                    </div>
+
+                    <div>
+                        <span>{{ $card['label'] }}</span>
+                        <strong>{{ $card['value'] }}</strong>
+                        <p>{{ $card['caption'] }}</p>
+                    </div>
+                </article>
+            @endforeach
+        </section>
+
+        <section class="ng-activity-table-wrap">
+            {{ $this->table }}
+        </section>
+    </div>
+
     <style>
-        .activity-lux-wrapper {
-            margin-bottom: 22px;
+        html,
+        body {
+            overflow-x: hidden !important;
         }
 
-        .activity-lux-hero {
+        body:has(.ng-activity-page) {
+            background:
+                linear-gradient(120deg, rgba(255, 248, 237, .10), rgba(255, 224, 185, .02)),
+                url('/images/admin-orange-bg.png'),
+                radial-gradient(circle at 15% 8%, rgba(255, 255, 255, .32) 0 130px, transparent 280px),
+                radial-gradient(circle at 88% 78%, rgba(255, 118, 0, .42) 0 250px, transparent 520px),
+                radial-gradient(circle at 20% 96%, rgba(255, 181, 83, .28) 0 220px, transparent 500px),
+                linear-gradient(135deg, #fff3df 0%, #ffd394 48%, #ff9c45 100%) !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
+        }
+
+        body:has(.ng-activity-page) .fi-main,
+        body:has(.ng-activity-page) .fi-main-ctn,
+        body:has(.ng-activity-page) .fi-page,
+        body:has(.ng-activity-page) .fi-page-content {
+            width: 100% !important;
+            max-width: 100% !important;
+            background: transparent !important;
+            overflow-x: hidden !important;
+        }
+
+        body:has(.ng-activity-page) .fi-page {
+            padding: 0 !important;
+        }
+
+        body:has(.ng-activity-page) .fi-page-header {
+            display: none !important;
+        }
+
+        body:has(.ng-activity-page) .fi-main {
+            padding: 0 !important;
+        }
+
+        body:has(.ng-activity-page) .fi-page-content {
+            gap: 0 !important;
+            row-gap: 0 !important;
+        }
+
+        body:has(.ng-activity-page) .fi-sidebar {
+            background: rgba(255, 250, 242, .50) !important;
+            border-right: 1px solid rgba(255, 255, 255, .48) !important;
+            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
+            backdrop-filter: blur(16px) !important;
+        }
+
+        body:has(.ng-activity-page) .fi-sidebar-nav {
+            padding: 18px 14px !important;
+        }
+
+        body:has(.ng-activity-page) .fi-sidebar-item a {
+            border-radius: 14px !important;
+            color: #6f5844 !important;
+            transition: .2s ease !important;
+        }
+
+        body:has(.ng-activity-page) .fi-sidebar-item-active a,
+        body:has(.ng-activity-page) .fi-sidebar-item a:hover {
+            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
+            color: #fff !important;
+            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
+        }
+
+        .ng-activity-page {
+            width: 100%;
+            padding: 18px 18px 28px;
+            font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #24180f;
+            box-sizing: border-box;
+        }
+
+        .ng-activity-page * {
+            box-sizing: border-box;
+        }
+
+        .ng-activity-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(340px, .65fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .ng-activity-hero-main,
+        .ng-activity-side-card,
+        .ng-activity-kpi,
+        .ng-activity-table-wrap {
             position: relative;
             overflow: hidden;
-            border-radius: 30px;
-            padding: 30px;
-            color: white;
-            background:
-                radial-gradient(circle at top right, rgba(255,255,255,0.32), transparent 28%),
-                radial-gradient(circle at bottom left, rgba(255,255,255,0.18), transparent 28%),
-                linear-gradient(135deg, #0f766e 0%, #0d9488 45%, #10b981 100%);
-            box-shadow: 0 28px 70px rgba(15, 118, 110, 0.22);
-            isolation: isolate;
+            border: 1px solid rgba(255, 255, 255, .56);
+            background: rgba(255, 247, 235, .18);
+            box-shadow:
+                0 20px 48px rgba(101, 58, 21, .10),
+                0 0 0 1px rgba(255, 255, 255, .10) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .56);
+            backdrop-filter: blur(13px);
         }
 
-        .activity-lux-hero::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.09) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.09) 1px, transparent 1px);
-            background-size: 34px 34px;
-            opacity: 0.24;
-            z-index: -1;
+        .ng-activity-hero-main {
+            min-height: 126px;
+            padding: 20px 22px;
+            border-radius: 24px;
         }
 
-        .activity-lux-hero-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 24px;
-        }
-
-        .activity-lux-badge {
+        .ng-activity-kicker {
             display: inline-flex;
-            align-items: center;
-            gap: 9px;
             width: fit-content;
-            padding: 9px 14px;
+            padding: 6px 12px;
+            margin-bottom: 9px;
             border-radius: 999px;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.25);
-            backdrop-filter: blur(10px);
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.12em;
+            background: rgba(255, 255, 255, .42);
+            border: 1px solid rgba(255, 255, 255, .54);
+            color: #d95d00;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .10em;
             text-transform: uppercase;
         }
 
-        .activity-lux-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 999px;
-            background: #bbf7d0;
-            box-shadow: 0 0 0 5px rgba(187,247,208,0.22);
-        }
-
-        .activity-lux-title {
-            margin: 16px 0 0;
-            font-size: 34px;
-            line-height: 1.08;
-            font-weight: 950;
-            letter-spacing: -0.04em;
-        }
-
-        .activity-lux-desc {
-            margin: 12px 0 0;
-            max-width: 780px;
-            color: rgba(255,255,255,0.86);
-            font-size: 14px;
-            line-height: 1.7;
-        }
-
-        .activity-lux-mini {
-            min-width: 260px;
-            border-radius: 22px;
-            padding: 18px;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.24);
-            backdrop-filter: blur(12px);
-        }
-
-        .activity-lux-mini span {
-            display: block;
-            color: rgba(255,255,255,0.78);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .activity-lux-mini strong {
-            display: block;
-            margin-top: 8px;
-            color: white;
-            font-size: 24px;
-            line-height: 1.15;
-            font-weight: 950;
-        }
-
-        .activity-lux-mini small {
-            display: block;
-            margin-top: 8px;
-            color: rgba(255,255,255,0.82);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .activity-lux-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .activity-lux-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 24px;
-            padding: 20px;
-            background: white;
-            border: 1px solid rgba(226,232,240,0.95);
-            box-shadow: 0 16px 40px rgba(15,23,42,0.07);
-            min-height: 145px;
-            transition: 0.25s ease;
-        }
-
-        .activity-lux-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 24px 55px rgba(15,23,42,0.12);
-        }
-
-        .activity-lux-card::after {
-            content: "";
-            position: absolute;
-            width: 118px;
-            height: 118px;
-            top: -52px;
-            right: -42px;
-            border-radius: 999px;
-            opacity: 0.15;
-        }
-
-        .activity-lux-card.total::after { background: #10b981; }
-        .activity-lux-card.updated::after { background: #3b82f6; }
-        .activity-lux-card.created::after { background: #f97316; }
-        .activity-lux-card.deleted::after { background: #ef4444; }
-
-        .activity-lux-label {
+        .ng-activity-hero-main h1 {
             margin: 0;
-            color: #64748b;
-            font-size: 13px;
+            color: #21160d;
+            font-size: 30px;
+            line-height: 1.05;
+            font-weight: 950;
+            letter-spacing: -.04em;
+        }
+
+        .ng-activity-hero-main p {
+            max-width: 820px;
+            margin: 7px 0 0;
+            color: #765d45;
+            font-size: 12px;
+            font-weight: 650;
+            line-height: 1.5;
+        }
+
+        .ng-activity-side-card {
+            min-height: 126px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 20px 22px;
+            border-radius: 24px;
+        }
+
+        .ng-activity-side-card span,
+        .ng-activity-side-card small {
+            display: block;
+            color: #765d45;
+            font-size: 11px;
             font-weight: 850;
         }
 
-        .activity-lux-value {
-            margin: 18px 0 0;
-            color: #020617;
-            font-size: 30px;
-            line-height: 1;
-            font-weight: 950;
-            letter-spacing: -0.045em;
-        }
-
-        .activity-lux-caption {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 14px;
-            border-radius: 999px;
-            padding: 7px 11px;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .total .activity-lux-caption { background: #ecfdf5; color: #047857; }
-        .updated .activity-lux-caption { background: #eff6ff; color: #1d4ed8; }
-        .created .activity-lux-caption { background: #fff7ed; color: #c2410c; }
-        .deleted .activity-lux-caption { background: #fef2f2; color: #b91c1c; }
-
-        .activity-table-shell {
-            overflow: hidden;
-            border-radius: 28px;
-            background: white;
-            border: 1px solid rgba(226,232,240,0.95);
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
-        }
-
-        .activity-table-head {
-            padding: 22px 26px;
-            border-bottom: 1px solid #e2e8f0;
-            background:
-                linear-gradient(135deg, rgba(15,118,110,0.08), transparent 45%),
-                linear-gradient(90deg, #ffffff, #f8fafc);
-        }
-
-        .activity-table-title {
-            margin: 0;
-            color: #020617;
+        .ng-activity-side-card strong {
+            display: block;
+            max-width: 240px;
+            margin: 7px 0;
+            color: #21160d;
             font-size: 20px;
+            line-height: 1.1;
             font-weight: 950;
-            letter-spacing: -0.03em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .activity-table-desc {
-            margin: 7px 0 0;
-            color: #64748b;
-            font-size: 13px;
+        .ng-activity-latest {
+            padding-left: 12px;
+            border-left: 1px solid rgba(114, 74, 41, .10);
         }
 
-        .activity-table-body {
-            padding: 0;
+        .ng-activity-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
         }
 
-        @media (max-width: 1100px) {
-            .activity-lux-hero-top {
-                flex-direction: column;
+        .ng-activity-kpi {
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 14px;
+            border-radius: 20px;
+        }
+
+        .ng-activity-kpi-icon {
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent), #d95d00);
+            box-shadow: 0 14px 24px rgba(249, 115, 22, .20);
+            font-size: 15px;
+            font-weight: 950;
+        }
+
+        .ng-activity-kpi span {
+            display: block;
+            color: #6f5946;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .ng-activity-kpi strong {
+            display: block;
+            margin-top: 6px;
+            color: #23160d;
+            font-size: 18px;
+            line-height: 1.15;
+            font-weight: 950;
+            letter-spacing: -.03em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ng-activity-kpi p {
+            margin: 6px 0 0;
+            color: #6f5946;
+            font-size: 10px;
+            font-weight: 850;
+        }
+
+        .ng-activity-table-wrap {
+            width: 100%;
+            border-radius: 24px;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-ctn {
+            width: 100% !important;
+            margin: 0 !important;
+            border: none !important;
+            border-radius: 24px !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            overflow: hidden !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta,
+        body:has(.ng-activity-page) .fi-section,
+        body:has(.ng-activity-page) .fi-ta-content,
+        body:has(.ng-activity-page) .fi-ta-table,
+        body:has(.ng-activity-page) .fi-ta-table thead,
+        body:has(.ng-activity-page) .fi-ta-table tbody {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-header,
+        body:has(.ng-activity-page) .fi-ta-toolbar {
+            min-height: 46px !important;
+            padding: 6px 16px !important;
+            background: rgba(255, 247, 235, .10) !important;
+            border-bottom: 1px solid rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-table thead tr {
+            background: rgba(255, 247, 235, .10) !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-row,
+        body:has(.ng-activity-page) .fi-ta-cell,
+        body:has(.ng-activity-page) .fi-ta-header-cell {
+            background: transparent !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-row {
+            min-height: 54px !important;
+            border-bottom: 1px solid rgba(114, 74, 41, .07) !important;
+            transition: .18s ease !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-row:hover {
+            background: rgba(255, 255, 255, .10) !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-cell {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+            border-color: rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-header-cell {
+            padding-top: 9px !important;
+            padding-bottom: 9px !important;
+            border-color: rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-header-cell-label {
+            color: #4b3525 !important;
+            font-size: 12px !important;
+            font-weight: 950 !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-pagination,
+        body:has(.ng-activity-page) .fi-pagination {
+            min-height: 50px !important;
+            padding: 8px 16px !important;
+            background: rgba(255, 247, 235, .10) !important;
+            border-top: 1px solid rgba(114, 74, 41, .07) !important;
+        }
+
+        body:has(.ng-activity-page) .fi-input-wrp,
+        body:has(.ng-activity-page) .fi-ta-search-field .fi-input-wrp,
+        body:has(.ng-activity-page) .fi-select-input {
+            border-radius: 16px !important;
+            background: rgba(255, 255, 255, .26) !important;
+            border-color: rgba(255, 255, 255, .40) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-search-field {
+            max-width: 280px !important;
+        }
+
+        body:has(.ng-activity-page) .fi-ta-search-field .fi-input-wrp {
+            min-height: 36px !important;
+        }
+
+        @media (max-width: 1500px) {
+            .ng-activity-hero {
+                grid-template-columns: 1fr;
             }
 
-            .activity-lux-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+            .ng-activity-kpi-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
             }
         }
 
-        @media (max-width: 700px) {
-            .activity-lux-hero {
-                padding: 24px;
-                border-radius: 24px;
+        @media (max-width: 900px) {
+            .ng-activity-page {
+                padding: 14px !important;
             }
 
-            .activity-lux-title {
-                font-size: 28px;
-            }
-
-            .activity-lux-grid {
+            .ng-activity-side-card,
+            .ng-activity-kpi-grid {
                 grid-template-columns: 1fr;
             }
         }
     </style>
-
-    @php
-        $activityModel = \Spatie\Activitylog\ActivitylogServiceProvider::determineActivityModel();
-
-        $totalLogs = (int) $activityModel::query()->count();
-
-        $updatedLogs = (int) $activityModel::query()
-            ->where('event', 'updated')
-            ->count();
-
-        $createdLogs = (int) $activityModel::query()
-            ->where('event', 'created')
-            ->count();
-
-        $deletedLogs = (int) $activityModel::query()
-            ->where('event', 'deleted')
-            ->count();
-
-        $activeUser = $activityModel::query()
-            ->selectRaw('causer_id, COUNT(*) as total')
-            ->whereNotNull('causer_id')
-            ->groupBy('causer_id')
-            ->orderByDesc('total')
-            ->with('causer')
-            ->first();
-
-        $activeUserName = $activeUser?->causer?->name ?? '-';
-        $activeUserLogs = (int) ($activeUser?->total ?? 0);
-    @endphp
-
-    <div class="activity-lux-wrapper">
-        <section class="activity-lux-hero">
-            <div class="activity-lux-hero-top">
-                <div>
-                    <div class="activity-lux-badge">
-                        <span class="activity-lux-dot"></span>
-                        Ngunjuk POS Logger
-                    </div>
-
-                    <h2 class="activity-lux-title">
-                        Activity Log Analytics
-                    </h2>
-
-                    <p class="activity-lux-desc">
-                        Pantau seluruh aktivitas sistem seperti perubahan data produk,
-                        order, kategori, user, role, serta riwayat aktivitas admin/karyawan
-                        yang tercatat otomatis oleh sistem.
-                    </p>
-                </div>
-
-                <div class="activity-lux-mini">
-                    <span>User Teraktif</span>
-                    <strong>{{ $activeUserName }}</strong>
-                    <small>{{ number_format($activeUserLogs, 0, ',', '.') }} aktivitas</small>
-                </div>
-            </div>
-        </section>
-
-        <div class="activity-lux-grid">
-            <div class="activity-lux-card total">
-                <p class="activity-lux-label">Total Logs</p>
-                <p class="activity-lux-value">{{ number_format($totalLogs, 0, ',', '.') }}</p>
-                <p class="activity-lux-caption">Semua aktivitas</p>
-            </div>
-
-            <div class="activity-lux-card updated">
-                <p class="activity-lux-label">Updated Logs</p>
-                <p class="activity-lux-value">{{ number_format($updatedLogs, 0, ',', '.') }}</p>
-                <p class="activity-lux-caption">Data diperbarui</p>
-            </div>
-
-            <div class="activity-lux-card created">
-                <p class="activity-lux-label">Created Logs</p>
-                <p class="activity-lux-value">{{ number_format($createdLogs, 0, ',', '.') }}</p>
-                <p class="activity-lux-caption">Data dibuat</p>
-            </div>
-
-            <div class="activity-lux-card deleted">
-                <p class="activity-lux-label">Deleted Logs</p>
-                <p class="activity-lux-value">{{ number_format($deletedLogs, 0, ',', '.') }}</p>
-                <p class="activity-lux-caption">Data dihapus</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="activity-table-shell">
-        <div class="activity-table-head">
-            <h3 class="activity-table-title">
-                Riwayat Aktivitas Sistem
-            </h3>
-
-            <p class="activity-table-desc">
-                Data aktivitas terbaru yang tercatat otomatis dari proses create, update, dan delete.
-            </p>
-        </div>
-
-        <div class="activity-table-body">
-            {{ $this->table }}
-        </div>
-    </div>
 </x-filament-panels::page>

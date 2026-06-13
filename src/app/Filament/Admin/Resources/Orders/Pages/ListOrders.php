@@ -12,14 +12,20 @@ class ListOrders extends ListRecords
 {
     protected static string $resource = OrderResource::class;
 
-    protected ?string $heading = 'Order';
-
-    protected ?string $subheading = 'Kelola dan pantau seluruh transaksi penjualan UMKM Ngunjuk.';
+    public function getTitle(): string
+    {
+        return '';
+    }
 
     protected function getHeaderWidgets(): array
     {
         return [
             OrderAnalyticsWidget::class,
         ];
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [];
     }
 }
