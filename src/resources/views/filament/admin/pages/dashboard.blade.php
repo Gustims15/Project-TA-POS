@@ -2,6 +2,8 @@
     @php
         $dashboard = $this->getDashboardData();
         $activePeriod = $dashboard['period']['key'];
+        $selectedYearMonth = (string) ($dashboard['period']['selectedMonth'] ?? 'all');
+        $yearMonthOptions = $dashboard['period']['monthOptions'] ?? [];
         $charts = $dashboard['charts'];
         $user = auth()->user();
 
@@ -32,7 +34,30 @@
                        class="ng-tab {{ $activePeriod === 'month' ? 'active' : '' }}">
                         Bulan Ini
                     </a>
+
+                    <a href="{{ request()->fullUrlWithQuery(['period' => 'year', 'month' => 'all']) }}"
+                       class="ng-tab {{ $activePeriod === 'year' ? 'active' : '' }}">
+                        Tahun Ini
+                    </a>
                 </div>
+
+                @if ($activePeriod === 'year')
+                    <form method="GET" action="{{ request()->url() }}" style="margin: 0;">
+                        <input type="hidden" name="period" value="year">
+
+                        <select name="month" class="ng-select-pill" onchange="this.form.submit()" aria-label="Pilih bulan tahunan">
+                            <option value="all" {{ $selectedYearMonth === 'all' ? 'selected' : '' }}>
+                                Semua Bulan
+                            </option>
+
+                            @foreach ($yearMonthOptions as $monthOption)
+                                <option value="{{ $monthOption['value'] }}" {{ $selectedYearMonth === (string) $monthOption['value'] ? 'selected' : '' }}>
+                                    {{ $monthOption['label'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+                @endif
 
                 <div class="ng-admin-profile">
                     <div class="ng-avatar">
@@ -1128,7 +1153,7 @@
 
         ngRenderChart('#ngRevenueChart', 'revenue', {
             chart: {
-                type: 'area',
+                type: 'line',
                 height: 260,
                 toolbar: { show: false },
                 fontFamily: 'Inter, Poppins, sans-serif',
@@ -1148,16 +1173,24 @@
             series: [
                 {
                     name: 'Revenue',
-                    data: charts.revenue.revenue,
+                    type: 'area',
+                    data: charts.revenue.revenue || [],
+                },
+                {
+                    name: 'Orders',
+                    type: 'line',
+                    data: charts.revenue.orders || [],
                 },
             ],
-            colors: ['#f97316'],
+            colors: ['#f97316', '#10b981'],
             stroke: {
                 curve: 'smooth',
-                width: 3,
+                width: [3, 3],
+                dashArray: [0, 4],
             },
             fill: {
-                type: 'gradient',
+                type: ['gradient', 'solid'],
+                opacity: [0.34, 1],
                 gradient: {
                     shadeIntensity: 0.2,
                     opacityFrom: 0.34,
@@ -1175,10 +1208,29 @@
             },
             dataLabels: { enabled: false },
             markers: {
-                size: 4,
+                size: [4, 4],
                 strokeWidth: 3,
                 strokeColors: '#fff8ef',
                 hover: { size: 7 },
+            },
+            legend: {
+                show: true,
+                position: 'top',
+                horizontalAlign: 'right',
+                fontSize: '11px',
+                fontWeight: 800,
+                labels: {
+                    colors: '#7a6048',
+                },
+                markers: {
+                    width: 8,
+                    height: 8,
+                    radius: 8,
+                },
+                itemMargin: {
+                    horizontal: 8,
+                    vertical: 0,
+                },
             },
             xaxis: {
                 categories: charts.revenue.labels,
@@ -1191,25 +1243,43 @@
                     },
                 },
             },
-            yaxis: {
-                labels: {
-                    formatter: function (value) {
-                        if (value >= 1000000) {
-                            return 'Rp ' + (value / 1000000).toFixed(1).replace('.0', '') + 'M';
-                        }
+            yaxis: [
+                {
+                    labels: {
+                        formatter: function (value) {
+                            if (value >= 1000000) {
+                                return 'Rp ' + (value / 1000000).toFixed(1).replace('.0', '') + 'M';
+                            }
 
-                        if (value >= 1000) {
-                            return 'Rp ' + (value / 1000).toFixed(0) + 'K';
-                        }
+                            if (value >= 1000) {
+                                return 'Rp ' + (value / 1000).toFixed(0) + 'K';
+                            }
 
-                        return 'Rp ' + value;
+                            return 'Rp ' + value;
+                        },
                     },
                 },
-            },
+                {
+                    opposite: true,
+                    labels: {
+                        formatter: function (value) {
+                            return Math.round(value) + ' order';
+                        },
+                    },
+                },
+            ],
             tooltip: {
                 theme: 'light',
+                shared: true,
+                intersect: false,
                 y: {
-                    formatter: ngFormatRupiah,
+                    formatter: function (value, options) {
+                        if (options.seriesIndex === 1) {
+                            return Math.round(value || 0) + ' order';
+                        }
+
+                        return ngFormatRupiah(value);
+                    },
                 },
             },
         });

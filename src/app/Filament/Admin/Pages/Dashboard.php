@@ -1,37 +1,38 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Filament\Admin\Pages;
 
 use BackedEnum;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
 
-class Dashboard extends BaseDashboard
+class Dashboard extends Page
 {
     protected static ?string $navigationLabel = 'Dashboard';
 
     protected static ?string $title = '';
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-squares-2x2';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-home';
 
     protected static ?int $navigationSort = 0;
 
+    /**
+     * Penting:
+     * Di versi Filament project ini, property $view pada parent Page adalah NON-STATIC.
+     * Jadi jangan pakai: protected static string $view
+     */
     protected string $view = 'filament.admin.pages.dashboard';
 
     public static function canAccess(): bool
     {
-        return auth()->check()
-            && auth()->user()->hasRole('super_admin');
+        return auth()->check() && auth()->user()->hasRole('super_admin');
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->check()
-            && auth()->user()->hasRole('super_admin');
+        return auth()->check() && auth()->user()->hasRole('super_admin');
     }
 
     public function getColumns(): int|array
@@ -51,9 +52,8 @@ class Dashboard extends BaseDashboard
 
     public function getDashboardData(): array
     {
-        [$start, $end, $periodLabel, $periodKey] = $this->getSelectedRange();
-
-        $previousRange = $this->getPreviousRange($start, $end);
+        [$start, $end, $periodLabel, $periodKey, $selectedMonth] = $this->getSelectedRange();
+        $previousRange = $this->getPreviousRange($start, $end, $periodKey, $selectedMonth);
 
         $revenue = (int) $this->ordersBetween($start, $end)->sum('total_price');
         $previousRevenue = (int) $this->ordersBetween($previousRange[0], $previousRange[1])->sum('total_price');
@@ -81,11 +81,15 @@ class Dashboard extends BaseDashboard
                 'label' => $periodLabel,
                 'start' => $start->format('d M Y'),
                 'end' => $end->format('d M Y'),
+                'selectedMonth' => $selectedMonth,
+                'monthLabel' => $this->getMonthLabel($selectedMonth),
+                'monthOptions' => $this->getYearMonthOptions(),
+                'isMonthFiltered' => $periodKey === 'year' && $selectedMonth !== 'all',
+                'year' => now()->year,
             ],
-
             'metrics' => [
                 [
-                    'label' => 'Revenue Hari Ini',
+                    'label' => 'Revenue',
                     'value' => $this->rupiah($revenue),
                     'trend' => $this->trendPercent($revenue, $previousRevenue),
                     'caption' => 'dari periode sebelumnya',
@@ -133,14 +137,12 @@ class Dashboard extends BaseDashboard
                     'color' => '#ef4444',
                 ],
             ],
-
             'charts' => [
-                'revenue' => $this->getRevenueChart($start, $end),
+                'revenue' => $this->getRevenueChart($start, $end, $periodKey, $selectedMonth),
                 'topProducts' => $this->getProductSales($start, $end),
                 'category' => $this->getCategoryContribution($start, $end),
                 'salesByTime' => $this->getSalesByTime($start, $end),
             ],
-
             'stockAlerts' => $this->getStockAlerts(),
             'latestOrders' => $this->getLatestOrders(),
         ];
@@ -154,6 +156,7 @@ class Dashboard extends BaseDashboard
     private function getSelectedRange(): array
     {
         $period = request()->query('period', 'week');
+        $selectedMonth = 'all';
 
         return match ($period) {
             'today' => [
@@ -161,26 +164,125 @@ class Dashboard extends BaseDashboard
                 now()->endOfDay(),
                 'Hari Ini',
                 'today',
+                $selectedMonth,
             ],
             'month' => [
                 now()->startOfMonth(),
                 now()->endOfMonth(),
                 'Bulan Ini',
                 'month',
+                $selectedMonth,
             ],
+            'year' => $this->getYearRangeWithOptionalMonth(),
             default => [
                 now()->subDays(6)->startOfDay(),
                 now()->endOfDay(),
                 '7 Hari Terakhir',
                 'week',
+                $selectedMonth,
             ],
         };
     }
 
-    private function getPreviousRange(Carbon $start, Carbon $end): array
+    private function getYearRangeWithOptionalMonth(): array
     {
-        $days = max(1, ((int) floor($start->diffInDays($end))) + 1);
+        $requestedMonth = request()->query('month', 'all');
 
+        if ((string) $requestedMonth !== 'all') {
+            $monthNumber = (int) $requestedMonth;
+
+            if ($monthNumber >= 1 && $monthNumber <= 12) {
+                $selectedMonth = (string) $monthNumber;
+                $monthDate = Carbon::create(now()->year, $monthNumber, 1);
+
+                return [
+                    $monthDate->copy()->startOfMonth(),
+                    $monthDate->copy()->endOfMonth(),
+                    'Tahun Ini',
+                    'year',
+                    $selectedMonth,
+                ];
+            }
+        }
+
+        return [
+            now()->startOfYear(),
+            now()->endOfYear(),
+            'Tahun Ini',
+            'year',
+            'all',
+        ];
+    }
+
+    private function getYearMonthOptions(): array
+    {
+        $months = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember',
+        ];
+
+        return collect($months)
+            ->map(fn (string $label, int $value): array => [
+                'value' => (string) $value,
+                'label' => $label,
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function getMonthLabel(string $selectedMonth): string
+    {
+        if ($selectedMonth === 'all') {
+            return 'Semua Bulan';
+        }
+
+        $month = collect($this->getYearMonthOptions())
+            ->firstWhere('value', $selectedMonth);
+
+        return $month['label'] ?? 'Semua Bulan';
+    }
+
+    private function getPreviousRange(Carbon $start, Carbon $end, string $periodKey, string $selectedMonth = 'all'): array
+    {
+        if ($periodKey === 'today') {
+            return [
+                $start->copy()->subDay()->startOfDay(),
+                $start->copy()->subDay()->endOfDay(),
+            ];
+        }
+
+        if ($periodKey === 'month') {
+            return [
+                $start->copy()->subMonthNoOverflow()->startOfMonth(),
+                $start->copy()->subMonthNoOverflow()->endOfMonth(),
+            ];
+        }
+
+        if ($periodKey === 'year' && $selectedMonth !== 'all') {
+            return [
+                $start->copy()->subMonthNoOverflow()->startOfMonth(),
+                $start->copy()->subMonthNoOverflow()->endOfMonth(),
+            ];
+        }
+
+        if ($periodKey === 'year' && $selectedMonth === 'all') {
+            return [
+                $start->copy()->subYear()->startOfYear(),
+                $start->copy()->subYear()->endOfYear(),
+            ];
+        }
+
+        $days = max(1, ((int) floor($start->diffInDays($end))) + 1);
         $previousEnd = $start->copy()->subSecond();
         $previousStart = $previousEnd->copy()->subDays($days - 1)->startOfDay();
 
@@ -199,8 +301,42 @@ class Dashboard extends BaseDashboard
             );
     }
 
-    private function getRevenueChart(Carbon $start, Carbon $end): array
+    private function getRevenueChart(Carbon $start, Carbon $end, string $periodKey, string $selectedMonth = 'all'): array
     {
+        if ($periodKey === 'year' && $selectedMonth === 'all') {
+            $rows = DB::table('orders')
+                ->selectRaw('MONTH(COALESCE(ordered_at, created_at)) as order_month')
+                ->selectRaw('SUM(total_price) as revenue')
+                ->selectRaw('COUNT(*) as orders')
+                ->whereBetween(
+                    DB::raw('COALESCE(ordered_at, created_at)'),
+                    [
+                        $start->toDateTimeString(),
+                        $end->toDateTimeString(),
+                    ]
+                )
+                ->groupBy('order_month')
+                ->orderBy('order_month')
+                ->get()
+                ->keyBy('order_month');
+
+            $labels = [];
+            $revenue = [];
+            $orders = [];
+
+            for ($month = 1; $month <= 12; $month++) {
+                $labels[] = Carbon::create(null, $month, 1)->translatedFormat('M');
+                $revenue[] = (int) ($rows[$month]->revenue ?? 0);
+                $orders[] = (int) ($rows[$month]->orders ?? 0);
+            }
+
+            return [
+                'labels' => $labels,
+                'revenue' => $revenue,
+                'orders' => $orders,
+            ];
+        }
+
         $rows = DB::table('orders')
             ->selectRaw('DATE(COALESCE(ordered_at, created_at)) as order_date')
             ->selectRaw('SUM(total_price) as revenue')
@@ -381,9 +517,7 @@ class Dashboard extends BaseDashboard
                     'name' => $product->name,
                     'stock' => $stock,
                     'status' => $status,
-                    'image' => $product->image
-                        ? asset('storage/' . ltrim((string) $product->image, '/'))
-                        : null,
+                    'image' => $product->image ? asset('storage/' . ltrim((string) $product->image, '/')) : null,
                 ];
             })
             ->values()
