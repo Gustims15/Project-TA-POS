@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Filament\Admin\Resources\SalesTargets\Pages;
 
 use App\Filament\Admin\Resources\SalesTargets\SalesTargetResource;
+use App\Filament\Admin\Resources\SalesTargets\Widgets\SalesTargetFormHeroWidget;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
@@ -13,9 +12,18 @@ class CreateSalesTarget extends CreateRecord
 {
     protected static string $resource = SalesTargetResource::class;
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            SalesTargetFormHeroWidget::class,
+        ];
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['month'] = Carbon::parse($data['month'])->startOfMonth()->toDateString();
+        if (! empty($data['month'])) {
+            $data['month'] = Carbon::parse($data['month'])->startOfMonth()->toDateString();
+        }
 
         return $data;
     }
@@ -23,7 +31,8 @@ class CreateSalesTarget extends CreateRecord
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
-            ->label('Simpan')
+            ->label('Simpan Target')
+            ->icon('heroicon-o-check-circle')
             ->color('warning');
     }
 
@@ -42,6 +51,11 @@ class CreateSalesTarget extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return SalesTargetResource::getUrl('index');
+    }
+
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        return 'Target penjualan berhasil dibuat';
     }
 }

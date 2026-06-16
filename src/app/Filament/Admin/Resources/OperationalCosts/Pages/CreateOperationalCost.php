@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Filament\Admin\Resources\OperationalCosts\Pages;
 
 use App\Filament\Admin\Resources\OperationalCosts\OperationalCostResource;
+use App\Filament\Admin\Resources\OperationalCosts\Widgets\OperationalCostFormHeroWidget;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -12,10 +11,18 @@ class CreateOperationalCost extends CreateRecord
 {
     protected static string $resource = OperationalCostResource::class;
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            OperationalCostFormHeroWidget::class,
+        ];
+    }
+
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
-            ->label('Simpan')
+            ->label('Simpan Biaya')
+            ->icon('heroicon-o-check-circle')
             ->color('warning');
     }
 
@@ -34,6 +41,11 @@ class CreateOperationalCost extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return OperationalCostResource::getUrl('index');
+    }
+
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        return 'Biaya operasional berhasil dibuat';
     }
 }

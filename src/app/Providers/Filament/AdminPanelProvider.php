@@ -59,6 +59,7 @@ final class AdminPanelProvider extends PanelProvider
                     darkColor: FilamentColor::Amber
                 ),
             ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
             ->pages([
@@ -402,7 +403,6 @@ final class AdminPanelProvider extends PanelProvider
         }
     }
 </style>
-HTML)
-            ->viteTheme('resources/css/filament/admin/theme.css');
+HTML);
     }
 }
