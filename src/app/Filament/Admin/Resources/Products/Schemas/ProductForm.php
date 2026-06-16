@@ -105,11 +105,20 @@ class ProductForm
                                     ->maxLength(50),
 
                                 TextInput::make('price')
-                                    ->label('Harga')
+                                    ->label('Harga Jual')
                                     ->numeric()
                                     ->prefix('Rp')
                                     ->minValue(0)
                                     ->required(),
+
+                                TextInput::make('hpp')
+                                    ->label('HPP')
+                                    ->numeric()
+                                    ->prefix('Rp')
+                                    ->minValue(0)
+                                    ->default(0)
+                                    ->required()
+                                    ->helperText('Estimasi modal/HPP untuk 1 cup pada size ini.'),
 
                                 Toggle::make('is_default')
                                     ->label('Default')
@@ -124,7 +133,7 @@ class ProductForm
                             ->columns([
                                 'default' => 1,
                                 'md' => 2,
-                                'xl' => 4,
+                                'xl' => 5,
                             ])
                             ->minItems(1)
                             ->defaultItems(1)

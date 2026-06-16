@@ -16,15 +16,21 @@ class OrderItem extends Model
         'product_name',
         'size_name',
         'price',
+        'hpp',
         'quantity',
         'subtotal',
+        'total_hpp',
+        'gross_profit',
         'note',
     ];
 
     protected $casts = [
         'price' => 'integer',
+        'hpp' => 'integer',
         'quantity' => 'integer',
         'subtotal' => 'integer',
+        'total_hpp' => 'integer',
+        'gross_profit' => 'integer',
     ];
 
     public function order(): BelongsTo

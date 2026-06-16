@@ -6,7 +6,9 @@ use BackedEnum;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Filament\Pages\Page;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class Dashboard extends Page
 {
@@ -53,6 +55,7 @@ class Dashboard extends Page
     public function getDashboardData(): array
     {
         [$start, $end, $periodLabel, $periodKey, $selectedMonth] = $this->getSelectedRange();
+
         $previousRange = $this->getPreviousRange($start, $end, $periodKey, $selectedMonth);
 
         $revenue = (int) $this->ordersBetween($start, $end)->sum('total_price');
@@ -66,6 +69,35 @@ class Dashboard extends Page
 
         $avgOrder = $totalOrders > 0 ? (int) round($revenue / $totalOrders) : 0;
         $previousAvgOrder = $previousOrders > 0 ? (int) round($previousRevenue / $previousOrders) : 0;
+
+        $finance = $this->financeBetween($start, $end);
+        $previousFinance = $this->financeBetween($previousRange[0], $previousRange[1]);
+
+        $totalHpp = $finance['total_hpp'];
+        $grossProfit = $finance['gross_profit'];
+
+        $previousHpp = $previousFinance['total_hpp'];
+        $previousGrossProfit = $previousFinance['gross_profit'];
+
+        $operationalCost = $this->operationalCostBetween($start, $end);
+        $previousOperationalCost = $this->operationalCostBetween($previousRange[0], $previousRange[1]);
+
+        $netProfit = $grossProfit - $operationalCost;
+        $previousNetProfit = $previousGrossProfit - $previousOperationalCost;
+
+        $target = $this->targetForRange($start);
+
+        $targetRevenue = (int) ($target?->target_revenue ?? 0);
+        $targetGrossProfit = (int) ($target?->target_gross_profit ?? 0);
+        $targetNetProfit = (int) ($target?->target_net_profit ?? 0);
+
+        $revenueProgress = $this->progressPercent($revenue, $targetRevenue);
+        $grossProfitProgress = $this->progressPercent($grossProfit, $targetGrossProfit);
+        $netProfitProgress = $this->progressPercent($netProfit, $targetNetProfit);
+
+        $remainingRevenueTarget = max($targetRevenue - $revenue, 0);
+        $remainingGrossProfitTarget = max($targetGrossProfit - $grossProfit, 0);
+        $remainingNetProfitTarget = max($targetNetProfit - $netProfit, 0);
 
         $totalProduct = (int) DB::table('products')
             ->where('is_active', true)
@@ -87,6 +119,7 @@ class Dashboard extends Page
                 'isMonthFiltered' => $periodKey === 'year' && $selectedMonth !== 'all',
                 'year' => now()->year,
             ],
+
             'metrics' => [
                 [
                     'label' => 'Revenue',
@@ -120,6 +153,12 @@ class Dashboard extends Page
                     'icon' => '↗',
                     'color' => '#8b5cf6',
                 ],
+
+                /*
+                |--------------------------------------------------------------------------
+                | METRIC PRODUK EXISTING
+                |--------------------------------------------------------------------------
+                */
                 [
                     'label' => 'Total Product',
                     'value' => number_format($totalProduct, 0, ',', '.'),
@@ -137,12 +176,35 @@ class Dashboard extends Page
                     'color' => '#ef4444',
                 ],
             ],
+
+            'finance' => [
+                'total_hpp' => $totalHpp,
+                'gross_profit' => $grossProfit,
+                'operational_cost' => $operationalCost,
+                'net_profit' => $netProfit,
+
+                'target_revenue' => $targetRevenue,
+                'target_gross_profit' => $targetGrossProfit,
+                'target_net_profit' => $targetNetProfit,
+
+                'revenue_progress' => $revenueProgress,
+                'gross_profit_progress' => $grossProfitProgress,
+                'net_profit_progress' => $netProfitProgress,
+
+                'remaining_revenue_target' => $remainingRevenueTarget,
+                'remaining_gross_profit_target' => $remainingGrossProfitTarget,
+                'remaining_net_profit_target' => $remainingNetProfitTarget,
+
+                'has_target' => $target !== null,
+            ],
+
             'charts' => [
                 'revenue' => $this->getRevenueChart($start, $end, $periodKey, $selectedMonth),
                 'topProducts' => $this->getProductSales($start, $end),
                 'category' => $this->getCategoryContribution($start, $end),
                 'salesByTime' => $this->getSalesByTime($start, $end),
             ],
+
             'stockAlerts' => $this->getStockAlerts(),
             'latestOrders' => $this->getLatestOrders(),
         ];
@@ -166,6 +228,7 @@ class Dashboard extends Page
                 'today',
                 $selectedMonth,
             ],
+
             'month' => [
                 now()->startOfMonth(),
                 now()->endOfMonth(),
@@ -173,7 +236,9 @@ class Dashboard extends Page
                 'month',
                 $selectedMonth,
             ],
+
             'year' => $this->getYearRangeWithOptionalMonth(),
+
             default => [
                 now()->subDays(6)->startOfDay(),
                 now()->endOfDay(),
@@ -283,13 +348,14 @@ class Dashboard extends Page
         }
 
         $days = max(1, ((int) floor($start->diffInDays($end))) + 1);
+
         $previousEnd = $start->copy()->subSecond();
         $previousStart = $previousEnd->copy()->subDays($days - 1)->startOfDay();
 
         return [$previousStart, $previousEnd];
     }
 
-    private function ordersBetween(Carbon $start, Carbon $end)
+    private function ordersBetween(Carbon $start, Carbon $end): Builder
     {
         return DB::table('orders')
             ->whereBetween(
@@ -299,6 +365,88 @@ class Dashboard extends Page
                     $end->toDateTimeString(),
                 ]
             );
+    }
+
+    private function financeBetween(Carbon $start, Carbon $end): array
+    {
+        if (! Schema::hasTable('order_items') || ! Schema::hasTable('orders')) {
+            return [
+                'total_hpp' => 0,
+                'gross_profit' => 0,
+            ];
+        }
+
+        $hasTotalHpp = Schema::hasColumn('order_items', 'total_hpp');
+        $hasGrossProfit = Schema::hasColumn('order_items', 'gross_profit');
+        $hasHpp = Schema::hasColumn('order_items', 'hpp');
+        $hasQuantity = Schema::hasColumn('order_items', 'quantity');
+        $hasSubtotal = Schema::hasColumn('order_items', 'subtotal');
+
+        $totalHppExpression = match (true) {
+            $hasTotalHpp => 'COALESCE(SUM(order_items.total_hpp), 0)',
+            $hasHpp && $hasQuantity => 'COALESCE(SUM(order_items.hpp * order_items.quantity), 0)',
+            default => '0',
+        };
+
+        $grossProfitExpression = match (true) {
+            $hasGrossProfit => 'COALESCE(SUM(order_items.gross_profit), 0)',
+            $hasSubtotal && $hasTotalHpp => 'COALESCE(SUM(order_items.subtotal - order_items.total_hpp), 0)',
+            $hasSubtotal && $hasHpp && $hasQuantity => 'COALESCE(SUM(order_items.subtotal - (order_items.hpp * order_items.quantity)), 0)',
+            default => '0',
+        };
+
+        $finance = DB::table('order_items')
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->whereBetween(
+                DB::raw('COALESCE(orders.ordered_at, orders.created_at)'),
+                [
+                    $start->toDateTimeString(),
+                    $end->toDateTimeString(),
+                ]
+            )
+            ->selectRaw($totalHppExpression . ' as total_hpp')
+            ->selectRaw($grossProfitExpression . ' as gross_profit')
+            ->first();
+
+        return [
+            'total_hpp' => (int) ($finance->total_hpp ?? 0),
+            'gross_profit' => (int) ($finance->gross_profit ?? 0),
+        ];
+    }
+
+    private function operationalCostBetween(Carbon $start, Carbon $end): int
+    {
+        if (! Schema::hasTable('operational_costs')) {
+            return 0;
+        }
+
+        return (int) DB::table('operational_costs')
+            ->where('is_active', true)
+            ->whereBetween('cost_date', [
+                $start->toDateString(),
+                $end->toDateString(),
+            ])
+            ->sum('amount');
+    }
+
+    private function targetForRange(Carbon $start): ?object
+    {
+        if (! Schema::hasTable('sales_targets')) {
+            return null;
+        }
+
+        return DB::table('sales_targets')
+            ->whereDate('month', $start->copy()->startOfMonth()->toDateString())
+            ->first();
+    }
+
+    private function progressPercent(int|float $actual, int|float $target): float
+    {
+        if ($target <= 0) {
+            return 0.0;
+        }
+
+        return round(min(($actual / $target) * 100, 999), 1);
     }
 
     private function getRevenueChart(Carbon $start, Carbon $end, string $periodKey, string $selectedMonth = 'all'): array
@@ -396,7 +544,7 @@ class Dashboard extends Page
             ->orderByDesc('units')
             ->get();
 
-        $items = $rows->map(function ($row) {
+        $items = $rows->map(function ($row): array {
             return [
                 'name' => (string) $row->name,
                 'category' => (string) $row->category,
@@ -409,8 +557,8 @@ class Dashboard extends Page
         return [
             'items' => $items,
             'labels' => $rows->pluck('name')->values()->all(),
-            'units' => $rows->pluck('units')->map(fn ($value) => (int) $value)->values()->all(),
-            'revenue' => $rows->pluck('revenue')->map(fn ($value) => (int) $value)->values()->all(),
+            'units' => $rows->pluck('units')->map(fn ($value): int => (int) $value)->values()->all(),
+            'revenue' => $rows->pluck('revenue')->map(fn ($value): int => (int) $value)->values()->all(),
         ];
     }
 
@@ -452,8 +600,8 @@ class Dashboard extends Page
 
         return [
             'labels' => $rows->pluck('name')->values()->all(),
-            'values' => $rows->pluck('revenue')->map(fn ($value) => (int) $value)->values()->all(),
-            'summary' => $rows->map(function ($row) use ($total) {
+            'values' => $rows->pluck('revenue')->map(fn ($value): int => (int) $value)->values()->all(),
+            'summary' => $rows->map(function ($row) use ($total): array {
                 return [
                     'name' => $row->name,
                     'percentage' => round(((int) $row->revenue / $total) * 100),
@@ -504,7 +652,7 @@ class Dashboard extends Page
             ->orderBy('stock')
             ->limit(5)
             ->get()
-            ->map(function ($product) {
+            ->map(function ($product): array {
                 $stock = (int) $product->stock;
 
                 $status = match (true) {
@@ -517,7 +665,9 @@ class Dashboard extends Page
                     'name' => $product->name,
                     'stock' => $stock,
                     'status' => $status,
-                    'image' => $product->image ? asset('storage/' . ltrim((string) $product->image, '/')) : null,
+                    'image' => $product->image
+                        ? asset('storage/' . ltrim((string) $product->image, '/'))
+                        : null,
                 ];
             })
             ->values()
@@ -531,7 +681,7 @@ class Dashboard extends Page
             ->orderByDesc(DB::raw('COALESCE(ordered_at, created_at)'))
             ->limit(5)
             ->get()
-            ->map(function ($order) {
+            ->map(function ($order): array {
                 $time = Carbon::parse($order->ordered_at ?? $order->created_at);
 
                 return [

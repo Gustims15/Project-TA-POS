@@ -53,8 +53,23 @@ class OrderController extends Controller
                         throw new \RuntimeException("Stok {$product->name} tidak mencukupi.");
                     }
 
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Harga Jual dan HPP
+                    |--------------------------------------------------------------------------
+                    | price  = harga jual produk berdasarkan size.
+                    | hpp    = estimasi modal / HPP per cup berdasarkan size.
+                    |
+                    | Nilai HPP disimpan sebagai snapshot ke order_items.
+                    | Jadi kalau HPP produk berubah di kemudian hari, transaksi lama tetap aman.
+                    */
                     $price = (int) $productSize->price;
+                    $hpp = (int) ($productSize->hpp ?? 0);
+
                     $subtotal = $price * $quantity;
+                    $totalHpp = $hpp * $quantity;
+                    $grossProfit = $subtotal - $totalHpp;
+
                     $note = isset($item['note']) && trim((string) $item['note']) !== ''
                         ? trim((string) $item['note'])
                         : null;
@@ -64,9 +79,16 @@ class OrderController extends Controller
                         'product_size_id' => $productSize->id,
                         'product_name' => $product->name,
                         'size_name' => $productSize->name,
+
                         'price' => $price,
+                        'hpp' => $hpp,
+
                         'quantity' => $quantity,
+
                         'subtotal' => $subtotal,
+                        'total_hpp' => $totalHpp,
+                        'gross_profit' => $grossProfit,
+
                         'note' => $note,
                     ]);
 

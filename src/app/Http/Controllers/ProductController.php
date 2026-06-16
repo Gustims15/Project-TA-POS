@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -31,7 +30,47 @@ class ProductController extends Controller
             ])
             ->where('is_active', true)
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->map(function (Product $product): array {
+                return [
+                    'id' => $product->id,
+                    'category_id' => $product->category_id,
+                    'name' => $product->name,
+                    'slug' => $product->slug,
+                    'description' => $product->description,
+                    'stock' => $product->stock,
+                    'image' => $product->image,
+                    'is_active' => $product->is_active,
+
+                    'category' => $product->category ? [
+                        'id' => $product->category->id,
+                        'name' => $product->category->name,
+                        'slug' => $product->category->slug ?? null,
+                    ] : null,
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Size dikirim ke POS tanpa HPP
+                    |--------------------------------------------------------------------------
+                    | HPP tidak boleh dikirim ke frontend kasir/POS karena itu data modal.
+                    | POS cukup butuh id size, nama size, harga jual, dan status default.
+                    */
+                    'sizes' => $product->sizes
+                        ->map(function ($size): array {
+                            return [
+                                'id' => $size->id,
+                                'product_id' => $size->product_id,
+                                'name' => $size->name,
+                                'price' => (int) $size->price,
+                                'is_default' => (bool) $size->is_default,
+                                'is_active' => (bool) $size->is_active,
+                            ];
+                        })
+                        ->values()
+                        ->all(),
+                ];
+            })
+            ->values();
 
         return response()->json([
             'success' => true,
@@ -51,7 +90,18 @@ class ProductController extends Controller
             'sizes' => ['required', 'array', 'min:1'],
             'sizes.*.name' => ['required', 'string', 'max:50'],
             'sizes.*.price' => ['required', 'integer', 'min:0'],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Field HPP baru
+            |--------------------------------------------------------------------------
+            | Dibuat nullable agar tetap aman kalau ada request lama yang belum mengirim HPP.
+            | Kalau tidak dikirim, otomatis disimpan 0.
+            */
+            'sizes.*.hpp' => ['nullable', 'integer', 'min:0'],
+
             'sizes.*.is_default' => ['nullable', 'boolean'],
+            'sizes.*.is_active' => ['nullable', 'boolean'],
         ]);
 
         $product = Product::create([
@@ -67,16 +117,30 @@ class ProductController extends Controller
         foreach ($validated['sizes'] as $index => $size) {
             $product->sizes()->create([
                 'name' => $size['name'],
-                'price' => $size['price'],
-                'is_default' => $size['is_default'] ?? $index === 0,
-                'is_active' => true,
+                'price' => (int) $size['price'],
+                'hpp' => (int) ($size['hpp'] ?? 0),
+                'is_default' => (bool) ($size['is_default'] ?? $index === 0),
+                'is_active' => (bool) ($size['is_active'] ?? true),
             ]);
         }
+
+        $product->load(['category', 'sizes']);
 
         return response()->json([
             'success' => true,
             'message' => 'Produk berhasil ditambahkan.',
-            'data' => $product->load('category', 'sizes'),
+            'data' => [
+                'id' => $product->id,
+                'category_id' => $product->category_id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'description' => $product->description,
+                'stock' => $product->stock,
+                'image' => $product->image,
+                'is_active' => $product->is_active,
+                'category' => $product->category,
+                'sizes' => $product->sizes,
+            ],
         ]);
     }
 }

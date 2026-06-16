@@ -13,12 +13,14 @@ class ProductSize extends Model
         'product_id',
         'name',
         'price',
+        'hpp',
         'is_default',
         'is_active',
     ];
 
     protected $casts = [
         'price' => 'integer',
+        'hpp' => 'integer',
         'is_default' => 'boolean',
         'is_active' => 'boolean',
     ];
