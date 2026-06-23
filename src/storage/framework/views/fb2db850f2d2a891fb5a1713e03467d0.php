@@ -22,7 +22,7 @@
         $maxProductUnits = max(1, (int) collect($productSales)->max('units'));
     ?>
 
-    <div class="ng-dashboard">
+    <div class="ng-dashboard" wire:ignore.self>
         <section class="ng-dashboard-header">
             <div class="ng-title-area">
                 <h1>Dashboard Admin</h1>
@@ -31,38 +31,55 @@
 
             <div class="ng-filter-area">
                 <div class="ng-period-tabs">
-                    <a href="<?php echo e(request()->fullUrlWithQuery(['period' => 'today'])); ?>"
-                       class="ng-tab <?php echo e($activePeriod === 'today' ? 'active' : ''); ?>">
+                    <a
+                        href="<?php echo e(request()->fullUrlWithQuery(['period' => 'today', 'month' => null])); ?>"
+                        class="ng-tab <?php echo e($activePeriod === 'today' ? 'active' : ''); ?>"
+                    >
                         Hari Ini
                     </a>
 
-                    <a href="<?php echo e(request()->fullUrlWithQuery(['period' => 'week'])); ?>"
-                       class="ng-tab <?php echo e($activePeriod === 'week' ? 'active' : ''); ?>">
+                    <a
+                        href="<?php echo e(request()->fullUrlWithQuery(['period' => 'week', 'month' => null])); ?>"
+                        class="ng-tab <?php echo e($activePeriod === 'week' ? 'active' : ''); ?>"
+                    >
                         Minggu Ini
                     </a>
 
-                    <a href="<?php echo e(request()->fullUrlWithQuery(['period' => 'month'])); ?>"
-                       class="ng-tab <?php echo e($activePeriod === 'month' ? 'active' : ''); ?>">
+                    <a
+                        href="<?php echo e(request()->fullUrlWithQuery(['period' => 'month', 'month' => null])); ?>"
+                        class="ng-tab <?php echo e($activePeriod === 'month' ? 'active' : ''); ?>"
+                    >
                         Bulan Ini
                     </a>
 
-                    <a href="<?php echo e(request()->fullUrlWithQuery(['period' => 'year', 'month' => 'all'])); ?>"
-                       class="ng-tab <?php echo e($activePeriod === 'year' ? 'active' : ''); ?>">
+                    <a
+                        href="<?php echo e(request()->fullUrlWithQuery(['period' => 'year', 'month' => 'all'])); ?>"
+                        class="ng-tab <?php echo e($activePeriod === 'year' ? 'active' : ''); ?>"
+                    >
                         Tahun Ini
                     </a>
                 </div>
 
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activePeriod === 'year'): ?>
-                    <form method="GET" action="<?php echo e(request()->url()); ?>" style="margin: 0;">
+                    <form method="GET" action="<?php echo e(request()->url()); ?>" class="ng-month-form">
                         <input type="hidden" name="period" value="year">
 
-                        <select name="month" class="ng-select-pill" onchange="this.form.submit()" aria-label="Pilih bulan tahunan">
+                        <select
+                            name="month"
+                            class="ng-select-pill"
+                            onchange="this.form.submit()"
+                            aria-label="Pilih bulan tahunan"
+                        >
                             <option value="all" <?php echo e($selectedYearMonth === 'all' ? 'selected' : ''); ?>>
                                 Semua Bulan
                             </option>
 
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $yearMonthOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $monthOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                                <option value="<?php echo e($monthOption['value']); ?>" <?php echo e($selectedYearMonth === (string) $monthOption['value'] ? 'selected' : ''); ?>>
+                                <option
+                                    value="<?php echo e($monthOption['value']); ?>"
+                                    <?php echo e($selectedYearMonth === (string) $monthOption['value'] ? 'selected' : ''); ?>
+
+                                >
                                     <?php echo e($monthOption['label']); ?>
 
                                 </option>
@@ -107,7 +124,7 @@
                                 <?php echo e($metric['trend'] >= 0 ? '↑' : '↓'); ?>
 
                                 <?php echo e(abs($metric['trend'])); ?>%
-                                <span>dari periode sebelumnya</span>
+                                <span><?php echo e($metric['caption']); ?></span>
                             </p>
                         <?php else: ?>
                             <p class="neutral"><?php echo e($metric['caption']); ?></p>
@@ -128,7 +145,12 @@
                     <span class="ng-widget-badge"><?php echo e($dashboard['period']['label']); ?></span>
                 </div>
 
-                <div id="ngRevenueChart" class="ng-chart ng-chart-lg"></div>
+                <div id="ngRevenueChart" class="ng-chart ng-chart-lg">
+                    <div class="ng-chart-loader">
+                        <span></span>
+                        <p>Memuat grafik...</p>
+                    </div>
+                </div>
             </article>
 
             <article class="ng-widget-card ng-product-sales-card">
@@ -144,7 +166,7 @@
                 <div class="ng-product-sales-scroll">
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $productSales; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
                         <?php
-                            $barWidth = min(100, round(($product['units'] / $maxProductUnits) * 100));
+                            $barWidth = min(100, round(((int) $product['units'] / $maxProductUnits) * 100));
                         ?>
 
                         <div class="ng-product-sales-row">
@@ -155,14 +177,13 @@
 
                             <div class="ng-product-sales-info">
                                 <div class="ng-product-sales-top">
-                                    <strong><?php echo e($product['name']); ?></strong>
+                                    <strong title="<?php echo e($product['name']); ?>"><?php echo e($product['name']); ?></strong>
                                     <span><?php echo e($product['units']); ?> unit</span>
                                 </div>
 
                                 <div class="ng-product-sales-meta">
                                     <span><?php echo e($product['category']); ?></span>
                                     <span><?php echo e($this->rupiah($product['revenue'])); ?></span>
-                                    <span>Stok <?php echo e($product['stock']); ?></span>
                                 </div>
 
                                 <div class="ng-product-sales-bar">
@@ -189,12 +210,17 @@
                 </div>
 
                 <div class="ng-donut-wrap">
-                    <div id="ngCategoryChart" class="ng-chart ng-chart-donut"></div>
+                    <div id="ngCategoryChart" class="ng-chart ng-chart-donut">
+                        <div class="ng-chart-loader">
+                            <span></span>
+                            <p>Memuat grafik...</p>
+                        </div>
+                    </div>
 
                     <div class="ng-category-list">
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $charts['category']['summary']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
                             <div>
-                                <span><?php echo e($category['name']); ?></span>
+                                <span title="<?php echo e($category['name']); ?>"><?php echo e($category['name']); ?></span>
                                 <strong><?php echo e($category['percentage']); ?>%</strong>
                             </div>
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
@@ -214,47 +240,11 @@
                     <span class="ng-widget-badge">Per Jam</span>
                 </div>
 
-                <div id="ngSalesTimeChart" class="ng-chart ng-chart-md"></div>
-            </article>
-
-            <article class="ng-widget-card ng-stock-card">
-                <div class="ng-widget-head">
-                    <div>
-                        <h2>Stock Alert</h2>
-                        <p>Produk yang perlu diperhatikan</p>
+                <div id="ngSalesTimeChart" class="ng-chart ng-chart-md">
+                    <div class="ng-chart-loader">
+                        <span></span>
+                        <p>Memuat grafik...</p>
                     </div>
-
-                    <a href="<?php echo e(url('/admin/products')); ?>">Lihat stock →</a>
-                </div>
-
-                <div class="ng-stock-list">
-                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $dashboard['stockAlerts']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stock): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                        <div class="ng-stock-row">
-                            <div class="ng-product-mini">
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($stock['image']): ?>
-                                    <img src="<?php echo e($stock['image']); ?>" alt="<?php echo e($stock['name']); ?>">
-                                <?php else: ?>
-                                    <span>🥤</span>
-                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                            </div>
-
-                            <div class="ng-stock-name">
-                                <strong><?php echo e($stock['name']); ?></strong>
-                                <span>Stok tersedia</span>
-                            </div>
-
-                            <div class="ng-stock-number"><?php echo e($stock['stock']); ?></div>
-
-                            <span class="ng-stock-status <?php echo e(strtolower($stock['status'])); ?>">
-                                <?php echo e($stock['status']); ?>
-
-                            </span>
-                        </div>
-                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                        <div class="ng-empty-state">
-                            Belum ada data produk.
-                        </div>
-                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>
             </article>
 
@@ -335,16 +325,13 @@
             overflow-x: hidden !important;
         }
 
-        body:has(.ng-dashboard) .fi-page {
+        body:has(.ng-dashboard) .fi-page,
+        body:has(.ng-dashboard) .fi-main {
             padding: 0 !important;
         }
 
         body:has(.ng-dashboard) .fi-page-header {
             display: none !important;
-        }
-
-        body:has(.ng-dashboard) .fi-main {
-            padding: 0 !important;
         }
 
         body:has(.ng-dashboard) .fi-sidebar {
@@ -375,7 +362,7 @@
             width: 100% !important;
             max-width: 100% !important;
             min-height: 100vh;
-            padding: 24px 24px 32px !important;
+            padding: 22px 22px 30px !important;
             overflow: hidden !important;
             font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             color: #24180f;
@@ -390,35 +377,17 @@
             align-items: flex-start;
             justify-content: space-between;
             gap: 18px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .ng-title-area {
             min-width: 250px;
         }
 
-        .ng-kicker {
-            display: inline-flex;
-            align-items: center;
-            width: fit-content;
-            padding: 6px 12px;
-            margin-bottom: 10px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, .50);
-            border: 1px solid rgba(255, 255, 255, .58);
-            color: #d95d00;
-            font-size: 12px;
-            font-weight: 900;
-            letter-spacing: .10em;
-            text-transform: uppercase;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .70);
-            backdrop-filter: blur(12px);
-        }
-
         .ng-title-area h1 {
             margin: 0;
             color: #21160d;
-            font-size: 30px;
+            font-size: 29px;
             line-height: 1.05;
             font-weight: 950;
             letter-spacing: -.04em;
@@ -440,8 +409,12 @@
             max-width: 100%;
         }
 
+        .ng-month-form {
+            margin: 0;
+        }
+
         .ng-period-tabs {
-            height: 48px;
+            min-height: 48px;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -458,13 +431,14 @@
             align-items: center;
             justify-content: center;
             min-height: 36px;
-            padding: 0 18px;
+            padding: 0 17px;
             border-radius: 13px;
             color: #6b5541;
             font-size: 12px;
             font-weight: 900;
             text-decoration: none;
             transition: .2s ease;
+            white-space: nowrap;
         }
 
         .ng-tab.active,
@@ -536,9 +510,9 @@
 
         .ng-kpi-grid {
             display: grid;
-            grid-template-columns: repeat(6, minmax(0, 1fr));
+            grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 14px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .ng-kpi-card,
@@ -568,10 +542,10 @@
         }
 
         .ng-kpi-card {
-            min-height: 108px;
+            min-height: 100px;
             display: flex;
             gap: 12px;
-            padding: 16px 15px;
+            padding: 15px;
             border-radius: 22px;
         }
 
@@ -581,13 +555,13 @@
             display: grid;
             place-items: center;
             flex: 0 0 auto;
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             border-radius: 15px;
             color: #fff;
             background: linear-gradient(135deg, var(--accent), #d95d00);
             box-shadow: 0 15px 28px rgba(249, 115, 22, .22);
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 950;
         }
 
@@ -611,7 +585,7 @@
 
         .ng-kpi-content strong {
             display: block;
-            margin-top: 7px;
+            margin-top: 6px;
             color: #23160d;
             font-size: 19px;
             line-height: 1.15;
@@ -623,14 +597,15 @@
         }
 
         .ng-kpi-content p {
-            margin: 8px 0 0;
+            margin: 7px 0 0;
             font-size: 11px;
             line-height: 1.25;
             font-weight: 850;
         }
 
         .ng-kpi-content p span {
-            margin-left: 4px;
+            display: inline;
+            margin-left: 3px;
             color: #6f5946;
             font-weight: 750;
         }
@@ -649,15 +624,17 @@
 
         .ng-main-grid {
             display: grid;
-            grid-template-columns: 1.35fr 1fr 1fr;
+            grid-template-columns: minmax(0, 1.35fr) minmax(320px, .95fr) minmax(340px, 1fr);
             gap: 16px;
             margin-bottom: 16px;
+            align-items: stretch;
         }
 
         .ng-bottom-grid {
             display: grid;
-            grid-template-columns: 1.1fr .82fr 1.35fr;
+            grid-template-columns: minmax(0, 1fr) minmax(480px, 1.35fr);
             gap: 16px;
+            align-items: stretch;
         }
 
         .ng-widget-card {
@@ -723,16 +700,54 @@
         }
 
         .ng-chart-lg {
+            height: 260px;
             min-height: 260px;
         }
 
         .ng-chart-md {
+            height: 230px;
             min-height: 230px;
         }
 
+        .ng-time-card .ng-chart-md {
+            height: 258px;
+            min-height: 258px;
+        }
+
         .ng-chart-donut {
-            min-width: 0;
+            height: 230px;
             min-height: 230px;
+        }
+
+        .ng-chart-loader {
+            height: 100%;
+            min-height: inherit;
+            display: grid;
+            place-items: center;
+            align-content: center;
+            gap: 10px;
+            color: #8a6e55;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .ng-chart-loader span {
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            border: 3px solid rgba(249, 115, 22, .18);
+            border-top-color: #f97316;
+            animation: ngSpin .75s linear infinite;
+        }
+
+        .ng-chart-loader p {
+            margin: 0;
+        }
+
+        @keyframes ngSpin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .ng-product-sales-scroll {
@@ -740,9 +755,11 @@
             z-index: 2;
             display: grid;
             gap: 9px;
+            height: 250px;
             max-height: 250px;
             overflow-y: auto;
             padding-right: 5px;
+            overscroll-behavior: contain;
         }
 
         .ng-product-sales-scroll::-webkit-scrollbar {
@@ -849,7 +866,7 @@
             position: relative;
             z-index: 2;
             display: grid;
-            grid-template-columns: minmax(0, 1.25fr) minmax(125px, .75fr);
+            grid-template-columns: minmax(0, 1.2fr) minmax(116px, .8fr);
             align-items: center;
             gap: 10px;
             overflow: hidden;
@@ -857,7 +874,7 @@
 
         .ng-category-list {
             display: grid;
-            gap: 10px;
+            gap: 9px;
             min-width: 0;
             width: 100%;
             overflow: hidden;
@@ -886,101 +903,6 @@
             font-weight: 950;
         }
 
-        .ng-stock-list {
-            position: relative;
-            z-index: 2;
-            display: grid;
-            gap: 10px;
-        }
-
-        .ng-stock-row {
-            display: grid;
-            grid-template-columns: 38px minmax(0, 1fr) 34px 60px;
-            align-items: center;
-            gap: 9px;
-            min-height: 46px;
-            padding: 7px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, .24);
-            border: 1px solid rgba(255, 255, 255, .38);
-        }
-
-        .ng-product-mini {
-            display: grid;
-            place-items: center;
-            width: 38px;
-            height: 38px;
-            border-radius: 13px;
-            overflow: hidden;
-            background: rgba(255, 237, 210, .75);
-        }
-
-        .ng-product-mini img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .ng-stock-name {
-            min-width: 0;
-        }
-
-        .ng-stock-name strong,
-        .ng-stock-name span {
-            display: block;
-            line-height: 1.2;
-        }
-
-        .ng-stock-name strong {
-            overflow: hidden;
-            color: #2b1b10;
-            font-size: 12px;
-            font-weight: 950;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .ng-stock-name span {
-            margin-top: 3px;
-            color: #8b7057;
-            font-size: 10px;
-            font-weight: 750;
-        }
-
-        .ng-stock-number {
-            color: #2b1b10;
-            font-size: 12px;
-            font-weight: 950;
-            text-align: center;
-        }
-
-        .ng-stock-status,
-        .ng-order-status {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 26px;
-            padding: 0 8px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: 950;
-        }
-
-        .ng-stock-status.habis {
-            color: #d73333;
-            background: rgba(255, 98, 98, .13);
-        }
-
-        .ng-stock-status.low {
-            color: #d76a00;
-            background: rgba(255, 159, 64, .16);
-        }
-
-        .ng-stock-status.aman {
-            color: #078657;
-            background: rgba(16, 185, 129, .14);
-        }
-
         .ng-orders-card {
             overflow: hidden;
         }
@@ -991,6 +913,23 @@
             width: 100%;
             max-width: 100%;
             overflow-x: auto;
+            max-height: 278px;
+            overflow-y: auto;
+        }
+
+        .ng-table-wrap::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .ng-table-wrap::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, .22);
+            border-radius: 999px;
+        }
+
+        .ng-table-wrap::-webkit-scrollbar-thumb {
+            background: rgba(249, 115, 22, .48);
+            border-radius: 999px;
         }
 
         .ng-orders-table {
@@ -1000,7 +939,12 @@
         }
 
         .ng-orders-table th {
+            position: sticky;
+            top: 0;
+            z-index: 3;
             color: #6f5946;
+            background: rgba(255, 235, 210, .72);
+            backdrop-filter: blur(8px);
             font-size: 11px;
             font-weight: 950;
             text-align: left;
@@ -1023,8 +967,16 @@
         }
 
         .ng-order-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 26px;
+            padding: 0 8px;
+            border-radius: 10px;
             color: #078657;
             background: rgba(16, 185, 129, .14);
+            font-size: 10px;
+            font-weight: 950;
         }
 
         .ng-empty-state {
@@ -1045,7 +997,7 @@
             }
 
             .ng-main-grid {
-                grid-template-columns: 1.3fr 1fr;
+                grid-template-columns: minmax(0, 1.3fr) minmax(320px, 1fr);
             }
 
             .ng-category-card {
@@ -1055,13 +1007,13 @@
             .ng-bottom-grid {
                 grid-template-columns: 1fr 1fr;
             }
-
-            .ng-orders-card {
-                grid-column: span 2;
-            }
         }
 
         @media (max-width: 1100px) {
+            .ng-dashboard {
+                padding: 18px 14px 28px !important;
+            }
+
             .ng-dashboard-header {
                 flex-direction: column;
                 align-items: flex-start;
@@ -1071,15 +1023,25 @@
                 justify-content: flex-start;
             }
 
+            .ng-period-tabs {
+                width: 100%;
+                height: auto;
+                flex-wrap: wrap;
+            }
+
             .ng-kpi-grid,
             .ng-main-grid,
             .ng-bottom-grid {
                 grid-template-columns: 1fr;
             }
 
-            .ng-category-card,
-            .ng-orders-card {
+            .ng-category-card {
                 grid-column: span 1;
+            }
+
+            .ng-time-card .ng-chart-md {
+                height: 270px;
+                min-height: 270px;
             }
 
             .ng-donut-wrap {
@@ -1088,380 +1050,488 @@
         }
     </style>
 
-  <script>
-    window.ngDashboardChartsData = <?php echo json_encode($charts, 15, 512) ?>;
-    window.ngDashboardApexInstances = window.ngDashboardApexInstances || {};
+    <script>
+        window.ngDashboardChartsData = <?php echo json_encode($charts, 15, 512) ?>;
+        window.ngDashboardApexInstances = window.ngDashboardApexInstances || {};
+        window.ngDashboardBootTimer = window.ngDashboardBootTimer || null;
+        window.ngApexCallbacks = window.ngApexCallbacks || [];
 
-    function ngLoadApexCharts(callback) {
-        if (window.ApexCharts) {
-            callback();
-            return;
-        }
-
-        const existingScript = document.getElementById('ng-apexcharts-script');
-
-        if (existingScript) {
-            existingScript.addEventListener('load', callback, { once: true });
-            return;
-        }
-
-        const script = document.createElement('script');
-        script.id = 'ng-apexcharts-script';
-        script.src = 'https://cdn.jsdelivr.net/npm/apexcharts';
-        script.onload = callback;
-
-        document.head.appendChild(script);
-    }
-
-    function ngFormatRupiah(value) {
-        return 'Rp ' + Number(value || 0).toLocaleString('id-ID');
-    }
-
-    function ngDestroyDashboardCharts() {
-        Object.keys(window.ngDashboardApexInstances || {}).forEach(function (key) {
-            const chart = window.ngDashboardApexInstances[key];
-
-            if (chart && typeof chart.destroy === 'function') {
-                try {
-                    chart.destroy();
-                } catch (error) {
-                    console.warn('Chart destroy skipped:', key);
-                }
+        function ngLoadApexCharts(callback) {
+            if (window.ApexCharts) {
+                callback();
+                return;
             }
 
-            delete window.ngDashboardApexInstances[key];
-        });
+            window.ngApexCallbacks.push(callback);
 
-        document.querySelectorAll('.ng-chart').forEach(function (el) {
+            const existingScript = document.getElementById('ng-apexcharts-script');
+
+            if (existingScript) {
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.id = 'ng-apexcharts-script';
+            script.src = 'https://cdn.jsdelivr.net/npm/apexcharts';
+            script.async = true;
+
+            script.onload = function () {
+                const callbacks = window.ngApexCallbacks || [];
+                window.ngApexCallbacks = [];
+
+                callbacks.forEach(function (cb) {
+                    try {
+                        cb();
+                    } catch (error) {
+                        console.warn('Dashboard chart callback skipped:', error);
+                    }
+                });
+            };
+
+            document.head.appendChild(script);
+        }
+
+        function ngFormatRupiah(value) {
+            return 'Rp ' + Number(value || 0).toLocaleString('id-ID');
+        }
+
+        function ngDestroyDashboardCharts() {
+            Object.keys(window.ngDashboardApexInstances || {}).forEach(function (key) {
+                const chart = window.ngDashboardApexInstances[key];
+
+                if (chart && typeof chart.destroy === 'function') {
+                    try {
+                        chart.destroy();
+                    } catch (error) {
+                        console.warn('Chart destroy skipped:', key);
+                    }
+                }
+
+                delete window.ngDashboardApexInstances[key];
+            });
+        }
+
+        function ngClearChartElement(selector) {
+            const el = document.querySelector(selector);
+
+            if (!el) {
+                return null;
+            }
+
             el.innerHTML = '';
-        });
-    }
 
-    function ngRenderChart(selector, key, options) {
-        const el = document.querySelector(selector);
-
-        if (!el || !window.ApexCharts) {
-            return;
+            return el;
         }
 
-        if (window.ngDashboardApexInstances[key]) {
-            return;
+        function ngRenderChart(selector, key, options) {
+            if (!window.ApexCharts) {
+                return;
+            }
+
+            if (window.ngDashboardApexInstances[key]) {
+                return;
+            }
+
+            const el = ngClearChartElement(selector);
+
+            if (!el) {
+                return;
+            }
+
+            const chart = new ApexCharts(el, options);
+
+            window.ngDashboardApexInstances[key] = chart;
+
+            chart.render();
         }
 
-        el.innerHTML = '';
+        function ngMakeRevenueXAxisLabels(labels) {
+            const safeLabels = Array.isArray(labels) ? labels : [];
 
-        const chart = new ApexCharts(el, options);
+            if (safeLabels.length <= 14) {
+                return safeLabels;
+            }
 
-        window.ngDashboardApexInstances[key] = chart;
+            const step = safeLabels.length > 24 ? 2 : 1;
 
-        chart.render();
-    }
+            return safeLabels.map(function (label, index) {
+                const isFirst = index === 0;
+                const isLast = index === safeLabels.length - 1;
+                const isStep = index % step === 0;
 
-    function ngInitDashboardCharts() {
-        const dashboard = document.querySelector('.ng-dashboard');
-
-        if (!dashboard) {
-            return;
+                return isFirst || isLast || isStep ? label : '';
+            });
         }
 
-        const charts = window.ngDashboardChartsData;
+        function ngMakeSalesTimeLabels(labels) {
+            const safeLabels = Array.isArray(labels) ? labels : [];
 
-        if (!charts || !window.ApexCharts) {
-            return;
+            return safeLabels.map(function (label, index) {
+                const rawLabel = String(label || '').trim();
+                const fallbackHour = index + 6;
+
+                if (rawLabel === '') {
+                    return String(fallbackHour).padStart(2, '0') + ':00';
+                }
+
+                const hourMatch = rawLabel.match(/^(\d{1,2})/);
+                const parsedHour = hourMatch ? Number(hourMatch[1]) : fallbackHour;
+                const safeHour = Number.isFinite(parsedHour) ? Math.max(0, Math.min(23, parsedHour)) : fallbackHour;
+
+                return String(safeHour).padStart(2, '0') + ':00';
+            });
         }
 
-        ngRenderChart('#ngRevenueChart', 'revenue', {
-            chart: {
-                type: 'line',
-                height: 260,
-                toolbar: { show: false },
-                fontFamily: 'Inter, Poppins, sans-serif',
-                foreColor: '#7a6048',
-                zoom: { enabled: false },
-                animations: {
-                    enabled: true,
-                    speed: 450,
-                    animateGradually: {
-                        enabled: false,
-                    },
-                    dynamicAnimation: {
-                        enabled: false,
-                    },
-                },
-            },
-            series: [
-                {
-                    name: 'Revenue',
-                    type: 'area',
-                    data: charts.revenue.revenue || [],
-                },
-                {
-                    name: 'Orders',
-                    type: 'line',
-                    data: charts.revenue.orders || [],
-                },
-            ],
-            colors: ['#f97316', '#10b981'],
-            stroke: {
-                curve: 'smooth',
-                width: [3, 3],
-                dashArray: [0, 4],
-            },
-            fill: {
-                type: ['gradient', 'solid'],
-                opacity: [0.34, 1],
-                gradient: {
-                    shadeIntensity: 0.2,
-                    opacityFrom: 0.34,
-                    opacityTo: 0.03,
-                    stops: [0, 95, 100],
-                },
-            },
-            grid: {
-                borderColor: 'rgba(103, 65, 33, .10)',
-                strokeDashArray: 4,
-                padding: {
-                    left: 8,
-                    right: 14,
-                },
-            },
-            dataLabels: { enabled: false },
-            markers: {
-                size: [4, 4],
-                strokeWidth: 3,
-                strokeColors: '#fff8ef',
-                hover: { size: 7 },
-            },
-            legend: {
-                show: true,
-                position: 'top',
-                horizontalAlign: 'right',
-                fontSize: '11px',
-                fontWeight: 800,
-                labels: {
-                    colors: '#7a6048',
-                },
-                markers: {
-                    width: 8,
-                    height: 8,
-                    radius: 8,
-                },
-                itemMargin: {
-                    horizontal: 8,
-                    vertical: 0,
-                },
-            },
-            xaxis: {
-                categories: charts.revenue.labels,
-                axisBorder: { show: false },
-                axisTicks: { show: false },
-                labels: {
-                    style: {
-                        fontSize: '11px',
-                        fontWeight: 750,
-                    },
-                },
-            },
-            yaxis: [
-                {
-                    labels: {
-                        formatter: function (value) {
-                            if (value >= 1000000) {
-                                return 'Rp ' + (value / 1000000).toFixed(1).replace('.0', '') + 'M';
-                            }
+        function ngInitDashboardCharts() {
+            const dashboard = document.querySelector('.ng-dashboard');
 
-                            if (value >= 1000) {
-                                return 'Rp ' + (value / 1000).toFixed(0) + 'K';
-                            }
+            if (!dashboard || !window.ApexCharts) {
+                return;
+            }
 
-                            return 'Rp ' + value;
+            const charts = window.ngDashboardChartsData || {};
+
+            ngDestroyDashboardCharts();
+
+            requestAnimationFrame(function () {
+                const revenueLabels = charts.revenue?.labels || [];
+                const revenueXAxisLabels = ngMakeRevenueXAxisLabels(revenueLabels);
+                const salesTimeLabels = ngMakeSalesTimeLabels(charts.salesByTime?.labels || []);
+
+                ngRenderChart('#ngRevenueChart', 'revenue', {
+                    chart: {
+                        type: 'line',
+                        height: 260,
+                        toolbar: { show: false },
+                        fontFamily: 'Inter, Poppins, sans-serif',
+                        foreColor: '#7a6048',
+                        zoom: { enabled: false },
+                        animations: {
+                            enabled: true,
+                            speed: 280,
+                            animateGradually: { enabled: false },
+                            dynamicAnimation: { enabled: false },
                         },
                     },
-                },
-                {
-                    opposite: true,
-                    labels: {
-                        formatter: function (value) {
-                            return Math.round(value) + ' order';
+                    series: [
+                        {
+                            name: 'Revenue',
+                            type: 'area',
+                            data: charts.revenue?.revenue || [],
+                        },
+                        {
+                            name: 'Orders',
+                            type: 'line',
+                            data: charts.revenue?.orders || [],
+                        },
+                    ],
+                    labels: revenueLabels,
+                    stroke: {
+                        width: [4, 3],
+                        curve: 'smooth',
+                    },
+                    fill: {
+                        type: ['gradient', 'solid'],
+                        gradient: {
+                            shadeIntensity: .9,
+                            opacityFrom: .42,
+                            opacityTo: .05,
+                            stops: [0, 85, 100],
                         },
                     },
-                },
-            ],
-            tooltip: {
-                theme: 'light',
-                shared: true,
-                intersect: false,
-                y: {
-                    formatter: function (value, options) {
-                        if (options.seriesIndex === 1) {
-                            return Math.round(value || 0) + ' order';
-                        }
-
-                        return ngFormatRupiah(value);
-                    },
-                },
-            },
-        });
-
-        ngRenderChart('#ngCategoryChart', 'category', {
-            chart: {
-                type: 'donut',
-                height: 230,
-                fontFamily: 'Inter, Poppins, sans-serif',
-                animations: {
-                    enabled: true,
-                    speed: 350,
-                    animateGradually: {
+                    colors: ['#f97316', '#2563eb'],
+                    dataLabels: {
                         enabled: false,
                     },
-                    dynamicAnimation: {
-                        enabled: false,
+                    grid: {
+                        borderColor: 'rgba(124, 92, 63, .12)',
+                        strokeDashArray: 5,
+                        padding: {
+                            left: 8,
+                            right: 8,
+                            bottom: 18,
+                        },
                     },
-                },
-            },
-            series: charts.category.values,
-            labels: charts.category.labels,
-            colors: ['#f97316', '#10b981', '#3b82f6', '#8b5cf6', '#ef4444'],
-            stroke: {
-                width: 4,
-                colors: ['rgba(255, 248, 237, .92)'],
-            },
-            plotOptions: {
-                pie: {
-                    donut: {
-                        size: '68%',
+                    markers: {
+                        size: 0,
+                        hover: {
+                            size: 5,
+                        },
+                    },
+                    xaxis: {
+                        categories: revenueXAxisLabels,
+                        tickPlacement: 'on',
                         labels: {
-                            show: true,
-                            name: {
-                                show: true,
-                                color: '#7a6048',
-                                fontSize: '12px',
-                                fontWeight: 800,
+                            rotate: -35,
+                            trim: false,
+                            hideOverlappingLabels: false,
+                            maxHeight: 72,
+                            offsetY: 6,
+                            style: {
+                                fontSize: '10px',
+                                fontWeight: 850,
                             },
-                            value: {
-                                show: true,
-                                color: '#24180f',
-                                fontSize: '16px',
-                                fontWeight: 950,
-                                formatter: ngFormatRupiah,
+                        },
+                        tooltip: {
+                            enabled: false,
+                        },
+                        axisBorder: {
+                            show: false,
+                        },
+                        axisTicks: {
+                            show: false,
+                        },
+                    },
+                    yaxis: [
+                        {
+                            min: 0,
+                            tickAmount: 4,
+                            labels: {
+                                formatter: function (value) {
+                                    return ngFormatRupiah(value);
+                                },
+                                style: {
+                                    fontSize: '11px',
+                                    fontWeight: 800,
+                                },
                             },
-                            total: {
-                                show: true,
-                                label: 'Total Revenue',
-                                color: '#7a6048',
-                                formatter: function (w) {
-                                    const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                                    return ngFormatRupiah(total);
+                        },
+                        {
+                            opposite: true,
+                            min: 0,
+                            tickAmount: 4,
+                            labels: {
+                                formatter: function (value) {
+                                    return Number(value || 0).toLocaleString('id-ID');
+                                },
+                                style: {
+                                    fontSize: '11px',
+                                    fontWeight: 800,
+                                },
+                            },
+                        },
+                    ],
+                    tooltip: {
+                        shared: true,
+                        intersect: false,
+                        x: {
+                            formatter: function (value, opts) {
+                                return revenueLabels[opts.dataPointIndex] || value;
+                            },
+                        },
+                        y: [
+                            {
+                                formatter: function (value) {
+                                    return ngFormatRupiah(value);
+                                },
+                            },
+                            {
+                                formatter: function (value) {
+                                    return Number(value || 0).toLocaleString('id-ID') + ' order';
+                                },
+                            },
+                        ],
+                    },
+                    legend: {
+                        show: true,
+                        position: 'top',
+                        horizontalAlign: 'left',
+                        fontSize: '12px',
+                        fontWeight: 800,
+                        labels: {
+                            colors: '#4c3524',
+                        },
+                    },
+                });
+
+                ngRenderChart('#ngCategoryChart', 'category', {
+                    chart: {
+                        type: 'donut',
+                        height: 230,
+                        toolbar: { show: false },
+                        fontFamily: 'Inter, Poppins, sans-serif',
+                        foreColor: '#7a6048',
+                        animations: {
+                            enabled: true,
+                            speed: 280,
+                            animateGradually: { enabled: false },
+                            dynamicAnimation: { enabled: false },
+                        },
+                    },
+                    series: charts.category?.values || [],
+                    labels: charts.category?.labels || [],
+                    colors: ['#f97316', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'],
+                    stroke: {
+                        width: 3,
+                        colors: ['rgba(255,255,255,.65)'],
+                    },
+                    dataLabels: {
+                        enabled: false,
+                    },
+                    legend: {
+                        show: false,
+                    },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                size: '68%',
+                                labels: {
+                                    show: true,
+                                    name: {
+                                        show: true,
+                                        color: '#6f5946',
+                                        fontSize: '11px',
+                                        fontWeight: 900,
+                                    },
+                                    value: {
+                                        show: true,
+                                        color: '#24180f',
+                                        fontSize: '18px',
+                                        fontWeight: 950,
+                                        formatter: function (value) {
+                                            return ngFormatRupiah(value);
+                                        },
+                                    },
+                                    total: {
+                                        show: true,
+                                        label: 'Revenue',
+                                        color: '#6f5946',
+                                        fontSize: '11px',
+                                        fontWeight: 900,
+                                        formatter: function (w) {
+                                            const total = w.globals.seriesTotals.reduce(function (a, b) {
+                                                return a + b;
+                                            }, 0);
+
+                                            return ngFormatRupiah(total);
+                                        },
+                                    },
                                 },
                             },
                         },
                     },
-                },
-            },
-            dataLabels: { enabled: false },
-            legend: { show: false },
-            tooltip: {
-                y: {
-                    formatter: ngFormatRupiah,
-                },
-            },
-        });
+                    tooltip: {
+                        y: {
+                            formatter: function (value) {
+                                return ngFormatRupiah(value);
+                            },
+                        },
+                    },
+                });
 
-        ngRenderChart('#ngSalesTimeChart', 'salesTime', {
-            chart: {
-                type: 'bar',
-                height: 230,
-                toolbar: { show: false },
-                fontFamily: 'Inter, Poppins, sans-serif',
-                foreColor: '#7a6048',
-                animations: {
-                    enabled: true,
-                    speed: 350,
-                    animateGradually: {
+                ngRenderChart('#ngSalesTimeChart', 'salesByTime', {
+                    chart: {
+                        type: 'bar',
+                        height: 258,
+                        toolbar: { show: false },
+                        fontFamily: 'Inter, Poppins, sans-serif',
+                        foreColor: '#7a6048',
+                        parentHeightOffset: 0,
+                        animations: {
+                            enabled: true,
+                            speed: 280,
+                            animateGradually: { enabled: false },
+                            dynamicAnimation: { enabled: false },
+                        },
+                    },
+                    series: [
+                        {
+                            name: 'Orders',
+                            data: charts.salesByTime?.orders || [],
+                        },
+                    ],
+                    colors: ['#f97316'],
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 8,
+                            columnWidth: '34%',
+                        },
+                    },
+                    dataLabels: {
                         enabled: false,
                     },
-                    dynamicAnimation: {
-                        enabled: false,
+                    grid: {
+                        borderColor: 'rgba(124, 92, 63, .12)',
+                        strokeDashArray: 5,
+                        padding: {
+                            top: 8,
+                            left: 8,
+                            right: 10,
+                            bottom: 48,
+                        },
                     },
-                },
-            },
-            series: [
-                {
-                    name: 'Orders',
-                    data: charts.salesByTime.orders,
-                },
-            ],
-            colors: ['#f97316'],
-            plotOptions: {
-                bar: {
-                    borderRadius: 7,
-                    columnWidth: '46%',
-                },
-            },
-            grid: {
-                borderColor: 'rgba(103, 65, 33, .09)',
-                strokeDashArray: 4,
-            },
-            dataLabels: { enabled: false },
-            xaxis: {
-                categories: charts.salesByTime.labels,
-                axisBorder: { show: false },
-                axisTicks: { show: false },
-                labels: {
-                    rotate: 0,
-                    hideOverlappingLabels: true,
-                    trim: false,
-                    style: {
-                        fontSize: '10px',
-                        fontWeight: 750,
+                    xaxis: {
+                        categories: salesTimeLabels,
+                        tickPlacement: 'on',
+                        labels: {
+                            rotate: -45,
+                            rotateAlways: true,
+                            trim: false,
+                            hideOverlappingLabels: false,
+                            maxHeight: 84,
+                            offsetY: 8,
+                            style: {
+                                colors: '#6b5541',
+                                fontSize: '11px',
+                                fontWeight: 900,
+                            },
+                        },
+                        tooltip: {
+                            enabled: false,
+                        },
+                        axisBorder: {
+                            show: false,
+                        },
+                        axisTicks: {
+                            show: false,
+                        },
                     },
-                },
-            },
-            yaxis: {
-                labels: {
-                    formatter: function (value) {
-                        return Math.round(value);
+                    yaxis: {
+                        min: 0,
+                        tickAmount: 4,
+                        labels: {
+                            formatter: function (value) {
+                                return Number(value || 0).toLocaleString('id-ID');
+                            },
+                            style: {
+                                fontSize: '11px',
+                                fontWeight: 800,
+                            },
+                        },
                     },
-                },
-            },
-            tooltip: {
-                x: {
-                    formatter: function (value) {
-                        return value || '';
+                    tooltip: {
+                        x: {
+                            formatter: function (value, opts) {
+                                return salesTimeLabels[opts.dataPointIndex] || value;
+                            },
+                        },
+                        y: {
+                            formatter: function (value) {
+                                return Number(value || 0).toLocaleString('id-ID') + ' order';
+                            },
+                        },
                     },
-                },
-                y: {
-                    formatter: function (value) {
-                        return value + ' orders';
-                    },
-                },
-            },
-        });
-    }
-
-    function ngStartDashboardCharts() {
-        ngLoadApexCharts(function () {
-            requestAnimationFrame(function () {
-                ngInitDashboardCharts();
+                });
             });
-        });
-    }
+        }
 
-    document.addEventListener('DOMContentLoaded', ngStartDashboardCharts);
+        function ngBootDashboardCharts() {
+            clearTimeout(window.ngDashboardBootTimer);
 
-    document.addEventListener('livewire:navigating', function () {
-        ngDestroyDashboardCharts();
-    });
+            window.ngDashboardBootTimer = setTimeout(function () {
+                ngLoadApexCharts(ngInitDashboardCharts);
+            }, 80);
+        }
 
-    document.addEventListener('livewire:navigated', function () {
-        window.ngDashboardApexInstances = {};
-        ngStartDashboardCharts();
-    });
+        document.addEventListener('DOMContentLoaded', ngBootDashboardCharts);
+        document.addEventListener('livewire:navigated', ngBootDashboardCharts);
+        document.addEventListener('livewire:update', ngBootDashboardCharts);
+        document.addEventListener('livewire:updated', ngBootDashboardCharts);
 
-    window.addEventListener('pageshow', function () {
-        ngStartDashboardCharts();
-    });
-</script>
+        if (document.readyState !== 'loading') {
+            ngBootDashboardCharts();
+        }
+    </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal166a02a7c5ef5a9331faf66fa665c256)): ?>
@@ -1471,4 +1541,5 @@
 <?php if (isset($__componentOriginal166a02a7c5ef5a9331faf66fa665c256)): ?>
 <?php $component = $__componentOriginal166a02a7c5ef5a9331faf66fa665c256; ?>
 <?php unset($__componentOriginal166a02a7c5ef5a9331faf66fa665c256); ?>
-<?php endif; ?><?php /**PATH /var/www/html/resources/views/filament/admin/pages/dashboard.blade.php ENDPATH**/ ?>
+<?php endif; ?>
+<?php /**PATH /var/www/html/resources/views/filament/admin/pages/dashboard.blade.php ENDPATH**/ ?>

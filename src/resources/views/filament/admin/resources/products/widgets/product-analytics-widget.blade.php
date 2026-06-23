@@ -1,8 +1,6 @@
 @php
     $createUrl = \App\Filament\Admin\Resources\Products\ProductResource::getUrl('create');
 
-    $problemStock = $summary['out_of_stock_products'] + $summary['low_stock_products'];
-
     $cards = [
         [
             'label' => 'Total Produk',
@@ -19,25 +17,11 @@
             'color' => '#10b981',
         ],
         [
-            'label' => 'Stok Bermasalah',
-            'value' => number_format($problemStock, 0, ',', '.'),
-            'caption' => number_format($summary['out_of_stock_products'], 0, ',', '.') . ' habis, ' . number_format($summary['low_stock_products'], 0, ',', '.') . ' menipis',
-            'icon' => '!',
-            'color' => '#ef4444',
-        ],
-        [
             'label' => 'Total Kategori',
             'value' => number_format($summary['total_categories'], 0, ',', '.'),
             'caption' => 'Kategori produk',
             'icon' => '◇',
             'color' => '#3b82f6',
-        ],
-        [
-            'label' => 'Total Stok',
-            'value' => number_format($summary['total_stock'], 0, ',', '.'),
-            'caption' => 'Unit tersedia',
-            'icon' => '○',
-            'color' => '#8b5cf6',
         ],
     ];
 @endphp
@@ -49,7 +33,7 @@
         font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         color: #24180f;
     ">
-        <div style="
+        <div class="ng-product-header-grid" style="
             display: grid;
             grid-template-columns: minmax(0, 1.35fr) minmax(340px, .65fr);
             gap: 12px;
@@ -68,7 +52,6 @@
                 backdrop-filter: blur(13px);
                 overflow: hidden;
             ">
-
                 <h1 style="
                     margin: 0;
                     color: #21160d;
@@ -88,7 +71,7 @@
                     font-weight: 650;
                     line-height: 1.5;
                 ">
-                    Kelola data produk minuman, kategori, ukuran, harga, stok, gambar produk, dan status aktif produk dalam satu halaman admin.
+                    Kelola data produk minuman, kategori, ukuran, harga, gambar produk, dan status aktif produk dalam satu halaman admin.
                 </p>
             </div>
 
@@ -164,9 +147,9 @@
             </div>
         </div>
 
-        <div style="
+        <div class="ng-product-card-grid" style="
             display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 10px;
             margin-bottom: 12px;
         ">
@@ -270,16 +253,13 @@
             overflow-x: hidden !important;
         }
 
-        body:has(.ng-product-page) .fi-page {
+        body:has(.ng-product-page) .fi-page,
+        body:has(.ng-product-page) .fi-main {
             padding: 0 !important;
         }
 
         body:has(.ng-product-page) .fi-page-header {
             display: none !important;
-        }
-
-        body:has(.ng-product-page) .fi-main {
-            padding: 0 !important;
         }
 
         body:has(.ng-product-page) .fi-sidebar {
@@ -426,83 +406,13 @@
 
         body:has(.ng-product-page) .fi-btn-color-primary {
             background: linear-gradient(135deg, #ff9d18, #ee6500) !important;
-            box-shadow: 0 12px 22px rgba(238, 101, 0, .22) !important;
         }
 
-        @media (max-width: 1500px) {
-            [style*="grid-template-columns: repeat(5"] {
-                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-            }
-
-            [style*="grid-template-columns: minmax(0, 1.35fr)"] {
+        @media (max-width: 1100px) {
+            .ng-product-header-grid,
+            .ng-product-card-grid {
                 grid-template-columns: 1fr !important;
             }
         }
-
-        @media (max-width: 900px) {
-            .ng-product-page {
-                padding: 14px !important;
-            }
-
-            [style*="grid-template-columns: repeat(5"] {
-                grid-template-columns: 1fr !important;
-            }
-        }
-        /* =========================================================
-   FIX JARAK TABLE PRODUK KE WIDGET ATAS
-   Bikin kolom Nama Produk/table lebih mepet ke KPI
-========================================================= */
-
-/* Hilangkan gap bawaan Filament */
-body:has(.ng-product-page) .fi-page-content {
-    gap: 0 !important;
-    row-gap: 0 !important;
-}
-
-/* Hilangkan jarak bawah widget produk */
-body:has(.ng-product-page) .fi-wi-widget,
-body:has(.ng-product-page) .fi-wi-widget-content {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-}
-
-/* KPI produk jangan kasih jarak bawah terlalu besar */
-.ng-product-page {
-    padding-bottom: 2px !important;
-}
-
-.ng-product-page > div:last-of-type {
-    margin-bottom: 4px !important;
-}
-
-/* Table produk dinaikkan lebih dekat ke KPI */
-body:has(.ng-product-page) .fi-ta-ctn {
-    margin-top: 0 !important;
-    transform: translateY(1px) !important;
-}
-
-/* Header search table dibuat lebih pendek */
-body:has(.ng-product-page) .fi-ta-header,
-body:has(.ng-product-page) .fi-ta-toolbar {
-    min-height: 44px !important;
-    padding-top: 5px !important;
-    padding-bottom: 5px !important;
-}
-
-/* Header kolom lebih compact */
-body:has(.ng-product-page) .fi-ta-header-cell {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-}
-
-/* Row pertama tidak terlalu turun */
-body:has(.ng-product-page) .fi-ta-row {
-    min-height: 50px !important;
-}
-
-body:has(.ng-product-page) .fi-ta-cell {
-    padding-top: 7px !important;
-    padding-bottom: 7px !important;
-}
     </style>
 </x-filament-widgets::widget>

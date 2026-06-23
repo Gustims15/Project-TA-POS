@@ -198,51 +198,8 @@ class ProductsTable
                             ->implode('');
                     }),
 
-                TextColumn::make('stock')
-                    ->label('Stok')
-                    ->sortable()
-                    ->alignCenter()
-                    ->html()
-                    ->formatStateUsing(function ($state): string {
-                        $stock = (int) $state;
-
-                        if ($stock <= 0) {
-                            $bg = 'rgba(255,98,98,.13)';
-                            $border = 'rgba(255,98,98,.24)';
-                            $color = '#d73333';
-                            $label = 'Habis';
-                        } elseif ($stock <= 5) {
-                            $bg = 'rgba(255,159,64,.16)';
-                            $border = 'rgba(255,159,64,.26)';
-                            $color = '#d76a00';
-                            $label = 'Menipis';
-                        } else {
-                            $bg = 'rgba(16,185,129,.13)';
-                            $border = 'rgba(16,185,129,.24)';
-                            $color = '#078657';
-                            $label = 'Aman';
-                        }
-
-                        return '
-                            <div style="
-                                display:inline-grid;
-                                place-items:center;
-                                gap:3px;
-                                min-width:58px;
-                                min-height:40px;
-                                padding:5px 10px;
-                                border-radius:14px;
-                                background:' . $bg . ';
-                                border:1px solid ' . $border . ';
-                                color:' . $color . ';
-                                font-size:10px;
-                                font-weight:950;
-                            ">
-                                <span style="font-size:12px;">' . number_format($stock, 0, ',', '.') . '</span>
-                                <span>' . $label . '</span>
-                            </div>
-                        ';
-                    }),
+                // Kolom stock sengaja tidak ditampilkan di interface admin.
+                // Data stock tetap aman di database/model dan masih bisa dipakai logic sistem.
 
                 IconColumn::make('is_active')
                     ->label('Aktif')

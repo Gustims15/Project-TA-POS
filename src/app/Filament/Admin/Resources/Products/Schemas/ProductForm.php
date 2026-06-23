@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\Products\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -22,7 +23,7 @@ class ProductForm
             ->columns(1)
             ->components([
                 Section::make('Informasi Utama Produk')
-                    ->description('Lengkapi informasi dasar produk seperti kategori, nama produk, slug, stok, deskripsi, gambar, dan status aktif.')
+                    ->description('Lengkapi informasi dasar produk seperti kategori, nama produk, slug, deskripsi, gambar, dan status aktif.')
                     ->icon('heroicon-o-cube')
                     ->columnSpanFull()
                     ->schema([
@@ -54,13 +55,11 @@ class ProductForm
                             ->unique(ignoreRecord: true)
                             ->helperText('Slug dibuat otomatis dari nama produk.'),
 
-                        TextInput::make('stock')
-                            ->label('Stok Produk')
-                            ->numeric()
-                            ->minValue(0)
-                            ->required()
+                        // Stock sengaja disembunyikan dari form admin.
+                        // Nilai tetap dikirim ke database supaya struktur lama aman dan tidak mengganggu logic lain.
+                        Hidden::make('stock')
                             ->default(0)
-                            ->helperText('Stok akan berkurang otomatis saat transaksi berhasil.'),
+                            ->dehydrated(true),
 
                         Textarea::make('description')
                             ->label('Deskripsi Produk')
@@ -89,13 +88,13 @@ class ProductForm
                         'md' => 2,
                     ]),
 
-                Section::make('Size dan Harga Produk')
-                    ->description('Tambahkan minimal satu size. Untuk produk tanpa pilihan ukuran, gunakan Regular.')
+                Section::make('Size, Harga, dan Detail HPP Produk')
+                    ->description('Tambahkan minimal satu size. Untuk produk tanpa pilihan ukuran, gunakan Regular. Detail HPP tetap disimpan untuk admin dan tidak tampil di POS.')
                     ->icon('heroicon-o-currency-dollar')
                     ->columnSpanFull()
                     ->schema([
                         Repeater::make('sizes')
-                            ->label('Daftar Size dan Harga')
+                            ->label('Daftar Size, Harga, dan HPP')
                             ->relationship('sizes')
                             ->schema([
                                 TextInput::make('name')
@@ -121,7 +120,7 @@ class ProductForm
                                     ->helperText('Estimasi modal/HPP untuk 1 cup pada size ini.'),
 
                                 Textarea::make('hpp_description')
-                                    ->label('Deskripsi HPP')
+                                    ->label('Detail HPP')
                                     ->placeholder('Contoh: Kopi 3.000, susu 2.000, gula 1.000, cup 1.000, sedotan 500')
                                     ->rows(3)
                                     ->maxLength(1000)

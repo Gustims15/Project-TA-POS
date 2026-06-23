@@ -49,16 +49,24 @@ class OrderController extends Controller
 
                     $quantity = (int) $item['quantity'];
 
-                    if ($product->stock < $quantity) {
-                        throw new \RuntimeException("Stok {$product->name} tidak mencukupi.");
-                    }
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Catatan Perubahan Stok POS
+                    |--------------------------------------------------------------------------
+                    | Stok tetap tersimpan di database/admin, tetapi POS tidak lagi membatasi
+                    | transaksi berdasarkan stok. Karena itu pengecekan stok dan pengurangan
+                    | stok saat checkout sengaja tidak dipakai.
+                    |
+                    | Cocok untuk sistem minuman/F&B ketika takaran bahan baku tidak selalu
+                    | bisa dipastikan menjadi jumlah cup yang mutlak.
+                    */
 
                     /*
                     |--------------------------------------------------------------------------
                     | Harga Jual dan HPP
                     |--------------------------------------------------------------------------
-                    | price  = harga jual produk berdasarkan size.
-                    | hpp    = estimasi modal / HPP per cup berdasarkan size.
+                    | price = harga jual produk berdasarkan size.
+                    | hpp = estimasi modal / HPP per cup berdasarkan size.
                     |
                     | Nilai HPP disimpan sebagai snapshot ke order_items.
                     | Jadi kalau HPP produk berubah di kemudian hari, transaksi lama tetap aman.
@@ -79,20 +87,14 @@ class OrderController extends Controller
                         'product_size_id' => $productSize->id,
                         'product_name' => $product->name,
                         'size_name' => $productSize->name,
-
                         'price' => $price,
                         'hpp' => $hpp,
-
                         'quantity' => $quantity,
-
                         'subtotal' => $subtotal,
                         'total_hpp' => $totalHpp,
                         'gross_profit' => $grossProfit,
-
                         'note' => $note,
                     ]);
-
-                    $product->decrement('stock', $quantity);
 
                     $totalItem += $quantity;
                     $totalPrice += $subtotal;

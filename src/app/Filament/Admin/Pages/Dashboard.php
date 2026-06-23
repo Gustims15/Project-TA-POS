@@ -103,10 +103,6 @@ class Dashboard extends Page
             ->where('is_active', true)
             ->count();
 
-        $lowStock = (int) DB::table('products')
-            ->where('stock', '<=', 10)
-            ->count();
-
         return [
             'period' => [
                 'key' => $periodKey,
@@ -167,14 +163,6 @@ class Dashboard extends Page
                     'icon' => '◇',
                     'color' => '#10b981',
                 ],
-                [
-                    'label' => 'Stok Habis / Low',
-                    'value' => number_format($lowStock, 0, ',', '.'),
-                    'trend' => null,
-                    'caption' => 'Perlu restock',
-                    'icon' => '!',
-                    'color' => '#ef4444',
-                ],
             ],
 
             'finance' => [
@@ -205,7 +193,6 @@ class Dashboard extends Page
                 'salesByTime' => $this->getSalesByTime($start, $end),
             ],
 
-            'stockAlerts' => $this->getStockAlerts(),
             'latestOrders' => $this->getLatestOrders(),
         ];
     }
@@ -528,7 +515,6 @@ class Dashboard extends Page
             ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
             ->selectRaw('COALESCE(order_items.product_name, products.name, "Produk") as name')
             ->selectRaw('COALESCE(categories.name, "Tanpa Kategori") as category')
-            ->selectRaw('COALESCE(products.stock, 0) as stock')
             ->selectRaw('SUM(order_items.quantity) as units')
             ->selectRaw('SUM(order_items.subtotal) as revenue')
             ->whereBetween(
@@ -540,7 +526,6 @@ class Dashboard extends Page
             )
             ->groupByRaw('COALESCE(order_items.product_name, products.name, "Produk")')
             ->groupByRaw('COALESCE(categories.name, "Tanpa Kategori")')
-            ->groupByRaw('COALESCE(products.stock, 0)')
             ->orderByDesc('units')
             ->get();
 
@@ -550,7 +535,6 @@ class Dashboard extends Page
                 'category' => (string) $row->category,
                 'units' => (int) $row->units,
                 'revenue' => (int) $row->revenue,
-                'stock' => (int) $row->stock,
             ];
         })->values()->all();
 
@@ -643,35 +627,6 @@ class Dashboard extends Page
             'labels' => $labels,
             'orders' => $orders,
         ];
-    }
-
-    private function getStockAlerts(): array
-    {
-        return DB::table('products')
-            ->select('name', 'stock', 'image')
-            ->orderBy('stock')
-            ->limit(5)
-            ->get()
-            ->map(function ($product): array {
-                $stock = (int) $product->stock;
-
-                $status = match (true) {
-                    $stock <= 0 => 'Habis',
-                    $stock <= 10 => 'Low',
-                    default => 'Aman',
-                };
-
-                return [
-                    'name' => $product->name,
-                    'stock' => $stock,
-                    'status' => $status,
-                    'image' => $product->image
-                        ? asset('storage/' . ltrim((string) $product->image, '/'))
-                        : null,
-                ];
-            })
-            ->values()
-            ->all();
     }
 
     private function getLatestOrders(): array

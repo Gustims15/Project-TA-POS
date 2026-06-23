@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description')->nullable();
 
-            $table->unsignedInteger('stock')->default(0);
+            // $table->unsignedInteger('stock')->default(0);
 
             $table->string('image')->nullable();
 

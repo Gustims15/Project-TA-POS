@@ -16,8 +16,8 @@ const placeOrder = document.querySelector('#placeOrder');
 const toast = document.querySelector('#toast');
 
 
-// Informasi stok tetap disimpan dan tetap dipakai untuk logic transaksi,
-// tetapi badge stok pada kartu produk disembunyikan dari tampilan POS.
+// Informasi stok tetap disimpan di database/admin,
+// tetapi tampilan POS tidak menampilkan stok dan tidak membatasi order berdasarkan stok.
 const hideProductStockStyle = document.createElement('style');
 hideProductStockStyle.textContent = `
   .product-card .stock-badge,
@@ -436,12 +436,13 @@ const renderProducts = () => {
   }
 
   filteredProducts.forEach(product => {
-    const isOutOfStock = product.stock <= 0;
+    // POS tidak lagi mengunci transaksi berdasarkan stok.
+    const isOutOfStock = false;
     const defaultSize = getDefaultSize(product);
     const displayPrice = defaultSize ? defaultSize.price : 0;
 
     const card = document.createElement('article');
-    card.className = `product-card ${isOutOfStock ? 'out-of-stock' : ''}`;
+    card.className = 'product-card';
 
     const sizeHtml = product.sizes.length > 1
       ? `
@@ -497,7 +498,6 @@ const renderProducts = () => {
               type="button"
               class="qty-btn qty-minus"
               data-id="${product.id}"
-              ${isOutOfStock ? 'disabled' : ''}
             >
               −
             </button>
@@ -508,7 +508,6 @@ const renderProducts = () => {
               type="button"
               class="qty-btn qty-plus"
               data-id="${product.id}"
-              ${isOutOfStock ? 'disabled' : ''}
             >
               +
             </button>
@@ -518,9 +517,9 @@ const renderProducts = () => {
             type="button"
             class="add-btn add-cart-btn"
             data-id="${product.id}"
-            ${isOutOfStock || !defaultSize ? 'disabled' : ''}
+            ${!defaultSize ? 'disabled' : ''}
           >
-            ${isOutOfStock ? 'Stok Habis' : 'Add to Cart'}
+            Add to Cart
           </button>
         </div>
       </div>
@@ -553,14 +552,7 @@ const addToCart = item => {
   });
 
   if (existingItem) {
-    const newQuantity = existingItem.quantity + item.quantity;
-
-    if (newQuantity > item.stock) {
-      showToast('Jumlah cart melebihi stok tersedia.');
-      return;
-    }
-
-    existingItem.quantity = newQuantity;
+    existingItem.quantity += item.quantity;
     return;
   }
 
@@ -602,13 +594,7 @@ productGrid?.addEventListener('click', event => {
 
   if (plusButton) {
     const productId = Number(plusButton.dataset.id);
-    const product = products.find(item => item.id === productId);
     const currentQuantity = getQuantity(productId);
-
-    if (product && currentQuantity >= product.stock) {
-      showToast('Jumlah melebihi stok tersedia.');
-      return;
-    }
 
     setQuantity(productId, currentQuantity + 1);
     return;
@@ -618,8 +604,8 @@ productGrid?.addEventListener('click', event => {
     const productId = Number(addButton.dataset.id);
     const product = products.find(item => item.id === productId);
 
-    if (!product || product.stock <= 0) {
-      showToast('Stok produk habis.');
+    if (!product) {
+      showToast('Produk tidak ditemukan.');
       return;
     }
 
@@ -633,11 +619,6 @@ productGrid?.addEventListener('click', event => {
     }
 
     const quantity = getQuantity(product.id);
-
-    if (quantity > product.stock) {
-      showToast('Jumlah melebihi stok tersedia.');
-      return;
-    }
 
     addToCart({
       product_id: product.id,
@@ -820,11 +801,6 @@ cartList?.addEventListener('click', event => {
   }
 
   if (plusButton) {
-    if (item.quantity >= item.stock) {
-      showToast('Jumlah melebihi stok tersedia.');
-      return;
-    }
-
     item.quantity += 1;
   }
 
