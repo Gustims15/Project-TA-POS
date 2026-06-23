@@ -120,6 +120,14 @@ class ProductForm
                                     ->required()
                                     ->helperText('Estimasi modal/HPP untuk 1 cup pada size ini.'),
 
+                                Textarea::make('hpp_description')
+                                    ->label('Deskripsi HPP')
+                                    ->placeholder('Contoh: Kopi 3.000, susu 2.000, gula 1.000, cup 1.000, sedotan 500')
+                                    ->rows(3)
+                                    ->maxLength(1000)
+                                    ->helperText('Isi detail komponen HPP/modal pada size ini. Data ini hanya untuk admin dan tidak tampil di halaman POS.')
+                                    ->columnSpanFull(),
+
                                 Toggle::make('is_default')
                                     ->label('Default')
                                     ->helperText('Tandai jika size ini menjadi pilihan utama.')

@@ -22,6 +22,58 @@
         $productMargins = $finance['productMargins'] ?? [];
         $links = $finance['links'] ?? [];
 
+        $filters = $finance['filters'] ?? [];
+        $selectedMonth = (string) ($period['selected_month'] ?? $filters['selected_month'] ?? request()->query('month', 'all'));
+        $selectedYear = (int) ($period['selected_year'] ?? $filters['selected_year'] ?? request()->query('year', now()->year));
+        $yearlyDetails = $finance['yearlyDetails'] ?? $finance['yearly_details'] ?? [];
+
+        $months = $filters['months'] ?? [
+            'all' => 'Semua Bulan',
+            '1' => 'Januari',
+            '2' => 'Februari',
+            '3' => 'Maret',
+            '4' => 'April',
+            '5' => 'Mei',
+            '6' => 'Juni',
+            '7' => 'Juli',
+            '8' => 'Agustus',
+            '9' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $selectedMonthLabel = $months[$selectedMonth] ?? 'Semua Bulan';
+        $baseDashboardUrl = $links['dashboard_keuangan'] ?? url('/admin/dashboard-keuangan');
+
+        $makePeriodUrl = function (string $key) use ($baseDashboardUrl, $selectedYear) {
+            $params = ['period' => $key];
+
+            if ($key === 'year') {
+                $params['month'] = 'all';
+                $params['year'] = $selectedYear;
+            }
+
+            return $baseDashboardUrl . '?' . http_build_query($params);
+        };
+
+        $makeMonthUrl = function (string $month) use ($baseDashboardUrl, $selectedYear) {
+            return $baseDashboardUrl . '?' . http_build_query([
+                'period' => 'year',
+                'month' => $month,
+                'year' => $selectedYear,
+            ]);
+        };
+
+        $yearRevenue = (int) collect($yearlyDetails)->sum('revenue');
+        $yearHpp = (int) collect($yearlyDetails)->sum('total_hpp');
+        $yearGross = (int) collect($yearlyDetails)->sum('gross_profit');
+        $yearCost = (int) collect($yearlyDetails)->sum('operational_cost');
+        $yearNet = (int) collect($yearlyDetails)->sum('net_profit');
+        $yearMargin = $yearRevenue > 0 ? round(($yearGross / $yearRevenue) * 100, 1) : 0;
+        $yearMaxRevenue = max(1, (int) collect($yearlyDetails)->max('revenue'));
+
+
         $user = auth()->user();
 
         $periods = [
@@ -63,13 +115,26 @@
             <div class="ng-filter-area">
                 <div class="ng-period-tabs">
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $periods; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                        <a href="<?php echo e(request()->fullUrlWithQuery(['period' => $key])); ?>"
+                        <a href="<?php echo e($makePeriodUrl($key)); ?>"
                            class="ng-tab <?php echo e($activePeriod === $key ? 'active' : ''); ?>">
                             <?php echo e($label); ?>
 
                         </a>
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                 </div>
+
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activePeriod === 'year'): ?>
+                    <div class="ng-month-select-wrap">
+                        <select class="ng-month-select" onchange="window.location.href = this.value">
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $months; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $monthKey => $monthLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                <option value="<?php echo e($makeMonthUrl((string) $monthKey)); ?>" <?php if($selectedMonth === (string) $monthKey): echo 'selected'; endif; ?>>
+                                    <?php echo e($monthLabel); ?>
+
+                                </option>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                        </select>
+                    </div>
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                 <div class="ng-admin-profile">
                     <div class="ng-avatar">
@@ -88,6 +153,10 @@
         <section class="ng-finance-period-row">
             <span><?php echo e($period['label'] ?? 'Bulan Ini'); ?></span>
             <strong><?php echo e($period['start'] ?? '-'); ?> - <?php echo e($period['end'] ?? '-'); ?></strong>
+
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activePeriod === 'year'): ?>
+                <span class="ng-period-extra"><?php echo e($selectedMonthLabel); ?> • <?php echo e($selectedYear); ?></span>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </section>
 
         <section class="ng-kpi-grid">
@@ -121,6 +190,111 @@
                 </article>
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
         </section>
+
+
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activePeriod === 'year'): ?>
+            <section class="ng-year-detail-section">
+                <article class="ng-widget-card ng-year-card">
+                    <div class="ng-widget-head">
+                        <div>
+                            <h2>Detail Tahunan <?php echo e($selectedYear); ?></h2>
+                            <p>Rincian revenue, HPP, gross profit, biaya operasional, net profit, margin, dan target per bulan.</p>
+                        </div>
+
+                        <a href="<?php echo e($makeMonthUrl('all')); ?>">
+                            <?php echo e($selectedMonth === 'all' ? 'Semua Bulan' : 'Lihat Semua Bulan'); ?>
+
+                        </a>
+                    </div>
+
+                    <div class="ng-year-summary-strip">
+                        <div>
+                            <span>Revenue Tahun</span>
+                            <strong><?php echo e($this->rupiah($yearRevenue)); ?></strong>
+                        </div>
+                        <div>
+                            <span>Total HPP Tahun</span>
+                            <strong><?php echo e($this->rupiah($yearHpp)); ?></strong>
+                        </div>
+                        <div>
+                            <span>Gross Profit Tahun</span>
+                            <strong><?php echo e($this->rupiah($yearGross)); ?></strong>
+                        </div>
+                        <div>
+                            <span>Biaya Operasional</span>
+                            <strong><?php echo e($this->rupiah($yearCost)); ?></strong>
+                        </div>
+                        <div class="<?php echo e($yearNet >= 0 ? 'positive' : 'negative'); ?>">
+                            <span>Net Profit Tahun</span>
+                            <strong><?php echo e($this->rupiah($yearNet)); ?> • <?php echo e($yearMargin); ?>%</strong>
+                        </div>
+                    </div>
+
+                    <div class="ng-year-table-scroll">
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $yearlyDetails; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $monthRow): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                            <?php
+                                $monthKey = (string) ($monthRow['month_key'] ?? $monthRow['month'] ?? 'all');
+                                $rowRevenue = (int) ($monthRow['revenue'] ?? 0);
+                                $rowHpp = (int) ($monthRow['total_hpp'] ?? 0);
+                                $rowGross = (int) ($monthRow['gross_profit'] ?? 0);
+                                $rowCost = (int) ($monthRow['operational_cost'] ?? 0);
+                                $rowNet = (int) ($monthRow['net_profit'] ?? 0);
+                                $rowTarget = (int) ($monthRow['target_revenue'] ?? 0);
+                                $rowMargin = $monthRow['profit_margin'] ?? 0;
+                                $revenueWidth = min(100, round(($rowRevenue / $yearMaxRevenue) * 100));
+                                $isSelectedMonth = $selectedMonth === $monthKey;
+                            ?>
+
+                            <a href="<?php echo e($makeMonthUrl($monthKey)); ?>" class="ng-year-row <?php echo e($isSelectedMonth ? 'active' : ''); ?>">
+                                <div class="ng-year-month">
+                                    <strong><?php echo e($monthRow['month_name'] ?? '-'); ?></strong>
+                                    <span><?php echo e($monthRow['period'] ?? '-'); ?></span>
+                                </div>
+
+                                <div class="ng-year-values">
+                                    <div>
+                                        <span>Revenue</span>
+                                        <strong><?php echo e($this->rupiah($rowRevenue)); ?></strong>
+                                    </div>
+                                    <div>
+                                        <span>HPP</span>
+                                        <strong><?php echo e($this->rupiah($rowHpp)); ?></strong>
+                                    </div>
+                                    <div>
+                                        <span>Gross</span>
+                                        <strong><?php echo e($this->rupiah($rowGross)); ?></strong>
+                                    </div>
+                                    <div>
+                                        <span>Biaya</span>
+                                        <strong><?php echo e($this->rupiah($rowCost)); ?></strong>
+                                    </div>
+                                    <div class="<?php echo e($rowNet >= 0 ? 'positive' : 'negative'); ?>">
+                                        <span>Net</span>
+                                        <strong><?php echo e($this->rupiah($rowNet)); ?></strong>
+                                    </div>
+                                    <div>
+                                        <span>Margin</span>
+                                        <strong><?php echo e($rowMargin); ?>%</strong>
+                                    </div>
+                                    <div>
+                                        <span>Target</span>
+                                        <strong><?php echo e($this->rupiah($rowTarget)); ?></strong>
+                                    </div>
+                                </div>
+
+                                <div class="ng-year-progress">
+                                    <i style="width: <?php echo e($revenueWidth); ?>%;"></i>
+                                </div>
+                            </a>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                            <div class="ng-empty-state">
+                                Belum ada detail tahunan untuk ditampilkan.
+                            </div>
+                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                    </div>
+                </article>
+            </section>
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
         <section class="ng-finance-main-grid">
             <article class="ng-widget-card ng-profit-engine-card">
@@ -1035,6 +1209,221 @@
             text-align: center;
         }
 
+
+        .ng-month-select-wrap {
+            height: 48px;
+            min-width: 164px;
+            display: flex;
+            align-items: center;
+            padding: 5px 12px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .42);
+            border: 1px solid rgba(255, 255, 255, .58);
+            box-shadow: 0 18px 50px rgba(120, 74, 30, .09), inset 0 1px 0 rgba(255, 255, 255, .58);
+            backdrop-filter: blur(13px);
+        }
+
+        .ng-month-select {
+            width: 100%;
+            min-height: 36px;
+            border: 0;
+            outline: 0;
+            cursor: pointer;
+            color: #6b5541;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .ng-month-select option {
+            color: #2d1f16;
+            background: #fff6ea;
+            font-weight: 800;
+        }
+
+        .ng-period-extra {
+            color: #d95d00 !important;
+            font-weight: 950 !important;
+        }
+
+        .ng-year-detail-section {
+            margin-bottom: 16px;
+        }
+
+        .ng-year-card {
+            padding: 18px;
+        }
+
+        .ng-year-summary-strip {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .ng-year-summary-strip div {
+            min-width: 0;
+            min-height: 66px;
+            display: grid;
+            align-content: center;
+            gap: 6px;
+            padding: 12px 13px;
+            border-radius: 17px;
+            background: rgba(255, 255, 255, .24);
+            border: 1px solid rgba(255, 255, 255, .38);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .34);
+        }
+
+        .ng-year-summary-strip span {
+            color: #7b624c;
+            font-size: 10px;
+            line-height: 1.2;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .ng-year-summary-strip strong {
+            color: #2b1b10;
+            font-size: 14px;
+            line-height: 1.15;
+            font-weight: 950;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ng-year-summary-strip .positive strong {
+            color: #078657;
+        }
+
+        .ng-year-summary-strip .negative strong {
+            color: #d73333;
+        }
+
+        .ng-year-table-scroll {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            gap: 9px;
+            max-height: 430px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .ng-year-table-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .ng-year-table-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, .28);
+            border-radius: 999px;
+        }
+
+        .ng-year-table-scroll::-webkit-scrollbar-thumb {
+            background: rgba(249, 115, 22, .55);
+            border-radius: 999px;
+        }
+
+        .ng-year-row {
+            display: grid;
+            grid-template-columns: 150px minmax(0, 1fr);
+            gap: 12px;
+            align-items: center;
+            min-width: 0;
+            padding: 12px;
+            border-radius: 18px;
+            color: inherit;
+            text-decoration: none;
+            background: rgba(255, 255, 255, .24);
+            border: 1px solid rgba(255, 255, 255, .38);
+            transition: .2s ease;
+        }
+
+        .ng-year-row:hover,
+        .ng-year-row.active {
+            background: rgba(255, 255, 255, .52);
+            border-color: rgba(249, 115, 22, .45);
+            box-shadow: 0 14px 28px rgba(249, 115, 22, .12), inset 0 1px 0 rgba(255, 255, 255, .54);
+        }
+
+        .ng-year-month strong {
+            display: block;
+            color: #2b1b10;
+            font-size: 13px;
+            font-weight: 950;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ng-year-month span {
+            display: block;
+            margin-top: 4px;
+            color: #8b7057;
+            font-size: 10px;
+            font-weight: 850;
+        }
+
+        .ng-year-values {
+            min-width: 0;
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .ng-year-values div {
+            min-width: 0;
+        }
+
+        .ng-year-values span {
+            display: block;
+            color: #8b7057;
+            font-size: 9px;
+            line-height: 1.2;
+            font-weight: 850;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .ng-year-values strong {
+            display: block;
+            margin-top: 4px;
+            color: #2b1b10;
+            font-size: 10px;
+            line-height: 1.2;
+            font-weight: 950;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ng-year-values .positive strong {
+            color: #078657;
+        }
+
+        .ng-year-values .negative strong {
+            color: #d73333;
+        }
+
+        .ng-year-progress {
+            grid-column: 2 / -1;
+            width: 100%;
+            height: 7px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(249, 115, 22, .11);
+        }
+
+        .ng-year-progress i {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #ff9d18, #f97316);
+        }
+
         @media (max-width: 1500px) {
             .ng-kpi-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1043,6 +1432,14 @@
             .ng-finance-main-grid,
             .ng-finance-bottom-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .ng-year-summary-strip {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .ng-year-values {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
             }
         }
 
@@ -1058,8 +1455,21 @@
 
             .ng-kpi-grid,
             .ng-margin-grid,
-            .ng-finance-shortcuts {
+            .ng-finance-shortcuts,
+            .ng-year-summary-strip {
                 grid-template-columns: 1fr;
+            }
+
+            .ng-year-row {
+                grid-template-columns: 1fr;
+            }
+
+            .ng-year-values {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .ng-year-progress {
+                grid-column: 1 / -1;
             }
         }
         /* =========================================================

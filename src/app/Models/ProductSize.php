@@ -14,6 +14,7 @@ class ProductSize extends Model
         'name',
         'price',
         'hpp',
+        'hpp_description',
         'is_default',
         'is_active',
     ];

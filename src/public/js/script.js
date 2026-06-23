@@ -15,6 +15,18 @@ const grandTotal = document.querySelector('#grandTotal');
 const placeOrder = document.querySelector('#placeOrder');
 const toast = document.querySelector('#toast');
 
+
+// Informasi stok tetap disimpan dan tetap dipakai untuk logic transaksi,
+// tetapi badge stok pada kartu produk disembunyikan dari tampilan POS.
+const hideProductStockStyle = document.createElement('style');
+hideProductStockStyle.textContent = `
+  .product-card .stock-badge,
+  .product-card .stock-badge.empty {
+    display: none !important;
+  }
+`;
+document.head.appendChild(hideProductStockStyle);
+
 const checkoutConfirmBackdrop = document.querySelector('#checkoutConfirmBackdrop');
 const checkoutConfirmModal = document.querySelector('#checkoutConfirmModal');
 const confirmTotalItem = document.querySelector('#confirmTotalItem');
