@@ -4,35 +4,35 @@
     $cards = [
         [
             'label' => 'Total Kategori',
-            'value' => number_format($summary['total_categories'], 0, ',', '.'),
+            'value' => number_format((int) ($summary['total_categories'] ?? 0), 0, ',', '.'),
             'caption' => 'Semua kategori',
             'icon' => '▣',
             'color' => '#f97316',
         ],
         [
             'label' => 'Kategori Aktif',
-            'value' => number_format($summary['active_categories'], 0, ',', '.'),
+            'value' => number_format((int) ($summary['active_categories'] ?? 0), 0, ',', '.'),
             'caption' => 'Tampil pada sistem',
             'icon' => '✓',
             'color' => '#10b981',
         ],
         [
             'label' => 'Kategori Nonaktif',
-            'value' => number_format($summary['inactive_categories'], 0, ',', '.'),
+            'value' => number_format((int) ($summary['inactive_categories'] ?? 0), 0, ',', '.'),
             'caption' => 'Tidak digunakan',
             'icon' => '!',
             'color' => '#ef4444',
         ],
         [
             'label' => 'Total Produk',
-            'value' => number_format($summary['total_products'], 0, ',', '.'),
+            'value' => number_format((int) ($summary['total_products'] ?? 0), 0, ',', '.'),
             'caption' => 'Produk terhubung',
             'icon' => '◇',
             'color' => '#3b82f6',
         ],
         [
             'label' => 'Kategori Kosong',
-            'value' => number_format($summary['empty_categories'], 0, ',', '.'),
+            'value' => number_format((int) ($summary['empty_categories'] ?? 0), 0, ',', '.'),
             'caption' => 'Belum ada produk',
             'icon' => '○',
             'color' => '#8b5cf6',
@@ -41,202 +41,67 @@
 @endphp
 
 <x-filament-widgets::widget>
-    <div class="ng-category-page" style="
-        width: 100%;
-        padding: 18px 18px 12px;
-        font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        color: #24180f;
-    ">
-        <div style="
-            display: grid;
-            grid-template-columns: minmax(0, 1.35fr) minmax(340px, .65fr);
-            gap: 12px;
-            margin-bottom: 12px;
-        ">
-            <div style="
-                min-height: 126px;
-                padding: 20px 22px;
-                border-radius: 24px;
-                border: 1px solid rgba(255, 255, 255, .56);
-                background: rgba(255, 247, 235, .18);
-                box-shadow:
-                    0 20px 48px rgba(101, 58, 21, .10),
-                    0 0 0 1px rgba(255, 255, 255, .10) inset,
-                    inset 0 1px 0 rgba(255, 255, 255, .56);
-                backdrop-filter: blur(13px);
-                overflow: hidden;
-            ">
+    <div class="ng-category-page">
+        <section class="ng-category-hero-grid">
+            <article class="ng-widget-card ng-category-hero-card">
+                <div class="ng-widget-head">
+                    <div>
+                        <h1>Category Management</h1>
 
-                <h1 style="
-                    margin: 0;
-                    color: #21160d;
-                    font-size: 30px;
-                    line-height: 1.05;
-                    font-weight: 950;
-                    letter-spacing: -.04em;
-                ">
-                    Category Management
-                </h1>
-
-                <p style="
-                    max-width: 720px;
-                    margin: 7px 0 0;
-                    color: #765d45;
-                    font-size: 12px;
-                    font-weight: 650;
-                    line-height: 1.5;
-                ">
-                    Kelola kategori produk minuman agar data produk lebih rapi dan mudah digunakan pada halaman kasir POS.
-                </p>
-            </div>
-
-            <div style="
-                min-height: 126px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 14px;
-                padding: 20px 22px;
-                border-radius: 24px;
-                border: 1px solid rgba(255, 255, 255, .56);
-                background: rgba(255, 247, 235, .18);
-                box-shadow:
-                    0 20px 48px rgba(101, 58, 21, .10),
-                    0 0 0 1px rgba(255, 255, 255, .10) inset,
-                    inset 0 1px 0 rgba(255, 255, 255, .56);
-                backdrop-filter: blur(13px);
-                overflow: hidden;
-            ">
-                <div style="min-width: 0;">
-                    <span style="
-                        display: block;
-                        color: #765d45;
-                        font-size: 11px;
-                        font-weight: 850;
-                    ">
-                        Kategori Terbanyak Produk
-                    </span>
-
-                    <strong style="
-                        display: block;
-                        max-width: 280px;
-                        margin: 7px 0;
-                        overflow: hidden;
-                        color: #21160d;
-                        font-size: 22px;
-                        line-height: 1.1;
-                        font-weight: 950;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                    ">
-                        {{ $summary['top_category_name'] }}
-                    </strong>
-
-                    <small style="
-                        display: block;
-                        color: #765d45;
-                        font-size: 11px;
-                        font-weight: 850;
-                    ">
-                        {{ number_format($summary['top_category_products'], 0, ',', '.') }} produk terhubung
-                    </small>
-                </div>
-
-                <a href="{{ $createUrl }}" style="
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    min-height: 42px;
-                    padding: 0 16px;
-                    border-radius: 15px;
-                    color: #fff;
-                    background: linear-gradient(135deg, #ff9d18, #ee6500);
-                    box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
-                    font-size: 12px;
-                    font-weight: 950;
-                    text-decoration: none;
-                    white-space: nowrap;
-                ">
-                    + New Kategori
-                </a>
-            </div>
-        </div>
-
-        <div style="
-            display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
-            gap: 10px;
-            margin-bottom: 12px;
-        ">
-            @foreach ($cards as $card)
-                <div style="
-                    min-height: 90px;
-                    display: flex;
-                    align-items: center;
-                    gap: 11px;
-                    padding: 14px 14px;
-                    border-radius: 20px;
-                    border: 1px solid rgba(255, 255, 255, .54);
-                    background: rgba(255, 247, 235, .16);
-                    box-shadow:
-                        0 18px 42px rgba(101, 58, 21, .09),
-                        0 0 0 1px rgba(255, 255, 255, .10) inset,
-                        inset 0 1px 0 rgba(255, 255, 255, .52);
-                    backdrop-filter: blur(13px);
-                    overflow: hidden;
-                ">
-                    <div style="
-                        display: grid;
-                        place-items: center;
-                        flex: 0 0 auto;
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 14px;
-                        color: #fff;
-                        background: linear-gradient(135deg, {{ $card['color'] }}, #d95d00);
-                        box-shadow: 0 14px 24px rgba(249, 115, 22, .20);
-                        font-size: 15px;
-                        font-weight: 950;
-                    ">
-                        {{ $card['icon'] }}
-                    </div>
-
-                    <div style="min-width: 0; flex: 1;">
-                        <span style="
-                            display: block;
-                            color: #6f5946;
-                            font-size: 11px;
-                            line-height: 1.2;
-                            font-weight: 900;
-                        ">
-                            {{ $card['label'] }}
-                        </span>
-
-                        <strong style="
-                            display: block;
-                            margin-top: 6px;
-                            color: #23160d;
-                            font-size: 18px;
-                            line-height: 1.15;
-                            font-weight: 950;
-                            letter-spacing: -.03em;
-                        ">
-                            {{ $card['value'] }}
-                        </strong>
-
-                        <p style="
-                            margin: 6px 0 0;
-                            color: #6f5946;
-                            font-size: 10px;
-                            line-height: 1.25;
-                            font-weight: 850;
-                        ">
-                            {{ $card['caption'] }}
+                        <p>
+                            Kelola kategori produk minuman agar data produk lebih rapi dan mudah digunakan
+                            pada halaman kasir POS.
                         </p>
                     </div>
                 </div>
+            </article>
+
+            <article class="ng-widget-card ng-category-highlight-card">
+                <div class="ng-highlight-info">
+                    <span>Kategori Terbanyak Produk</span>
+
+                    <strong>
+                        {{ $summary['top_category_name'] ?? '-' }}
+                    </strong>
+
+                    <small>
+                        {{ number_format((int) ($summary['top_category_products'] ?? 0), 0, ',', '.') }}
+                        produk terhubung
+                    </small>
+                </div>
+
+                <div class="ng-highlight-actions">
+                    <a href="{{ $createUrl }}" class="ng-primary-button">
+                        + New Kategori
+                    </a>
+                </div>
+            </article>
+        </section>
+
+        <section class="ng-kpi-grid">
+            @foreach ($cards as $card)
+                <article class="ng-kpi-card" style="--accent: {{ $card['color'] ?? '#f97316' }};">
+                    <div class="ng-kpi-icon">
+                        {{ $card['icon'] ?? '▣' }}
+                    </div>
+
+                    <div class="ng-kpi-content">
+                        <div class="ng-kpi-label">
+                            {{ $card['label'] ?? '-' }}
+                            <span>⋮</span>
+                        </div>
+
+                        <strong>
+                            {{ $card['value'] ?? '-' }}
+                        </strong>
+
+                        <p class="neutral">
+                            {{ $card['caption'] ?? '-' }}
+                        </p>
+                    </div>
+                </article>
             @endforeach
-        </div>
+        </section>
     </div>
 
     <style>
@@ -247,11 +112,11 @@
 
         body:has(.ng-category-page) {
             background:
-                linear-gradient(120deg, rgba(255, 248, 237, .10), rgba(255, 224, 185, .02)),
+                linear-gradient(120deg, rgba(255, 248, 237, .18), rgba(255, 224, 185, .05)),
                 url('/images/pos-orange-bg.png'),
-                radial-gradient(circle at 15% 8%, rgba(255, 255, 255, .32) 0 130px, transparent 280px),
+                radial-gradient(circle at 15% 8%, rgba(255, 255, 255, .48) 0 130px, transparent 280px),
                 radial-gradient(circle at 88% 78%, rgba(255, 118, 0, .42) 0 250px, transparent 520px),
-                radial-gradient(circle at 20% 96%, rgba(255, 181, 83, .28) 0 220px, transparent 500px),
+                radial-gradient(circle at 20% 96%, rgba(255, 181, 83, .30) 0 220px, transparent 500px),
                 linear-gradient(135deg, #fff3df 0%, #ffd394 48%, #ff9c45 100%) !important;
             background-size: cover !important;
             background-position: center !important;
@@ -280,103 +145,318 @@
             padding: 0 !important;
         }
 
-        body:has(.ng-category-page) .fi-sidebar {
-            background: rgba(255, 250, 242, .50) !important;
-            border-right: 1px solid rgba(255, 255, 255, .48) !important;
-            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
-            backdrop-filter: blur(16px) !important;
+        body:has(.ng-category-page) .fi-page-content {
+            gap: 0 !important;
+            row-gap: 0 !important;
         }
 
-        body:has(.ng-category-page) .fi-sidebar-nav {
-            padding: 18px 14px !important;
-        }
-
-        body:has(.ng-category-page) .fi-sidebar-item a {
-            border-radius: 14px !important;
-            color: #6f5844 !important;
-            transition: .2s ease !important;
-        }
-
-        body:has(.ng-category-page) .fi-sidebar-item-active a,
-        body:has(.ng-category-page) .fi-sidebar-item a:hover {
-            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
-            color: #fff !important;
-            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
-        }
-
-        body:has(.ng-category-page) .fi-wi-widget {
-            background: transparent !important;
-            box-shadow: none !important;
-            border: none !important;
-        }
-
-        body:has(.ng-category-page) .fi-wi-widget-content {
+        body:has(.ng-category-page) .fi-wi,
+        body:has(.ng-category-page) .fi-wi-widget,
+        body:has(.ng-category-page) .fi-wi-widget-content,
+        body:has(.ng-category-page) .fi-wi-widgets,
+        body:has(.ng-category-page) .fi-wi-widgets > * {
+            margin: 0 !important;
             padding: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
         }
 
-        /* wrapper tabel utama */
-        body:has(.ng-category-page) .fi-ta-ctn {
-            border-radius: 24px !important;
-            border: 1px solid rgba(255, 255, 255, .46) !important;
-            background: rgba(255, 247, 235, .14) !important;
-            box-shadow:
-                0 18px 46px rgba(101, 58, 21, .09),
-                inset 0 1px 0 rgba(255, 255, 255, .38) !important;
-            backdrop-filter: blur(12px) !important;
+        .ng-category-page {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 24px 24px 10px !important;
             overflow: hidden !important;
+            font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #24180f;
         }
 
-        /* buang layer dalam biar ga dobel */
-        body:has(.ng-category-page) .fi-ta,
+        .ng-category-page * {
+            box-sizing: border-box;
+        }
+
+        .ng-category-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(360px, .55fr);
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .ng-widget-card,
+        .ng-kpi-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, .58);
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, .46), rgba(255, 246, 231, .22)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .16), transparent 38%) !important;
+            box-shadow:
+                0 22px 54px rgba(101, 58, 21, .12),
+                0 0 0 1px rgba(255, 255, 255, .12) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .62);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .ng-widget-card::before,
+        .ng-kpi-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(120deg, rgba(255, 255, 255, .34), transparent 28%, transparent 70%, rgba(255, 255, 255, .16));
+            opacity: .38;
+        }
+
+        .ng-widget-card {
+            min-width: 0;
+            padding: 18px;
+            border-radius: 24px;
+        }
+
+        .ng-category-hero-card,
+        .ng-category-highlight-card {
+            min-height: 126px;
+        }
+
+        .ng-category-hero-card {
+            display: flex;
+            align-items: center;
+        }
+
+        .ng-category-highlight-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .ng-widget-head {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            width: 100%;
+        }
+
+        .ng-widget-head h1 {
+            margin: 0;
+            color: #21160d;
+            font-size: 30px;
+            line-height: 1.05;
+            font-weight: 950;
+            letter-spacing: -.04em;
+        }
+
+        .ng-widget-head p {
+            max-width: 760px;
+            margin: 8px 0 0;
+            color: #765d45;
+            font-size: 13px;
+            line-height: 1.55;
+            font-weight: 700;
+        }
+
+        .ng-highlight-info {
+            position: relative;
+            z-index: 2;
+            min-width: 0;
+        }
+
+        .ng-highlight-info span {
+            display: block;
+            color: #765d45;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .ng-highlight-info strong {
+            display: block;
+            max-width: 280px;
+            margin: 8px 0;
+            overflow: hidden;
+            color: #21160d;
+            font-size: 22px;
+            line-height: 1.1;
+            font-weight: 950;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            letter-spacing: -.03em;
+        }
+
+        .ng-highlight-info small {
+            display: block;
+            color: #765d45;
+            font-size: 11px;
+            line-height: 1.35;
+            font-weight: 850;
+        }
+
+        .ng-highlight-actions {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 9px;
+            flex-wrap: wrap;
+        }
+
+        .ng-primary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 15px;
+            color: #fff;
+            background: linear-gradient(135deg, #ff9d18, #ee6500);
+            box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
+            font-size: 12px;
+            font-weight: 950;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: .2s ease;
+        }
+
+        .ng-primary-button:hover {
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 18px 32px rgba(238, 101, 0, .30);
+        }
+
+        .ng-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 8px;
+        }
+
+        .ng-kpi-card {
+            min-height: 108px;
+            display: flex;
+            gap: 12px;
+            padding: 16px 15px;
+            border-radius: 22px;
+        }
+
+        .ng-kpi-icon {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            width: 44px;
+            height: 44px;
+            border-radius: 15px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent), #d95d00);
+            box-shadow: 0 15px 28px rgba(249, 115, 22, .22);
+            font-size: 17px;
+            font-weight: 950;
+        }
+
+        .ng-kpi-content {
+            position: relative;
+            z-index: 1;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .ng-kpi-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            color: #6f5946;
+            font-size: 12px;
+            line-height: 1.2;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .ng-kpi-content strong {
+            display: block;
+            margin-top: 7px;
+            color: #23160d;
+            font-size: 22px;
+            line-height: 1.15;
+            font-weight: 950;
+            letter-spacing: -.03em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ng-kpi-content p {
+            margin: 8px 0 0;
+            color: #6f5946;
+            font-size: 11px;
+            line-height: 1.25;
+            font-weight: 850;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | TABLE FILAMENT - CATEGORY
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-category-page) .fi-ta-ctn {
+            margin: 0 24px 24px !important;
+            width: calc(100% - 48px) !important;
+            border-radius: 24px !important;
+            border: 1px solid rgba(255, 255, 255, .58) !important;
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, .34), rgba(255, 246, 231, .18)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .12), transparent 38%) !important;
+            box-shadow:
+                0 22px 54px rgba(101, 58, 21, .12),
+                0 0 0 1px rgba(255, 255, 255, .12) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .54) !important;
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
+            overflow: hidden !important;
+            transform: none !important;
+        }
+
         body:has(.ng-category-page) .fi-section,
+        body:has(.ng-category-page) .fi-ta,
         body:has(.ng-category-page) .fi-ta-content,
         body:has(.ng-category-page) .fi-ta-table,
-        body:has(.ng-category-page) .fi-ta-table thead,
-        body:has(.ng-category-page) .fi-ta-table tbody {
+        body:has(.ng-category-page) .fi-ta-ctn > div,
+        body:has(.ng-category-page) .fi-ta-ctn > div > div,
+        body:has(.ng-category-page) .fi-ta-ctn > div > div > div,
+        body:has(.ng-category-page) table,
+        body:has(.ng-category-page) thead,
+        body:has(.ng-category-page) tbody,
+        body:has(.ng-category-page) tr,
+        body:has(.ng-category-page) th,
+        body:has(.ng-category-page) td {
             background: transparent !important;
-            border: none !important;
             box-shadow: none !important;
-            backdrop-filter: none !important;
         }
 
-        /* header search area */
         body:has(.ng-category-page) .fi-ta-header,
         body:has(.ng-category-page) .fi-ta-toolbar {
+            min-height: 46px !important;
+            padding: 8px 16px !important;
             background: rgba(255, 247, 235, .10) !important;
-            border-bottom: 1px solid rgba(114, 74, 41, .07) !important;
+            border-bottom: 1px solid rgba(114, 74, 41, .08) !important;
         }
 
-        /* header kolom */
-        body:has(.ng-category-page) .fi-ta-table thead tr {
-            background: rgba(255, 247, 235, .10) !important;
-        }
-
-        body:has(.ng-category-page) .fi-ta-row,
-        body:has(.ng-category-page) .fi-ta-cell,
         body:has(.ng-category-page) .fi-ta-header-cell {
-            background: transparent !important;
-        }
-
-        body:has(.ng-category-page) .fi-ta-row {
-            min-height: 58px !important;
-            border-bottom: 1px solid rgba(114, 74, 41, .07) !important;
-            transition: .18s ease !important;
-        }
-
-        body:has(.ng-category-page) .fi-ta-row:hover {
+            padding-top: 9px !important;
+            padding-bottom: 9px !important;
             background: rgba(255, 255, 255, .10) !important;
-        }
-
-        body:has(.ng-category-page) .fi-ta-cell {
-            padding-top: 10px !important;
-            padding-bottom: 10px !important;
-            border-color: rgba(114, 74, 41, .07) !important;
-        }
-
-        body:has(.ng-category-page) .fi-ta-header-cell {
-            padding-top: 11px !important;
-            padding-bottom: 11px !important;
-            border-color: rgba(114, 74, 41, .07) !important;
+            border-color: rgba(114, 74, 41, .08) !important;
         }
 
         body:has(.ng-category-page) .fi-ta-header-cell-label {
@@ -385,20 +465,103 @@
             font-weight: 950 !important;
         }
 
+        body:has(.ng-category-page) .fi-ta-row {
+            min-height: 52px !important;
+            border-bottom: 1px solid rgba(114, 74, 41, .08) !important;
+            background: rgba(255, 247, 235, .04) !important;
+            transition: .18s ease !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-row:hover {
+            background: rgba(255, 255, 255, .14) !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-cell {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+            border-color: rgba(114, 74, 41, .08) !important;
+            background: transparent !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-table {
+            table-layout: fixed !important;
+            width: 100% !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-table th:nth-child(1),
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(1) {
+            width: 52px !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-table th:nth-child(2),
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(2) {
+            width: 34% !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-table th:nth-child(3),
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(3) {
+            width: 20% !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-table th:nth-child(4),
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(4) {
+            width: 15% !important;
+            text-align: center !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-table th:nth-child(5),
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(5) {
+            width: 18% !important;
+            text-align: center !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-table th:nth-child(6),
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(6) {
+            width: 90px !important;
+            text-align: right !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-cell div[style*="min-width:210px"] {
+            min-width: 170px !important;
+            gap: 10px !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-cell div[style*="width:42px"] {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 13px !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-cell span[style*="border-radius:999px"],
+        body:has(.ng-category-page) .fi-ta-cell div[style*="border-radius:999px"] {
+            min-height: 26px !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+            font-size: 10px !important;
+        }
+
         body:has(.ng-category-page) .fi-ta-pagination,
         body:has(.ng-category-page) .fi-pagination {
+            min-height: 50px !important;
+            padding: 8px 16px !important;
             background: rgba(255, 247, 235, .10) !important;
-            border-top: 1px solid rgba(114, 74, 41, .07) !important;
+            border-top: 1px solid rgba(114, 74, 41, .08) !important;
         }
 
         body:has(.ng-category-page) .fi-input-wrp,
         body:has(.ng-category-page) .fi-ta-search-field .fi-input-wrp,
         body:has(.ng-category-page) .fi-select-input {
+            min-height: 38px !important;
             border-radius: 16px !important;
-            background: rgba(255, 255, 255, .26) !important;
-            border-color: rgba(255, 255, 255, .40) !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32) !important;
+            background: rgba(255, 255, 255, .28) !important;
+            border-color: rgba(255, 255, 255, .42) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .36) !important;
             backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-search-field {
+            max-width: 280px !important;
         }
 
         body:has(.ng-category-page) .fi-btn {
@@ -406,210 +569,111 @@
             font-weight: 900 !important;
         }
 
-        body:has(.ng-category-page) .fi-btn-color-primary {
+        body:has(.ng-category-page) .fi-btn-color-primary,
+        body:has(.ng-category-page) .fi-btn-color-warning {
             background: linear-gradient(135deg, #ff9d18, #ee6500) !important;
             box-shadow: 0 12px 22px rgba(238, 101, 0, .22) !important;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | SIDEBAR EFFECT SYNC
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-category-page) .fi-sidebar,
+        body:has(.ng-category-form-page) .fi-sidebar {
+            background: rgba(255, 250, 242, .50) !important;
+            border-right: 1px solid rgba(255, 255, 255, .48) !important;
+            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+        }
+
+        body:has(.ng-category-page) .fi-sidebar-nav,
+        body:has(.ng-category-form-page) .fi-sidebar-nav {
+            padding: 18px 14px !important;
+        }
+
+        body:has(.ng-category-page) .fi-sidebar-item a,
+        body:has(.ng-category-form-page) .fi-sidebar-item a {
+            border-radius: 14px !important;
+            color: #6f5844 !important;
+            transition: .2s ease !important;
+        }
+
+        body:has(.ng-category-page) .fi-sidebar-item-active a,
+        body:has(.ng-category-page) .fi-sidebar-item a:hover,
+        body:has(.ng-category-form-page) .fi-sidebar-item-active a,
+        body:has(.ng-category-form-page) .fi-sidebar-item a:hover {
+            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
+            color: #fff !important;
+            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
+        }
+
+        body:has(.ng-category-page) .fi-sidebar-item-active svg,
+        body:has(.ng-category-page) .fi-sidebar-item a:hover svg,
+        body:has(.ng-category-form-page) .fi-sidebar-item-active svg,
+        body:has(.ng-category-form-page) .fi-sidebar-item a:hover svg,
+        body:has(.ng-category-page) .fi-sidebar-item-active span,
+        body:has(.ng-category-page) .fi-sidebar-item a:hover span,
+        body:has(.ng-category-form-page) .fi-sidebar-item-active span,
+        body:has(.ng-category-form-page) .fi-sidebar-item a:hover span {
+            color: #fff !important;
+        }
+
         @media (max-width: 1500px) {
-            [style*="grid-template-columns: repeat(5"] {
-                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            .ng-category-hero-grid {
+                grid-template-columns: 1fr;
             }
 
-            [style*="grid-template-columns: minmax(0, 1.35fr)"] {
-                grid-template-columns: 1fr !important;
+            .ng-kpi-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
             }
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .ng-category-page {
-                padding: 14px !important;
+                padding: 18px 18px 10px !important;
             }
 
-            [style*="grid-template-columns: repeat(5"] {
-                grid-template-columns: 1fr !important;
+            .ng-kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ng-category-highlight-card {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .ng-highlight-actions {
+                justify-content: flex-start;
+            }
+
+            body:has(.ng-category-page) .fi-ta-ctn {
+                margin: 0 18px 22px !important;
+                width: calc(100% - 36px) !important;
             }
         }
-        /* =========================================================
-   FINAL TABLE CATEGORY SPACING PATCH
-   Merapatkan tabel kategori dan menyamakan kiri-kanan
-========================================================= */
 
-/* Samakan jarak tabel dengan widget atas */
-body:has(.ng-category-page) .fi-ta-ctn {
-    margin-left: 18px !important;
-    margin-right: 18px !important;
-    width: calc(100% - 36px) !important;
-}
+        @media (max-width: 640px) {
+            .ng-category-page {
+                padding: 14px 14px 8px !important;
+            }
 
-/* Area search/header tabel jangan terlalu tinggi */
-body:has(.ng-category-page) .fi-ta-header,
-body:has(.ng-category-page) .fi-ta-toolbar {
-    min-height: 52px !important;
-    padding: 8px 16px !important;
-}
+            .ng-widget-head h1 {
+                font-size: 26px;
+            }
 
-/* Header kolom lebih compact */
-body:has(.ng-category-page) .fi-ta-header-cell {
-    padding-top: 9px !important;
-    padding-bottom: 9px !important;
-}
+            .ng-widget-card {
+                padding: 16px;
+                border-radius: 22px;
+            }
 
-/* Row tabel lebih rapat */
-body:has(.ng-category-page) .fi-ta-row {
-    min-height: 52px !important;
-}
-
-body:has(.ng-category-page) .fi-ta-cell {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-}
-
-/* Biar kolom tidak terlalu berjauhan */
-body:has(.ng-category-page) .fi-ta-table {
-    table-layout: fixed !important;
-    width: 100% !important;
-}
-
-/* Kolom checkbox */
-body:has(.ng-category-page) .fi-ta-table th:nth-child(1),
-body:has(.ng-category-page) .fi-ta-table td:nth-child(1) {
-    width: 52px !important;
-}
-
-/* Kolom Nama Kategori */
-body:has(.ng-category-page) .fi-ta-table th:nth-child(2),
-body:has(.ng-category-page) .fi-ta-table td:nth-child(2) {
-    width: 34% !important;
-}
-
-/* Kolom Slug */
-body:has(.ng-category-page) .fi-ta-table th:nth-child(3),
-body:has(.ng-category-page) .fi-ta-table td:nth-child(3) {
-    width: 20% !important;
-}
-
-/* Kolom Aktif */
-body:has(.ng-category-page) .fi-ta-table th:nth-child(4),
-body:has(.ng-category-page) .fi-ta-table td:nth-child(4) {
-    width: 15% !important;
-    text-align: center !important;
-}
-
-/* Kolom Jumlah Produk */
-body:has(.ng-category-page) .fi-ta-table th:nth-child(5),
-body:has(.ng-category-page) .fi-ta-table td:nth-child(5) {
-    width: 18% !important;
-    text-align: center !important;
-}
-
-/* Kolom Edit */
-body:has(.ng-category-page) .fi-ta-table th:nth-child(6),
-body:has(.ng-category-page) .fi-ta-table td:nth-child(6) {
-    width: 90px !important;
-    text-align: right !important;
-}
-
-/* Nama kategori lebih compact */
-body:has(.ng-category-page) .fi-ta-cell div[style*="min-width:210px"] {
-    min-width: 170px !important;
-    gap: 10px !important;
-}
-
-/* Avatar huruf kategori sedikit kecil */
-body:has(.ng-category-page) .fi-ta-cell div[style*="width:42px"] {
-    width: 36px !important;
-    height: 36px !important;
-    border-radius: 13px !important;
-}
-
-/* Badge slug dan jumlah produk sedikit compact */
-body:has(.ng-category-page) .fi-ta-cell span[style*="border-radius:999px"],
-body:has(.ng-category-page) .fi-ta-cell div[style*="border-radius:999px"] {
-    min-height: 26px !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    font-size: 10px !important;
-}
-
-/* Search field lebih kecil dan rapi */
-body:has(.ng-category-page) .fi-ta-search-field {
-    max-width: 280px !important;
-}
-
-body:has(.ng-category-page) .fi-ta-search-field .fi-input-wrp {
-    min-height: 36px !important;
-}
-
-/* Pagination bawah lebih rapat */
-body:has(.ng-category-page) .fi-ta-pagination,
-body:has(.ng-category-page) .fi-pagination {
-    min-height: 50px !important;
-    padding: 8px 16px !important;
-}
-/* =========================================================
-   FIX JARAK WIDGET ATAS KE TABLE KATEGORI
-   Bikin table Nama Kategori naik dan rapat ke KPI
-========================================================= */
-
-/* Hilangkan gap bawaan halaman Filament */
-body:has(.ng-category-page) .fi-page-content {
-    gap: 0 !important;
-    row-gap: 0 !important;
-}
-
-/* Hilangkan jarak bawah widget kategori */
-body:has(.ng-category-page) .fi-wi-widget,
-body:has(.ng-category-page) .fi-wi-widget-content {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-}
-
-/* Bikin table naik lebih rapat ke widget KPI */
-body:has(.ng-category-page) .fi-ta-ctn {
-    margin-top: 0 !important;
-    transform: translateY(-2px) !important;
-}
-
-/* Wrapper kategori jangan terlalu banyak padding bawah */
-.ng-category-page {
-    padding-bottom: 4px !important;
-}
-
-/* KPI row jangan kasih jarak bawah terlalu jauh */
-.ng-category-page > div:last-of-type {
-    margin-bottom: 6px !important;
-}
-
-/* Samakan lebar kiri-kanan table dengan widget atas */
-body:has(.ng-category-page) .fi-ta-ctn {
-    margin-left: 18px !important;
-    margin-right: 18px !important;
-    width: calc(100% - 36px) !important;
-}
-
-/* Search/header table lebih pendek agar table terasa rapat */
-body:has(.ng-category-page) .fi-ta-header,
-body:has(.ng-category-page) .fi-ta-toolbar {
-    min-height: 46px !important;
-    padding-top: 6px !important;
-    padding-bottom: 6px !important;
-}
-
-/* Header kolom jangan terlalu tinggi */
-body:has(.ng-category-page) .fi-ta-header-cell {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-}
-
-/* Row table tetap compact */
-body:has(.ng-category-page) .fi-ta-row {
-    min-height: 50px !important;
-}
-
-body:has(.ng-category-page) .fi-ta-cell {
-    padding-top: 7px !important;
-    padding-bottom: 7px !important;
-}
+            body:has(.ng-category-page) .fi-ta-ctn {
+                margin: 0 14px 20px !important;
+                width: calc(100% - 28px) !important;
+            }
+        }
     </style>
 </x-filament-widgets::widget>

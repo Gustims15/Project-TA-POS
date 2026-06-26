@@ -1,264 +1,346 @@
 <x-filament-widgets::widget>
+    <div class="ng-activity-widget">
+        <section class="ng-activity-widget-hero-grid">
+            <article class="ng-widget-card ng-activity-widget-hero-card">
+                <div class="ng-widget-head">
+                    <div>
+                        <span class="ng-kicker">
+                            Ngunjuk POS Logger
+                        </span>
+
+                        <h2>Activity Log Analytics</h2>
+
+                        <p>
+                            Pantau seluruh aktivitas sistem seperti perubahan data produk, order, kategori,
+                            user, role, serta riwayat aktivitas admin/karyawan yang tercatat otomatis oleh sistem.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="ng-widget-card ng-activity-widget-highlight-card">
+                <span>User Teraktif</span>
+
+                <strong>
+                    {{ $summary['active_user'] ?? ($summary['top_user'] ?? '-') }}
+                </strong>
+
+                <small>
+                    {{ number_format((int) ($summary['active_user_logs'] ?? ($summary['top_user_total'] ?? 0)), 0, ',', '.') }}
+                    aktivitas
+                </small>
+            </article>
+        </section>
+
+        <section class="ng-kpi-grid ng-activity-widget-kpi-grid">
+            <article class="ng-kpi-card" style="--accent:#f97316;">
+                <div class="ng-kpi-icon">▣</div>
+
+                <div class="ng-kpi-content">
+                    <div class="ng-kpi-label">
+                        Total Logs
+                        <span>⋮</span>
+                    </div>
+
+                    <strong>{{ number_format((int) ($summary['total_logs'] ?? 0), 0, ',', '.') }}</strong>
+                    <p>Semua aktivitas</p>
+                </div>
+            </article>
+
+            <article class="ng-kpi-card" style="--accent:#3b82f6;">
+                <div class="ng-kpi-icon">↗</div>
+
+                <div class="ng-kpi-content">
+                    <div class="ng-kpi-label">
+                        Updated Logs
+                        <span>⋮</span>
+                    </div>
+
+                    <strong>{{ number_format((int) ($summary['updated_logs'] ?? 0), 0, ',', '.') }}</strong>
+                    <p>Data diperbarui</p>
+                </div>
+            </article>
+
+            <article class="ng-kpi-card" style="--accent:#10b981;">
+                <div class="ng-kpi-icon">✓</div>
+
+                <div class="ng-kpi-content">
+                    <div class="ng-kpi-label">
+                        Created Logs
+                        <span>⋮</span>
+                    </div>
+
+                    <strong>{{ number_format((int) ($summary['created_logs'] ?? 0), 0, ',', '.') }}</strong>
+                    <p>Data dibuat</p>
+                </div>
+            </article>
+
+            <article class="ng-kpi-card" style="--accent:#ef4444;">
+                <div class="ng-kpi-icon">!</div>
+
+                <div class="ng-kpi-content">
+                    <div class="ng-kpi-label">
+                        Deleted Logs
+                        <span>⋮</span>
+                    </div>
+
+                    <strong>{{ number_format((int) ($summary['deleted_logs'] ?? 0), 0, ',', '.') }}</strong>
+                    <p>Data dihapus</p>
+                </div>
+            </article>
+        </section>
+    </div>
+
     <style>
-        .activity-lux-wrapper {
-            margin-bottom: 22px;
+        body:has(.ng-activity-widget) .fi-wi,
+        body:has(.ng-activity-widget) .fi-wi-widget,
+        body:has(.ng-activity-widget) .fi-wi-widget-content,
+        body:has(.ng-activity-widget) .fi-wi-widgets,
+        body:has(.ng-activity-widget) .fi-wi-widgets > * {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
         }
 
-        .activity-lux-hero {
+        .ng-activity-widget {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 24px 24px 10px !important;
+            overflow: hidden !important;
+            font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #24180f;
+        }
+
+        .ng-activity-widget * {
+            box-sizing: border-box;
+        }
+
+        .ng-activity-widget-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(360px, .55fr);
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .ng-widget-card,
+        .ng-kpi-card {
             position: relative;
             overflow: hidden;
-            border-radius: 30px;
-            padding: 30px;
-            color: white;
+            border: 1px solid rgba(255, 255, 255, .58);
             background:
-                radial-gradient(circle at top right, rgba(255,255,255,0.32), transparent 28%),
-                radial-gradient(circle at bottom left, rgba(255,255,255,0.18), transparent 28%),
-                linear-gradient(135deg, #0f766e 0%, #0d9488 45%, #10b981 100%);
-            box-shadow: 0 28px 70px rgba(15, 118, 110, 0.22);
-            isolation: isolate;
+                linear-gradient(145deg, rgba(255, 255, 255, .46), rgba(255, 246, 231, .22)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .16), transparent 38%) !important;
+            box-shadow:
+                0 22px 54px rgba(101, 58, 21, .12),
+                0 0 0 1px rgba(255, 255, 255, .12) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .62);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
 
-        .activity-lux-hero::before {
+        .ng-widget-card::before,
+        .ng-kpi-card::before {
             content: "";
             position: absolute;
             inset: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.09) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.09) 1px, transparent 1px);
-            background-size: 34px 34px;
-            opacity: 0.24;
-            z-index: -1;
+            pointer-events: none;
+            background:
+                linear-gradient(120deg, rgba(255, 255, 255, .34), transparent 28%, transparent 70%, rgba(255, 255, 255, .16));
+            opacity: .38;
         }
 
-        .activity-lux-hero-top {
+        .ng-widget-card {
+            border-radius: 24px;
+            padding: 18px;
+            min-width: 0;
+        }
+
+        .ng-activity-widget-hero-card,
+        .ng-activity-widget-highlight-card {
+            min-height: 126px;
+        }
+
+        .ng-activity-widget-hero-card {
             display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 24px;
+            align-items: center;
         }
 
-        .activity-lux-badge {
+        .ng-activity-widget-highlight-card {
+            display: grid;
+            align-content: center;
+            gap: 8px;
+        }
+
+        .ng-widget-head {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+
+        .ng-kicker {
             display: inline-flex;
             align-items: center;
-            gap: 9px;
             width: fit-content;
-            padding: 9px 14px;
+            padding: 6px 12px;
+            margin-bottom: 10px;
             border-radius: 999px;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.25);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, .50);
+            border: 1px solid rgba(255, 255, 255, .58);
+            color: #d95d00;
             font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.12em;
+            font-weight: 900;
+            letter-spacing: .08em;
             text-transform: uppercase;
-        }
-
-        .activity-lux-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 999px;
-            background: #bbf7d0;
-            box-shadow: 0 0 0 5px rgba(187,247,208,0.22);
-        }
-
-        .activity-lux-title {
-            margin: 16px 0 0;
-            font-size: 34px;
-            line-height: 1.08;
-            font-weight: 950;
-            letter-spacing: -0.04em;
-        }
-
-        .activity-lux-desc {
-            margin: 12px 0 0;
-            max-width: 780px;
-            color: rgba(255,255,255,0.86);
-            font-size: 14px;
-            line-height: 1.7;
-        }
-
-        .activity-lux-mini {
-            min-width: 260px;
-            border-radius: 22px;
-            padding: 18px;
-            background: rgba(255,255,255,0.16);
-            border: 1px solid rgba(255,255,255,0.24);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .70);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
-        .activity-lux-mini span {
-            display: block;
-            color: rgba(255,255,255,0.78);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .activity-lux-mini strong {
-            display: block;
-            margin-top: 8px;
-            color: white;
-            font-size: 24px;
-            line-height: 1.15;
-            font-weight: 950;
-        }
-
-        .activity-lux-mini small {
-            display: block;
-            margin-top: 8px;
-            color: rgba(255,255,255,0.82);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .activity-lux-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .activity-lux-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 24px;
-            padding: 20px;
-            background: white;
-            border: 1px solid rgba(226,232,240,0.95);
-            box-shadow: 0 16px 40px rgba(15,23,42,0.07);
-            min-height: 145px;
-            transition: 0.25s ease;
-        }
-
-        .activity-lux-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 24px 55px rgba(15,23,42,0.12);
-        }
-
-        .activity-lux-card::after {
-            content: "";
-            position: absolute;
-            width: 118px;
-            height: 118px;
-            top: -52px;
-            right: -42px;
-            border-radius: 999px;
-            opacity: 0.15;
-        }
-
-        .activity-lux-card.total::after { background: #10b981; }
-        .activity-lux-card.updated::after { background: #3b82f6; }
-        .activity-lux-card.created::after { background: #f97316; }
-        .activity-lux-card.deleted::after { background: #ef4444; }
-
-        .activity-lux-label {
+        .ng-widget-head h2 {
             margin: 0;
-            color: #64748b;
+            color: #21160d;
+            font-size: 30px;
+            line-height: 1.05;
+            font-weight: 950;
+            letter-spacing: -.04em;
+        }
+
+        .ng-widget-head p {
+            max-width: 820px;
+            margin: 8px 0 0;
+            color: #765d45;
             font-size: 13px;
+            line-height: 1.55;
+            font-weight: 700;
+        }
+
+        .ng-activity-widget-highlight-card span,
+        .ng-activity-widget-highlight-card small {
+            position: relative;
+            z-index: 2;
+            display: block;
+            color: #765d45;
+            font-size: 11px;
             font-weight: 850;
         }
 
-        .activity-lux-value {
-            margin: 18px 0 0;
-            color: #020617;
-            font-size: 30px;
-            line-height: 1;
+        .ng-activity-widget-highlight-card strong {
+            position: relative;
+            z-index: 2;
+            display: block;
+            color: #21160d;
+            font-size: 22px;
+            line-height: 1.1;
             font-weight: 950;
-            letter-spacing: -0.045em;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
-        .activity-lux-caption {
-            display: inline-flex;
+        .ng-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .ng-kpi-card {
+            min-height: 108px;
+            display: flex;
+            gap: 12px;
+            padding: 16px 15px;
+            border-radius: 22px;
+        }
+
+        .ng-kpi-icon {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            width: 44px;
+            height: 44px;
+            border-radius: 15px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent), #d95d00);
+            box-shadow: 0 15px 28px rgba(249, 115, 22, .22);
+            font-size: 17px;
+            font-weight: 950;
+        }
+
+        .ng-kpi-content {
+            position: relative;
+            z-index: 1;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .ng-kpi-label {
+            display: flex;
             align-items: center;
-            margin-top: 14px;
-            border-radius: 999px;
-            padding: 7px 11px;
+            justify-content: space-between;
+            gap: 8px;
+            color: #6f5946;
             font-size: 12px;
-            font-weight: 800;
+            line-height: 1.2;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .06em;
         }
 
-        .total .activity-lux-caption { background: #ecfdf5; color: #047857; }
-        .updated .activity-lux-caption { background: #eff6ff; color: #1d4ed8; }
-        .created .activity-lux-caption { background: #fff7ed; color: #c2410c; }
-        .deleted .activity-lux-caption { background: #fef2f2; color: #b91c1c; }
+        .ng-kpi-content strong {
+            display: block;
+            margin-top: 7px;
+            color: #23160d;
+            font-size: 22px;
+            line-height: 1.15;
+            font-weight: 950;
+            letter-spacing: -.03em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-        @media (max-width: 1100px) {
-            .activity-lux-hero-top {
-                flex-direction: column;
+        .ng-kpi-content p {
+            margin: 8px 0 0;
+            color: #6f5946;
+            font-size: 11px;
+            line-height: 1.25;
+            font-weight: 850;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 1500px) {
+            .ng-activity-widget-hero-grid {
+                grid-template-columns: 1fr;
             }
 
-            .activity-lux-grid {
+            .ng-kpi-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
 
         @media (max-width: 700px) {
-            .activity-lux-hero {
-                padding: 24px;
-                border-radius: 24px;
-            }
-
-            .activity-lux-title {
-                font-size: 28px;
-            }
-
-            .activity-lux-grid {
+            .ng-kpi-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .ng-activity-widget {
+                padding: 14px 14px 8px !important;
+            }
+
+            .ng-widget-head h2 {
+                font-size: 26px;
+            }
+
+            .ng-widget-card {
+                padding: 16px;
+                border-radius: 22px;
             }
         }
     </style>
-
-    <div class="activity-lux-wrapper">
-        <section class="activity-lux-hero">
-            <div class="activity-lux-hero-top">
-                <div>
-                    <div class="activity-lux-badge">
-                        <span class="activity-lux-dot"></span>
-                        Ngunjuk POS Logger
-                    </div>
-
-                    <h2 class="activity-lux-title">
-                        Activity Log Analytics
-                    </h2>
-
-                    <p class="activity-lux-desc">
-                        Pantau seluruh aktivitas sistem seperti perubahan data produk,
-                        order, kategori, user, role, serta riwayat aktivitas admin/karyawan
-                        yang tercatat otomatis oleh sistem.
-                    </p>
-                </div>
-
-                <div class="activity-lux-mini">
-                    <span>User Teraktif</span>
-                    <strong>{{ $summary['active_user'] }}</strong>
-                    <small>{{ number_format($summary['active_user_logs'], 0, ',', '.') }} aktivitas</small>
-                </div>
-            </div>
-        </section>
-
-        <div class="activity-lux-grid">
-            <div class="activity-lux-card total">
-                <p class="activity-lux-label">Total Logs</p>
-                <p class="activity-lux-value">{{ number_format($summary['total_logs'], 0, ',', '.') }}</p>
-                <p class="activity-lux-caption">Semua aktivitas</p>
-            </div>
-
-            <div class="activity-lux-card updated">
-                <p class="activity-lux-label">Updated Logs</p>
-                <p class="activity-lux-value">{{ number_format($summary['updated_logs'], 0, ',', '.') }}</p>
-                <p class="activity-lux-caption">Data diperbarui</p>
-            </div>
-
-            <div class="activity-lux-card created">
-                <p class="activity-lux-label">Created Logs</p>
-                <p class="activity-lux-value">{{ number_format($summary['created_logs'], 0, ',', '.') }}</p>
-                <p class="activity-lux-caption">Data dibuat</p>
-            </div>
-
-            <div class="activity-lux-card deleted">
-                <p class="activity-lux-label">Deleted Logs</p>
-                <p class="activity-lux-value">{{ number_format($summary['deleted_logs'], 0, ',', '.') }}</p>
-                <p class="activity-lux-caption">Data dihapus</p>
-            </div>
-        </div>
-    </div>
 </x-filament-widgets::widget>

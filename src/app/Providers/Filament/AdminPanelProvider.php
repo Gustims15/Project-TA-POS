@@ -53,6 +53,7 @@ final class AdminPanelProvider extends PanelProvider
             ->maxContentWidth(Width::Full)
             ->databaseTransactions()
             ->defaultThemeMode(ThemeMode::Light)
+            ->darkMode(false)
             ->colors([
                 'primary' => Color::adaptive(
                     lightColor: FilamentColor::Orange,
@@ -153,6 +154,22 @@ final class AdminPanelProvider extends PanelProvider
             */
             ->renderHook('panels::head.end', fn (): string => <<<'HTML'
 <style>
+
+    /*
+    |--------------------------------------------------------------------------
+    | HIDE FILAMENT THEME SWITCHER
+    |--------------------------------------------------------------------------
+    | Menghilangkan pilihan Light / Dark / System pada user menu profile.
+    */
+    .fi-theme-switcher,
+    .fi-user-menu .fi-theme-switcher,
+    .fi-dropdown-panel .fi-theme-switcher,
+    .fi-dropdown-list .fi-theme-switcher {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
     body:has(form[action*="login"]) {
         min-height: 100vh !important;
         overflow-x: hidden !important;

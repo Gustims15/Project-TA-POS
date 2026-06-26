@@ -55,25 +55,32 @@ class MonthlyRevenueReport extends Page
 
         [$startDate, $endDate] = $this->getMonthRange($selectedMonth);
 
-        $orders = Order::query()
+        $baseQuery = Order::query()
             ->where('status', 'Selesai')
             ->whereBetween(DB::raw('COALESCE(ordered_at, created_at)'), [
                 $startDate,
                 $endDate,
-            ])
-            ->orderByDesc(DB::raw('COALESCE(ordered_at, created_at)'))
-            ->get();
+            ]);
 
-        $totalOrders = (int) $orders->count();
-        $totalItems = (int) $orders->sum('total_item');
-        $totalRevenue = (int) $orders->sum('total_price');
+        $totalOrders = (int) (clone $baseQuery)->count();
+        $totalItems = (int) (clone $baseQuery)->sum('total_item');
+        $totalRevenue = (int) (clone $baseQuery)->sum('total_price');
 
         $avgOrder = $totalOrders > 0
             ? (int) round($totalRevenue / $totalOrders)
             : 0;
 
-        $highestOrder = (int) $orders->max('total_price');
-        $lowestOrder = (int) $orders->min('total_price');
+        $highestOrder = (int) ((clone $baseQuery)->max('total_price') ?? 0);
+        $lowestOrder = (int) ((clone $baseQuery)->min('total_price') ?? 0);
+
+        $orders = (clone $baseQuery)
+            ->orderByDesc(DB::raw('COALESCE(ordered_at, created_at)'))
+            ->paginate(
+                perPage: 10,
+                columns: ['*'],
+                pageName: 'ordersPage',
+            )
+            ->withQueryString();
 
         return [
             'months' => $this->getAvailableMonths(),

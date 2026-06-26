@@ -22,52 +22,63 @@
         $maxProductUnits = max(1, (int) collect($productSales)->max('units'));
     ?>
 
-    <div class="ng-dashboard" wire:ignore.self>
+    <div class="ng-dashboard" wire:ignore.self wire:loading.class="ng-dashboard-loading" wire:target="setPeriod,setYearMonth">
         <section class="ng-dashboard-header">
             <div class="ng-title-area">
-                <h1>Dashboard Admin</h1>
+                <h1>Dashboard Performa Penjualan</h1>
                 <p>Ringkasan performa penjualan toko Anda</p>
             </div>
 
             <div class="ng-filter-area">
                 <div class="ng-period-tabs">
-                    <a
-                        href="<?php echo e(request()->fullUrlWithQuery(['period' => 'today', 'month' => null])); ?>"
+                    <button
+                        type="button"
+                        wire:click="setPeriod('today')"
+                        wire:loading.attr="disabled"
+                        wire:target="setPeriod,setYearMonth"
                         class="ng-tab <?php echo e($activePeriod === 'today' ? 'active' : ''); ?>"
                     >
                         Hari Ini
-                    </a>
+                    </button>
 
-                    <a
-                        href="<?php echo e(request()->fullUrlWithQuery(['period' => 'week', 'month' => null])); ?>"
+                    <button
+                        type="button"
+                        wire:click="setPeriod('week')"
+                        wire:loading.attr="disabled"
+                        wire:target="setPeriod,setYearMonth"
                         class="ng-tab <?php echo e($activePeriod === 'week' ? 'active' : ''); ?>"
                     >
                         Minggu Ini
-                    </a>
+                    </button>
 
-                    <a
-                        href="<?php echo e(request()->fullUrlWithQuery(['period' => 'month', 'month' => null])); ?>"
+                    <button
+                        type="button"
+                        wire:click="setPeriod('month')"
+                        wire:loading.attr="disabled"
+                        wire:target="setPeriod,setYearMonth"
                         class="ng-tab <?php echo e($activePeriod === 'month' ? 'active' : ''); ?>"
                     >
                         Bulan Ini
-                    </a>
+                    </button>
 
-                    <a
-                        href="<?php echo e(request()->fullUrlWithQuery(['period' => 'year', 'month' => 'all'])); ?>"
+                    <button
+                        type="button"
+                        wire:click="setPeriod('year')"
+                        wire:loading.attr="disabled"
+                        wire:target="setPeriod,setYearMonth"
                         class="ng-tab <?php echo e($activePeriod === 'year' ? 'active' : ''); ?>"
                     >
                         Tahun Ini
-                    </a>
+                    </button>
                 </div>
 
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activePeriod === 'year'): ?>
-                    <form method="GET" action="<?php echo e(request()->url()); ?>" class="ng-month-form">
-                        <input type="hidden" name="period" value="year">
-
+                    <div class="ng-month-form">
                         <select
-                            name="month"
                             class="ng-select-pill"
-                            onchange="this.form.submit()"
+                            wire:change="setYearMonth($event.target.value)"
+                            wire:loading.attr="disabled"
+                            wire:target="setPeriod,setYearMonth"
                             aria-label="Pilih bulan tahunan"
                         >
                             <option value="all" <?php echo e($selectedYearMonth === 'all' ? 'selected' : ''); ?>>
@@ -85,7 +96,7 @@
                                 </option>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                         </select>
-                    </form>
+                    </div>
                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                 <div class="ng-admin-profile">
@@ -145,7 +156,7 @@
                     <span class="ng-widget-badge"><?php echo e($dashboard['period']['label']); ?></span>
                 </div>
 
-                <div id="ngRevenueChart" class="ng-chart ng-chart-lg">
+                <div id="ngRevenueChart" wire:ignore class="ng-chart ng-chart-lg">
                     <div class="ng-chart-loader">
                         <span></span>
                         <p>Memuat grafik...</p>
@@ -210,7 +221,7 @@
                 </div>
 
                 <div class="ng-donut-wrap">
-                    <div id="ngCategoryChart" class="ng-chart ng-chart-donut">
+                    <div id="ngCategoryChart" wire:ignore class="ng-chart ng-chart-donut">
                         <div class="ng-chart-loader">
                             <span></span>
                             <p>Memuat grafik...</p>
@@ -240,7 +251,7 @@
                     <span class="ng-widget-badge">Per Jam</span>
                 </div>
 
-                <div id="ngSalesTimeChart" class="ng-chart ng-chart-md">
+                <div id="ngSalesTimeChart" wire:ignore class="ng-chart ng-chart-md">
                     <div class="ng-chart-loader">
                         <span></span>
                         <p>Memuat grafik...</p>
@@ -432,13 +443,17 @@
             justify-content: center;
             min-height: 36px;
             padding: 0 17px;
+            border: 0;
             border-radius: 13px;
             color: #6b5541;
+            background: transparent;
+            font-family: inherit;
             font-size: 12px;
             font-weight: 900;
             text-decoration: none;
             transition: .2s ease;
             white-space: nowrap;
+            cursor: pointer;
         }
 
         .ng-tab.active,
@@ -446,6 +461,21 @@
             color: #fff;
             background: linear-gradient(135deg, #ff9d18, #ee6500);
             box-shadow: 0 12px 22px rgba(238, 101, 0, .24);
+        }
+
+        .ng-tab:disabled,
+        .ng-select-pill:disabled {
+            opacity: .72;
+            cursor: wait;
+        }
+
+        .ng-dashboard-loading .ng-widget-card,
+        .ng-dashboard-loading .ng-kpi-card {
+            transition: opacity .18s ease, transform .18s ease;
+        }
+
+        .ng-dashboard-loading .ng-chart {
+            opacity: .72;
         }
 
         .ng-select-pill,
@@ -938,13 +968,17 @@
             border-collapse: collapse;
         }
 
+        .ng-orders-table thead {
+            background: #fff0dc !important;
+        }
+
         .ng-orders-table th {
             position: sticky;
             top: 0;
             z-index: 3;
             color: #6f5946;
-            background: rgba(255, 235, 210, .72);
-            backdrop-filter: blur(8px);
+            background: #fff0dc !important;
+            backdrop-filter: none !important;
             font-size: 11px;
             font-weight: 950;
             text-align: left;
@@ -1095,6 +1129,32 @@
             return 'Rp ' + Number(value || 0).toLocaleString('id-ID');
         }
 
+        function ngFormatRupiahCompact(value) {
+            const number = Number(value || 0);
+
+            if (number === 0) {
+                return 'Rp 0';
+            }
+
+            if (number >= 1000000) {
+                const million = number / 1000000;
+
+                return 'Rp ' + million
+                    .toFixed(million % 1 === 0 ? 0 : 1)
+                    .replace('.', ',') + 'jt';
+            }
+
+            if (number >= 1000) {
+                const thousand = number / 1000;
+
+                return 'Rp ' + thousand
+                    .toFixed(thousand % 1 === 0 ? 0 : 1)
+                    .replace('.', ',') + 'rb';
+            }
+
+            return 'Rp ' + number.toLocaleString('id-ID');
+        }
+
         function ngDestroyDashboardCharts() {
             Object.keys(window.ngDashboardApexInstances || {}).forEach(function (key) {
                 const chart = window.ngDashboardApexInstances[key];
@@ -1148,19 +1208,15 @@
         function ngMakeRevenueXAxisLabels(labels) {
             const safeLabels = Array.isArray(labels) ? labels : [];
 
-            if (safeLabels.length <= 14) {
-                return safeLabels;
-            }
-
-            const step = safeLabels.length > 24 ? 2 : 1;
-
-            return safeLabels.map(function (label, index) {
-                const isFirst = index === 0;
-                const isLast = index === safeLabels.length - 1;
-                const isStep = index % step === 0;
-
-                return isFirst || isLast || isStep ? label : '';
-            });
+            /*
+            |--------------------------------------------------------------------------
+            | Revenue Performance X-Axis
+            |--------------------------------------------------------------------------
+            | Tampilkan semua label tanggal yang dikirim dari Dashboard.php.
+            | Jadi untuk bulan April akan tampil:
+            | 01, 02, 03, 04, 05, ... 30
+            */
+            return safeLabels;
         }
 
         function ngMakeSalesTimeLabels(labels) {
@@ -1231,13 +1287,9 @@
                         curve: 'smooth',
                     },
                     fill: {
-                        type: ['gradient', 'solid'],
-                        gradient: {
-                            shadeIntensity: .9,
-                            opacityFrom: .42,
-                            opacityTo: .05,
-                            stops: [0, 85, 100],
-                        },
+                        type: ['solid', 'solid'],
+                        colors: ['rgba(118, 110, 100, 0.20)', '#2563eb'],
+                        opacity: [1, 1],
                     },
                     colors: ['#f97316', '#2563eb'],
                     dataLabels: {
@@ -1247,8 +1299,8 @@
                         borderColor: 'rgba(124, 92, 63, .12)',
                         strokeDashArray: 5,
                         padding: {
-                            left: 8,
-                            right: 8,
+                            left: 18,
+                            right: 22,
                             bottom: 18,
                         },
                     },
@@ -1262,13 +1314,14 @@
                         categories: revenueXAxisLabels,
                         tickPlacement: 'on',
                         labels: {
-                            rotate: -35,
+                            rotate: -45,
+                            rotateAlways: true,
                             trim: false,
                             hideOverlappingLabels: false,
-                            maxHeight: 72,
-                            offsetY: 6,
+                            maxHeight: 84,
+                            offsetY: 8,
                             style: {
-                                fontSize: '10px',
+                                fontSize: '9px',
                                 fontWeight: 850,
                             },
                         },
@@ -1287,8 +1340,9 @@
                             min: 0,
                             tickAmount: 4,
                             labels: {
+                                offsetX: -4,
                                 formatter: function (value) {
-                                    return ngFormatRupiah(value);
+                                    return ngFormatRupiahCompact(value);
                                 },
                                 style: {
                                     fontSize: '11px',
@@ -1301,6 +1355,7 @@
                             min: 0,
                             tickAmount: 4,
                             labels: {
+                                offsetX: 10,
                                 formatter: function (value) {
                                     return Number(value || 0).toLocaleString('id-ID');
                                 },
@@ -1515,6 +1570,75 @@
             });
         }
 
+
+        function ngExtractDashboardChartsPayload(payload) {
+            const raw = Array.isArray(payload) ? (payload[0] || {}) : (payload || {});
+            const detail = raw.detail || raw;
+
+            if (detail.charts) {
+                return detail.charts;
+            }
+
+            if (detail.revenue || detail.category || detail.salesByTime) {
+                return detail;
+            }
+
+            return null;
+        }
+
+        function ngApplyDashboardRefresh(payload) {
+            const nextCharts = ngExtractDashboardChartsPayload(payload);
+
+            if (!nextCharts) {
+                ngBootDashboardCharts();
+                return;
+            }
+
+            window.ngDashboardChartsData = nextCharts;
+            ngBootDashboardCharts();
+        }
+
+        function ngRegisterDashboardEvents() {
+            if (!window.ngDashboardStaticEventsRegistered) {
+                window.ngDashboardStaticEventsRegistered = true;
+
+                document.addEventListener('DOMContentLoaded', ngBootDashboardCharts);
+                document.addEventListener('livewire:navigated', ngBootDashboardCharts);
+                document.addEventListener('livewire:update', function () {
+                    if (!window.ngDashboardRefreshFromServer) {
+                        ngBootDashboardCharts();
+                    }
+                });
+                document.addEventListener('livewire:updated', function () {
+                    if (!window.ngDashboardRefreshFromServer) {
+                        ngBootDashboardCharts();
+                    }
+                });
+
+                window.addEventListener('ng-dashboard-refresh', function (event) {
+                    window.ngDashboardRefreshFromServer = true;
+                    ngApplyDashboardRefresh(event.detail);
+
+                    setTimeout(function () {
+                        window.ngDashboardRefreshFromServer = false;
+                    }, 250);
+                });
+            }
+
+            if (window.Livewire && !window.ngDashboardLivewireEventRegistered) {
+                window.ngDashboardLivewireEventRegistered = true;
+
+                window.Livewire.on('ng-dashboard-refresh', function (payload) {
+                    window.ngDashboardRefreshFromServer = true;
+                    ngApplyDashboardRefresh(payload);
+
+                    setTimeout(function () {
+                        window.ngDashboardRefreshFromServer = false;
+                    }, 250);
+                });
+            }
+        }
+
         function ngBootDashboardCharts() {
             clearTimeout(window.ngDashboardBootTimer);
 
@@ -1523,10 +1647,8 @@
             }, 80);
         }
 
-        document.addEventListener('DOMContentLoaded', ngBootDashboardCharts);
-        document.addEventListener('livewire:navigated', ngBootDashboardCharts);
-        document.addEventListener('livewire:update', ngBootDashboardCharts);
-        document.addEventListener('livewire:updated', ngBootDashboardCharts);
+        document.addEventListener('livewire:init', ngRegisterDashboardEvents);
+        ngRegisterDashboardEvents();
 
         if (document.readyState !== 'loading') {
             ngBootDashboardCharts();

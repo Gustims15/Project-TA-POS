@@ -92,13 +92,9 @@
     <div class="ng-finance-dashboard">
         <section class="ng-dashboard-header">
             <div class="ng-title-area">
-                <span class="ng-kicker">Finance Center</span>
 
                 <h1>Dashboard Keuangan</h1>
 
-                <p>
-                    Ringkasan revenue, HPP, gross profit, biaya operasional, net profit, margin, dan target penjualan toko Anda
-                </p>
             </div>
 
             <div class="ng-filter-area">

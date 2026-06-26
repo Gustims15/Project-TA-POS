@@ -27,6 +27,53 @@ class Dashboard extends Page
      */
     protected string $view = 'filament.admin.pages.dashboard';
 
+    public string $period = 'week';
+
+    public string $selectedMonth = 'all';
+
+    protected ?array $dashboardDataCache = null;
+
+    public function mount(): void
+    {
+        $this->period = $this->normalizePeriod((string) request()->query('period', 'week'));
+
+        $this->selectedMonth = $this->period === 'year'
+            ? $this->normalizeMonth((string) request()->query('month', 'all'))
+            : 'all';
+    }
+
+    public function setPeriod(string $period): void
+    {
+        $this->period = $this->normalizePeriod($period);
+
+        if ($this->period !== 'year') {
+            $this->selectedMonth = 'all';
+        }
+
+        $this->refreshDashboardAfterFilterChange();
+    }
+
+    public function setYearMonth(string $month): void
+    {
+        $this->period = 'year';
+        $this->selectedMonth = $this->normalizeMonth($month);
+
+        $this->refreshDashboardAfterFilterChange();
+    }
+
+    private function refreshDashboardAfterFilterChange(): void
+    {
+        $this->dashboardDataCache = null;
+
+        $dashboard = $this->getDashboardData();
+
+        $this->dispatch(
+            'ng-dashboard-refresh',
+            charts: $dashboard['charts'],
+        );
+    }
+
+
     public static function canAccess(): bool
     {
         return auth()->check() && auth()->user()->hasRole('super_admin');
@@ -54,6 +101,10 @@ class Dashboard extends Page
 
     public function getDashboardData(): array
     {
+        if ($this->dashboardDataCache !== null) {
+            return $this->dashboardDataCache;
+        }
+
         [$start, $end, $periodLabel, $periodKey, $selectedMonth] = $this->getSelectedRange();
 
         $previousRange = $this->getPreviousRange($start, $end, $periodKey, $selectedMonth);
@@ -103,7 +154,7 @@ class Dashboard extends Page
             ->where('is_active', true)
             ->count();
 
-        return [
+        return $this->dashboardDataCache = [
             'period' => [
                 'key' => $periodKey,
                 'label' => $periodLabel,
@@ -204,7 +255,7 @@ class Dashboard extends Page
 
     private function getSelectedRange(): array
     {
-        $period = request()->query('period', 'week');
+        $period = $this->normalizePeriod($this->period);
         $selectedMonth = 'all';
 
         return match ($period) {
@@ -229,7 +280,7 @@ class Dashboard extends Page
             default => [
                 now()->subDays(6)->startOfDay(),
                 now()->endOfDay(),
-                '7 Hari Terakhir',
+                'Minggu Ini',
                 'week',
                 $selectedMonth,
             ],
@@ -238,23 +289,19 @@ class Dashboard extends Page
 
     private function getYearRangeWithOptionalMonth(): array
     {
-        $requestedMonth = request()->query('month', 'all');
+        $requestedMonth = $this->normalizeMonth($this->selectedMonth);
 
-        if ((string) $requestedMonth !== 'all') {
+        if ($requestedMonth !== 'all') {
             $monthNumber = (int) $requestedMonth;
+            $monthDate = Carbon::create(now()->year, $monthNumber, 1);
 
-            if ($monthNumber >= 1 && $monthNumber <= 12) {
-                $selectedMonth = (string) $monthNumber;
-                $monthDate = Carbon::create(now()->year, $monthNumber, 1);
-
-                return [
-                    $monthDate->copy()->startOfMonth(),
-                    $monthDate->copy()->endOfMonth(),
-                    'Tahun Ini',
-                    'year',
-                    $selectedMonth,
-                ];
-            }
+            return [
+                $monthDate->copy()->startOfMonth(),
+                $monthDate->copy()->endOfMonth(),
+                'Tahun Ini',
+                'year',
+                (string) $monthNumber,
+            ];
         }
 
         return [
@@ -302,6 +349,26 @@ class Dashboard extends Page
             ->firstWhere('value', $selectedMonth);
 
         return $month['label'] ?? 'Semua Bulan';
+    }
+
+    private function normalizePeriod(string $period): string
+    {
+        return in_array($period, ['today', 'week', 'month', 'year'], true)
+            ? $period
+            : 'week';
+    }
+
+    private function normalizeMonth(string $month): string
+    {
+        if ($month === 'all') {
+            return 'all';
+        }
+
+        $monthNumber = (int) $month;
+
+        return $monthNumber >= 1 && $monthNumber <= 12
+            ? (string) $monthNumber
+            : 'all';
     }
 
     private function getPreviousRange(Carbon $start, Carbon $end, string $periodKey, string $selectedMonth = 'all'): array
@@ -493,12 +560,22 @@ class Dashboard extends Page
         $orders = [];
 
         foreach (CarbonPeriod::create($start->copy()->startOfDay(), '1 day', $end->copy()->startOfDay()) as $date) {
-            $key = $date->format('Y-m-d');
+        $key = $date->format('Y-m-d');
 
-            $labels[] = $date->format('d M');
-            $revenue[] = (int) ($rows[$key]->revenue ?? 0);
-            $orders[] = (int) ($rows[$key]->orders ?? 0);
-        }
+        /*
+        |--------------------------------------------------------------------------
+        | Label tanggal Revenue Performance
+        |--------------------------------------------------------------------------
+        | Tampilkan full tanggal dalam bulan:
+        | 01, 02, 03, 04, 05, ... 30 / 31
+        |
+        | Bulan tidak ditampilkan supaya label bawah lebih pendek.
+        */
+        $labels[] = $date->format('d');
+
+        $revenue[] = (int) ($rows[$key]->revenue ?? 0);
+        $orders[] = (int) ($rows[$key]->orders ?? 0);
+    }
 
         return [
             'labels' => $labels,
@@ -615,11 +692,9 @@ class Dashboard extends Page
         $labels = [];
         $orders = [];
 
-        for ($hour = 6; $hour <= 22; $hour++) {
-            $labels[] = $hour % 2 === 0
-                ? str_pad((string) $hour, 2, '0', STR_PAD_LEFT) . ':00'
-                : '';
-
+        // Mulai dari jam 10.00 sampai 22.00 saja
+        for ($hour = 10; $hour <= 22; $hour++) {
+            $labels[] = str_pad((string) $hour, 2, '0', STR_PAD_LEFT) . ':00';
             $orders[] = (int) ($rows[$hour]->orders ?? 0);
         }
 

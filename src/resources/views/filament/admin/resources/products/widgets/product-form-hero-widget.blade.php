@@ -1,37 +1,91 @@
+@php
+    $cards = [
+        [
+            'label' => 'Total Produk',
+            'value' => number_format((int) ($stats['total_products'] ?? 0), 0, ',', '.'),
+            'caption' => 'Semua data produk',
+            'icon' => '▣',
+            'color' => '#f97316',
+        ],
+        [
+            'label' => 'Produk Aktif',
+            'value' => number_format((int) ($stats['active_products'] ?? 0), 0, ',', '.'),
+            'caption' => 'Tampil di kasir',
+            'icon' => '✓',
+            'color' => '#10b981',
+        ],
+        [
+            'label' => 'Total Kategori',
+            'value' => number_format((int) ($stats['total_categories'] ?? 0), 0, ',', '.'),
+            'caption' => 'Kategori produk',
+            'icon' => '◇',
+            'color' => '#3b82f6',
+        ],
+    ];
+@endphp
+
 <x-filament-widgets::widget>
     <div class="ng-product-form-page">
-        <section class="ng-product-form-hero">
-            <div class="ng-product-form-title">
-                <div>
-                    <span>POS Ngunjuk</span>
-                    <h1>{{ $title }}</h1>
-                    <p>{{ $description }}</p>
+        <section class="ng-product-form-hero-grid">
+            <article class="ng-widget-card ng-product-form-hero-card">
+                <div class="ng-widget-head">
+                    <div>
+                        <h1>{{ $title }}</h1>
+
+                        <p>
+                            {{ $description }}
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="ng-widget-card ng-product-form-highlight-card">
+                <div class="ng-highlight-info">
+                    <span>Produk Aktif</span>
+
+                    <strong>
+                        {{ number_format((int) ($stats['active_products'] ?? 0), 0, ',', '.') }}
+                    </strong>
+
+                    <small>
+                        Dari {{ number_format((int) ($stats['total_products'] ?? 0), 0, ',', '.') }}
+                        total produk •
+                        {{ number_format((int) ($stats['total_categories'] ?? 0), 0, ',', '.') }}
+                        kategori
+                    </small>
                 </div>
 
-                <a href="{{ $backUrl }}" class="ng-product-back-btn">
-                    ← Kembali
-                </a>
-            </div>
+                <div class="ng-highlight-actions">
+                    <a href="{{ $backUrl }}" class="ng-primary-button">
+                        ← Kembali
+                    </a>
+                </div>
+            </article>
         </section>
 
-        <section class="ng-product-form-stats">
-            <article>
-                <span>Total Produk</span>
-                <strong>{{ number_format($stats['total_products'], 0, ',', '.') }}</strong>
-                <p>Semua data produk</p>
-            </article>
+        <section class="ng-kpi-grid ng-product-form-kpi-grid">
+            @foreach ($cards as $card)
+                <article class="ng-kpi-card" style="--accent: {{ $card['color'] ?? '#f97316' }};">
+                    <div class="ng-kpi-icon">
+                        {{ $card['icon'] ?? '▣' }}
+                    </div>
 
-            <article>
-                <span>Produk Aktif</span>
-                <strong>{{ number_format($stats['active_products'], 0, ',', '.') }}</strong>
-                <p>Tampil di kasir</p>
-            </article>
+                    <div class="ng-kpi-content">
+                        <div class="ng-kpi-label">
+                            {{ $card['label'] ?? '-' }}
+                            <span>⋮</span>
+                        </div>
 
-            <article>
-                <span>Total Kategori</span>
-                <strong>{{ number_format($stats['total_categories'], 0, ',', '.') }}</strong>
-                <p>Kategori produk</p>
-            </article>
+                        <strong>
+                            {{ $card['value'] ?? '-' }}
+                        </strong>
+
+                        <p class="neutral">
+                            {{ $card['caption'] ?? '-' }}
+                        </p>
+                    </div>
+                </article>
+            @endforeach
         </section>
     </div>
 
@@ -43,11 +97,11 @@
 
         body:has(.ng-product-form-page) {
             background:
-                linear-gradient(120deg, rgba(255, 248, 237, .10), rgba(255, 224, 185, .02)),
+                linear-gradient(120deg, rgba(255, 248, 237, .18), rgba(255, 224, 185, .05)),
                 url('/images/pos-orange-bg.png'),
-                radial-gradient(circle at 15% 8%, rgba(255, 255, 255, .32) 0 130px, transparent 280px),
+                radial-gradient(circle at 15% 8%, rgba(255, 255, 255, .48) 0 130px, transparent 280px),
                 radial-gradient(circle at 88% 78%, rgba(255, 118, 0, .42) 0 250px, transparent 520px),
-                radial-gradient(circle at 20% 96%, rgba(255, 181, 83, .28) 0 220px, transparent 500px),
+                radial-gradient(circle at 20% 96%, rgba(255, 181, 83, .30) 0 220px, transparent 500px),
                 linear-gradient(135deg, #fff3df 0%, #ffd394 48%, #ff9c45 100%) !important;
             background-size: cover !important;
             background-position: center !important;
@@ -76,48 +130,28 @@
             padding: 0 !important;
         }
 
-        body:has(.ng-product-form-page) .fi-sidebar {
-            background: rgba(255, 250, 242, .50) !important;
-            border-right: 1px solid rgba(255, 255, 255, .48) !important;
-            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
-            backdrop-filter: blur(16px) !important;
-        }
-
-        body:has(.ng-product-form-page) .fi-sidebar-nav {
-            padding: 18px 14px !important;
-        }
-
-        body:has(.ng-product-form-page) .fi-sidebar-item a {
-            border-radius: 14px !important;
-            color: #6f5844 !important;
-            transition: .2s ease !important;
-        }
-
-        body:has(.ng-product-form-page) .fi-sidebar-item-active a,
-        body:has(.ng-product-form-page) .fi-sidebar-item a:hover {
-            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
-            color: #fff !important;
-            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
-        }
-
-        body:has(.ng-product-form-page) .fi-wi-widget {
-            background: transparent !important;
-            box-shadow: none !important;
-            border: none !important;
-        }
-
-        body:has(.ng-product-form-page) .fi-wi-widget-content {
-            padding: 0 !important;
-        }
-
         body:has(.ng-product-form-page) .fi-page-content {
             gap: 0 !important;
             row-gap: 0 !important;
         }
 
+        body:has(.ng-product-form-page) .fi-wi,
+        body:has(.ng-product-form-page) .fi-wi-widget,
+        body:has(.ng-product-form-page) .fi-wi-widget-content,
+        body:has(.ng-product-form-page) .fi-wi-widgets,
+        body:has(.ng-product-form-page) .fi-wi-widgets > * {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
         .ng-product-form-page {
-            width: 100%;
-            padding: 18px 18px 0;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 24px 24px 10px !important;
+            overflow: hidden !important;
             font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             color: #24180f;
         }
@@ -126,69 +160,89 @@
             box-sizing: border-box;
         }
 
-        .ng-product-form-hero,
-        .ng-product-form-stats,
-        body:has(.ng-product-form-page) form,
-        body:has(.ng-product-form-page) .fi-form,
-        body:has(.ng-product-form-page) .fi-form-actions,
-        body:has(.ng-product-form-page) .fi-ac {
-            width: min(100%, 1180px) !important;
-            max-width: 1180px !important;
-            margin-left: 0 !important;
-            margin-right: auto !important;
+        .ng-product-form-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(360px, .55fr);
+            gap: 16px;
+            margin-bottom: 14px;
         }
 
-        .ng-product-form-hero {
-            margin-bottom: 12px;
-        }
-
-        .ng-product-form-title,
-        .ng-product-form-stats article,
-        body:has(.ng-product-form-page) .fi-section,
-        body:has(.ng-product-form-page) .fi-sc-section {
+        .ng-widget-card,
+        .ng-kpi-card {
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, .56) !important;
-            background: rgba(255, 247, 235, .18) !important;
+            border: 1px solid rgba(255, 255, 255, .58);
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, .46), rgba(255, 246, 231, .22)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .16), transparent 38%) !important;
             box-shadow:
-                0 20px 48px rgba(101, 58, 21, .10),
-                0 0 0 1px rgba(255, 255, 255, .10) inset,
-                inset 0 1px 0 rgba(255, 255, 255, .56) !important;
-            backdrop-filter: blur(13px) !important;
+                0 22px 54px rgba(101, 58, 21, .12),
+                0 0 0 1px rgba(255, 255, 255, .12) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .62);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
 
-        .ng-product-form-title {
-            min-height: 126px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            padding: 20px 22px;
+        .ng-widget-card::before,
+        .ng-kpi-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(120deg, rgba(255, 255, 255, .34), transparent 28%, transparent 70%, rgba(255, 255, 255, .16));
+            opacity: .38;
+        }
+
+        .ng-widget-card {
             border-radius: 24px;
-        }
-
-        .ng-product-form-title > div {
+            padding: 18px;
             min-width: 0;
         }
 
-        .ng-product-form-title span {
-            display: inline-flex;
-            width: fit-content;
-            padding: 6px 12px;
-            margin-bottom: 9px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, .42);
-            border: 1px solid rgba(255, 255, 255, .54);
-            color: #d95d00;
-            font-size: 11px;
-            font-weight: 900;
-            letter-spacing: .10em;
-            text-transform: uppercase;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .62);
-            backdrop-filter: blur(10px);
+        .ng-product-form-hero-card,
+        .ng-product-form-highlight-card {
+            min-height: 126px;
         }
 
-        .ng-product-form-title h1 {
+        .ng-product-form-hero-card {
+            display: flex;
+            align-items: center;
+        }
+
+        .ng-product-form-highlight-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .ng-widget-head {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+
+        .ng-kicker {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 6px 12px;
+            margin-bottom: 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .50);
+            border: 1px solid rgba(255, 255, 255, .58);
+            color: #d95d00;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .70);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .ng-widget-head h1 {
             margin: 0;
             color: #21160d;
             font-size: 30px;
@@ -197,74 +251,174 @@
             letter-spacing: -.04em;
         }
 
-        .ng-product-form-title p {
-            max-width: 780px;
-            margin: 7px 0 0;
+        .ng-widget-head p {
+            max-width: 760px;
+            margin: 8px 0 0;
             color: #765d45;
-            font-size: 12px;
-            font-weight: 650;
-            line-height: 1.5;
+            font-size: 13px;
+            line-height: 1.55;
+            font-weight: 700;
         }
 
-        .ng-product-back-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 42px;
-            padding: 0 17px;
-            border-radius: 15px;
-            color: #fff !important;
-            background: linear-gradient(135deg, #ff9d18, #ee6500);
-            box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
-            font-size: 12px;
-            font-weight: 950;
-            text-decoration: none !important;
-            white-space: nowrap;
+        .ng-highlight-info {
+            position: relative;
+            z-index: 2;
+            min-width: 0;
         }
 
-        .ng-product-form-stats {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .ng-product-form-stats article {
-            min-height: 88px;
-            padding: 15px 18px;
-            border-radius: 20px;
-        }
-
-        .ng-product-form-stats span {
+        .ng-highlight-info span {
             display: block;
-            color: #6f5946;
+            color: #765d45;
             font-size: 11px;
             font-weight: 900;
         }
 
-        .ng-product-form-stats strong {
+        .ng-highlight-info strong {
             display: block;
-            margin-top: 6px;
-            color: #23160d;
-            font-size: 20px;
-            line-height: 1.15;
+            max-width: 280px;
+            margin: 8px 0;
+            overflow: hidden;
+            color: #21160d;
+            font-size: 22px;
+            line-height: 1.1;
             font-weight: 950;
+            white-space: nowrap;
+            text-overflow: ellipsis;
             letter-spacing: -.03em;
         }
 
-        .ng-product-form-stats p {
-            margin: 6px 0 0;
-            color: #6f5946;
-            font-size: 10px;
+        .ng-highlight-info small {
+            display: block;
+            color: #765d45;
+            font-size: 11px;
+            line-height: 1.35;
             font-weight: 850;
+        }
+
+        .ng-highlight-actions {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 9px;
+            flex-wrap: wrap;
+        }
+
+        .ng-primary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 15px;
+            color: #fff;
+            background: linear-gradient(135deg, #ff9d18, #ee6500);
+            box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
+            font-size: 12px;
+            font-weight: 950;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: .2s ease;
+        }
+
+        .ng-primary-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 32px rgba(238, 101, 0, .30);
+        }
+
+        .ng-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .ng-kpi-card {
+            min-height: 108px;
+            display: flex;
+            gap: 12px;
+            padding: 16px 15px;
+            border-radius: 22px;
+        }
+
+        .ng-kpi-icon {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            width: 44px;
+            height: 44px;
+            border-radius: 15px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent), #d95d00);
+            box-shadow: 0 15px 28px rgba(249, 115, 22, .22);
+            font-size: 17px;
+            font-weight: 950;
+        }
+
+        .ng-kpi-content {
+            position: relative;
+            z-index: 1;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .ng-kpi-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            color: #6f5946;
+            font-size: 12px;
+            line-height: 1.2;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .ng-kpi-content strong {
+            display: block;
+            margin-top: 7px;
+            color: #23160d;
+            font-size: 22px;
+            line-height: 1.15;
+            font-weight: 950;
+            letter-spacing: -.03em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ng-kpi-content p {
+            margin: 8px 0 0;
+            color: #6f5946;
+            font-size: 11px;
+            line-height: 1.25;
+            font-weight: 850;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | PRODUCT FORM PANEL
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-product-form-page) .fi-page-content > form {
+            margin-top: -4px !important;
         }
 
         body:has(.ng-product-form-page) form,
         body:has(.ng-product-form-page) .fi-form {
-            width: min(100%, 1180px) !important;
-            max-width: 1180px !important;
-            margin-left: 0 !important;
-            margin-right: auto !important;
+            width: calc(100% - 48px) !important;
+            max-width: calc(100% - 48px) !important;
+            margin-left: 24px !important;
+            margin-right: 24px !important;
+            background: transparent !important;
         }
 
         body:has(.ng-product-form-page) .fi-section,
@@ -274,18 +428,29 @@
             margin-left: 0 !important;
             margin-right: 0 !important;
             border-radius: 24px !important;
-            background: rgba(255, 247, 235, .18) !important;
-            border: 1px solid rgba(255, 255, 255, .56) !important;
+            border: 1px solid rgba(255, 255, 255, .58) !important;
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, .34), rgba(255, 246, 231, .18)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .12), transparent 38%) !important;
             box-shadow:
-                0 20px 48px rgba(101, 58, 21, .10),
-                inset 0 1px 0 rgba(255, 255, 255, .56) !important;
-            backdrop-filter: blur(13px) !important;
+                0 22px 54px rgba(101, 58, 21, .12),
+                0 0 0 1px rgba(255, 255, 255, .12) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .54) !important;
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
             overflow: hidden !important;
+        }
+
+        body:has(.ng-product-form-page) .fi-section + .fi-section,
+        body:has(.ng-product-form-page) .fi-sc-section + .fi-sc-section {
+            margin-top: 14px !important;
         }
 
         body:has(.ng-product-form-page) .fi-sc,
         body:has(.ng-product-form-page) .fi-fo,
-        body:has(.ng-product-form-page) .fi-fo-component-ctn {
+        body:has(.ng-product-form-page) .fi-fo-component-ctn,
+        body:has(.ng-product-form-page) .fi-section-content,
+        body:has(.ng-product-form-page) .fi-sc-section-content {
             background: transparent !important;
             box-shadow: none !important;
             border: none !important;
@@ -320,23 +485,26 @@
         }
 
         body:has(.ng-product-form-page) .fi-fo-field-wrp-label span,
-        body:has(.ng-product-form-page) .fi-fo-field-wrp-label {
+        body:has(.ng-product-form-page) .fi-fo-field-wrp-label,
+        body:has(.ng-product-form-page) label {
             color: #4b3525 !important;
-            font-weight: 900 !important;
+            font-size: 12px !important;
+            font-weight: 950 !important;
         }
 
         body:has(.ng-product-form-page) .fi-input-wrp,
         body:has(.ng-product-form-page) .fi-select-input,
         body:has(.ng-product-form-page) .fi-textarea {
             width: 100% !important;
-            min-height: 46px !important;
+            min-height: 44px !important;
             border-radius: 16px !important;
-            background: rgba(255, 255, 255, .32) !important;
-            border-color: rgba(255, 255, 255, .46) !important;
+            background: rgba(255, 255, 255, .30) !important;
+            border-color: rgba(255, 255, 255, .44) !important;
             box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, .42),
+                inset 0 1px 0 rgba(255, 255, 255, .40),
                 0 10px 26px rgba(101, 58, 21, .05) !important;
             backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
         }
 
         body:has(.ng-product-form-page) .fi-input,
@@ -344,6 +512,11 @@
         body:has(.ng-product-form-page) textarea {
             color: #24180f !important;
             font-weight: 750 !important;
+        }
+
+        body:has(.ng-product-form-page) .fi-input::placeholder,
+        body:has(.ng-product-form-page) textarea::placeholder {
+            color: rgba(111, 88, 68, .62) !important;
         }
 
         body:has(.ng-product-form-page) .fi-fo-field-wrp-helper-text {
@@ -355,8 +528,8 @@
         body:has(.ng-product-form-page) .fi-fo-repeater,
         body:has(.ng-product-form-page) .fi-fo-repeater-item {
             border-radius: 20px !important;
-            background: rgba(255, 255, 255, .18) !important;
-            border: 1px solid rgba(255, 255, 255, .40) !important;
+            background: rgba(255, 255, 255, .20) !important;
+            border: 1px solid rgba(255, 255, 255, .42) !important;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32) !important;
             overflow: hidden !important;
         }
@@ -368,10 +541,10 @@
 
         body:has(.ng-product-form-page) .fi-form-actions,
         body:has(.ng-product-form-page) .fi-ac {
-            width: min(100%, 1180px) !important;
-            max-width: 1180px !important;
-            margin-left: 0 !important;
-            margin-right: auto !important;
+            width: calc(100% - 48px) !important;
+            max-width: calc(100% - 48px) !important;
+            margin-left: 24px !important;
+            margin-right: 24px !important;
             margin-top: 14px !important;
             padding: 0 0 24px !important;
             display: flex !important;
@@ -389,7 +562,8 @@
             font-weight: 950 !important;
         }
 
-        body:has(.ng-product-form-page) .fi-btn-color-primary {
+        body:has(.ng-product-form-page) .fi-btn-color-primary,
+        body:has(.ng-product-form-page) .fi-btn-color-warning {
             background: linear-gradient(135deg, #ff9d18, #ee6500) !important;
             box-shadow: 0 12px 22px rgba(238, 101, 0, .22) !important;
         }
@@ -404,80 +578,106 @@
             box-shadow: 0 12px 22px rgba(239, 68, 68, .18) !important;
         }
 
-        @media (max-width: 1300px) {
-            .ng-product-form-hero,
-            .ng-product-form-stats,
-            body:has(.ng-product-form-page) form,
-            body:has(.ng-product-form-page) .fi-form,
-            body:has(.ng-product-form-page) .fi-form-actions,
-            body:has(.ng-product-form-page) .fi-ac {
-                width: 100% !important;
-                max-width: 100% !important;
+        /*
+        |--------------------------------------------------------------------------
+        | SIDEBAR EFFECT SYNC
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-product-form-page) .fi-sidebar {
+            background: rgba(255, 250, 242, .50) !important;
+            border-right: 1px solid rgba(255, 255, 255, .48) !important;
+            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+        }
+
+        body:has(.ng-product-form-page) .fi-sidebar-nav {
+            padding: 18px 14px !important;
+        }
+
+        body:has(.ng-product-form-page) .fi-sidebar-item a {
+            border-radius: 14px !important;
+            color: #6f5844 !important;
+            transition: .2s ease !important;
+        }
+
+        body:has(.ng-product-form-page) .fi-sidebar-item-active a,
+        body:has(.ng-product-form-page) .fi-sidebar-item a:hover {
+            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
+            color: #fff !important;
+            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
+        }
+
+        body:has(.ng-product-form-page) .fi-sidebar-item-active svg,
+        body:has(.ng-product-form-page) .fi-sidebar-item a:hover svg,
+        body:has(.ng-product-form-page) .fi-sidebar-item-active span,
+        body:has(.ng-product-form-page) .fi-sidebar-item a:hover span {
+            color: #fff !important;
+        }
+
+        @media (max-width: 1500px) {
+            .ng-product-form-hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ng-kpi-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
             }
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .ng-product-form-page {
-                padding: 14px 14px 0;
+                padding: 18px 18px 10px !important;
             }
 
-            .ng-product-form-title {
+            .ng-product-form-highlight-card {
                 align-items: flex-start;
                 flex-direction: column;
             }
 
-            .ng-product-form-stats {
-                grid-template-columns: 1fr;
+            .ng-highlight-actions {
+                justify-content: flex-start;
+            }
+
+            body:has(.ng-product-form-page) form,
+            body:has(.ng-product-form-page) .fi-form,
+            body:has(.ng-product-form-page) .fi-form-actions,
+            body:has(.ng-product-form-page) .fi-ac {
+                width: calc(100% - 36px) !important;
+                max-width: calc(100% - 36px) !important;
+                margin-left: 18px !important;
+                margin-right: 18px !important;
             }
         }
-        /* =========================================================
-   FIX ALIGN PRODUCT FORM SECTION
-   Sejajarkan Informasi Utama Produk & Size Harga dengan widget atas
-========================================================= */
 
-/* Samakan posisi form dengan widget hero/statistik atas */
-body:has(.ng-product-form-page) form,
-body:has(.ng-product-form-page) .fi-form,
-body:has(.ng-product-form-page) .fi-form-actions,
-body:has(.ng-product-form-page) .fi-ac {
-    width: min(calc(100% - 36px), 1180px) !important;
-    max-width: 1180px !important;
-    margin-left: 18px !important;
-    margin-right: auto !important;
-}
+        @media (max-width: 700px) {
+            .ng-kpi-grid {
+                grid-template-columns: 1fr;
+            }
 
-/* Section di dalam form tetap full mengikuti form */
-body:has(.ng-product-form-page) .fi-section,
-body:has(.ng-product-form-page) .fi-sc-section {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
+            .ng-product-form-page {
+                padding: 14px 14px 8px !important;
+            }
 
-/* Jarak antar section jangan terlalu jauh */
-body:has(.ng-product-form-page) .fi-section + .fi-section,
-body:has(.ng-product-form-page) .fi-sc-section + .fi-sc-section {
-    margin-top: 14px !important;
-}
+            .ng-widget-head h1 {
+                font-size: 26px;
+            }
 
-/* Biar tombol bawah ikut sejajar dengan form */
-body:has(.ng-product-form-page) .fi-form-actions,
-body:has(.ng-product-form-page) .fi-ac {
-    justify-content: flex-start !important;
-    padding-left: 0 !important;
-}
+            .ng-widget-card {
+                padding: 16px;
+                border-radius: 22px;
+            }
 
-/* Responsive tetap aman */
-@media (max-width: 900px) {
-    body:has(.ng-product-form-page) form,
-    body:has(.ng-product-form-page) .fi-form,
-    body:has(.ng-product-form-page) .fi-form-actions,
-    body:has(.ng-product-form-page) .fi-ac {
-        width: calc(100% - 28px) !important;
-        margin-left: 14px !important;
-        margin-right: 14px !important;
-    }
-}
+            body:has(.ng-product-form-page) form,
+            body:has(.ng-product-form-page) .fi-form,
+            body:has(.ng-product-form-page) .fi-form-actions,
+            body:has(.ng-product-form-page) .fi-ac {
+                width: calc(100% - 28px) !important;
+                max-width: calc(100% - 28px) !important;
+                margin-left: 14px !important;
+                margin-right: 14px !important;
+            }
+        }
     </style>
 </x-filament-widgets::widget>

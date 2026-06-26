@@ -43,34 +43,40 @@
     @endphp
 
     <div class="ng-role-detail-page">
-        <section class="ng-role-detail-hero">
-            <article class="ng-role-detail-hero-main">
-                <div>
-                    <span class="ng-role-kicker">POS Ngunjuk</span>
-                    <h1>Detail Role</h1>
-                    <p>
-                        Informasi lengkap role pengguna, guard, jumlah permission, dan daftar hak akses
-                        yang dimiliki role ini pada sistem POS.
-                    </p>
+        <section class="ng-role-detail-hero-grid">
+            <article class="ng-widget-card ng-role-detail-hero-card">
+                <div class="ng-widget-head">
+                    <div>
+                        <span class="ng-kicker">
+                            POS Ngunjuk
+                        </span>
+
+                        <h1>Detail Role</h1>
+
+                        <p>
+                            Informasi lengkap role pengguna, guard, jumlah permission, dan daftar hak akses
+                            yang dimiliki role ini pada sistem POS.
+                        </p>
+                    </div>
                 </div>
 
-                <div class="ng-role-hero-actions">
-                    <a href="{{ $backUrl }}" class="ng-role-back-btn">
+                <div class="ng-hero-actions">
+                    <a href="{{ $backUrl }}" class="ng-soft-button">
                         ← Kembali
                     </a>
 
-                    <a href="{{ $editUrl }}" class="ng-role-edit-btn">
+                    <a href="{{ $editUrl }}" class="ng-primary-button">
                         Edit Role
                     </a>
                 </div>
             </article>
 
-            <article class="ng-role-detail-profile-card">
+            <article class="ng-widget-card ng-role-profile-card">
                 <div class="ng-role-avatar">
                     {{ mb_strtoupper(mb_substr($roleName, 0, 1)) }}
                 </div>
 
-                <div>
+                <div class="ng-profile-info">
                     <span>Role Terpilih</span>
                     <strong>{{ $roleName }}</strong>
                     <small>{{ number_format($permissions->count(), 0, ',', '.') }} permission</small>
@@ -78,25 +84,34 @@
             </article>
         </section>
 
-        <section class="ng-role-detail-kpi-grid">
+        <section class="ng-kpi-grid ng-role-detail-kpi-grid">
             @foreach ($cards as $card)
-                <article class="ng-role-detail-kpi" style="--accent: {{ $card['color'] }};">
-                    <div class="ng-role-detail-kpi-icon">
-                        {{ $card['icon'] }}
+                <article class="ng-kpi-card" style="--accent: {{ $card['color'] ?? '#f97316' }};">
+                    <div class="ng-kpi-icon">
+                        {{ $card['icon'] ?? '▣' }}
                     </div>
 
-                    <div>
-                        <span>{{ $card['label'] }}</span>
-                        <strong>{{ $card['value'] }}</strong>
-                        <p>{{ $card['caption'] }}</p>
+                    <div class="ng-kpi-content">
+                        <div class="ng-kpi-label">
+                            {{ $card['label'] ?? '-' }}
+                            <span>⋮</span>
+                        </div>
+
+                        <strong>
+                            {{ $card['value'] ?? '-' }}
+                        </strong>
+
+                        <p class="neutral">
+                            {{ $card['caption'] ?? '-' }}
+                        </p>
                     </div>
                 </article>
             @endforeach
         </section>
 
-        <section class="ng-role-detail-grid">
-            <article class="ng-role-detail-card">
-                <div class="ng-role-card-head">
+        <section class="ng-role-detail-main-grid">
+            <article class="ng-widget-card ng-role-info-card">
+                <div class="ng-card-head">
                     <div>
                         <h2>Informasi Role</h2>
                         <p>Ringkasan role dan konfigurasi guard.</p>
@@ -107,7 +122,7 @@
                     </span>
                 </div>
 
-                <div class="ng-role-info-list">
+                <div class="ng-info-list">
                     <div>
                         <span>Nama Role</span>
                         <strong>{{ $roleName }}</strong>
@@ -140,30 +155,31 @@
                 </div>
             </article>
 
-            <article class="ng-role-detail-card">
-                <div class="ng-role-card-head">
+            <article class="ng-widget-card ng-role-summary-card">
+                <div class="ng-card-head">
                     <div>
                         <h2>Access Summary</h2>
                         <p>Status kelengkapan permission role.</p>
                     </div>
                 </div>
 
-                <div class="ng-role-access-summary">
-                    <div class="ng-role-big-number">
+                <div class="ng-access-summary">
+                    <div class="ng-big-number">
                         {{ number_format($permissions->count(), 0, ',', '.') }}
                     </div>
 
                     <strong>Permission Aktif</strong>
 
                     <span>
-                        Role {{ $roleName }} memiliki {{ number_format($permissions->count(), 0, ',', '.') }} hak akses yang terhubung.
+                        Role {{ $roleName }} memiliki {{ number_format($permissions->count(), 0, ',', '.') }}
+                        hak akses yang terhubung.
                     </span>
                 </div>
             </article>
         </section>
 
-        <section class="ng-role-detail-card ng-role-permission-card">
-            <div class="ng-role-card-head">
+        <section class="ng-widget-card ng-role-permission-card">
+            <div class="ng-card-head">
                 <div>
                     <h2>Daftar Permission</h2>
                     <p>Semua permission yang terhubung dengan role ini.</p>
@@ -188,7 +204,7 @@
                         </small>
                     </div>
                 @empty
-                    <div class="ng-empty-permission">
+                    <div class="ng-empty-state">
                         <strong>Belum ada permission</strong>
                         <span>Role ini belum memiliki hak akses yang terhubung.</span>
                     </div>
@@ -205,11 +221,11 @@
 
         body:has(.ng-role-detail-page) {
             background:
-                linear-gradient(120deg, rgba(255, 248, 237, .10), rgba(255, 224, 185, .02)),
+                linear-gradient(120deg, rgba(255, 248, 237, .18), rgba(255, 224, 185, .05)),
                 url('/images/pos-orange-bg.png'),
-                radial-gradient(circle at 15% 8%, rgba(255, 255, 255, .32) 0 130px, transparent 280px),
+                radial-gradient(circle at 15% 8%, rgba(255, 255, 255, .48) 0 130px, transparent 280px),
                 radial-gradient(circle at 88% 78%, rgba(255, 118, 0, .42) 0 250px, transparent 520px),
-                radial-gradient(circle at 20% 96%, rgba(255, 181, 83, .28) 0 220px, transparent 500px),
+                radial-gradient(circle at 20% 96%, rgba(255, 181, 83, .30) 0 220px, transparent 500px),
                 linear-gradient(135deg, #fff3df 0%, #ffd394 48%, #ff9c45 100%) !important;
             background-size: cover !important;
             background-position: center !important;
@@ -238,34 +254,17 @@
             padding: 0 !important;
         }
 
-        body:has(.ng-role-detail-page) .fi-sidebar {
-            background: rgba(255, 250, 242, .50) !important;
-            border-right: 1px solid rgba(255, 255, 255, .48) !important;
-            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
-            backdrop-filter: blur(16px) !important;
-        }
-
-        body:has(.ng-role-detail-page) .fi-sidebar-nav {
-            padding: 18px 14px !important;
-        }
-
-        body:has(.ng-role-detail-page) .fi-sidebar-item a {
-            border-radius: 14px !important;
-            color: #6f5844 !important;
-            transition: .2s ease !important;
-        }
-
-        body:has(.ng-role-detail-page) .fi-sidebar-item-active a,
-        body:has(.ng-role-detail-page) .fi-sidebar-item a:hover {
-            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
-            color: #fff !important;
-            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
+        body:has(.ng-role-detail-page) .fi-page-content {
+            gap: 0 !important;
+            row-gap: 0 !important;
         }
 
         .ng-role-detail-page {
-            width: 100%;
+            width: 100% !important;
+            max-width: 100% !important;
             min-height: 100vh;
-            padding: 18px 18px 28px;
+            padding: 24px 24px 32px !important;
+            overflow: hidden !important;
             font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             color: #24180f;
         }
@@ -274,56 +273,90 @@
             box-sizing: border-box;
         }
 
-        .ng-role-detail-hero {
+        .ng-role-detail-hero-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.35fr) minmax(340px, .65fr);
-            gap: 12px;
-            margin-bottom: 12px;
+            grid-template-columns: minmax(0, 1.45fr) minmax(360px, .55fr);
+            gap: 16px;
+            margin-bottom: 14px;
         }
 
-        .ng-role-detail-hero-main,
-        .ng-role-detail-profile-card,
-        .ng-role-detail-kpi,
-        .ng-role-detail-card {
+        .ng-widget-card,
+        .ng-kpi-card {
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, .56);
-            background: rgba(255, 247, 235, .18);
+            border: 1px solid rgba(255, 255, 255, .58);
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, .46), rgba(255, 246, 231, .22)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .16), transparent 38%) !important;
             box-shadow:
-                0 20px 48px rgba(101, 58, 21, .10),
-                0 0 0 1px rgba(255, 255, 255, .10) inset,
-                inset 0 1px 0 rgba(255, 255, 255, .56);
-            backdrop-filter: blur(13px);
+                0 22px 54px rgba(101, 58, 21, .12),
+                0 0 0 1px rgba(255, 255, 255, .12) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .62);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
 
-        .ng-role-detail-hero-main {
+        .ng-widget-card::before,
+        .ng-kpi-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(120deg, rgba(255, 255, 255, .34), transparent 28%, transparent 70%, rgba(255, 255, 255, .16));
+            opacity: .38;
+        }
+
+        .ng-widget-card {
+            border-radius: 24px;
+            padding: 18px;
+            min-width: 0;
+        }
+
+        .ng-role-detail-hero-card,
+        .ng-role-profile-card {
             min-height: 126px;
+        }
+
+        .ng-role-detail-hero-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 18px;
-            padding: 20px 22px;
-            border-radius: 24px;
         }
 
-        .ng-role-kicker {
+        .ng-role-profile-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .ng-widget-head {
+            position: relative;
+            z-index: 2;
+            min-width: 0;
+        }
+
+        .ng-kicker {
             display: inline-flex;
+            align-items: center;
             width: fit-content;
             padding: 6px 12px;
-            margin-bottom: 9px;
+            margin-bottom: 10px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, .42);
-            border: 1px solid rgba(255, 255, 255, .54);
+            background: rgba(255, 255, 255, .50);
+            border: 1px solid rgba(255, 255, 255, .58);
             color: #d95d00;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 900;
-            letter-spacing: .10em;
+            letter-spacing: .08em;
             text-transform: uppercase;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .62);
-            backdrop-filter: blur(10px);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .70);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
-        .ng-role-detail-hero-main h1 {
+        .ng-widget-head h1 {
             margin: 0;
             color: #21160d;
             font-size: 30px;
@@ -332,60 +365,71 @@
             letter-spacing: -.04em;
         }
 
-        .ng-role-detail-hero-main p {
+        .ng-widget-head p {
             max-width: 760px;
-            margin: 7px 0 0;
+            margin: 8px 0 0;
             color: #765d45;
-            font-size: 12px;
-            font-weight: 650;
-            line-height: 1.5;
+            font-size: 13px;
+            line-height: 1.55;
+            font-weight: 700;
         }
 
-        .ng-role-hero-actions {
+        .ng-hero-actions {
+            position: relative;
+            z-index: 2;
             display: flex;
             align-items: center;
+            justify-content: flex-end;
             gap: 10px;
             flex-wrap: wrap;
+            flex: 0 0 auto;
         }
 
-        .ng-role-back-btn,
-        .ng-role-edit-btn {
+        .ng-soft-button,
+        .ng-primary-button {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             min-height: 42px;
-            padding: 0 17px;
+            padding: 0 16px;
             border-radius: 15px;
             font-size: 12px;
             font-weight: 950;
             text-decoration: none !important;
             white-space: nowrap;
+            transition: .2s ease;
         }
 
-        .ng-role-back-btn {
-            color: #6f5844 !important;
-            background: rgba(255, 255, 255, .42);
-            border: 1px solid rgba(255, 255, 255, .55);
+        .ng-soft-button {
+            color: #d95d00 !important;
+            background: rgba(255, 255, 255, .36);
+            border: 1px solid rgba(255, 255, 255, .50);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .44);
         }
 
-        .ng-role-edit-btn {
+        .ng-soft-button:hover {
+            color: #fff !important;
+            background: linear-gradient(135deg, #ff9d18, #ee6500);
+            box-shadow: 0 12px 22px rgba(238, 101, 0, .22);
+        }
+
+        .ng-primary-button {
             color: #fff !important;
             background: linear-gradient(135deg, #ff9d18, #ee6500);
             box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
         }
 
-        .ng-role-detail-profile-card {
-            min-height: 126px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 20px 22px;
-            border-radius: 24px;
+        .ng-primary-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 32px rgba(238, 101, 0, .30);
         }
 
         .ng-role-avatar {
-            width: 62px;
-            height: 62px;
+            position: relative;
+            z-index: 2;
+            flex: 0 0 auto;
+            width: 66px;
+            height: 66px;
             display: grid;
             place-items: center;
             border-radius: 20px;
@@ -396,65 +440,92 @@
             font-weight: 950;
         }
 
-        .ng-role-detail-profile-card span,
-        .ng-role-detail-profile-card small {
+        .ng-profile-info {
+            position: relative;
+            z-index: 2;
+            min-width: 0;
+        }
+
+        .ng-profile-info span,
+        .ng-profile-info small {
             display: block;
             color: #765d45;
             font-size: 11px;
             font-weight: 850;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
-        .ng-role-detail-profile-card strong {
+        .ng-profile-info strong {
             display: block;
+            max-width: 280px;
             margin: 7px 0;
             color: #21160d;
             font-size: 22px;
             line-height: 1.1;
             font-weight: 950;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
-        .ng-role-detail-kpi-grid {
+        .ng-kpi-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 10px;
-            margin-bottom: 12px;
+            gap: 14px;
+            margin-bottom: 16px;
         }
 
-        .ng-role-detail-kpi {
-            min-height: 90px;
+        .ng-kpi-card {
+            min-height: 108px;
             display: flex;
-            align-items: center;
-            gap: 11px;
-            padding: 14px;
-            border-radius: 20px;
+            gap: 12px;
+            padding: 16px 15px;
+            border-radius: 22px;
         }
 
-        .ng-role-detail-kpi-icon {
+        .ng-kpi-icon {
+            position: relative;
+            z-index: 1;
             display: grid;
             place-items: center;
             flex: 0 0 auto;
-            width: 40px;
-            height: 40px;
-            border-radius: 14px;
+            width: 44px;
+            height: 44px;
+            border-radius: 15px;
             color: #fff;
             background: linear-gradient(135deg, var(--accent), #d95d00);
-            box-shadow: 0 14px 24px rgba(249, 115, 22, .20);
-            font-size: 15px;
+            box-shadow: 0 15px 28px rgba(249, 115, 22, .22);
+            font-size: 17px;
             font-weight: 950;
         }
 
-        .ng-role-detail-kpi span {
-            display: block;
-            color: #6f5946;
-            font-size: 11px;
-            font-weight: 900;
+        .ng-kpi-content {
+            position: relative;
+            z-index: 1;
+            min-width: 0;
+            flex: 1;
         }
 
-        .ng-role-detail-kpi strong {
+        .ng-kpi-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            color: #6f5946;
+            font-size: 12px;
+            line-height: 1.2;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .ng-kpi-content strong {
             display: block;
-            margin-top: 6px;
+            margin-top: 7px;
             color: #23160d;
-            font-size: 18px;
+            font-size: 22px;
             line-height: 1.15;
             font-weight: 950;
             letter-spacing: -.03em;
@@ -463,25 +534,33 @@
             text-overflow: ellipsis;
         }
 
-        .ng-role-detail-kpi p {
-            margin: 6px 0 0;
+        .ng-kpi-content p {
+            margin: 8px 0 0;
             color: #6f5946;
-            font-size: 10px;
+            font-size: 11px;
+            line-height: 1.25;
             font-weight: 850;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .ng-role-detail-grid {
+        .ng-role-detail-main-grid {
             display: grid;
             grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 16px;
+            margin-bottom: 16px;
         }
 
-        .ng-role-detail-card {
-            border-radius: 24px;
+        .ng-role-info-card,
+        .ng-role-summary-card,
+        .ng-role-permission-card {
+            padding: 0;
         }
 
-        .ng-role-card-head {
+        .ng-card-head {
+            position: relative;
+            z-index: 2;
             min-height: 58px;
             display: flex;
             align-items: center;
@@ -492,7 +571,7 @@
             border-bottom: 1px solid rgba(114, 74, 41, .07);
         }
 
-        .ng-role-card-head h2 {
+        .ng-card-head h2 {
             margin: 0;
             color: #25170d;
             font-size: 17px;
@@ -501,7 +580,7 @@
             letter-spacing: -.03em;
         }
 
-        .ng-role-card-head p {
+        .ng-card-head p {
             margin: 5px 0 0;
             color: #7b624c;
             font-size: 12px;
@@ -510,6 +589,8 @@
 
         .ng-guard-pill,
         .ng-permission-count-pill {
+            position: relative;
+            z-index: 2;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -524,29 +605,31 @@
             white-space: nowrap;
         }
 
-        .ng-role-info-list {
+        .ng-info-list {
+            position: relative;
+            z-index: 2;
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 10px;
             padding: 18px 20px 20px;
         }
 
-        .ng-role-info-list div {
+        .ng-info-list div {
             min-height: 74px;
             padding: 14px;
             border-radius: 18px;
-            background: rgba(255, 255, 255, .20);
+            background: rgba(255, 255, 255, .24);
             border: 1px solid rgba(255, 255, 255, .38);
         }
 
-        .ng-role-info-list span {
+        .ng-info-list span {
             display: block;
             color: #6f5946;
             font-size: 11px;
             font-weight: 900;
         }
 
-        .ng-role-info-list strong {
+        .ng-info-list strong {
             display: block;
             margin-top: 7px;
             color: #23160d;
@@ -555,12 +638,14 @@
             word-break: break-word;
         }
 
-        .ng-role-access-summary {
+        .ng-access-summary {
+            position: relative;
+            z-index: 2;
             padding: 24px;
             text-align: center;
         }
 
-        .ng-role-big-number {
+        .ng-big-number {
             width: 120px;
             height: 120px;
             display: grid;
@@ -574,18 +659,18 @@
             font-weight: 950;
         }
 
-        .ng-role-access-summary strong,
-        .ng-role-access-summary span {
+        .ng-access-summary strong,
+        .ng-access-summary span {
             display: block;
         }
 
-        .ng-role-access-summary strong {
+        .ng-access-summary strong {
             color: #21160d;
             font-size: 18px;
             font-weight: 950;
         }
 
-        .ng-role-access-summary span {
+        .ng-access-summary span {
             max-width: 280px;
             margin: 6px auto 0;
             color: #765d45;
@@ -595,6 +680,8 @@
         }
 
         .ng-permission-list {
+            position: relative;
+            z-index: 2;
             padding: 14px;
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -609,7 +696,7 @@
             align-items: center;
             padding: 12px;
             border-radius: 18px;
-            background: rgba(255, 255, 255, .20);
+            background: rgba(255, 255, 255, .24);
             border: 1px solid rgba(255, 255, 255, .38);
         }
 
@@ -644,39 +731,77 @@
             text-overflow: ellipsis;
         }
 
-        .ng-empty-permission {
+        .ng-empty-state {
             grid-column: 1 / -1;
             padding: 18px;
             border-radius: 18px;
-            background: rgba(255, 255, 255, .20);
+            background: rgba(255, 255, 255, .24);
             border: 1px solid rgba(255, 255, 255, .38);
         }
 
-        .ng-empty-permission strong,
-        .ng-empty-permission span {
+        .ng-empty-state strong,
+        .ng-empty-state span {
             display: block;
         }
 
-        .ng-empty-permission strong {
+        .ng-empty-state strong {
             color: #23160d;
             font-size: 14px;
             font-weight: 950;
         }
 
-        .ng-empty-permission span {
+        .ng-empty-state span {
             margin-top: 5px;
             color: #765d45;
             font-size: 12px;
             font-weight: 750;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | SIDEBAR EFFECT SYNC
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-role-detail-page) .fi-sidebar {
+            background: rgba(255, 250, 242, .50) !important;
+            border-right: 1px solid rgba(255, 255, 255, .48) !important;
+            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+        }
+
+        body:has(.ng-role-detail-page) .fi-sidebar-nav {
+            padding: 18px 14px !important;
+        }
+
+        body:has(.ng-role-detail-page) .fi-sidebar-item a {
+            border-radius: 14px !important;
+            color: #6f5844 !important;
+            transition: .2s ease !important;
+        }
+
+        body:has(.ng-role-detail-page) .fi-sidebar-item-active a,
+        body:has(.ng-role-detail-page) .fi-sidebar-item a:hover {
+            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
+            color: #fff !important;
+            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
+        }
+
+        body:has(.ng-role-detail-page) .fi-sidebar-item-active svg,
+        body:has(.ng-role-detail-page) .fi-sidebar-item a:hover svg,
+        body:has(.ng-role-detail-page) .fi-sidebar-item-active span,
+        body:has(.ng-role-detail-page) .fi-sidebar-item a:hover span {
+            color: #fff !important;
+        }
+
         @media (max-width: 1500px) {
-            .ng-role-detail-hero,
-            .ng-role-detail-grid {
+            .ng-role-detail-hero-grid,
+            .ng-role-detail-main-grid {
                 grid-template-columns: 1fr;
             }
 
-            .ng-role-detail-kpi-grid {
+            .ng-kpi-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
@@ -685,20 +810,44 @@
             }
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .ng-role-detail-page {
-                padding: 14px;
+                padding: 18px 18px 28px !important;
             }
 
-            .ng-role-detail-hero-main {
+            .ng-role-detail-hero-card {
                 align-items: flex-start;
                 flex-direction: column;
             }
 
-            .ng-role-detail-kpi-grid,
-            .ng-role-info-list,
+            .ng-hero-actions {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .ng-kpi-grid,
+            .ng-info-list,
             .ng-permission-list {
                 grid-template-columns: 1fr;
+            }
+
+            .ng-role-detail-page {
+                padding: 14px 14px 24px !important;
+            }
+
+            .ng-widget-head h1 {
+                font-size: 26px;
+            }
+
+            .ng-widget-card {
+                padding: 16px;
+                border-radius: 22px;
+            }
+
+            .ng-role-profile-card {
+                align-items: flex-start;
+                flex-direction: column;
             }
         }
     </style>
