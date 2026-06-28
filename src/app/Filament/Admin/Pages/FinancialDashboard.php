@@ -44,6 +44,7 @@ class FinancialDashboard extends Page
     public function getFinancialDashboardData(): array
     {
         [$start, $end, $periodLabel, $periodKey, $selectedMonth, $selectedYear, $isYearMonthDetail] = $this->getSelectedRange();
+
         [$previousStart, $previousEnd] = $this->getPreviousRange($start, $end, $periodKey, $selectedMonth);
 
         $revenue = $this->revenueBetween($start, $end);
@@ -63,18 +64,29 @@ class FinancialDashboard extends Page
         $netProfit = $grossProfit - $operationalCost;
         $previousNetProfit = $previousGrossProfit - $previousOperationalCost;
 
-        $target = $this->targetForRange($start, $end, $periodKey, $selectedMonth);
+        /*
+        |--------------------------------------------------------------------------
+        | Monthly Target Sync
+        |--------------------------------------------------------------------------
+        | Target tidak dibuat otomatis. Dashboard hanya membaca target dari
+        | menu Target Penjualan sesuai bulan aktif yang sedang dipilih.
+        */
+        $target = $this->targetForMonth($start);
         $targetRevenue = (int) ($target?->target_revenue ?? 0);
         $targetGrossProfit = (int) ($target?->target_gross_profit ?? 0);
         $targetNetProfit = (int) ($target?->target_net_profit ?? 0);
 
-        $revenueProgress = $this->progressPercent($revenue, $targetRevenue);
-        $grossProfitProgress = $this->progressPercent($grossProfit, $targetGrossProfit);
-        $netProfitProgress = $this->progressPercent($netProfit, $targetNetProfit);
+        $targetRevenueActual = $revenue;
+        $targetGrossProfitActual = $grossProfit;
+        $targetNetProfitActual = $netProfit;
 
-        $remainingRevenueTarget = max($targetRevenue - $revenue, 0);
-        $remainingGrossProfitTarget = max($targetGrossProfit - $grossProfit, 0);
-        $remainingNetProfitTarget = max($targetNetProfit - $netProfit, 0);
+        $revenueProgress = $this->progressPercent($targetRevenueActual, $targetRevenue);
+        $grossProfitProgress = $this->progressPercent($targetGrossProfitActual, $targetGrossProfit);
+        $netProfitProgress = $this->progressPercent($targetNetProfitActual, $targetNetProfit);
+
+        $remainingRevenueTarget = max($targetRevenue - $targetRevenueActual, 0);
+        $remainingGrossProfitTarget = max($targetGrossProfit - $targetGrossProfitActual, 0);
+        $remainingNetProfitTarget = max($targetNetProfit - $targetNetProfitActual, 0);
 
         $profitMargin = $revenue > 0 ? round(($grossProfit / $revenue) * 100, 1) : 0;
 
@@ -84,16 +96,15 @@ class FinancialDashboard extends Page
                 'label' => $periodLabel,
                 'start' => $start->format('d M Y'),
                 'end' => $end->format('d M Y'),
+                'start_query' => $start->toDateString(),
+                'end_query' => $end->toDateString(),
                 'selected_month' => $selectedMonth,
                 'selected_year' => $selectedYear,
                 'is_year_month_detail' => $isYearMonthDetail,
             ],
             'filters' => [
                 'periods' => [
-                    'today' => 'Hari Ini',
-                    'week' => 'Minggu Ini',
-                    'month' => 'Bulan Ini',
-                    'year' => 'Tahun Ini',
+                    'month' => 'Bulanan',
                 ],
                 'months' => $this->monthFilterOptions(),
                 'selected_month' => $selectedMonth,
@@ -128,7 +139,7 @@ class FinancialDashboard extends Page
                     'label' => 'Biaya Operasional',
                     'value' => $this->rupiah($operationalCost),
                     'trend' => $this->trendPercent($operationalCost, $previousOperationalCost),
-                    'caption' => 'Sewa tahunan otomatis dibagi 12',
+                    'caption' => 'Sesuai tanggal bayar dan tipe biaya',
                     'icon' => '⌁',
                     'color' => '#ef4444',
                 ],
@@ -183,7 +194,14 @@ class FinancialDashboard extends Page
                 'target_revenue' => $targetRevenue,
                 'target_gross_profit' => $targetGrossProfit,
                 'target_net_profit' => $targetNetProfit,
+                'target_revenue_actual' => $revenue,
+                'target_gross_profit_actual' => $grossProfit,
+                'target_net_profit_actual' => $netProfit,
+                'target_revenue_remaining' => $remainingRevenueTarget,
+                'target_gross_profit_remaining' => $remainingGrossProfitTarget,
+                'target_net_profit_remaining' => $remainingNetProfitTarget,
             ],
+            'revenueTrend' => $this->getRevenueTrendData($start, $end, $periodKey, $selectedMonth, $selectedYear),
             'costs' => $this->getOperationalCostList($start, $end),
             'productMargins' => $this->getProductMarginList($start, $end),
             'yearlyDetails' => $this->getYearlyDetails($selectedYear),
@@ -203,80 +221,50 @@ class FinancialDashboard extends Page
 
     private function getSelectedRange(): array
     {
-        $period = (string) request()->query('period', 'month');
-        $period = in_array($period, ['today', 'week', 'month', 'year'], true) ? $period : 'month';
+        /*
+        |--------------------------------------------------------------------------
+        | Monthly Financial Dashboard
+        |--------------------------------------------------------------------------
+        | Dashboard keuangan dibuat fokus bulanan supaya target, revenue,
+        | gross profit, biaya operasional, net profit, grafik, dan rincian biaya
+        | selalu berada pada konteks bulan yang sama.
+        */
 
         $selectedYear = (int) request()->query('year', now()->year);
         if ($selectedYear < 2000 || $selectedYear > 2100) {
             $selectedYear = now()->year;
         }
 
-        $selectedMonth = (string) request()->query('month', 'all');
-
-        if ($period === 'today') {
-            return [
-                now()->startOfDay(),
-                now()->endOfDay(),
-                'Hari Ini',
-                'today',
-                'all',
-                now()->year,
-                false,
-            ];
+        $selectedMonth = (int) request()->query('month', now()->month);
+        if ($selectedMonth < 1 || $selectedMonth > 12) {
+            $selectedMonth = now()->month;
         }
 
-        if ($period === 'week') {
-            return [
-                now()->subDays(6)->startOfDay(),
-                now()->endOfDay(),
-                '7 Hari Terakhir',
-                'week',
-                'all',
-                now()->year,
-                false,
-            ];
-        }
-
-        if ($period === 'year') {
-            if ($this->isValidMonthValue($selectedMonth)) {
-                $month = (int) $selectedMonth;
-                $start = Carbon::create($selectedYear, $month, 1)->startOfDay();
-
-                return [
-                    $start,
-                    $start->copy()->endOfMonth(),
-                    $this->monthName($month) . ' ' . $selectedYear,
-                    'year',
-                    (string) $month,
-                    $selectedYear,
-                    true,
-                ];
-            }
-
-            return [
-                Carbon::create($selectedYear, 1, 1)->startOfDay(),
-                Carbon::create($selectedYear, 12, 31)->endOfDay(),
-                'Tahun ' . $selectedYear,
-                'year',
-                'all',
-                $selectedYear,
-                false,
-            ];
-        }
+        $start = Carbon::create($selectedYear, $selectedMonth, 1)->startOfDay();
+        $end = $start->copy()->endOfMonth();
 
         return [
-            now()->startOfMonth(),
-            now()->endOfMonth(),
-            'Bulan Ini',
+            $start,
+            $end,
+            $this->monthName($selectedMonth) . ' ' . $selectedYear,
             'month',
-            'all',
-            now()->year,
+            (string) $selectedMonth,
+            $selectedYear,
             false,
         ];
     }
 
     private function getPreviousRange(Carbon $start, Carbon $end, string $periodKey, string $selectedMonth = 'all'): array
     {
+
+        if ($periodKey === 'custom') {
+            $days = max(1, ((int) floor($start->diffInDays($end))) + 1);
+            $previousEnd = $start->copy()->subSecond();
+            $previousStart = $previousEnd->copy()->subDays($days - 1)->startOfDay();
+
+            return [$previousStart, $previousEnd];
+        }
+
         if ($periodKey === 'today') {
             return [
                 $start->copy()->subDay()->startOfDay(),
@@ -403,18 +391,30 @@ class FinancialDashboard extends Page
             return 0;
         }
 
-        $normalCost = (int) DB::table('operational_costs')
+        $hasCostType = Schema::hasColumn('operational_costs', 'cost_type');
+
+        $normalQuery = DB::table('operational_costs')
             ->where('is_active', true)
-            ->where('category', '!=', 'rent')
             ->whereBetween('cost_date', [
                 $start->toDateString(),
                 $end->toDateString(),
-            ])
-            ->sum('amount');
+            ]);
 
-        $rentAllocation = $this->getAnnualRentCosts()
+        if ($hasCostType) {
+            $normalQuery->where(function ($query): void {
+                $query
+                    ->where('cost_type', '!=', 'annual')
+                    ->orWhereNull('cost_type');
+            });
+        } else {
+            $normalQuery->where('category', '!=', 'rent');
+        }
+
+        $normalCost = (int) $normalQuery->sum('amount');
+
+        $annualAllocation = $this->getAnnualOperationalCosts()
             ->sum(function ($cost) use ($start, $end): int {
-                $months = $this->countAnnualRentOverlapMonths(
+                $months = $this->countAnnualCostOverlapMonths(
                     Carbon::parse($cost->cost_date),
                     $start,
                     $end
@@ -427,25 +427,156 @@ class FinancialDashboard extends Page
                 return (int) round(((int) $cost->amount / 12) * $months);
             });
 
-        return $normalCost + (int) $rentAllocation;
+        return $normalCost + (int) $annualAllocation;
+    }
+
+
+    private function getRevenueTrendData(Carbon $start, Carbon $end, string $periodKey, string $selectedMonth = 'all', ?int $selectedYear = null): array
+    {
+        if (! Schema::hasTable('orders')) {
+            return [];
+        }
+
+        $revenueColumn = Schema::hasColumn('orders', 'total_price') ? 'total_price' : 'total_amount';
+
+        if (! Schema::hasColumn('orders', $revenueColumn)) {
+            return [];
+        }
+
+        $dateExpression = 'COALESCE(ordered_at, created_at)';
+
+        $query = DB::table('orders')
+            ->whereBetween(DB::raw($dateExpression), [
+                $start->toDateTimeString(),
+                $end->toDateTimeString(),
+            ]);
+
+        if (Schema::hasColumn('orders', 'status')) {
+            $query->where('status', '!=', 'Dibatalkan');
+        }
+
+        if ($periodKey === 'today') {
+            $bucketExpression = 'HOUR(' . $dateExpression . ')';
+
+            $rows = $query
+                ->selectRaw($bucketExpression . ' as bucket')
+                ->selectRaw('COALESCE(SUM(' . $revenueColumn . '), 0) as total')
+                ->groupBy(DB::raw($bucketExpression))
+                ->pluck('total', 'bucket');
+
+            $data = [];
+
+            for ($hour = 0; $hour <= 23; $hour++) {
+                $data[] = [
+                    'label' => str_pad((string) $hour, 2, '0', STR_PAD_LEFT) . ':00',
+                    'short_label' => str_pad((string) $hour, 2, '0', STR_PAD_LEFT),
+                    'tooltip_label' => str_pad((string) $hour, 2, '0', STR_PAD_LEFT) . ':00',
+                    'value' => (int) ($rows[$hour] ?? 0),
+                ];
+            }
+
+            return $data;
+        }
+
+        if ($periodKey === 'year' && ! $this->isValidMonthValue($selectedMonth)) {
+            $bucketExpression = 'MONTH(' . $dateExpression . ')';
+
+            $rows = $query
+                ->selectRaw($bucketExpression . ' as bucket')
+                ->selectRaw('COALESCE(SUM(' . $revenueColumn . '), 0) as total')
+                ->groupBy(DB::raw($bucketExpression))
+                ->pluck('total', 'bucket');
+
+            $year = $selectedYear ?: $start->year;
+            $data = [];
+
+            for ($month = 1; $month <= 12; $month++) {
+                $monthDate = Carbon::create($year, $month, 1);
+
+                $data[] = [
+                    'label' => $monthDate->translatedFormat('M'),
+                    'short_label' => $monthDate->translatedFormat('M'),
+                    'tooltip_label' => $monthDate->translatedFormat('F Y'),
+                    'value' => (int) ($rows[$month] ?? 0),
+                ];
+            }
+
+            return $data;
+        }
+
+        $bucketExpression = 'DATE(' . $dateExpression . ')';
+
+        $rows = $query
+            ->selectRaw($bucketExpression . ' as bucket')
+            ->selectRaw('COALESCE(SUM(' . $revenueColumn . '), 0) as total')
+            ->groupBy(DB::raw($bucketExpression))
+            ->pluck('total', 'bucket');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Monthly dashboard: compact weekly revenue bars
+        |--------------------------------------------------------------------------
+        */
+        if ($periodKey === 'month') {
+            $data = [];
+            $cursor = $start->copy()->startOfDay();
+            $weekIndex = 1;
+
+            while ($cursor->lte($end)) {
+                $weekStart = $cursor->copy()->startOfDay();
+                $weekEnd = $cursor->copy()->addDays(6)->startOfDay();
+
+                if ($weekEnd->gt($end)) {
+                    $weekEnd = $end->copy()->startOfDay();
+                }
+
+                $total = 0;
+                $dayCursor = $weekStart->copy();
+
+                while ($dayCursor->lte($weekEnd)) {
+                    $total += (int) ($rows[$dayCursor->toDateString()] ?? 0);
+                    $dayCursor->addDay();
+                }
+
+                $tooltipLabel = $weekStart->translatedFormat('d M') . ' - ' . $weekEnd->translatedFormat('d M Y');
+
+                $data[] = [
+                    'label' => 'Minggu ' . $weekIndex,
+                    'short_label' => 'M' . $weekIndex,
+                    'tooltip_label' => $tooltipLabel,
+                    'value' => $total,
+                ];
+
+                $cursor = $weekEnd->copy()->addDay()->startOfDay();
+                $weekIndex++;
+            }
+
+            return $data;
+        }
+
+        $data = [];
+        $cursor = $start->copy()->startOfDay();
+
+        while ($cursor->lte($end)) {
+            $key = $cursor->toDateString();
+
+            $data[] = [
+                'label' => $cursor->translatedFormat('d M'),
+                'short_label' => $cursor->format('d'),
+                'tooltip_label' => $cursor->translatedFormat('d M Y'),
+                'value' => (int) ($rows[$key] ?? 0),
+            ];
+
+            $cursor->addDay();
+        }
+
+        return $data;
     }
 
     private function targetForRange(Carbon $start, Carbon $end, string $periodKey, string $selectedMonth = 'all'): ?object
     {
         if (! Schema::hasTable('sales_targets')) {
             return null;
-        }
-
-        if ($periodKey === 'year' && ! $this->isValidMonthValue($selectedMonth)) {
-            return DB::table('sales_targets')
-                ->whereBetween('month', [
-                    $start->copy()->startOfYear()->toDateString(),
-                    $end->copy()->endOfYear()->toDateString(),
-                ])
-                ->selectRaw('COALESCE(SUM(target_revenue), 0) as target_revenue')
-                ->selectRaw('COALESCE(SUM(target_gross_profit), 0) as target_gross_profit')
-                ->selectRaw('COALESCE(SUM(target_net_profit), 0) as target_net_profit')
-                ->first();
         }
 
         return $this->targetForMonth($start);
@@ -468,27 +599,43 @@ class FinancialDashboard extends Page
             return [];
         }
 
-        $normalCosts = DB::table('operational_costs')
+        $hasCostType = Schema::hasColumn('operational_costs', 'cost_type');
+
+        $normalQuery = DB::table('operational_costs')
             ->where('is_active', true)
-            ->where('category', '!=', 'rent')
             ->whereBetween('cost_date', [
                 $start->toDateString(),
                 $end->toDateString(),
-            ])
+            ]);
+
+        if ($hasCostType) {
+            $normalQuery->where(function ($query): void {
+                $query
+                    ->where('cost_type', '!=', 'annual')
+                    ->orWhereNull('cost_type');
+            });
+        } else {
+            $normalQuery->where('category', '!=', 'rent');
+        }
+
+        $normalCosts = $normalQuery
             ->get()
             ->map(fn ($cost): array => [
                 'name' => (string) $cost->name,
                 'category' => $this->costCategoryLabel((string) $cost->category),
+                'cost_type' => $this->costType($cost),
+                'cost_type_label' => $this->costTypeLabel($this->costType($cost)),
                 'amount' => (int) $cost->amount,
+                'input_amount' => (int) $cost->amount,
                 'annual_amount' => null,
                 'date' => Carbon::parse($cost->cost_date)->format('d M Y'),
                 'is_annual' => false,
-                'description' => (string) ($cost->note ?? Carbon::parse($cost->cost_date)->format('d M Y')),
+                'description' => (string) ($cost->note ?? 'Masuk sesuai bulan tanggal bayar'),
             ]);
 
-        $rentCosts = $this->getAnnualRentCosts()
+        $annualCosts = $this->getAnnualOperationalCosts()
             ->map(function ($cost) use ($start, $end): ?array {
-                $months = $this->countAnnualRentOverlapMonths(
+                $months = $this->countAnnualCostOverlapMonths(
                     Carbon::parse($cost->cost_date),
                     $start,
                     $end
@@ -500,11 +647,15 @@ class FinancialDashboard extends Page
 
                 $monthlyAmount = (int) round((int) $cost->amount / 12);
                 $allocatedAmount = $monthlyAmount * $months;
+                $type = $this->costType($cost);
 
                 return [
                     'name' => (string) $cost->name,
-                    'category' => 'Sewa Tempat Tahunan',
+                    'category' => $this->costCategoryLabel((string) $cost->category),
+                    'cost_type' => $type,
+                    'cost_type_label' => $this->costTypeLabel($type),
                     'amount' => $allocatedAmount,
+                    'input_amount' => (int) $cost->amount,
                     'annual_amount' => (int) $cost->amount,
                     'date' => Carbon::parse($cost->cost_date)->format('d M Y'),
                     'is_annual' => true,
@@ -515,9 +666,8 @@ class FinancialDashboard extends Page
             ->values();
 
         return $normalCosts
-            ->concat($rentCosts)
+            ->concat($annualCosts)
             ->sortByDesc('amount')
-            ->take(12)
             ->values()
             ->all();
     }
@@ -625,33 +775,59 @@ class FinancialDashboard extends Page
         return $rows;
     }
 
-    private function getAnnualRentCosts(): Collection
+    private function getAnnualOperationalCosts(): Collection
     {
         if (! Schema::hasTable('operational_costs')) {
             return collect();
         }
 
-        return DB::table('operational_costs')
-            ->where('is_active', true)
-            ->where('category', 'rent')
-            ->get();
+        $query = DB::table('operational_costs')
+            ->where('is_active', true);
+
+        if (Schema::hasColumn('operational_costs', 'cost_type')) {
+            $query->where('cost_type', 'annual');
+        } else {
+            $query->where('category', 'rent');
+        }
+
+        return $query->get();
     }
 
-    private function countAnnualRentOverlapMonths(Carbon $rentDate, Carbon $periodStart, Carbon $periodEnd): int
+    private function countAnnualCostOverlapMonths(Carbon $costDate, Carbon $periodStart, Carbon $periodEnd): int
     {
-        $rentStart = $rentDate->copy()->startOfMonth();
-        $rentEnd = $rentStart->copy()->addMonths(11)->endOfMonth();
+        $annualStart = $costDate->copy()->startOfMonth();
+        $annualEnd = $annualStart->copy()->addMonths(11)->endOfMonth();
         $rangeStart = $periodStart->copy()->startOfMonth();
         $rangeEnd = $periodEnd->copy()->endOfMonth();
 
-        if ($rentEnd->lt($rangeStart) || $rentStart->gt($rangeEnd)) {
+        if ($annualEnd->lt($rangeStart) || $annualStart->gt($rangeEnd)) {
             return 0;
         }
 
-        $overlapStart = $rentStart->gt($rangeStart) ? $rentStart->copy() : $rangeStart->copy();
-        $overlapEnd = $rentEnd->lt($rangeEnd) ? $rentEnd->copy() : $rangeEnd->copy();
+        $overlapStart = $annualStart->gt($rangeStart) ? $annualStart->copy() : $rangeStart->copy();
+        $overlapEnd = $annualEnd->lt($rangeEnd) ? $annualEnd->copy() : $rangeEnd->copy();
 
         return (($overlapEnd->year - $overlapStart->year) * 12) + ($overlapEnd->month - $overlapStart->month) + 1;
+    }
+
+    private function costType(object $cost): string
+    {
+        $type = (string) ($cost->cost_type ?? '');
+
+        if (in_array($type, ['one_time', 'monthly', 'annual'], true)) {
+            return $type;
+        }
+
+        return ((string) ($cost->category ?? '') === 'rent') ? 'annual' : 'monthly';
+    }
+
+    private function costTypeLabel(string $type): string
+    {
+        return match ($type) {
+            'one_time' => 'Sekali Bayar',
+            'annual' => 'Tahunan',
+            default => 'Bulanan',
+        };
     }
 
     private function costCategoryLabel(string $category): string

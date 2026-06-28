@@ -1,9 +1,41 @@
 <?php
+    $period = $period ?? [];
+    $filters = $filters ?? [];
+
+    $selectedMonth = (string) ($period['selected_month'] ?? request()->query('month', now()->month));
+    $selectedYear = (int) ($period['selected_year'] ?? request()->query('year', now()->year));
+    $periodLabel = (string) ($period['label'] ?? now()->translatedFormat('F Y'));
+
+    $months = $filters['months'] ?? [
+        '1' => 'Januari',
+        '2' => 'Februari',
+        '3' => 'Maret',
+        '4' => 'April',
+        '5' => 'Mei',
+        '6' => 'Juni',
+        '7' => 'Juli',
+        '8' => 'Agustus',
+        '9' => 'September',
+        '10' => 'Oktober',
+        '11' => 'November',
+        '12' => 'Desember',
+    ];
+
+    $years = $filters['years'] ?? range(now()->year - 4, now()->year + 1);
+    $baseOperationalUrl = $indexUrl ?? url('/admin/operational-costs');
+
+    $makePeriodUrl = function (string|int $month, string|int $year) use ($baseOperationalUrl): string {
+        return $baseOperationalUrl . '?' . http_build_query([
+            'month' => (string) $month,
+            'year' => (string) $year,
+        ]);
+    };
+
     $cards = [
         [
-            'label' => 'Biaya Bulan Ini',
+            'label' => 'Biaya Periode Ini',
             'value' => $this->rupiah($summary['monthly_cost'] ?? 0),
-            'caption' => 'Termasuk sewa tahunan / 12',
+            'caption' => 'Data aktif: ' . $periodLabel,
             'icon' => '▣',
             'color' => '#f97316',
         ],
@@ -15,9 +47,9 @@
             'color' => '#3b82f6',
         ],
         [
-            'label' => 'Biaya Aktif',
+            'label' => 'Biaya Aktif Periode',
             'value' => number_format((int) ($summary['active_costs'] ?? 0), 0, ',', '.'),
-            'caption' => 'Masuk dashboard finance',
+            'caption' => 'Tampil pada bulan aktif',
             'icon' => '✓',
             'color' => '#10b981',
         ],
@@ -27,13 +59,6 @@
             'caption' => 'Tidak dihitung',
             'icon' => '!',
             'color' => '#ef4444',
-        ],
-        [
-            'label' => 'Biaya Terbesar',
-            'value' => $this->rupiah($summary['highest_cost_amount'] ?? 0),
-            'caption' => $summary['highest_cost_name'] ?? '-',
-            'icon' => '◇',
-            'color' => '#8b5cf6',
         ],
     ];
 ?>
@@ -50,25 +75,55 @@
 <?php $component->withAttributes([]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-    <div class="ng-operational-page">
+    <div class="ng-operational-page" data-active-month="<?php echo e($selectedMonth); ?>" data-active-year="<?php echo e($selectedYear); ?>">
         <section class="ng-op-hero-grid">
             <article class="ng-widget-card ng-op-hero-card">
                 <div class="ng-widget-head">
                     <div>
                         <h1>Biaya Operasional</h1>
                         <p>
-                            Kelola seluruh pengeluaran usaha seperti sewa tempat, listrik, air, wifi,
-                            gaji karyawan, promosi, maintenance, dan biaya lainnya.
+                            Kelola pengeluaran usaha berdasarkan bulan aktif. Pilih bulan dan tahun untuk melihat biaya yang masuk ke periode tersebut.
                         </p>
+
+                        <small class="ng-op-active-period">
+                            Data aktif: <?php echo e($periodLabel); ?> • <?php echo e($period['start'] ?? '-'); ?> - <?php echo e($period['end'] ?? '-'); ?>
+
+                        </small>
+                    </div>
+
+                    <div class="ng-op-period-filter" wire:ignore>
+                        <span>Filter Bulan</span>
+
+                        <div class="ng-op-period-selects">
+                            <select class="ng-op-select" data-ng-op-month onchange="if (this.value) window.location.href = this.value;">
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $months; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $monthKey => $monthLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                    <option value="<?php echo e($makePeriodUrl($monthKey, $selectedYear)); ?>"
+                                            <?php if((string) $selectedMonth === (string) $monthKey): echo 'selected'; endif; ?>>
+                                        <?php echo e($monthLabel); ?>
+
+                                    </option>
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                            </select>
+
+                            <select class="ng-op-select ng-op-year-select" data-ng-op-year onchange="if (this.value) window.location.href = this.value;">
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yearOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                    <option value="<?php echo e($makePeriodUrl($selectedMonth, $yearOption)); ?>"
+                                            <?php if((int) $selectedYear === (int) $yearOption): echo 'selected'; endif; ?>>
+                                        <?php echo e($yearOption); ?>
+
+                                    </option>
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </article>
 
             <article class="ng-widget-card ng-op-highlight-card">
                 <div class="ng-highlight-info">
-                    <span>Biaya Terbesar</span>
+                    <span>Biaya Terbesar <?php echo e($periodLabel); ?></span>
                     <strong><?php echo e($summary['highest_cost_name'] ?? '-'); ?></strong>
-                    <small><?php echo e($this->rupiah($summary['highest_cost_amount'] ?? 0)); ?></small>
+                    <small><?php echo e($this->rupiah($summary['highest_cost_amount'] ?? 0)); ?> dihitung periode ini</small>
                 </div>
 
                 <div class="ng-highlight-actions">
@@ -173,7 +228,7 @@
             width: 100% !important;
             max-width: 100% !important;
             padding: 24px 24px 10px !important;
-            overflow: hidden !important;
+            overflow: visible !important;
             font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             color: #24180f;
         }
@@ -236,9 +291,9 @@
             position: relative;
             z-index: 2;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
-            gap: 14px;
+            gap: 16px;
             width: 100%;
         }
 
@@ -258,6 +313,67 @@
             font-size: 13px;
             line-height: 1.55;
             font-weight: 700;
+        }
+
+        .ng-op-active-period {
+            display: inline-flex;
+            margin-top: 10px;
+            color: #d95d00;
+            font-size: 12px;
+            line-height: 1.3;
+            font-weight: 950;
+        }
+
+        .ng-op-period-filter {
+            position: relative;
+            z-index: 3;
+            min-width: 286px;
+            display: grid;
+            gap: 8px;
+            justify-items: end;
+        }
+
+        .ng-op-period-filter span {
+            color: #d95d00;
+            font-size: 12px;
+            line-height: 1;
+            font-weight: 950;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .ng-op-period-selects {
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 6px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, .62);
+            background: rgba(255, 255, 255, .38);
+            box-shadow:
+                0 18px 35px rgba(95, 55, 18, .10),
+                inset 0 1px 0 rgba(255, 255, 255, .62);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .ng-op-select {
+            min-height: 40px;
+            min-width: 148px;
+            border: 0;
+            outline: none;
+            border-radius: 14px;
+            padding: 0 14px;
+            color: #4a321f;
+            background: rgba(255, 255, 255, .78);
+            font-size: 13px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .ng-op-year-select {
+            min-width: 94px;
         }
 
         .ng-op-highlight-card {
@@ -350,352 +466,315 @@
             box-shadow: 0 18px 32px rgba(238, 101, 0, .30);
         }
 
-        .ng-kpi-grid {
+        .ng-operational-kpi-grid {
             display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 14px;
             margin-bottom: 14px;
         }
 
         .ng-kpi-card {
-            min-height: 108px;
-            display: flex;
-            gap: 12px;
-            padding: 16px 15px;
+            min-height: 112px;
             border-radius: 22px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
         }
 
         .ng-kpi-icon {
             position: relative;
-            z-index: 1;
+            z-index: 2;
+            flex: 0 0 48px;
+            width: 48px;
+            height: 48px;
             display: grid;
             place-items: center;
-            flex: 0 0 auto;
-            width: 44px;
-            height: 44px;
             border-radius: 15px;
             color: #fff;
-            background: linear-gradient(135deg, var(--accent), #d95d00);
-            box-shadow: 0 15px 28px rgba(249, 115, 22, .22);
-            font-size: 17px;
+            font-size: 22px;
             font-weight: 950;
+            background:
+                radial-gradient(circle at 35% 25%, rgba(255, 255, 255, .28), transparent 32%),
+                linear-gradient(135deg, var(--accent), #e45700);
+            box-shadow: 0 12px 24px rgba(238, 101, 0, .20);
         }
 
         .ng-kpi-content {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             min-width: 0;
             flex: 1;
         }
 
         .ng-kpi-label {
             display: flex;
-            align-items: center;
             justify-content: space-between;
             gap: 8px;
-            color: #6f5946;
+            color: #765d45;
             font-size: 12px;
             line-height: 1.2;
-            font-weight: 900;
+            font-weight: 950;
+            letter-spacing: .05em;
             text-transform: uppercase;
-            letter-spacing: .06em;
+        }
+
+        .ng-kpi-label span {
+            color: #8a7259;
         }
 
         .ng-kpi-content strong {
             display: block;
             margin-top: 7px;
-            color: #23160d;
-            font-size: 22px;
-            line-height: 1.15;
+            color: #21160d;
+            font-size: 24px;
+            line-height: 1.05;
             font-weight: 950;
-            letter-spacing: -.03em;
+            letter-spacing: -.04em;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .ng-kpi-content p {
             margin: 8px 0 0;
-            color: #6f5946;
-            font-size: 11px;
-            line-height: 1.25;
+            color: #3d556f;
+            font-size: 12px;
+            line-height: 1.35;
             font-weight: 850;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .ng-category-grid {
-            display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
-            gap: 14px;
-            margin-bottom: 0;
-        }
 
-        .ng-mini-card {
-            position: relative;
-            overflow: hidden;
-            min-height: 76px;
-            display: grid;
-            align-content: center;
-            gap: 8px;
-            padding: 13px 15px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, .48);
-            background:
-                linear-gradient(145deg, rgba(255, 255, 255, .34), rgba(255, 246, 231, .18)),
-                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .12), transparent 38%) !important;
-            box-shadow:
-                0 18px 42px rgba(101, 58, 21, .09),
-                inset 0 1px 0 rgba(255, 255, 255, .50);
-            backdrop-filter: blur(13px);
-            -webkit-backdrop-filter: blur(13px);
-        }
 
-        .ng-mini-card span,
-        .ng-mini-card strong {
-            position: relative;
-            z-index: 2;
-            display: block;
-            min-width: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        /* No horizontal scroll table: content fixed inside widget width */
+        body:has(.ng-operational-page) {
+            overflow-x: hidden !important;
         }
-
-        .ng-mini-card span {
-            color: #765d45;
-            font-size: 11px;
-            line-height: 1.2;
-            font-weight: 900;
-        }
-
-        .ng-mini-card strong {
-            color: #d95d00;
-            font-size: 17px;
-            line-height: 1.15;
-            font-weight: 950;
-            letter-spacing: -.03em;
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | TABLE FILAMENT - DISAMAKAN DENGAN RASA DASHBOARD KEUANGAN
-        |--------------------------------------------------------------------------
-        */
 
         body:has(.ng-operational-page) .fi-ta-ctn {
-            margin: 0 24px 24px !important;
             width: calc(100% - 48px) !important;
+            max-width: calc(100% - 48px) !important;
+            margin: 10px 24px 24px !important;
             border-radius: 24px !important;
+            overflow: hidden !important;
             border: 1px solid rgba(255, 255, 255, .58) !important;
             background:
-                linear-gradient(145deg, rgba(255, 255, 255, .34), rgba(255, 246, 231, .18)),
-                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .12), transparent 38%) !important;
+                linear-gradient(145deg, rgba(255, 255, 255, .46), rgba(255, 246, 231, .22)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .16), transparent 38%) !important;
             box-shadow:
                 0 22px 54px rgba(101, 58, 21, .12),
                 0 0 0 1px rgba(255, 255, 255, .12) inset,
-                inset 0 1px 0 rgba(255, 255, 255, .54) !important;
+                inset 0 1px 0 rgba(255, 255, 255, .62) !important;
             backdrop-filter: blur(14px) !important;
             -webkit-backdrop-filter: blur(14px) !important;
-            overflow: hidden !important;
         }
 
-        body:has(.ng-operational-page) .fi-section,
         body:has(.ng-operational-page) .fi-ta,
         body:has(.ng-operational-page) .fi-ta-content,
         body:has(.ng-operational-page) .fi-ta-table,
-        body:has(.ng-operational-page) .fi-ta-ctn > div,
-        body:has(.ng-operational-page) .fi-ta-ctn > div > div,
-        body:has(.ng-operational-page) .fi-ta-ctn > div > div > div,
-        body:has(.ng-operational-page) table,
-        body:has(.ng-operational-page) thead,
-        body:has(.ng-operational-page) tbody,
-        body:has(.ng-operational-page) tr,
-        body:has(.ng-operational-page) th,
-        body:has(.ng-operational-page) td {
-            background: transparent !important;
-            box-shadow: none !important;
-        }
-
         body:has(.ng-operational-page) .fi-ta-header,
         body:has(.ng-operational-page) .fi-ta-toolbar {
-            min-height: 46px !important;
-            padding: 8px 16px !important;
-            background: rgba(255, 247, 235, .10) !important;
-            border-bottom: 1px solid rgba(114, 74, 41, .08) !important;
-        }
-
-        body:has(.ng-operational-page) .fi-ta-header-cell {
-            padding-top: 10px !important;
-            padding-bottom: 10px !important;
-            background: rgba(255, 255, 255, .10) !important;
-            border-color: rgba(114, 74, 41, .08) !important;
-        }
-
-        body:has(.ng-operational-page) .fi-ta-header-cell-label {
-            color: #4b3525 !important;
-            font-size: 12px !important;
-            font-weight: 950 !important;
-        }
-
-        body:has(.ng-operational-page) .fi-ta-row {
-            min-height: 54px !important;
-            border-bottom: 1px solid rgba(114, 74, 41, .08) !important;
-            background: rgba(255, 247, 235, .04) !important;
-            transition: .18s ease !important;
-        }
-
-        body:has(.ng-operational-page) .fi-ta-row:hover {
-            background: rgba(255, 255, 255, .14) !important;
-        }
-
-        body:has(.ng-operational-page) .fi-ta-cell {
-            padding-top: 10px !important;
-            padding-bottom: 10px !important;
-            border-color: rgba(114, 74, 41, .08) !important;
             background: transparent !important;
+            border-color: rgba(255, 255, 255, .20) !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-header {
+            min-height: 62px !important;
+            padding: 12px 18px !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-header-heading {
+            display: none !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-content,
+        body:has(.ng-operational-page) .fi-ta-table-wrap {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            table-layout: fixed !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table thead th {
+            background: rgba(255, 255, 255, .22) !important;
+            border-color: rgba(255, 255, 255, .18) !important;
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table tbody tr {
+            background: rgba(255, 255, 255, .08) !important;
+            border-color: rgba(255, 255, 255, .16) !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table tbody tr:hover {
+            background: rgba(255, 255, 255, .20) !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table th,
+        body:has(.ng-operational-page) .fi-ta-table td {
+            min-width: 0 !important;
+            max-width: none !important;
+            overflow: hidden !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+            vertical-align: middle !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table th:first-child,
+        body:has(.ng-operational-page) .fi-ta-table td:first-child {
+            width: 42px !important;
+            max-width: 42px !important;
+            padding-left: 16px !important;
+            padding-right: 8px !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-actions,
+        body:has(.ng-operational-page) .fi-ta-actions-cell,
+        body:has(.ng-operational-page) td:has(.fi-ta-actions) {
+            width: 58px !important;
+            max-width: 58px !important;
+            min-width: 58px !important;
+            padding-left: 4px !important;
+            padding-right: 14px !important;
+            overflow: visible !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-actions {
+            display: flex !important;
+            justify-content: flex-end !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-actions .fi-btn {
+            min-width: 36px !important;
+            width: 36px !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            border-radius: 999px !important;
         }
 
         body:has(.ng-operational-page) .fi-ta-text,
         body:has(.ng-operational-page) .fi-ta-text-item,
-        body:has(.ng-operational-page) .fi-ta-cell span,
-        body:has(.ng-operational-page) .fi-ta-cell div {
-            color: #2d1f16;
+        body:has(.ng-operational-page) .fi-ta-text-item-label {
+            max-width: 100% !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+            overflow-wrap: anywhere !important;
         }
 
-        body:has(.ng-operational-page) .fi-ta-pagination,
-        body:has(.ng-operational-page) .fi-pagination {
-            min-height: 48px !important;
-            padding: 8px 16px !important;
-            background: rgba(255, 247, 235, .10) !important;
-            border-top: 1px solid rgba(114, 74, 41, .08) !important;
+        body:has(.ng-operational-page) .fi-ta-cell .fi-badge {
+            max-width: 100% !important;
+            white-space: nowrap !important;
         }
 
-        body:has(.ng-operational-page) .fi-input-wrp,
-        body:has(.ng-operational-page) .fi-ta-search-field .fi-input-wrp,
-        body:has(.ng-operational-page) .fi-select-input {
-            min-height: 38px !important;
-            border-radius: 16px !important;
-            background: rgba(255, 255, 255, .28) !important;
-            border-color: rgba(255, 255, 255, .42) !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .36) !important;
-            backdrop-filter: blur(10px) !important;
-            -webkit-backdrop-filter: blur(10px) !important;
+        @media (max-width: 1100px) {
+            body:has(.ng-operational-page) .fi-ta-ctn {
+                width: calc(100% - 28px) !important;
+                max-width: calc(100% - 28px) !important;
+                margin-left: 14px !important;
+                margin-right: 14px !important;
+            }
+
+            body:has(.ng-operational-page) .fi-ta-content,
+            body:has(.ng-operational-page) .fi-ta-table-wrap {
+                overflow-x: hidden !important;
+            }
         }
 
-        body:has(.ng-operational-page) .fi-ta-search-field {
-            max-width: 280px !important;
+
+        /* Final cleanup: 4 KPI, no double scroll, softer flat glass */
+        body:has(.ng-operational-page),
+        body:has(.ng-operational-page) .fi-main,
+        body:has(.ng-operational-page) .fi-main-ctn,
+        body:has(.ng-operational-page) .fi-page,
+        body:has(.ng-operational-page) .fi-page-content {
+            overflow-x: hidden !important;
         }
 
-        body:has(.ng-operational-page) .fi-btn {
-            border-radius: 14px !important;
-            font-weight: 900 !important;
+        body:has(.ng-operational-page) .fi-ta-content,
+        body:has(.ng-operational-page) .fi-ta-table-wrap,
+        body:has(.ng-operational-page) .fi-ta-ctn {
+            overflow-x: hidden !important;
+            overflow-y: visible !important;
         }
 
-        body:has(.ng-operational-page) .fi-btn-color-primary,
-        body:has(.ng-operational-page) .fi-btn-color-warning {
-            background: linear-gradient(135deg, #ff9d18, #ee6500) !important;
-            box-shadow: 0 12px 22px rgba(238, 101, 0, .22) !important;
+        body:has(.ng-operational-page) .fi-ta-ctn::-webkit-scrollbar,
+        body:has(.ng-operational-page) .fi-ta-content::-webkit-scrollbar,
+        body:has(.ng-operational-page) .fi-ta-table-wrap::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
         }
 
-        body:has(.ng-operational-page) .fi-btn-color-primary:hover,
-        body:has(.ng-operational-page) .fi-btn-color-warning:hover {
-            box-shadow: 0 16px 28px rgba(238, 101, 0, .28) !important;
+        .ng-widget-card,
+        .ng-kpi-card,
+        body:has(.ng-operational-page) .fi-ta-ctn {
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, .14) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .42) !important;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIDEBAR EFFECT SYNC - FINANCE PAGES
-        |--------------------------------------------------------------------------
-        */
-
-        body:has(.ng-finance-dashboard) .fi-sidebar,
-        body:has(.ng-operational-page) .fi-sidebar,
-        body:has(.ng-operational-form-page) .fi-sidebar,
-        body:has(.ng-sales-target-page) .fi-sidebar,
-        body:has(.ng-sales-target-form-page) .fi-sidebar {
-            background: rgba(255, 250, 242, .50) !important;
-            border-right: 1px solid rgba(255, 255, 255, .48) !important;
-            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
-            backdrop-filter: blur(16px) !important;
-            -webkit-backdrop-filter: blur(16px) !important;
+        .ng-widget-card::before,
+        .ng-kpi-card::before {
+            opacity: .20 !important;
         }
 
-        body:has(.ng-finance-dashboard) .fi-sidebar-nav,
-        body:has(.ng-operational-page) .fi-sidebar-nav,
-        body:has(.ng-operational-form-page) .fi-sidebar-nav,
-        body:has(.ng-sales-target-page) .fi-sidebar-nav,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-nav {
-            padding: 18px 14px !important;
-        }
-
-        body:has(.ng-finance-dashboard) .fi-sidebar-item a,
-        body:has(.ng-operational-page) .fi-sidebar-item a,
-        body:has(.ng-operational-form-page) .fi-sidebar-item a,
-        body:has(.ng-sales-target-page) .fi-sidebar-item a,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item a {
-            border-radius: 14px !important;
-            color: #6f5844 !important;
-            transition: .2s ease !important;
-        }
-
-        body:has(.ng-finance-dashboard) .fi-sidebar-item-active a,
-        body:has(.ng-finance-dashboard) .fi-sidebar-item a:hover,
-        body:has(.ng-operational-page) .fi-sidebar-item-active a,
-        body:has(.ng-operational-page) .fi-sidebar-item a:hover,
-        body:has(.ng-operational-form-page) .fi-sidebar-item-active a,
-        body:has(.ng-operational-form-page) .fi-sidebar-item a:hover,
-        body:has(.ng-sales-target-page) .fi-sidebar-item-active a,
-        body:has(.ng-sales-target-page) .fi-sidebar-item a:hover,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item-active a,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item a:hover {
-            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
-            color: #fff !important;
-            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
-        }
-
-        body:has(.ng-finance-dashboard) .fi-sidebar-item-active svg,
-        body:has(.ng-finance-dashboard) .fi-sidebar-item a:hover svg,
-        body:has(.ng-operational-page) .fi-sidebar-item-active svg,
-        body:has(.ng-operational-page) .fi-sidebar-item a:hover svg,
-        body:has(.ng-operational-form-page) .fi-sidebar-item-active svg,
-        body:has(.ng-operational-form-page) .fi-sidebar-item a:hover svg,
-        body:has(.ng-sales-target-page) .fi-sidebar-item-active svg,
-        body:has(.ng-sales-target-page) .fi-sidebar-item a:hover svg,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item-active svg,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item a:hover svg,
-        body:has(.ng-finance-dashboard) .fi-sidebar-item-active span,
-        body:has(.ng-finance-dashboard) .fi-sidebar-item a:hover span,
-        body:has(.ng-operational-page) .fi-sidebar-item-active span,
-        body:has(.ng-operational-page) .fi-sidebar-item a:hover span,
-        body:has(.ng-operational-form-page) .fi-sidebar-item-active span,
-        body:has(.ng-operational-form-page) .fi-sidebar-item a:hover span,
-        body:has(.ng-sales-target-page) .fi-sidebar-item-active span,
-        body:has(.ng-sales-target-page) .fi-sidebar-item a:hover span,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item-active span,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item a:hover span {
-            color: #fff !important;
+        body:has(.ng-operational-page) .fi-ta-row,
+        body:has(.ng-operational-page) .fi-ta-table tbody tr {
+            box-shadow: none !important;
         }
 
         @media (max-width: 1500px) {
-            .ng-op-hero-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .ng-kpi-grid,
-            .ng-category-grid {
+            .ng-operational-kpi-grid {
                 grid-template-columns: repeat(3, minmax(0, 1fr));
             }
         }
 
         @media (max-width: 1100px) {
-            .ng-operational-page {
-                padding: 18px 18px 10px !important;
+            .ng-op-hero-grid {
+                grid-template-columns: 1fr;
             }
 
-            .ng-kpi-grid,
-            .ng-category-grid {
+            .ng-widget-head {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .ng-op-period-filter {
+                width: 100%;
+                min-width: 0;
+                justify-items: start;
+            }
+
+            .ng-op-period-selects {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .ng-op-select {
+                flex: 1;
+                min-width: 140px;
+            }
+
+            .ng-operational-kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .ng-operational-page {
+                padding: 16px 14px 8px !important;
+            }
+
+            .ng-operational-kpi-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -705,62 +784,115 @@
             }
 
             .ng-highlight-actions {
-                justify-content: flex-start;
+                width: 100%;
             }
 
-            body:has(.ng-operational-page) .fi-ta-ctn {
-                margin: 0 18px 22px !important;
-                width: calc(100% - 36px) !important;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .ng-operational-page {
-                padding: 14px 14px 8px !important;
+            .ng-soft-button,
+            .ng-primary-button {
+                flex: 1;
             }
 
             .ng-widget-head h1 {
-                font-size: 26px;
-            }
-
-            .ng-widget-card {
-                padding: 16px;
-                border-radius: 22px;
-            }
-
-            .ng-kpi-card {
-                min-height: 104px;
-            }
-
-            body:has(.ng-operational-page) .fi-ta-ctn {
-                margin: 0 14px 20px !important;
-                width: calc(100% - 28px) !important;
+                font-size: 25px;
             }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | HIDE CATEGORY BREAKDOWN MINI CARDS
-        |--------------------------------------------------------------------------
-        | Menghilangkan kotak kecil kategori biaya:
-        | Maintenance, Sewa Tempat, Gaji Karyawan, Listrik, Wifi / Internet.
-        */
+        /* Hard fix: remove internal / double scrollbars, keep page using main browser scroll */
+        html:has(.ng-operational-page),
+        body:has(.ng-operational-page) {
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            height: auto !important;
+            max-height: none !important;
+        }
 
-        body:has(.ng-operational-page) .ng-category-grid,
-        body:has(.ng-operational-page) .ng-mini-card {
-            display: none !important;
-            visibility: hidden !important;
-            height: 0 !important;
+        body:has(.ng-operational-page) .fi-layout,
+        body:has(.ng-operational-page) .fi-main,
+        body:has(.ng-operational-page) .fi-main-ctn,
+        body:has(.ng-operational-page) .fi-page,
+        body:has(.ng-operational-page) .fi-page-content,
+        body:has(.ng-operational-page) main {
+            overflow-x: hidden !important;
+            overflow-y: visible !important;
+            height: auto !important;
+            max-height: none !important;
             min-height: 0 !important;
-            max-height: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow: hidden !important;
-            pointer-events: none !important;
         }
 
+        body:has(.ng-operational-page) .fi-ta-ctn,
+        body:has(.ng-operational-page) .fi-ta,
+        body:has(.ng-operational-page) .fi-ta-content,
+        body:has(.ng-operational-page) .fi-ta-table-wrap,
+        body:has(.ng-operational-page) .fi-ta-table {
+            overflow-x: hidden !important;
+            overflow-y: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+
+        body:has(.ng-operational-page) .fi-main::-webkit-scrollbar,
+        body:has(.ng-operational-page) .fi-main-ctn::-webkit-scrollbar,
+        body:has(.ng-operational-page) .fi-page::-webkit-scrollbar,
+        body:has(.ng-operational-page) .fi-page-content::-webkit-scrollbar,
+        body:has(.ng-operational-page) .fi-ta-ctn::-webkit-scrollbar,
+        body:has(.ng-operational-page) .fi-ta-content::-webkit-scrollbar,
+        body:has(.ng-operational-page) .fi-ta-table-wrap::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        body:has(.ng-operational-page) [class*="overflow-auto"],
+        body:has(.ng-operational-page) [class*="overflow-y-auto"],
+        body:has(.ng-operational-page) [class*="overflow-scroll"],
+        body:has(.ng-operational-page) [class*="overflow-y-scroll"] {
+            overflow-y: visible !important;
+            overflow-x: hidden !important;
+            max-height: none !important;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+
+        body:has(.ng-operational-page) [class*="overflow-auto"]::-webkit-scrollbar,
+        body:has(.ng-operational-page) [class*="overflow-y-auto"]::-webkit-scrollbar,
+        body:has(.ng-operational-page) [class*="overflow-scroll"]::-webkit-scrollbar,
+        body:has(.ng-operational-page) [class*="overflow-y-scroll"]::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
 
     </style>
+
+    <script>
+        (function () {
+            function bindOperationalPeriodFilter() {
+                document.querySelectorAll('[data-ng-op-month], [data-ng-op-year]').forEach(function (select) {
+                    if (select.dataset.ngBound === '1') {
+                        return;
+                    }
+
+                    select.dataset.ngBound = '1';
+
+                    select.addEventListener('change', function () {
+                        if (! select.value) {
+                            return;
+                        }
+
+                        window.location.href = select.value;
+                    });
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', bindOperationalPeriodFilter);
+            document.addEventListener('livewire:navigated', bindOperationalPeriodFilter);
+            document.addEventListener('livewire:update', bindOperationalPeriodFilter);
+            bindOperationalPeriodFilter();
+        })();
+    </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>
@@ -770,4 +902,5 @@
 <?php if (isset($__componentOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>
 <?php $component = $__componentOriginalb525200bfa976483b4eaa0b7685c6e24; ?>
 <?php unset($__componentOriginalb525200bfa976483b4eaa0b7685c6e24); ?>
-<?php endif; ?><?php /**PATH /var/www/html/resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php ENDPATH**/ ?>
+<?php endif; ?>
+<?php /**PATH /var/www/html/resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php ENDPATH**/ ?>

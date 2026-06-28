@@ -15,6 +15,7 @@ class OperationalCost extends Model
         'cost_date',
         'is_active',
         'note',
+        'cost_type',
     ];
 
     protected $casts = [

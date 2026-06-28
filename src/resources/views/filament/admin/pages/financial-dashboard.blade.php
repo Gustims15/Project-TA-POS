@@ -6,16 +6,16 @@
         $activePeriod = $period['key'] ?? 'month';
 
         $summary = $finance['summary'] ?? [];
-        $metrics = $finance['metrics'] ?? [];
-        $costs = $finance['costs'] ?? [];
-        $productMargins = $finance['productMargins'] ?? [];
+        $metrics = collect($finance['metrics'] ?? [])->keyBy('label');
+        $costs = collect($finance['costs'] ?? []);
+        $costPages = $costs->chunk(5)->values();
+        $totalCostPages = max(1, $costPages->count());
         $links = $finance['links'] ?? [];
+        $revenueTrend = collect($finance['revenueTrend'] ?? []);
 
         $filters = $finance['filters'] ?? [];
         $selectedMonth = (string) ($period['selected_month'] ?? $filters['selected_month'] ?? request()->query('month', 'all'));
         $selectedYear = (int) ($period['selected_year'] ?? $filters['selected_year'] ?? request()->query('year', now()->year));
-        $yearlyDetails = $finance['yearlyDetails'] ?? $finance['yearly_details'] ?? [];
-
         $months = $filters['months'] ?? [
             'all' => 'Semua Bulan',
             '1' => 'Januari',
@@ -32,460 +32,413 @@
             '12' => 'Desember',
         ];
 
-        $selectedMonthLabel = $months[$selectedMonth] ?? 'Semua Bulan';
+        $selectedMonthLabel = $months[$selectedMonth] ?? 'Bulan Ini';
+        $availableYears = range(now()->year - 4, now()->year + 1);
+
         $baseDashboardUrl = $links['dashboard_keuangan'] ?? url('/admin/dashboard-keuangan');
 
-        $makePeriodUrl = function (string $key) use ($baseDashboardUrl, $selectedYear) {
-            $params = ['period' => $key];
-
-            if ($key === 'year') {
-                $params['month'] = 'all';
-                $params['year'] = $selectedYear;
-            }
-
-            return $baseDashboardUrl . '?' . http_build_query($params);
-        };
-
-        $makeMonthUrl = function (string $month) use ($baseDashboardUrl, $selectedYear) {
+        $makeMonthlyUrl = function (string $month, int $year) use ($baseDashboardUrl) {
             return $baseDashboardUrl . '?' . http_build_query([
-                'period' => 'year',
                 'month' => $month,
-                'year' => $selectedYear,
+                'year' => $year,
             ]);
         };
 
-        $yearRevenue = (int) collect($yearlyDetails)->sum('revenue');
-        $yearHpp = (int) collect($yearlyDetails)->sum('total_hpp');
-        $yearGross = (int) collect($yearlyDetails)->sum('gross_profit');
-        $yearCost = (int) collect($yearlyDetails)->sum('operational_cost');
-        $yearNet = (int) collect($yearlyDetails)->sum('net_profit');
-        $yearMargin = $yearRevenue > 0 ? round(($yearGross / $yearRevenue) * 100, 1) : 0;
-        $yearMaxRevenue = max(1, (int) collect($yearlyDetails)->max('revenue'));
-
-
-        $user = auth()->user();
-
         $periods = [
-            'today' => 'Hari Ini',
-            'week' => 'Minggu Ini',
-            'month' => 'Bulan Ini',
-            'year' => 'Tahun Ini',
+            'month' => 'Bulanan',
         ];
 
         $revenue = (int) ($summary['revenue'] ?? 0);
-        $totalHpp = (int) ($summary['total_hpp'] ?? 0);
         $grossProfit = (int) ($summary['gross_profit'] ?? 0);
         $operationalCost = (int) ($summary['operational_cost'] ?? 0);
         $netProfit = (int) ($summary['net_profit'] ?? 0);
 
-        $safeRevenue = max($revenue, 1);
+        $targetRevenue = (int) ($summary['target_revenue'] ?? 0);
+        $targetGrossProfit = (int) ($summary['target_gross_profit'] ?? 0);
+        $targetNetProfit = (int) ($summary['target_net_profit'] ?? 0);
 
-        $hppPercent = min(100, round(($totalHpp / $safeRevenue) * 100, 1));
-        $grossPercent = min(100, max(0, round(($grossProfit / $safeRevenue) * 100, 1)));
-        $costPercent = min(100, round(($operationalCost / $safeRevenue) * 100, 1));
-        $netPercent = min(100, max(0, round((abs($netProfit) / $safeRevenue) * 100, 1)));
+        $targetItems = [
+            [
+                'title' => 'Target Revenue',
+                'actual' => (int) ($summary['target_revenue_actual'] ?? 0),
+                'target' => $targetRevenue,
+                'icon' => '↗',
+                'color' => '#f97316',
+            ],
+            [
+                'title' => 'Target Gross Profit',
+                'actual' => (int) ($summary['target_gross_profit_actual'] ?? 0),
+                'target' => $targetGrossProfit,
+                'icon' => '◔',
+                'color' => '#16a34a',
+            ],
+            [
+                'title' => 'Target Net Profit',
+                'actual' => (int) ($summary['target_net_profit_actual'] ?? 0),
+                'target' => $targetNetProfit,
+                'icon' => '▥',
+                'color' => $netProfit >= 0 ? '#16a34a' : '#ef4444',
+            ],
+        ];
 
-        $maxCost = max(1, (int) collect($costs)->max('amount'));
-        $maxProductProfit = max(1, (int) collect($productMargins)->max('gross_profit'));
+        $trendFor = fn (string $label) => $metrics->get($label)['trend'] ?? null;
+
+        $kpiCards = [
+            [
+                'label' => 'Revenue',
+                'value' => $this->rupiah($revenue),
+                'trend' => $trendFor('Revenue'),
+                'icon' => '↗',
+                'color' => '#f97316',
+                'trend_good_when' => 'up',
+            ],
+            [
+                'label' => 'Gross Profit',
+                'value' => $this->rupiah($grossProfit),
+                'trend' => $trendFor('Gross Profit'),
+                'icon' => '◔',
+                'color' => '#16a34a',
+                'trend_good_when' => 'up',
+            ],
+            [
+                'label' => 'Biaya Operasional',
+                'value' => $this->rupiah($operationalCost),
+                'trend' => $trendFor('Biaya Operasional'),
+                'icon' => '▣',
+                'color' => '#f97316',
+                'trend_good_when' => 'down',
+            ],
+            [
+                'label' => 'Net Profit',
+                'value' => $this->rupiah($netProfit),
+                'trend' => $trendFor('Net Profit'),
+                'icon' => '▥',
+                'color' => $netProfit >= 0 ? '#f97316' : '#ef4444',
+                'trend_good_when' => 'up',
+            ],
+        ];
+
+        $maxRevenueTrend = max(1, (int) $revenueTrend->max('value'));
+
+        $niceChartMax = max(1, (int) (ceil($maxRevenueTrend / 50000) * 50000));
+
+        $formatShortMoney = function (int|float $value): string {
+            $value = (int) $value;
+
+            if ($value >= 1000000000) {
+                return rtrim(rtrim(number_format($value / 1000000000, 1, ',', '.'), '0'), ',') . 'M';
+            }
+
+            if ($value >= 1000000) {
+                return rtrim(rtrim(number_format($value / 1000000, 1, ',', '.'), '0'), ',') . 'jt';
+            }
+
+            if ($value >= 1000) {
+                return rtrim(rtrim(number_format($value / 1000, 1, ',', '.'), '0'), ',') . 'rb';
+            }
+
+            return (string) $value;
+        };
+
+        $dateRangeLabel = ($period['start'] ?? '-') . ' - ' . ($period['end'] ?? '-');
+        $customStartDate = (string) ($period['start_query'] ?? request()->query('start_date', now()->startOfMonth()->toDateString()));
+        $customEndDate = (string) ($period['end_query'] ?? request()->query('end_date', now()->endOfMonth()->toDateString()));
     @endphp
 
-    <div class="ng-finance-dashboard">
-        <section class="ng-dashboard-header">
+    <div class="ng-finance-dashboard-new">
+        <section class="ng-topbar">
             <div class="ng-title-area">
-
                 <h1>Dashboard Keuangan</h1>
-
+                <p>Ringkasan kinerja keuangan Ngunjuk POS</p>
+                <small class="ng-active-data-label">
+                    Data bulan aktif: {{ $selectedMonthLabel }} {{ $selectedYear }} • {{ $dateRangeLabel }}
+                </small>
             </div>
 
             <div class="ng-filter-area">
-                <div class="ng-period-tabs">
-                    @foreach ($periods as $key => $label)
-                        <a href="{{ $makePeriodUrl($key) }}"
-                           class="ng-tab {{ $activePeriod === $key ? 'active' : '' }}">
-                            {{ $label }}
-                        </a>
-                    @endforeach
-                </div>
+                <div class="ng-monthly-filter-block">
+                    <span class="ng-filter-label">Periode Bulanan</span>
 
-                @if ($activePeriod === 'year')
-                    <div class="ng-month-select-wrap">
-                        <select class="ng-month-select" onchange="window.location.href = this.value">
+                    <div class="ng-monthly-filter-card">
+                        <select class="ng-monthly-select" onchange="window.location.href = this.value">
                             @foreach ($months as $monthKey => $monthLabel)
-                                <option value="{{ $makeMonthUrl((string) $monthKey) }}" @selected($selectedMonth === (string) $monthKey)>
+                                @continue($monthKey === 'all')
+
+                                <option value="{{ $makeMonthlyUrl((string) $monthKey, $selectedYear) }}"
+                                        @selected((string) $selectedMonth === (string) $monthKey)>
                                     {{ $monthLabel }}
                                 </option>
                             @endforeach
                         </select>
-                    </div>
-                @endif
 
-                <div class="ng-admin-profile">
-                    <div class="ng-avatar">
-                        {{ strtoupper(substr($user?->name ?? 'A', 0, 1)) }}
-                    </div>
-
-                    <div>
-                        <strong>{{ $user?->name ?? 'Administrator' }}</strong>
-                        <span>Super Admin</span>
+                        <select class="ng-monthly-select ng-year-select" onchange="window.location.href = this.value">
+                            @foreach ($availableYears as $yearOption)
+                                <option value="{{ $makeMonthlyUrl((string) $selectedMonth, (int) $yearOption) }}"
+                                        @selected((int) $selectedYear === (int) $yearOption)>
+                                    {{ $yearOption }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="ng-finance-period-row">
-            <span>{{ $period['label'] ?? 'Bulan Ini' }}</span>
-            <strong>{{ $period['start'] ?? '-' }} - {{ $period['end'] ?? '-' }}</strong>
-
-            @if ($activePeriod === 'year')
-                <span class="ng-period-extra">{{ $selectedMonthLabel }} • {{ $selectedYear }}</span>
-            @endif
-        </section>
-
         <section class="ng-kpi-grid">
-            @foreach ($metrics as $metric)
-                <article class="ng-kpi-card" style="--accent: {{ $metric['color'] ?? '#f97316' }};">
+            @foreach ($kpiCards as $card)
+                @php
+                    $trend = $card['trend'];
+                    $trendValue = is_null($trend) ? 0 : (float) $trend;
+                    $isTrendUp = $trendValue >= 0;
+                    $isGood = ($card['trend_good_when'] ?? 'up') === 'up'
+                        ? $isTrendUp
+                        : ! $isTrendUp;
+                @endphp
+
+                <article class="ng-kpi-card" style="--accent: {{ $card['color'] }};">
                     <div class="ng-kpi-icon">
-                        {{ $metric['icon'] ?? '▣' }}
+                        {{ $card['icon'] }}
                     </div>
 
                     <div class="ng-kpi-content">
-                        <div class="ng-kpi-label">
-                            {{ $metric['label'] ?? '-' }}
-                            <span>⋮</span>
-                        </div>
+                        <span>{{ $card['label'] }}</span>
+                        <strong>{{ $card['value'] }}</strong>
 
-                        <strong>{{ $metric['value'] ?? '-' }}</strong>
-
-                        @if (! is_null($metric['trend'] ?? null))
-                            <p class="{{ ($metric['trend'] ?? 0) >= 0 ? 'positive' : 'negative' }}">
-                                {{ ($metric['trend'] ?? 0) >= 0 ? '↑' : '↓' }}
-                                {{ abs($metric['trend']) }}%
-                                <span>dari periode sebelumnya</span>
-                            </p>
-                        @else
-                            <p class="neutral">{{ $metric['caption'] ?? '-' }}</p>
-                        @endif
+                        <p class="{{ $isGood ? 'positive' : 'negative' }}">
+                            {{ $isTrendUp ? '↑' : '↓' }}
+                            {{ number_format(abs($trendValue), 1, ',', '.') }}%
+                            <em>dibandingkan periode sebelumnya</em>
+                        </p>
                     </div>
                 </article>
             @endforeach
         </section>
 
-
-        @if ($activePeriod === 'year')
-            <section class="ng-year-detail-section">
-                <article class="ng-widget-card ng-year-card">
-                    <div class="ng-widget-head">
-                        <div>
-                            <h2>Detail Tahunan {{ $selectedYear }}</h2>
-                            <p>Rincian revenue, HPP, gross profit, biaya operasional, net profit, margin, dan target per bulan.</p>
-                        </div>
-
-                        <a href="{{ $makeMonthUrl('all') }}">
-                            {{ $selectedMonth === 'all' ? 'Semua Bulan' : 'Lihat Semua Bulan' }}
-                        </a>
-                    </div>
-
-                    <div class="ng-year-summary-strip">
-                        <div>
-                            <span>Revenue Tahun</span>
-                            <strong>{{ $this->rupiah($yearRevenue) }}</strong>
-                        </div>
-                        <div>
-                            <span>Total HPP Tahun</span>
-                            <strong>{{ $this->rupiah($yearHpp) }}</strong>
-                        </div>
-                        <div>
-                            <span>Gross Profit Tahun</span>
-                            <strong>{{ $this->rupiah($yearGross) }}</strong>
-                        </div>
-                        <div>
-                            <span>Biaya Operasional</span>
-                            <strong>{{ $this->rupiah($yearCost) }}</strong>
-                        </div>
-                        <div class="{{ $yearNet >= 0 ? 'positive' : 'negative' }}">
-                            <span>Net Profit Tahun</span>
-                            <strong>{{ $this->rupiah($yearNet) }} • {{ $yearMargin }}%</strong>
-                        </div>
-                    </div>
-
-                    <div class="ng-year-table-scroll">
-                        @forelse ($yearlyDetails as $monthRow)
-                            @php
-                                $monthKey = (string) ($monthRow['month_key'] ?? $monthRow['month'] ?? 'all');
-                                $rowRevenue = (int) ($monthRow['revenue'] ?? 0);
-                                $rowHpp = (int) ($monthRow['total_hpp'] ?? 0);
-                                $rowGross = (int) ($monthRow['gross_profit'] ?? 0);
-                                $rowCost = (int) ($monthRow['operational_cost'] ?? 0);
-                                $rowNet = (int) ($monthRow['net_profit'] ?? 0);
-                                $rowTarget = (int) ($monthRow['target_revenue'] ?? 0);
-                                $rowMargin = $monthRow['profit_margin'] ?? 0;
-                                $revenueWidth = min(100, round(($rowRevenue / $yearMaxRevenue) * 100));
-                                $isSelectedMonth = $selectedMonth === $monthKey;
-                            @endphp
-
-                            <a href="{{ $makeMonthUrl($monthKey) }}" class="ng-year-row {{ $isSelectedMonth ? 'active' : '' }}">
-                                <div class="ng-year-month">
-                                    <strong>{{ $monthRow['month_name'] ?? '-' }}</strong>
-                                    <span>{{ $monthRow['period'] ?? '-' }}</span>
-                                </div>
-
-                                <div class="ng-year-values">
-                                    <div>
-                                        <span>Revenue</span>
-                                        <strong>{{ $this->rupiah($rowRevenue) }}</strong>
-                                    </div>
-                                    <div>
-                                        <span>HPP</span>
-                                        <strong>{{ $this->rupiah($rowHpp) }}</strong>
-                                    </div>
-                                    <div>
-                                        <span>Gross</span>
-                                        <strong>{{ $this->rupiah($rowGross) }}</strong>
-                                    </div>
-                                    <div>
-                                        <span>Biaya</span>
-                                        <strong>{{ $this->rupiah($rowCost) }}</strong>
-                                    </div>
-                                    <div class="{{ $rowNet >= 0 ? 'positive' : 'negative' }}">
-                                        <span>Net</span>
-                                        <strong>{{ $this->rupiah($rowNet) }}</strong>
-                                    </div>
-                                    <div>
-                                        <span>Margin</span>
-                                        <strong>{{ $rowMargin }}%</strong>
-                                    </div>
-                                    <div>
-                                        <span>Target</span>
-                                        <strong>{{ $this->rupiah($rowTarget) }}</strong>
-                                    </div>
-                                </div>
-
-                                <div class="ng-year-progress">
-                                    <i style="width: {{ $revenueWidth }}%;"></i>
-                                </div>
-                            </a>
-                        @empty
-                            <div class="ng-empty-state">
-                                Belum ada detail tahunan untuk ditampilkan.
-                            </div>
-                        @endforelse
-                    </div>
-                </article>
-            </section>
-        @endif
-
-        <section class="ng-finance-main-grid">
-            <article class="ng-widget-card ng-profit-engine-card">
-                <div class="ng-widget-head">
+        <section class="ng-visual-grid">
+            <article class="ng-card ng-revenue-card">
+                <div class="ng-card-head">
                     <div>
-                        <h2>Profit Engine</h2>
-                        <p>Komposisi revenue, HPP, gross profit, biaya operasional, dan net profit periode aktif</p>
+                        <h2>Tren Revenue Mingguan {{ $selectedMonthLabel }} {{ $selectedYear }}</h2>
+                        <p>Ringkasan revenue per minggu dalam bulan aktif</p>
                     </div>
-
-                    <span class="ng-widget-badge {{ $netProfit >= 0 ? 'ng-badge-green' : 'ng-badge-red' }}">
-                        Net Profit {{ $this->rupiah($netProfit) }}
-                    </span>
                 </div>
 
-                <div class="ng-profit-bars">
-                    <div class="ng-profit-row">
-                        <div class="ng-profit-info">
-                            <strong>Revenue</strong>
-                            <span>{{ $this->rupiah($revenue) }}</span>
-                        </div>
-                        <div class="ng-profit-track">
-                            <i style="width: {{ $revenue > 0 ? 100 : 0 }}%; background: linear-gradient(90deg, #ff9d18, #f97316);"></i>
-                        </div>
+                <div class="ng-chart-responsive">
+                    <div class="ng-y-axis">
+                        @foreach ([1, .75, .5, .25, 0] as $step)
+                            <span>{{ $formatShortMoney((int) ($niceChartMax * $step)) }}</span>
+                        @endforeach
                     </div>
 
-                    <div class="ng-profit-row">
-                        <div class="ng-profit-info">
-                            <strong>Total HPP</strong>
-                            <span>{{ $this->rupiah($totalHpp) }} • {{ $hppPercent }}%</span>
+                    <div class="ng-chart-area ng-chart-area-static">
+                        <div class="ng-grid-lines">
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
                         </div>
-                        <div class="ng-profit-track">
-                            <i style="width: {{ $hppPercent }}%; background: linear-gradient(90deg, #2dd4bf, #14b8a6);"></i>
-                        </div>
-                    </div>
 
-                    <div class="ng-profit-row">
-                        <div class="ng-profit-info">
-                            <strong>Gross Profit</strong>
-                            <span>{{ $this->rupiah($grossProfit) }} • {{ $grossPercent }}%</span>
-                        </div>
-                        <div class="ng-profit-track">
-                            <i style="width: {{ $grossPercent }}%; background: linear-gradient(90deg, #34d399, #10b981);"></i>
-                        </div>
-                    </div>
+                        <div class="ng-bars ng-bars-weekly" style="--bar-count: {{ max($revenueTrend->count(), 1) }};">
+                            @forelse ($revenueTrend as $row)
+                                @php
+                                    $value = (int) ($row['value'] ?? 0);
+                                    $height = $niceChartMax > 0 ? max(3, min(100, ($value / $niceChartMax) * 100)) : 0;
+                                    $tooltipLabel = $row['tooltip_label'] ?? ($row['label'] ?? '-');
+                                @endphp
 
-                    <div class="ng-profit-row">
-                        <div class="ng-profit-info">
-                            <strong>Biaya Operasional</strong>
-                            <span>{{ $this->rupiah($operationalCost) }} • {{ $costPercent }}%</span>
-                        </div>
-                        <div class="ng-profit-track">
-                            <i style="width: {{ $costPercent }}%; background: linear-gradient(90deg, #fb7185, #ef4444);"></i>
-                        </div>
-                    </div>
+                                <div class="ng-bar-item" tabindex="0" style="--item-index: {{ $loop->index }};">
+                                    <div class="ng-chart-tooltip">
+                                        <strong>{{ $tooltipLabel }}</strong>
 
-                    <div class="ng-profit-row">
-                        <div class="ng-profit-info">
-                            <strong>Net Profit</strong>
-                            <span>{{ $this->rupiah($netProfit) }} • {{ $netPercent }}%</span>
-                        </div>
-                        <div class="ng-profit-track">
-                            <i style="width: {{ $netProfit >= 0 ? $netPercent : 100 }}%; background: {{ $netProfit >= 0 ? 'linear-gradient(90deg, #818cf8, #6366f1)' : 'linear-gradient(90deg, #fb7185, #ef4444)' }};"></i>
+                                        <div class="ng-chart-tooltip-row">
+                                            <span class="ng-chart-tooltip-dot"></span>
+                                            <span>Revenue:</span>
+                                            <b>{{ $this->rupiah($value) }}</b>
+                                        </div>
+                                    </div>
+
+                                    <div class="ng-bar-wrap">
+                                        <span style="height: {{ $height }}%;"></span>
+                                    </div>
+
+                                    <small>{{ $row['short_label'] ?? $row['label'] ?? '-' }}</small>
+                                </div>
+                            @empty
+                                <div class="ng-empty-state">
+                                    Belum ada data revenue.
+                                </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
 
-                <div class="ng-finance-shortcuts">
-                    <a href="{{ $links['operational_costs'] ?? '#' }}">
-                        <span>Kelola Biaya</span>
-                        <strong>→</strong>
-                    </a>
-
-                    <a href="{{ $links['sales_targets'] ?? '#' }}">
-                        <span>Atur Target</span>
-                        <strong>→</strong>
-                    </a>
-
-                    <a href="{{ $links['products'] ?? '#' }}">
-                        <span>Cek HPP Produk</span>
-                        <strong>→</strong>
-                    </a>
+                <div class="ng-chart-caption">
+                    Ringkasan mingguan • Data dalam Rupiah (Rp)
                 </div>
             </article>
 
-            <article class="ng-widget-card ng-cost-card">
-                <div class="ng-widget-head">
+            <article class="ng-card ng-target-card">
+                <div class="ng-card-head">
                     <div>
-                        <h2>Rincian Biaya Operasional</h2>
-                        <p>Biaya aktif yang dihitung pada periode dashboard</p>
+                        <h2>Progress Target</h2>
+                        <p>Progress target mengikuti bulan aktif yang dipilih</p>
                     </div>
-
-                    <a href="{{ $links['operational_costs'] ?? '#' }}">Kelola</a>
                 </div>
 
-                <div class="ng-cost-scroll">
-                    @forelse ($costs as $cost)
+                <div class="ng-target-list">
+                    @foreach ($targetItems as $target)
                         @php
-                            $costWidth = min(100, round(((int) ($cost['amount'] ?? 0) / $maxCost) * 100));
+                            $actual = (int) ($target['actual'] ?? 0);
+                            $targetValue = (int) ($target['target'] ?? 0);
+                            $percent = $targetValue > 0 ? round(($actual / $targetValue) * 100, 1) : 0;
+                            $barWidth = $targetValue > 0 ? min(100, max(5, abs($percent))) : 0;
+                            $remaining = $targetValue > 0 ? max($targetValue - $actual, 0) : 0;
+                            $isNegativeProgress = $percent < 0;
                         @endphp
 
-                        <div class="ng-cost-row">
-                            <div class="ng-cost-main">
-                                <div class="ng-cost-top">
-                                    <strong>{{ $cost['name'] ?? '-' }}</strong>
-                                    <span>{{ $this->rupiah($cost['amount'] ?? 0) }}</span>
+                        <div class="ng-target-row" style="--target-color: {{ $target['color'] }}">
+                            <div class="ng-target-icon">
+                                {{ $target['icon'] }}
+                            </div>
+
+                            <div class="ng-target-main">
+                                <div class="ng-target-top">
+                                    <div>
+                                        <strong>{{ $target['title'] }}</strong>
+                                        <span>{{ $this->rupiah($actual) }}</span>
+                                    </div>
+
+                                    <div>
+                                        <strong>{{ $targetValue > 0 ? $this->rupiah($targetValue) : 'Target belum diatur' }}</strong>
+                                    </div>
+
+                                    <b class="{{ $isNegativeProgress ? 'negative' : 'positive' }}">
+                                        {{ number_format($percent, 1, ',', '.') }}%
+                                    </b>
                                 </div>
 
-                                <div class="ng-cost-meta">
-                                    <span>{{ $cost['category'] ?? '-' }}</span>
-                                    <span>{{ $cost['date'] ?? '-' }}</span>
-
-                                    @if (! empty($cost['is_annual']))
-                                        <span>Tahunan</span>
-                                    @endif
+                                <div class="ng-target-track {{ $isNegativeProgress ? 'danger' : '' }}">
+                                    <i style="width: {{ $barWidth }}%;"></i>
                                 </div>
 
-                                @if (! empty($cost['description']))
-                                    <p>{{ $cost['description'] }}</p>
-                                @endif
-
-                                <div class="ng-cost-bar">
-                                    <i style="width: {{ $costWidth }}%;"></i>
+                                <div class="ng-target-bottom">
+                                    <span></span>
+                                    <small>{{ $targetValue > 0 ? 'Sisa ' . $this->rupiah($remaining) : 'Silakan atur target penjualan' }}</small>
                                 </div>
                             </div>
                         </div>
-                    @empty
-                        <div class="ng-empty-state">
-                            Belum ada biaya operasional.
-                        </div>
-                    @endforelse
+                    @endforeach
                 </div>
             </article>
         </section>
 
-        <section class="ng-finance-bottom-grid">
-            <article class="ng-widget-card ng-margin-card">
-                <div class="ng-widget-head">
-                    <div>
-                        <h2>Margin Produk</h2>
-                        <p>Produk dengan kontribusi gross profit terbesar pada periode aktif</p>
-                    </div>
-
-                    <a href="{{ $links['products'] ?? '#' }}">Produk →</a>
+        <section class="ng-card ng-cost-table-card">
+            <div class="ng-table-head">
+                <div>
+                    <h2>Rincian Biaya Operasional</h2>
+                    <p>Biaya aktif yang dihitung pada bulan dashboard</p>
                 </div>
 
-                <div class="ng-margin-grid">
-                    @forelse ($productMargins as $product)
-                        @php
-                            $profitWidth = min(100, round(((int) ($product['gross_profit'] ?? 0) / $maxProductProfit) * 100));
-                        @endphp
-
-                        <div class="ng-margin-row">
-                            <div class="ng-margin-top">
-                                <div>
-                                    <strong>{{ $product['name'] ?? '-' }}</strong>
-                                    <span>{{ number_format((int) ($product['units'] ?? 0), 0, ',', '.') }} unit • Margin {{ $product['margin'] ?? 0 }}%</span>
-                                </div>
-
-                                <div>
-                                    <b>{{ $this->rupiah($product['gross_profit'] ?? 0) }}</b>
-                                    <small>HPP {{ $this->rupiah($product['total_hpp'] ?? 0) }}</small>
-                                </div>
-                            </div>
-
-                            <div class="ng-margin-bar">
-                                <i style="width: {{ $profitWidth }}%;"></i>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="ng-empty-state">
-                            Belum ada data margin produk.
-                        </div>
-                    @endforelse
+                <div class="ng-table-actions">
+                    <a href="{{ $links['operational_costs'] ?? '#' }}">⚙ Kelola Biaya</a>
+                    <a href="{{ $links['operational_costs'] ?? '#' }}">↧ Export</a>
                 </div>
-            </article>
+            </div>
 
-            <article class="ng-widget-card ng-finance-summary-card">
-                <div class="ng-widget-head">
-                    <div>
-                        <h2>Finance Summary</h2>
-                        <p>Ringkasan cepat kondisi keuangan periode ini</p>
+            <div class="ng-cost-table-wrap">
+                <table class="ng-cost-table">
+                    <thead>
+                        <tr>
+                            <th>Nama Biaya</th>
+                            <th>Kategori</th>
+                            <th>Tipe Biaya</th>
+                            <th>Tanggal Bayar</th>
+                            <th>Nominal Input</th>
+                            <th>Dihitung Bulan Ini</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if ($costs->count() > 0)
+                            @foreach ($costPages as $pageIndex => $costPage)
+                                @foreach ($costPage as $cost)
+                                    <tr class="ng-cost-page-row {{ $pageIndex === 0 ? 'is-active' : '' }}"
+                                        data-cost-page="{{ $pageIndex + 1 }}">
+                                        <td>
+                                            <div class="ng-cost-category">
+                                                <span>▣</span>
+                                                <strong>{{ $cost['name'] ?? '-' }}</strong>
+                                            </div>
+                                        </td>
+                                        <td>{{ $cost['category'] ?? '-' }}</td>
+                                        <td>
+                                            <span class="ng-cost-type-badge {{ ! empty($cost['is_annual']) ? 'annual' : '' }}">
+                                                {{ $cost['cost_type_label'] ?? '-' }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $cost['date'] ?? '-' }}</td>
+                                        <td>{{ $this->rupiah($cost['input_amount'] ?? $cost['amount'] ?? 0) }}</td>
+                                        <td class="ng-money">
+                                            {{ $this->rupiah($cost['amount'] ?? 0) }}
+                                            @if (! empty($cost['is_annual']))
+                                                <small>{{ $cost['description'] ?? 'Tahunan / 12' }}</small>
+                                            @endif
+                                        </td>
+                                        <td><span class="ng-status-paid">Dihitung</span></td>
+                                    </tr>
+                                @endforeach
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="7">
+                                    <div class="ng-empty-state">
+                                        Belum ada biaya operasional.
+                                    </div>
+                                </td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+
+            @if ($costs->count() > 0)
+                <div class="ng-table-footer"
+                     data-total-costs="{{ $costs->count() }}"
+                     data-per-page="5"
+                     data-total-pages="{{ $totalCostPages }}">
+                    <span class="ng-cost-page-info">
+                        1 - {{ number_format(min(5, $costs->count()), 0, ',', '.') }}
+                        dari {{ number_format($costs->count(), 0, ',', '.') }}
+                    </span>
+
+                    <div class="ng-cost-pagination">
+                        <button type="button"
+                                class="ng-cost-page-btn is-disabled"
+                                data-cost-prev
+                                aria-label="Data biaya sebelumnya">
+                            ‹
+                        </button>
+
+                        @for ($page = 1; $page <= $totalCostPages; $page++)
+                            <button type="button"
+                                    class="ng-cost-page-number {{ $page === 1 ? 'is-active' : '' }}"
+                                    data-cost-page-button="{{ $page }}"
+                                    aria-label="Halaman biaya {{ $page }}">
+                                {{ $page }}
+                            </button>
+                        @endfor
+
+                        <button type="button"
+                                class="ng-cost-page-btn {{ $totalCostPages <= 1 ? 'is-disabled' : '' }}"
+                                data-cost-next
+                                aria-label="Data biaya berikutnya">
+                            ›
+                        </button>
                     </div>
-
-                    <span class="ng-widget-badge">Insight</span>
                 </div>
-
-                <div class="ng-summary-list">
-                    <div>
-                        <span>Revenue</span>
-                        <strong>{{ $this->rupiah($revenue) }}</strong>
-                    </div>
-
-                    <div>
-                        <span>Total HPP</span>
-                        <strong>{{ $this->rupiah($totalHpp) }}</strong>
-                    </div>
-
-                    <div>
-                        <span>Gross Profit</span>
-                        <strong>{{ $this->rupiah($grossProfit) }}</strong>
-                    </div>
-
-                    <div>
-                        <span>Biaya Operasional</span>
-                        <strong>{{ $this->rupiah($operationalCost) }}</strong>
-                    </div>
-
-                    <div class="{{ $netProfit >= 0 ? 'positive' : 'negative' }}">
-                        <span>Net Profit</span>
-                        <strong>{{ $this->rupiah($netProfit) }}</strong>
-                    </div>
-                </div>
-            </article>
+            @endif
         </section>
     </div>
 
@@ -495,7 +448,7 @@
             overflow-x: hidden !important;
         }
 
-        body:has(.ng-finance-dashboard) {
+        body:has(.ng-finance-dashboard-new) {
             background:
                 linear-gradient(120deg, rgba(255, 248, 237, .18), rgba(255, 224, 185, .05)),
                 url('/images/pos-orange-bg.png'),
@@ -508,123 +461,222 @@
             background-attachment: fixed !important;
         }
 
-        body:has(.ng-finance-dashboard) .fi-main,
-        body:has(.ng-finance-dashboard) .fi-main-ctn,
-        body:has(.ng-finance-dashboard) .fi-page,
-        body:has(.ng-finance-dashboard) .fi-page-content {
+        body:has(.ng-finance-dashboard-new) .fi-main,
+        body:has(.ng-finance-dashboard-new) .fi-main-ctn,
+        body:has(.ng-finance-dashboard-new) .fi-page,
+        body:has(.ng-finance-dashboard-new) .fi-page-content {
             width: 100% !important;
             max-width: 100% !important;
             background: transparent !important;
             overflow-x: hidden !important;
         }
 
-        body:has(.ng-finance-dashboard) .fi-page {
+        body:has(.ng-finance-dashboard-new) .fi-page,
+        body:has(.ng-finance-dashboard-new) .fi-main {
             padding: 0 !important;
         }
 
-        body:has(.ng-finance-dashboard) .fi-page-header {
+        body:has(.ng-finance-dashboard-new) .fi-page-header {
             display: none !important;
         }
 
-        body:has(.ng-finance-dashboard) .fi-main {
-            padding: 0 !important;
-        }
-
-        .ng-finance-dashboard {
-            width: 100% !important;
-            max-width: 100% !important;
+        .ng-finance-dashboard-new {
+            width: 100%;
             min-height: 100vh;
-            padding: 24px 24px 32px !important;
-            overflow: hidden !important;
-            font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            padding: 24px 24px 32px;
             color: #24180f;
+            font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
-        .ng-finance-dashboard * {
+        .ng-finance-dashboard-new * {
             box-sizing: border-box;
         }
 
-        .ng-dashboard-header {
+        .ng-topbar {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
             gap: 18px;
-            margin-bottom: 12px;
-        }
-
-        .ng-title-area {
-            min-width: 250px;
-        }
-
-        .ng-kicker {
-            display: inline-flex;
-            align-items: center;
-            width: fit-content;
-            padding: 6px 12px;
-            margin-bottom: 10px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, .50);
-            border: 1px solid rgba(255, 255, 255, .58);
-            color: #d95d00;
-            font-size: 12px;
-            font-weight: 900;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .70);
-            backdrop-filter: blur(12px);
+            margin-bottom: 22px;
         }
 
         .ng-title-area h1 {
             margin: 0;
             color: #21160d;
-            font-size: 30px;
-            line-height: 1.05;
+            font-size: 31px;
+            line-height: 1.08;
             font-weight: 950;
-            letter-spacing: -.04em;
+            letter-spacing: -.045em;
         }
 
         .ng-title-area p {
-            max-width: 760px;
-            margin: 8px 0 0;
+            margin: 6px 0 0;
             color: #765d45;
-            font-size: 13px;
-            line-height: 1.55;
-            font-weight: 650;
+            font-size: 14px;
+            font-weight: 700;
         }
 
         .ng-filter-area {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 10px;
+            gap: 14px;
             flex-wrap: wrap;
-            max-width: 100%;
+        }
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MONTHLY ONLY FILTER
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-monthly-filter-block {
+            display: grid;
+            gap: 8px;
+        }
+
+        .ng-filter-label {
+            color: #d95d00;
+            font-size: 12px;
+            line-height: 1;
+            font-weight: 950;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .ng-monthly-filter-card {
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, .62);
+            background: rgba(255, 255, 255, .52);
+            box-shadow: 0 18px 50px rgba(120, 74, 30, .09), inset 0 1px 0 rgba(255, 255, 255, .66);
+            backdrop-filter: blur(13px);
+            -webkit-backdrop-filter: blur(13px);
+        }
+
+        .ng-monthly-select {
+            min-width: 170px;
+            min-height: 44px;
+            border: 0;
+            outline: 0;
+            cursor: pointer;
+            border-radius: 13px;
+            padding: 0 14px;
+            color: #2d1f16;
+            background: rgba(255, 255, 255, .48);
+            font-size: 14px;
+            font-weight: 950;
+        }
+
+        .ng-year-select {
+            min-width: 112px;
+        }
+
+        .ng-monthly-select:focus {
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, .22);
+        }
+
+        .ng-monthly-select option {
+            color: #2d1f16;
+            background: #fff6ea;
+            font-weight: 850;
+        }
+
+        .ng-active-data-label {
+            display: block;
+            width: fit-content;
+            margin-top: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            color: #d95d00;
+            background: rgba(255, 255, 255, .36);
+            border: 1px solid rgba(255, 255, 255, .50);
+            font-size: 12px;
+            font-weight: 900;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .44);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .ng-target-filter {
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 7px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, .62);
+            background: rgba(255, 255, 255, .52);
+            box-shadow: 0 18px 50px rgba(120, 74, 30, .09), inset 0 1px 0 rgba(255, 255, 255, .66);
+            backdrop-filter: blur(13px);
+            -webkit-backdrop-filter: blur(13px);
+        }
+
+        .ng-target-filter span {
+            color: #d95d00;
+            font-size: 12px;
+            font-weight: 950;
+            white-space: nowrap;
+        }
+
+        .ng-target-month-select {
+            min-width: 150px;
+            min-height: 38px;
+            border: 0;
+            outline: 0;
+            cursor: pointer;
+            color: #2d1f16;
+            background: rgba(255, 255, 255, .25);
+            border-radius: 12px;
+            padding: 0 10px;
+            font-size: 13px;
+            font-weight: 950;
+        }
+
+        .ng-target-month-select option {
+            color: #2d1f16;
+            background: #fff6ea;
+            font-weight: 850;
+        }
+
+
+        .ng-period-tabs,
+        .ng-date-chip,
+        .ng-month-select-wrap {
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, .62);
+            background: rgba(255, 255, 255, .52);
+            box-shadow: 0 18px 50px rgba(120, 74, 30, .09), inset 0 1px 0 rgba(255, 255, 255, .66);
+            backdrop-filter: blur(13px);
+            -webkit-backdrop-filter: blur(13px);
         }
 
         .ng-period-tabs {
-            height: 48px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px;
+            min-height: 56px;
+            gap: 7px;
+            padding: 6px;
             border-radius: 18px;
-            background: rgba(255, 255, 255, .42);
-            border: 1px solid rgba(255, 255, 255, .58);
-            box-shadow: 0 18px 50px rgba(120, 74, 30, .09), inset 0 1px 0 rgba(255, 255, 255, .58);
-            backdrop-filter: blur(13px);
         }
 
         .ng-tab {
+            min-height: 42px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 36px;
-            padding: 0 18px;
+            padding: 0 20px;
             border-radius: 13px;
-            color: #6b5541;
-            font-size: 12px;
+            color: #3f3024;
+            font-size: 13px;
             font-weight: 900;
             text-decoration: none;
+            white-space: nowrap;
             transition: .2s ease;
         }
 
@@ -635,208 +687,404 @@
             box-shadow: 0 12px 22px rgba(238, 101, 0, .24);
         }
 
-        .ng-admin-profile {
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 7px 12px 7px 7px;
+        .ng-date-chip,
+        .ng-month-select-wrap {
+            min-height: 56px;
+            padding: 0 16px;
             border-radius: 16px;
-            background: rgba(255, 255, 255, .42);
-            border: 1px solid rgba(255, 255, 255, .58);
-            box-shadow: 0 18px 50px rgba(120, 74, 30, .09), inset 0 1px 0 rgba(255, 255, 255, .58);
-            backdrop-filter: blur(13px);
+            gap: 11px;
         }
 
-        .ng-avatar {
-            display: grid;
-            place-items: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            color: #fff;
+        .ng-date-chip span,
+        .ng-date-chip i {
+            color: #594433;
+            font-style: normal;
             font-weight: 950;
-            background: linear-gradient(135deg, #ff9b1a, #f05e00);
-            box-shadow: 0 10px 22px rgba(240, 94, 0, .25);
         }
 
-        .ng-admin-profile strong,
-        .ng-admin-profile span {
-            display: block;
-            line-height: 1.2;
-        }
-
-        .ng-admin-profile strong {
+        .ng-date-chip strong {
             color: #2d1f16;
             font-size: 13px;
-            font-weight: 950;
-        }
-
-        .ng-admin-profile span {
-            margin-top: 3px;
-            color: #7a614c;
-            font-size: 11px;
-            font-weight: 750;
-        }
-
-        .ng-finance-period-row {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            width: fit-content;
-            min-height: 36px;
-            margin-bottom: 18px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, .36);
-            border: 1px solid rgba(255, 255, 255, .50);
-            color: #6b5541;
-            font-size: 12px;
             font-weight: 900;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .52);
-            backdrop-filter: blur(12px);
+            white-space: nowrap;
         }
 
-        .ng-finance-period-row strong {
-            color: #2d1f16;
-            font-weight: 950;
+        .ng-month-select {
+            width: 160px;
+            min-height: 38px;
+            border: 0;
+            outline: 0;
+            color: #3f3024;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 900;
         }
 
         .ng-kpi-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 14px;
-            margin-bottom: 18px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 22px;
         }
 
-        .ng-kpi-card,
-        .ng-widget-card {
+        .ng-card,
+        .ng-kpi-card {
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, .58);
+            border: 1px solid rgba(255, 255, 255, .62);
             background:
-                linear-gradient(145deg, rgba(255, 255, 255, .46), rgba(255, 246, 231, .22)),
-                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .16), transparent 38%) !important;
+                linear-gradient(145deg, rgba(255, 255, 255, .58), rgba(255, 246, 231, .30)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .13), transparent 40%) !important;
             box-shadow:
-                0 22px 54px rgba(101, 58, 21, .12),
-                0 0 0 1px rgba(255, 255, 255, .12) inset,
-                inset 0 1px 0 rgba(255, 255, 255, .62);
-            backdrop-filter: blur(14px);
+                0 22px 54px rgba(101, 58, 21, .11),
+                inset 0 1px 0 rgba(255, 255, 255, .72);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
         }
 
-        .ng-kpi-card::before,
-        .ng-widget-card::before {
+        .ng-card::before,
+        .ng-kpi-card::before {
             content: "";
             position: absolute;
             inset: 0;
             pointer-events: none;
-            background:
-                linear-gradient(120deg, rgba(255, 255, 255, .34), transparent 28%, transparent 70%, rgba(255, 255, 255, .16));
-            opacity: .38;
+            background: linear-gradient(120deg, rgba(255,255,255,.38), transparent 28%, transparent 72%, rgba(255,255,255,.15));
+            opacity: .4;
         }
 
         .ng-kpi-card {
-            min-height: 108px;
+            min-height: 132px;
             display: flex;
-            gap: 12px;
-            padding: 16px 15px;
+            align-items: center;
+            gap: 18px;
+            padding: 22px;
             border-radius: 22px;
         }
 
         .ng-kpi-icon {
             position: relative;
-            z-index: 1;
+            z-index: 2;
+            width: 58px;
+            height: 58px;
             display: grid;
             place-items: center;
             flex: 0 0 auto;
-            width: 44px;
-            height: 44px;
-            border-radius: 15px;
+            border-radius: 50%;
             color: #fff;
-            background: linear-gradient(135deg, var(--accent), #d95d00);
-            box-shadow: 0 15px 28px rgba(249, 115, 22, .22);
-            font-size: 17px;
+            background: linear-gradient(135deg, var(--accent), #ee6500);
+            box-shadow: 0 16px 30px rgba(249, 115, 22, .22);
+            font-size: 25px;
             font-weight: 950;
         }
 
         .ng-kpi-content {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             min-width: 0;
             flex: 1;
         }
 
-        .ng-kpi-label {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            color: #6f5946;
-            font-size: 12px;
+        .ng-kpi-content > span {
+            color: #2c2119;
+            font-size: 14px;
             line-height: 1.2;
             font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: .06em;
         }
 
         .ng-kpi-content strong {
             display: block;
             margin-top: 7px;
-            color: #23160d;
-            font-size: 22px;
-            line-height: 1.15;
+            color: #1f150d;
+            font-size: 26px;
+            line-height: 1.05;
             font-weight: 950;
-            letter-spacing: -.03em;
+            letter-spacing: -.04em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .ng-kpi-content p {
-            margin: 8px 0 0;
-            font-size: 11px;
-            line-height: 1.25;
-            font-weight: 850;
+            margin: 13px 0 0;
+            font-size: 13px;
+            line-height: 1.2;
+            font-weight: 950;
         }
 
-        .ng-kpi-content p span {
-            margin-left: 4px;
+        .ng-kpi-content p em {
+            margin-left: 8px;
             color: #6f5946;
-            font-weight: 750;
+            font-style: normal;
+            font-weight: 700;
         }
 
         .ng-kpi-content .positive {
-            color: #07945d;
+            color: #16a34a;
         }
 
         .ng-kpi-content .negative {
-            color: #e23b3b;
+            color: #ef4444;
         }
 
-        .ng-kpi-content .neutral {
-            color: #6f5946;
-        }
-
-        .ng-finance-main-grid {
+        .ng-visual-grid {
             display: grid;
-            grid-template-columns: 1.45fr .9fr;
-            gap: 16px;
-            margin-bottom: 16px;
+            grid-template-columns: minmax(0, 1fr) minmax(420px, .96fr);
+            gap: 22px;
+            margin-bottom: 22px;
         }
 
-        .ng-finance-bottom-grid {
-            display: grid;
-            grid-template-columns: 1.35fr .65fr;
-            gap: 16px;
-        }
-
-        .ng-widget-card {
+        .ng-card {
             border-radius: 24px;
-            padding: 18px;
+            padding: 22px;
             min-width: 0;
         }
 
-        .ng-widget-head {
+        .ng-card-head {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 16px;
+        }
+
+        .ng-card-head h2 {
+            margin: 0;
+            color: #21160d;
+            font-size: 21px;
+            line-height: 1.2;
+            font-weight: 950;
+            letter-spacing: -.035em;
+        }
+
+        .ng-card-head p {
+            margin: 9px 0 0;
+            color: #765d45;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .ng-chart-responsive {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 54px minmax(0, 1fr);
+            min-height: 288px;
+        }
+
+        .ng-y-axis {
+            display: grid;
+            grid-template-rows: repeat(5, 1fr);
+            padding: 4px 10px 32px 0;
+            color: #6f5946;
+            font-size: 12px;
+            font-weight: 850;
+            text-align: right;
+        }
+
+        .ng-y-axis span {
+            transform: translateY(-6px);
+        }
+
+        .ng-chart-area {
+            position: relative;
+            min-width: 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 30px;
+            scrollbar-width: thin;
+        }
+
+        .ng-chart-area::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .ng-chart-area::-webkit-scrollbar-thumb {
+            border-radius: 999px;
+            background: rgba(249, 115, 22, .5);
+        }
+
+        .ng-grid-lines {
+            position: absolute;
+            inset: 0 0 30px 0;
+            display: grid;
+            grid-template-rows: repeat(4, 1fr);
+            pointer-events: none;
+        }
+
+        .ng-grid-lines i {
+            border-top: 1px solid rgba(100, 65, 36, .12);
+        }
+
+        .ng-grid-lines i:last-child {
+            border-bottom: 1px solid rgba(100, 65, 36, .12);
+        }
+
+        .ng-bars {
+            position: relative;
+            z-index: 2;
+            min-width: max(100%, calc(var(--bar-count) * 34px));
+            height: 250px;
+            display: grid;
+            grid-template-columns: repeat(var(--bar-count), minmax(24px, 1fr));
+            align-items: end;
+            gap: 9px;
+            padding: 0 4px;
+        }
+
+        .ng-bar-item {
+            height: 100%;
+            min-width: 0;
+            display: grid;
+            grid-template-rows: 1fr 26px;
+            align-items: end;
+            gap: 7px;
+        }
+
+        .ng-bar-wrap {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: end;
+            justify-content: center;
+        }
+
+        .ng-bar-wrap span {
+            width: min(100%, 20px);
+            min-height: 3px;
+            border-radius: 8px 8px 2px 2px;
+            background: linear-gradient(180deg, #ffa12b, #ff6a00);
+            box-shadow: 0 10px 20px rgba(249, 115, 22, .20);
+            transition: .2s ease;
+        }
+
+        .ng-bar-item:hover .ng-bar-wrap span {
+            filter: brightness(1.05);
+            transform: translateY(-2px);
+        }
+
+        .ng-bar-item small {
+            display: block;
+            color: #6f5946;
+            font-size: 10px;
+            line-height: 1.1;
+            font-weight: 800;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .ng-chart-caption {
+            position: relative;
+            z-index: 2;
+            margin-top: 4px;
+            color: #8b7057;
+            font-size: 12px;
+            font-weight: 850;
+            text-align: center;
+        }
+
+        .ng-target-list {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            gap: 25px;
+            padding-top: 8px;
+        }
+
+        .ng-target-row {
+            display: grid;
+            grid-template-columns: 58px minmax(0, 1fr);
+            gap: 16px;
+            align-items: center;
+        }
+
+        .ng-target-icon {
+            width: 58px;
+            height: 58px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            color: #fff;
+            background: linear-gradient(135deg, var(--target-color), #ee6500);
+            box-shadow: 0 16px 30px rgba(249, 115, 22, .20);
+            font-size: 24px;
+            font-weight: 950;
+        }
+
+        .ng-target-main {
+            min-width: 0;
+        }
+
+        .ng-target-top {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(130px, .7fr) 82px;
+            gap: 14px;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .ng-target-top strong,
+        .ng-target-top span {
+            display: block;
+        }
+
+        .ng-target-top strong {
+            color: #21160d;
+            font-size: 13px;
+            font-weight: 950;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ng-target-top span {
+            margin-top: 4px;
+            color: #6f5946;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .ng-target-top b {
+            color: var(--target-color);
+            font-size: 25px;
+            line-height: 1;
+            font-weight: 950;
+            text-align: right;
+            letter-spacing: -.04em;
+        }
+
+        .ng-target-top b.negative {
+            color: #ef4444;
+        }
+
+        .ng-target-track {
+            height: 13px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(249, 115, 22, .14);
+        }
+
+        .ng-target-track i {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--target-color), #ff8a00);
+        }
+
+        .ng-target-track.danger i {
+            background: linear-gradient(90deg, #ef4444, #fb7185);
+        }
+
+        .ng-target-bottom {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+        }
+
+        .ng-target-bottom small {
+            color: #7b624c;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .ng-table-head {
             position: relative;
             z-index: 2;
             display: flex;
@@ -846,332 +1094,253 @@
             margin-bottom: 14px;
         }
 
-        .ng-widget-head h2 {
+        .ng-table-head h2 {
             margin: 0;
-            color: #25170d;
-            font-size: 16px;
-            line-height: 1.2;
+            color: #21160d;
+            font-size: 21px;
             font-weight: 950;
-            letter-spacing: -.03em;
+            letter-spacing: -.035em;
         }
 
-        .ng-widget-head p {
-            margin: 5px 0 0;
-            color: #7b624c;
-            font-size: 11px;
-            font-weight: 800;
+        .ng-table-head p {
+            margin: 7px 0 0;
+            color: #765d45;
+            font-size: 13px;
+            font-weight: 750;
         }
 
-        .ng-widget-head a,
-        .ng-widget-badge {
+        .ng-table-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ng-table-actions a {
+            min-height: 38px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 32px;
-            padding: 0 12px;
+            padding: 0 15px;
             border-radius: 12px;
-            color: #da6200;
-            background: rgba(255, 255, 255, .36);
-            border: 1px solid rgba(255, 255, 255, .50);
-            font-size: 11px;
+            color: #f97316;
+            background: rgba(255, 255, 255, .38);
+            border: 1px solid rgba(255, 255, 255, .58);
+            font-size: 12px;
             font-weight: 950;
             text-decoration: none;
+        }
+
+        .ng-cost-table-wrap {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .ng-cost-table {
+            width: 100%;
+            min-width: 880px;
+            border-collapse: collapse;
+        }
+
+        .ng-cost-table th,
+        .ng-cost-table td {
+            padding: 13px 14px;
+            border-top: 1px solid rgba(113, 74, 44, .10);
+            color: #4b3525;
+            font-size: 13px;
+            text-align: left;
             white-space: nowrap;
         }
 
-        .ng-badge-green {
-            color: #078657 !important;
-            background: rgba(16, 185, 129, .14) !important;
+        .ng-cost-table th {
+            color: #3f3024;
+            font-size: 12px;
+            font-weight: 950;
         }
 
-        .ng-badge-red {
-            color: #d73333 !important;
-            background: rgba(255, 98, 98, .13) !important;
+        .ng-cost-table td {
+            font-weight: 760;
         }
 
-        .ng-profit-bars {
-            position: relative;
-            z-index: 2;
-            display: grid;
-            gap: 14px;
-        }
-
-        .ng-profit-row {
-            display: grid;
-            gap: 7px;
-        }
-
-        .ng-profit-info {
+        .ng-cost-category {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            color: #6f5946;
+            gap: 12px;
+        }
+
+        .ng-cost-category span {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            color: #f97316;
+            background: rgba(249, 115, 22, .12);
+            font-weight: 950;
+        }
+
+        .ng-cost-category strong {
+            color: #2d1f16;
+            font-weight: 950;
+        }
+
+        .ng-money {
+            color: #ef4444 !important;
+            font-weight: 950 !important;
+        }
+
+
+        .ng-cost-type-badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 26px;
+            padding: 0 10px;
+            border-radius: 8px;
+            color: #0f766e;
+            background: rgba(20, 184, 166, .13);
+            font-size: 12px;
+            font-weight: 950;
+            white-space: nowrap;
+        }
+
+        .ng-cost-type-badge.annual {
+            color: #d95d00;
+            background: rgba(249, 115, 22, .13);
+        }
+
+        .ng-money small {
+            display: block;
+            max-width: 260px;
+            margin-top: 4px;
+            color: #8b7057;
+            font-size: 11px;
+            line-height: 1.25;
+            font-weight: 750;
+            white-space: normal;
+        }
+
+
+        .ng-status-paid {
+            display: inline-flex;
+            align-items: center;
+            min-height: 26px;
+            padding: 0 10px;
+            border-radius: 8px;
+            color: #16a34a;
+            background: rgba(22, 163, 74, .12);
             font-size: 12px;
             font-weight: 900;
         }
 
-        .ng-profit-info strong {
-            color: #2b1b10;
+        .ng-action-dots {
+            color: #21160d;
+            font-size: 20px;
             font-weight: 950;
         }
 
-        .ng-profit-track {
-            width: 100%;
-            height: 9px;
-            overflow: hidden;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, .32);
-            border: 1px solid rgba(255, 255, 255, .38);
+
+        /*
+        |--------------------------------------------------------------------------
+        | COST TABLE SLIDE PAGINATION - 5 DATA PER HALAMAN
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-cost-page-row {
+            display: none;
         }
 
-        .ng-profit-track i {
-            display: block;
-            height: 100%;
-            border-radius: inherit;
+        .ng-cost-page-row.is-active {
+            display: table-row;
+            animation: ngCostFadeIn .18s ease both;
         }
 
-        .ng-finance-shortcuts {
-            position: relative;
-            z-index: 2;
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
-            margin-top: 16px;
+        @keyframes ngCostFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .ng-finance-shortcuts a {
+        .ng-cost-pagination {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            min-height: 46px;
-            padding: 0 14px;
-            border-radius: 16px;
-            color: #da6200;
-            background: rgba(255, 255, 255, .28);
-            border: 1px solid rgba(255, 255, 255, .42);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.40);
-            font-size: 12px;
-            font-weight: 950;
-            text-decoration: none;
-            transition: .2s ease;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .ng-finance-shortcuts a:hover {
+        .ng-cost-page-btn,
+        .ng-cost-page-number {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .38);
+            color: #7b624c;
+            font-size: 13px;
+            font-weight: 950;
+            cursor: pointer;
+            transition: .18s ease;
+        }
+
+        .ng-cost-page-btn:hover,
+        .ng-cost-page-number:hover,
+        .ng-cost-page-number.is-active {
             color: #fff;
             background: linear-gradient(135deg, #ff9d18, #ee6500);
-            box-shadow: 0 12px 22px rgba(238, 101, 0, .22);
+            box-shadow: 0 10px 20px rgba(238, 101, 0, .22);
         }
 
-        .ng-cost-scroll {
+        .ng-cost-page-btn.is-disabled {
+            opacity: .45;
+            cursor: not-allowed;
+            pointer-events: none;
+            box-shadow: none;
+        }
+
+
+        .ng-table-footer {
             position: relative;
             z-index: 2;
-            display: grid;
-            gap: 9px;
-            max-height: 334px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        .ng-cost-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .ng-cost-scroll::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, .28);
-            border-radius: 999px;
-        }
-
-        .ng-cost-scroll::-webkit-scrollbar-thumb {
-            background: rgba(249, 115, 22, .55);
-            border-radius: 999px;
-        }
-
-        .ng-cost-row {
-            padding: 11px;
-            border-radius: 17px;
-            background: rgba(255, 255, 255, .24);
-            border: 1px solid rgba(255, 255, 255, .38);
-        }
-
-        .ng-cost-top {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            min-width: 0;
-        }
-
-        .ng-cost-top strong {
-            display: block;
-            min-width: 0;
-            overflow: hidden;
-            color: #2b1b10;
+            justify-content: center;
+            gap: 18px;
+            padding-top: 15px;
+            color: #6f5946;
             font-size: 12px;
-            font-weight: 950;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .ng-cost-top span {
-            flex: 0 0 auto;
-            color: #e23b3b;
-            font-size: 12px;
-            font-weight: 950;
-        }
-
-        .ng-cost-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 5px;
-            min-width: 0;
-            overflow: hidden;
-        }
-
-        .ng-cost-meta span {
-            color: #8b7057;
-            font-size: 10px;
-            font-weight: 800;
-            white-space: nowrap;
-        }
-
-        .ng-cost-main p {
-            margin: 7px 0 0;
-            color: #8b7057;
-            font-size: 10px;
-            line-height: 1.35;
-            font-weight: 750;
-        }
-
-        .ng-cost-bar,
-        .ng-margin-bar {
-            width: 100%;
-            height: 7px;
-            margin-top: 9px;
-            overflow: hidden;
-            border-radius: 999px;
-            background: rgba(249, 115, 22, .11);
-        }
-
-        .ng-cost-bar i {
-            display: block;
-            height: 100%;
-            border-radius: inherit;
-            background: linear-gradient(90deg, #fb7185, #ef4444);
-        }
-
-        .ng-margin-grid {
-            position: relative;
-            z-index: 2;
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-        }
-
-        .ng-margin-row {
-            min-width: 0;
-            padding: 12px;
-            border-radius: 17px;
-            background: rgba(255, 255, 255, .24);
-            border: 1px solid rgba(255, 255, 255, .38);
-        }
-
-        .ng-margin-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .ng-margin-top div {
-            min-width: 0;
-        }
-
-        .ng-margin-top strong {
-            display: block;
-            min-width: 0;
-            overflow: hidden;
-            color: #2b1b10;
-            font-size: 12px;
-            font-weight: 950;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .ng-margin-top span {
-            display: block;
-            margin-top: 4px;
-            color: #8b7057;
-            font-size: 10px;
             font-weight: 800;
         }
 
-        .ng-margin-top b {
-            display: block;
-            color: #078657;
-            font-size: 12px;
-            font-weight: 950;
-            white-space: nowrap;
-            text-align: right;
-        }
-
-        .ng-margin-top small {
-            display: block;
-            margin-top: 4px;
-            color: #8b7057;
-            font-size: 10px;
-            font-weight: 800;
-            white-space: nowrap;
-            text-align: right;
-        }
-
-        .ng-margin-bar i {
-            display: block;
-            height: 100%;
-            border-radius: inherit;
-            background: linear-gradient(90deg, #34d399, #10b981);
-        }
-
-        .ng-summary-list {
-            position: relative;
-            z-index: 2;
-            display: grid;
-            gap: 10px;
-        }
-
-        .ng-summary-list div {
+        .ng-table-footer div {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             gap: 10px;
-            min-height: 45px;
-            padding: 0 13px;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, .24);
-            border: 1px solid rgba(255, 255, 255, .38);
         }
 
-        .ng-summary-list span {
+        .ng-table-footer button,
+        .ng-table-footer strong {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .38);
             color: #7b624c;
-            font-size: 11px;
-            font-weight: 850;
-        }
-
-        .ng-summary-list strong {
-            color: #2b1b10;
-            font-size: 12px;
             font-weight: 950;
-            text-align: right;
         }
 
-        .ng-summary-list div.positive strong {
-            color: #078657;
-        }
-
-        .ng-summary-list div.negative strong {
-            color: #d73333;
+        .ng-table-footer strong {
+            color: #fff;
+            background: linear-gradient(135deg, #ff9d18, #ee6500);
         }
 
         .ng-empty-state {
@@ -1186,345 +1355,487 @@
             text-align: center;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | SIDEBAR EFFECT SYNC
+        |--------------------------------------------------------------------------
+        */
 
-        .ng-month-select-wrap {
-            height: 48px;
-            min-width: 164px;
+        body:has(.ng-finance-dashboard-new) .fi-sidebar {
+            background: rgba(255, 250, 242, .50) !important;
+            border-right: 1px solid rgba(255, 255, 255, .48) !important;
+            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+        }
+
+        body:has(.ng-finance-dashboard-new) .fi-sidebar-nav {
+            padding: 18px 14px !important;
+        }
+
+        body:has(.ng-finance-dashboard-new) .fi-sidebar-item a {
+            border-radius: 14px !important;
+            color: #6f5844 !important;
+            transition: .2s ease !important;
+        }
+
+        body:has(.ng-finance-dashboard-new) .fi-sidebar-item-active a,
+        body:has(.ng-finance-dashboard-new) .fi-sidebar-item a:hover {
+            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
+            color: #fff !important;
+            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
+        }
+
+        body:has(.ng-finance-dashboard-new) .fi-sidebar-item-active svg,
+        body:has(.ng-finance-dashboard-new) .fi-sidebar-item a:hover svg,
+        body:has(.ng-finance-dashboard-new) .fi-sidebar-item-active span,
+        body:has(.ng-finance-dashboard-new) .fi-sidebar-item a:hover span {
+            color: #fff !important;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | WEEKLY REVENUE CHART IMPROVEMENTS
+        |--------------------------------------------------------------------------
+        */
+
+        @keyframes ngFadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes ngBarRise {
+            from {
+                opacity: .28;
+                transform: scaleY(.15);
+            }
+
+            to {
+                opacity: 1;
+                transform: scaleY(1);
+            }
+        }
+
+        .ng-kpi-card,
+        .ng-card {
+            animation: ngFadeUp .5s ease both;
+        }
+
+        .ng-chart-area-static {
+            overflow: visible;
+            padding-bottom: 0;
+        }
+
+        .ng-bars-weekly {
+            min-width: 100%;
+            height: 280px;
+            grid-template-columns: repeat(var(--bar-count), minmax(58px, 1fr));
+            gap: 16px;
+            padding: 0 8px;
+        }
+
+        .ng-bars-weekly .ng-bar-item {
+            position: relative;
+            padding-top: 76px;
+        }
+
+        .ng-bars-weekly .ng-bar-wrap span {
+            width: min(100%, 28px);
+            border-radius: 12px 12px 4px 4px;
+            animation: ngBarRise .75s cubic-bezier(.22, 1, .36, 1) both;
+            animation-delay: calc((var(--item-index, 0) * 1) * 90ms + 120ms);
+            transform-origin: bottom center;
+        }
+
+        .ng-chart-tooltip {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            z-index: 4;
+            min-width: 210px;
+            max-width: min(240px, calc(100vw - 40px));
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, .78);
+            background: rgba(245, 245, 245, .96);
+            box-shadow: 0 18px 46px rgba(77, 51, 22, .18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translate(-50%, 12px);
+            transition: opacity .22s ease, transform .22s ease, visibility .22s ease;
+        }
+
+        .ng-chart-tooltip::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -8px;
+            width: 16px;
+            height: 16px;
+            background: rgba(245, 245, 245, .96);
+            transform: translateX(-50%) rotate(45deg);
+            border-right: 1px solid rgba(255, 255, 255, .78);
+            border-bottom: 1px solid rgba(255, 255, 255, .78);
+        }
+
+        .ng-chart-tooltip strong {
+            display: block;
+            margin-bottom: 12px;
+            color: #7b7f86;
+            font-size: 17px;
+            line-height: 1.1;
+            font-weight: 950;
+        }
+
+        .ng-chart-tooltip-row {
             display: flex;
             align-items: center;
-            padding: 5px 12px;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, .42);
-            border: 1px solid rgba(255, 255, 255, .58);
-            box-shadow: 0 18px 50px rgba(120, 74, 30, .09), inset 0 1px 0 rgba(255, 255, 255, .58);
-            backdrop-filter: blur(13px);
-        }
-
-        .ng-month-select {
-            width: 100%;
-            min-height: 36px;
-            border: 0;
-            outline: 0;
-            cursor: pointer;
-            color: #6b5541;
-            background: transparent;
-            font-size: 12px;
-            font-weight: 900;
-        }
-
-        .ng-month-select option {
-            color: #2d1f16;
-            background: #fff6ea;
-            font-weight: 800;
-        }
-
-        .ng-period-extra {
-            color: #d95d00 !important;
-            font-weight: 950 !important;
-        }
-
-        .ng-year-detail-section {
-            margin-bottom: 16px;
-        }
-
-        .ng-year-card {
-            padding: 18px;
-        }
-
-        .ng-year-summary-strip {
-            position: relative;
-            z-index: 2;
-            display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .ng-year-summary-strip div {
-            min-width: 0;
-            min-height: 66px;
-            display: grid;
-            align-content: center;
-            gap: 6px;
-            padding: 12px 13px;
-            border-radius: 17px;
-            background: rgba(255, 255, 255, .24);
-            border: 1px solid rgba(255, 255, 255, .38);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .34);
-        }
-
-        .ng-year-summary-strip span {
-            color: #7b624c;
-            font-size: 10px;
-            line-height: 1.2;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-        }
-
-        .ng-year-summary-strip strong {
-            color: #2b1b10;
-            font-size: 14px;
-            line-height: 1.15;
-            font-weight: 950;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .ng-year-summary-strip .positive strong {
-            color: #078657;
-        }
-
-        .ng-year-summary-strip .negative strong {
-            color: #d73333;
-        }
-
-        .ng-year-table-scroll {
-            position: relative;
-            z-index: 2;
-            display: grid;
-            gap: 9px;
-            max-height: 430px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        .ng-year-table-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .ng-year-table-scroll::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, .28);
-            border-radius: 999px;
-        }
-
-        .ng-year-table-scroll::-webkit-scrollbar-thumb {
-            background: rgba(249, 115, 22, .55);
-            border-radius: 999px;
-        }
-
-        .ng-year-row {
-            display: grid;
-            grid-template-columns: 150px minmax(0, 1fr);
-            gap: 12px;
-            align-items: center;
-            min-width: 0;
-            padding: 12px;
-            border-radius: 18px;
-            color: inherit;
-            text-decoration: none;
-            background: rgba(255, 255, 255, .24);
-            border: 1px solid rgba(255, 255, 255, .38);
-            transition: .2s ease;
-        }
-
-        .ng-year-row:hover,
-        .ng-year-row.active {
-            background: rgba(255, 255, 255, .52);
-            border-color: rgba(249, 115, 22, .45);
-            box-shadow: 0 14px 28px rgba(249, 115, 22, .12), inset 0 1px 0 rgba(255, 255, 255, .54);
-        }
-
-        .ng-year-month strong {
-            display: block;
-            color: #2b1b10;
-            font-size: 13px;
-            font-weight: 950;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .ng-year-month span {
-            display: block;
-            margin-top: 4px;
-            color: #8b7057;
-            font-size: 10px;
-            font-weight: 850;
-        }
-
-        .ng-year-values {
-            min-width: 0;
-            display: grid;
-            grid-template-columns: repeat(7, minmax(0, 1fr));
+            flex-wrap: wrap;
             gap: 8px;
+            color: #2e2620;
+            font-size: 15px;
+            font-weight: 700;
         }
 
-        .ng-year-values div {
-            min-width: 0;
+        .ng-chart-tooltip-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #f97316;
+            box-shadow: 0 6px 12px rgba(249, 115, 22, .24);
+            flex: 0 0 16px;
         }
 
-        .ng-year-values span {
-            display: block;
-            color: #8b7057;
-            font-size: 9px;
-            line-height: 1.2;
-            font-weight: 850;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-
-        .ng-year-values strong {
-            display: block;
-            margin-top: 4px;
-            color: #2b1b10;
-            font-size: 10px;
-            line-height: 1.2;
+        .ng-chart-tooltip-row b {
+            color: #2a1d13;
+            font-size: 16px;
             font-weight: 950;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
-        .ng-year-values .positive strong {
-            color: #078657;
+        .ng-bar-item:hover .ng-chart-tooltip,
+        .ng-bar-item:focus-visible .ng-chart-tooltip,
+        .ng-bar-item:focus-within .ng-chart-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -8px);
         }
 
-        .ng-year-values .negative strong {
-            color: #d73333;
+        .ng-bar-item:focus-visible {
+            outline: none;
         }
 
-        .ng-year-progress {
-            grid-column: 2 / -1;
-            width: 100%;
-            height: 7px;
-            overflow: hidden;
-            border-radius: 999px;
-            background: rgba(249, 115, 22, .11);
+        .ng-bar-item:focus-visible .ng-bar-wrap span {
+            filter: brightness(1.04);
+            transform: translateY(-2px);
         }
 
-        .ng-year-progress i {
-            display: block;
-            height: 100%;
-            border-radius: inherit;
-            background: linear-gradient(90deg, #ff9d18, #f97316);
-        }
 
         @media (max-width: 1500px) {
             .ng-kpi-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
-            .ng-finance-main-grid,
-            .ng-finance-bottom-grid {
+            .ng-visual-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .ng-year-summary-strip {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .ng-year-values {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
             }
         }
 
         @media (max-width: 1100px) {
-            .ng-dashboard-header {
+            .ng-finance-dashboard-new {
+                padding: 18px 18px 28px;
+            }
+
+            .ng-topbar {
                 flex-direction: column;
-                align-items: flex-start;
             }
 
             .ng-filter-area {
+                width: 100%;
                 justify-content: flex-start;
             }
 
-            .ng-kpi-grid,
-            .ng-margin-grid,
-            .ng-finance-shortcuts,
-            .ng-year-summary-strip {
-                grid-template-columns: 1fr;
+
+            .ng-period-filter-block {
+                width: 100%;
             }
 
-            .ng-year-row {
-                grid-template-columns: 1fr;
+            .ng-custom-filter-popover {
+                left: 0;
+                right: auto;
             }
 
-            .ng-year-values {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+            .ng-target-card-head {
+                align-items: stretch;
+                flex-direction: column;
             }
 
-            .ng-year-progress {
+            .ng-target-filter-inside {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+
+            .ng-period-tabs {
+                width: 100%;
+                overflow-x: auto;
+                justify-content: flex-start;
+            }
+
+            .ng-tab {
+                flex: 1 0 auto;
+            }
+
+            .ng-date-chip {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+
+            .ng-target-filter {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .ng-target-month-select {
+                flex: 1;
+            }
+
+            .ng-target-top {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .ng-target-top b {
                 grid-column: 1 / -1;
+                text-align: left;
             }
         }
-        /* =========================================================
-   FINAL SIDEBAR EFFECT SYNC - FINANCE PAGES
-   Bikin sidebar halaman Keuangan sama rasa/effect dengan
-   Dashboard Admin dan halaman resource lain.
-   Tidak sentuh theme.css.
-========================================================= */
 
-body:has(.ng-finance-dashboard) .fi-sidebar,
-body:has(.ng-operational-page) .fi-sidebar,
-body:has(.ng-operational-form-page) .fi-sidebar,
-body:has(.ng-sales-target-page) .fi-sidebar,
-body:has(.ng-sales-target-form-page) .fi-sidebar {
-    background: rgba(255, 250, 242, .50) !important;
-    border-right: 1px solid rgba(255, 255, 255, .48) !important;
-    box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-}
+        @media (max-width: 700px) {
+            .ng-finance-dashboard-new {
+                padding: 14px 14px 24px;
+            }
 
-body:has(.ng-finance-dashboard) .fi-sidebar-nav,
-body:has(.ng-operational-page) .fi-sidebar-nav,
-body:has(.ng-operational-form-page) .fi-sidebar-nav,
-body:has(.ng-sales-target-page) .fi-sidebar-nav,
-body:has(.ng-sales-target-form-page) .fi-sidebar-nav {
-    padding: 18px 14px !important;
-}
+            .ng-title-area h1 {
+                font-size: 28px;
+            }
 
-body:has(.ng-finance-dashboard) .fi-sidebar-item a,
-body:has(.ng-operational-page) .fi-sidebar-item a,
-body:has(.ng-operational-form-page) .fi-sidebar-item a,
-body:has(.ng-sales-target-page) .fi-sidebar-item a,
-body:has(.ng-sales-target-form-page) .fi-sidebar-item a {
-    border-radius: 14px !important;
-    color: #6f5844 !important;
-    transition: .2s ease !important;
-}
+            .ng-kpi-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
 
-body:has(.ng-finance-dashboard) .fi-sidebar-item-active a,
-body:has(.ng-finance-dashboard) .fi-sidebar-item a:hover,
-body:has(.ng-operational-page) .fi-sidebar-item-active a,
-body:has(.ng-operational-page) .fi-sidebar-item a:hover,
-body:has(.ng-operational-form-page) .fi-sidebar-item-active a,
-body:has(.ng-operational-form-page) .fi-sidebar-item a:hover,
-body:has(.ng-sales-target-page) .fi-sidebar-item-active a,
-body:has(.ng-sales-target-page) .fi-sidebar-item a:hover,
-body:has(.ng-sales-target-form-page) .fi-sidebar-item-active a,
-body:has(.ng-sales-target-form-page) .fi-sidebar-item a:hover {
-    background: linear-gradient(135deg, #ff9500, #f26a00) !important;
-    color: #fff !important;
-    box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
-}
+            .ng-kpi-card {
+                min-height: 118px;
+                padding: 18px;
+            }
 
-body:has(.ng-finance-dashboard) .fi-sidebar-item-active svg,
-body:has(.ng-finance-dashboard) .fi-sidebar-item a:hover svg,
-body:has(.ng-operational-page) .fi-sidebar-item-active svg,
-body:has(.ng-operational-page) .fi-sidebar-item a:hover svg,
-body:has(.ng-operational-form-page) .fi-sidebar-item-active svg,
-body:has(.ng-operational-form-page) .fi-sidebar-item a:hover svg,
-body:has(.ng-sales-target-page) .fi-sidebar-item-active svg,
-body:has(.ng-sales-target-page) .fi-sidebar-item a:hover svg,
-body:has(.ng-sales-target-form-page) .fi-sidebar-item-active svg,
-body:has(.ng-sales-target-form-page) .fi-sidebar-item a:hover svg {
-    color: #fff !important;
-}
+            .ng-visual-grid {
+                gap: 14px;
+                margin-bottom: 14px;
+            }
 
-body:has(.ng-finance-dashboard) .fi-sidebar-item-active span,
-body:has(.ng-finance-dashboard) .fi-sidebar-item a:hover span,
-body:has(.ng-operational-page) .fi-sidebar-item-active span,
-body:has(.ng-operational-page) .fi-sidebar-item a:hover span,
-body:has(.ng-operational-form-page) .fi-sidebar-item-active span,
-body:has(.ng-operational-form-page) .fi-sidebar-item a:hover span,
-body:has(.ng-sales-target-page) .fi-sidebar-item-active span,
-body:has(.ng-sales-target-page) .fi-sidebar-item a:hover span,
-body:has(.ng-sales-target-form-page) .fi-sidebar-item-active span,
-body:has(.ng-sales-target-form-page) .fi-sidebar-item a:hover span {
-    color: #fff !important;
-}
+            .ng-card {
+                padding: 16px;
+                border-radius: 22px;
+            }
+
+            .ng-chart-responsive {
+                grid-template-columns: 44px minmax(0, 1fr);
+                min-height: 254px;
+            }
+
+            .ng-bars {
+                height: 220px;
+                min-width: max(100%, calc(var(--bar-count) * 30px));
+                gap: 7px;
+            }
+
+            .ng-bars-weekly {
+                min-width: 100%;
+                height: 230px;
+                grid-template-columns: repeat(var(--bar-count), minmax(44px, 1fr));
+                gap: 12px;
+                padding: 0 4px;
+            }
+
+            .ng-bars-weekly .ng-bar-item {
+                padding-top: 70px;
+            }
+
+            .ng-bar-wrap span {
+                width: min(100%, 16px);
+            }
+
+            .ng-bars-weekly .ng-bar-wrap span {
+                width: min(100%, 22px);
+            }
+
+            .ng-chart-tooltip {
+                min-width: 180px;
+                padding: 14px 14px;
+            }
+
+            .ng-chart-tooltip strong {
+                font-size: 15px;
+            }
+
+            .ng-chart-tooltip-row,
+            .ng-chart-tooltip-row b {
+                font-size: 14px;
+            }
+
+            .ng-target-row {
+                grid-template-columns: 48px minmax(0, 1fr);
+                gap: 12px;
+            }
+
+            .ng-target-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+
+            .ng-table-head {
+                flex-direction: column;
+            }
+
+            .ng-table-actions {
+                width: 100%;
+            }
+
+            .ng-table-actions a {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .ng-chart-responsive {
+                grid-template-columns: 40px minmax(0, 1fr);
+                min-height: 240px;
+            }
+
+            .ng-y-axis {
+                font-size: 11px;
+                padding-right: 8px;
+            }
+
+            .ng-bars-weekly {
+                height: 210px;
+                grid-template-columns: repeat(var(--bar-count), minmax(40px, 1fr));
+                gap: 10px;
+            }
+
+            .ng-bars-weekly .ng-bar-item {
+                padding-top: 64px;
+            }
+
+            .ng-bars-weekly .ng-bar-wrap span {
+                width: min(100%, 18px);
+            }
+
+            .ng-bar-item small {
+                font-size: 9px;
+            }
+
+            .ng-chart-tooltip {
+                min-width: 156px;
+                max-width: 180px;
+                padding: 12px 12px;
+            }
+
+            .ng-chart-tooltip strong {
+                margin-bottom: 9px;
+                font-size: 14px;
+            }
+
+            .ng-chart-tooltip-row,
+            .ng-chart-tooltip-row b {
+                font-size: 13px;
+            }
+        }
+
     </style>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const footer = document.querySelector('.ng-finance-dashboard-new .ng-table-footer');
+
+            if (! footer) {
+                return;
+            }
+
+            const totalCosts = Number(footer.dataset.totalCosts || 0);
+            const perPage = Number(footer.dataset.perPage || 5);
+            const totalPages = Number(footer.dataset.totalPages || 1);
+            const rows = Array.from(document.querySelectorAll('.ng-cost-page-row'));
+            const info = footer.querySelector('.ng-cost-page-info');
+            const prev = footer.querySelector('[data-cost-prev]');
+            const next = footer.querySelector('[data-cost-next]');
+            const pageButtons = Array.from(footer.querySelectorAll('[data-cost-page-button]'));
+
+            let currentPage = 1;
+
+            const rupiahNumber = new Intl.NumberFormat('id-ID');
+
+            function setPage(page) {
+                currentPage = Math.max(1, Math.min(totalPages, Number(page || 1)));
+
+                rows.forEach(function (row) {
+                    row.classList.toggle('is-active', Number(row.dataset.costPage) === currentPage);
+                });
+
+                pageButtons.forEach(function (button) {
+                    button.classList.toggle('is-active', Number(button.dataset.costPageButton) === currentPage);
+                });
+
+                if (prev) {
+                    prev.classList.toggle('is-disabled', currentPage <= 1);
+                }
+
+                if (next) {
+                    next.classList.toggle('is-disabled', currentPage >= totalPages);
+                }
+
+                if (info) {
+                    const start = ((currentPage - 1) * perPage) + 1;
+                    const end = Math.min(currentPage * perPage, totalCosts);
+
+                    info.textContent = rupiahNumber.format(start) + ' - ' + rupiahNumber.format(end) + ' dari ' + rupiahNumber.format(totalCosts);
+                }
+            }
+
+            if (prev) {
+                prev.addEventListener('click', function () {
+                    setPage(currentPage - 1);
+                });
+            }
+
+            if (next) {
+                next.addEventListener('click', function () {
+                    setPage(currentPage + 1);
+                });
+            }
+
+            pageButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    setPage(button.dataset.costPageButton);
+                });
+            });
+
+            setPage(1);
+        });
+    </script>
+
 </x-filament-panels::page>

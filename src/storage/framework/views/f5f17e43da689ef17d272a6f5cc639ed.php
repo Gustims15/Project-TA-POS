@@ -28,7 +28,7 @@
 
             <article class="ng-widget-card ng-op-form-highlight-card">
                 <div class="ng-highlight-info">
-                    <span>Estimasi Biaya Bulan Ini</span>
+                    <span>Estimasi Biaya Bulan Aktif</span>
 
                     <strong>
                         <?php echo e($this->rupiah($stats['monthly_cost'] ?? 0)); ?>
@@ -116,7 +116,7 @@
             width: 100% !important;
             max-width: 100% !important;
             padding: 24px 24px 10px !important;
-            overflow: hidden !important;
+            overflow: visible !important;
             font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             color: #24180f;
         }
@@ -324,7 +324,7 @@
                 inset 0 1px 0 rgba(255, 255, 255, .54) !important;
             backdrop-filter: blur(14px) !important;
             -webkit-backdrop-filter: blur(14px) !important;
-            overflow: hidden !important;
+            overflow: visible !important;
         }
 
         body:has(.ng-operational-form-page) .fi-section-content,
@@ -395,6 +395,62 @@
             padding-left: 24px !important;
             padding-right: 24px !important;
         }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FORM DROPDOWN / DATEPICKER STACKING FIX
+        |--------------------------------------------------------------------------
+        | Membuat dropdown select dan kalender datepicker muncul di atas field lain,
+        | tidak ketimpa saat form discroll.
+        */
+
+        body:has(.ng-operational-form-page) .fi-main,
+        body:has(.ng-operational-form-page) .fi-main-ctn,
+        body:has(.ng-operational-form-page) .fi-page,
+        body:has(.ng-operational-form-page) .fi-page-content,
+        body:has(.ng-operational-form-page) form,
+        body:has(.ng-operational-form-page) form .fi-section,
+        body:has(.ng-operational-form-page) .fi-section,
+        body:has(.ng-operational-form-page) .fi-section-content,
+        body:has(.ng-operational-form-page) .fi-fo-component-ctn,
+        body:has(.ng-operational-form-page) .fi-fo-field-wrp {
+            overflow: visible !important;
+        }
+
+        body:has(.ng-operational-form-page) form {
+            position: relative !important;
+            z-index: 20 !important;
+        }
+
+        body:has(.ng-operational-form-page) form .fi-section,
+        body:has(.ng-operational-form-page) .fi-section {
+            position: relative !important;
+            z-index: 25 !important;
+        }
+
+        body:has(.ng-operational-form-page) .fi-dropdown-panel,
+        body:has(.ng-operational-form-page) .fi-popover,
+        body:has(.ng-operational-form-page) .fi-popover-panel,
+        body:has(.ng-operational-form-page) .fi-datepicker,
+        body:has(.ng-operational-form-page) .fi-date-time-picker-panel,
+        body:has(.ng-operational-form-page) [role="listbox"],
+        body:has(.ng-operational-form-page) [data-headlessui-state],
+        body:has(.ng-operational-form-page) .choices__list--dropdown,
+        body:has(.ng-operational-form-page) .flatpickr-calendar {
+            z-index: 99999 !important;
+        }
+
+        body:has(.ng-operational-form-page) .fi-fo-field-wrp {
+            isolation: auto !important;
+        }
+
+        body:has(.ng-operational-form-page) .fi-input-wrp:focus-within,
+        body:has(.ng-operational-form-page) .fi-fo-field-wrp:focus-within {
+            position: relative !important;
+            z-index: 80 !important;
+        }
+
 
         /*
         |--------------------------------------------------------------------------
@@ -531,6 +587,31 @@
                 padding-right: 14px !important;
             }
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FIX DATEPICKER / SELECT DROPDOWN TERTIMPA
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-operational-form-page) .fi-page-content,
+        body:has(.ng-operational-form-page) form,
+        body:has(.ng-operational-form-page) .fi-section,
+        body:has(.ng-operational-form-page) .fi-section-content,
+        body:has(.ng-operational-form-page) .fi-fo-component-ctn,
+        body:has(.ng-operational-form-page) .ng-operational-form-page,
+        body:has(.ng-operational-form-page) .ng-widget-card {
+            overflow: visible !important;
+        }
+
+        body:has(.ng-operational-form-page) .fi-dropdown-panel,
+        body:has(.ng-operational-form-page) .fi-select-input-ctn,
+        body:has(.ng-operational-form-page) [role="listbox"],
+        body:has(.ng-operational-form-page) [data-headlessui-state],
+        body:has(.ng-operational-form-page) .fi-fo-date-time-picker-panel {
+            z-index: 999999 !important;
+        }
+
     </style>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

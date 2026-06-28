@@ -43,6 +43,17 @@ class EditOperationalCost extends EditRecord
             ->label('Batal');
     }
 
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (($data['category'] ?? null) === 'rent' && empty($data['cost_type'])) {
+            $data['cost_type'] = 'annual';
+        }
+
+        $data['cost_type'] = $data['cost_type'] ?? 'monthly';
+
+        return $data;
+    }
+
     protected function getRedirectUrl(): string
     {
         return OperationalCostResource::getUrl('index');

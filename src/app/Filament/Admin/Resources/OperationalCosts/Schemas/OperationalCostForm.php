@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\OperationalCosts\Schemas;
 
+use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -20,23 +21,22 @@ class OperationalCostForm
             ->columns(1)
             ->components([
                 Section::make('Informasi Biaya Operasional')
-                    ->description('Input biaya usaha. Khusus kategori Sewa Tempat, nominal dianggap biaya tahunan dan otomatis dibagi 12 bulan pada Dashboard Keuangan.')
+                    ->description('Biaya rutin bulanan otomatis muncul setiap bulan. Gunakan Edit Bulan Ini pada tabel untuk mengubah nominal satu bulan saja.')
                     ->icon('heroicon-o-receipt-percent')
                     ->schema([
                         TextInput::make('name')
                             ->label('Nama Biaya')
-                            ->placeholder('Contoh: Ruko / Sewa Tempat')
+                            ->placeholder('Contoh: Wifi, Gaji, Listrik, Sewa Ruko, Endorse')
                             ->required()
                             ->maxLength(255)
-                            ->helperText('Nama biaya yang akan dihitung ke Dashboard Keuangan.'),
+                            ->helperText('Gunakan nama yang jelas agar mudah dibaca pada laporan biaya.'),
 
                         Select::make('category')
                             ->label('Kategori Biaya')
-                            ->native(false)
-                            ->searchable()
+                            ->native(true)
                             ->required()
                             ->options([
-                                'rent' => 'Sewa Tempat / Ruko Tahunan - Otomatis Dibagi 12',
+                                'rent' => 'Sewa Tempat / Ruko',
                                 'electricity' => 'Listrik',
                                 'water' => 'Air',
                                 'internet' => 'Wifi / Internet',
@@ -46,33 +46,45 @@ class OperationalCostForm
                                 'other' => 'Lainnya',
                             ])
                             ->default('other')
-                            ->helperText('Jika memilih Sewa Tempat, isi nominal tahunan. Dashboard akan menghitung biaya per bulan otomatis.'),
+                            ->helperText('Kategori hanya untuk pengelompokan laporan.'),
+
+                        Select::make('cost_type')
+                            ->label('Tipe Biaya')
+                            ->native(true)
+                            ->required()
+                            ->options([
+                                'monthly' => 'Biaya Rutin Bulanan - otomatis muncul setiap bulan',
+                                'annual' => 'Biaya Tahunan - nominal dibagi 12 bulan',
+                                'one_time' => 'Sekali Bayar - hanya masuk bulan tanggal bayar',
+                            ])
+                            ->default('monthly')
+                            ->helperText('Gunakan Biaya Rutin Bulanan untuk wifi, gaji, listrik, air, telepon, dan biaya tetap/rutin lainnya.'),
 
                         TextInput::make('amount')
-                            ->label('Nominal Biaya')
+                            ->label('Nominal Default / Nominal Master')
                             ->numeric()
                             ->prefix('Rp')
                             ->minValue(0)
                             ->required()
                             ->default(0)
-                            ->helperText('Untuk Sewa Tempat, isi nominal tahunan. Contoh: Rp20.000.000 akan dihitung Rp1.666.667 per bulan.'),
+                            ->helperText('Edit field ini berarti mengubah nominal master. Untuk ubah 1 bulan saja, gunakan tombol Edit Bulan Ini di tabel.'),
 
                         DatePicker::make('cost_date')
-                            ->label('Tanggal Mulai Biaya')
-                            ->native(false)
-                            ->displayFormat('d M Y')
+                            ->label('Tanggal Mulai / Tanggal Bayar')
+                            ->native(true)
+                            ->format('Y-m-d')
                             ->required()
-                            ->default(now())
-                            ->helperText('Untuk Sewa Tempat, tanggal ini menjadi awal periode tahunan selama 12 bulan.'),
+                            ->default(fn (): string => self::defaultCostDate())
+                            ->helperText('Bulanan: mulai muncul sejak bulan tanggal ini. Sekali bayar: masuk hanya bulan tanggal ini. Tahunan: mulai alokasi 12 bulan dari tanggal ini.'),
 
                         Toggle::make('is_active')
                             ->label('Aktif')
-                            ->helperText('Jika nonaktif, biaya ini tidak dihitung pada dashboard.')
+                            ->helperText('Jika nonaktif, biaya tidak dihitung pada dashboard.')
                             ->default(true),
 
                         Textarea::make('note')
-                            ->label('Catatan')
-                            ->placeholder('Contoh: pembayaran ruko tahunan / pembayaran listrik bulan Juni')
+                            ->label('Catatan Master')
+                            ->placeholder('Contoh: pembayaran setiap tanggal 3 / periode pemakaian 28 Juni - 27 Juli')
                             ->rows(4)
                             ->columnSpanFull(),
                     ])
@@ -81,5 +93,21 @@ class OperationalCostForm
                         'md' => 2,
                     ]),
             ]);
+    }
+
+    private static function defaultCostDate(): string
+    {
+        $selectedYear = (int) request()->query('year', session('ng_operational_cost_year', now()->year));
+        $selectedMonth = (int) request()->query('month', session('ng_operational_cost_month', now()->month));
+
+        if ($selectedYear < 2000 || $selectedYear > 2100) {
+            $selectedYear = now()->year;
+        }
+
+        if ($selectedMonth < 1 || $selectedMonth > 12) {
+            $selectedMonth = now()->month;
+        }
+
+        return Carbon::create($selectedYear, $selectedMonth, 1)->toDateString();
     }
 }
