@@ -387,48 +387,9 @@ class FinancialDashboard extends Page
 
     private function operationalCostBetween(Carbon $start, Carbon $end): int
     {
-        if (! Schema::hasTable('operational_costs')) {
-            return 0;
-        }
-
-        $hasCostType = Schema::hasColumn('operational_costs', 'cost_type');
-
-        $normalQuery = DB::table('operational_costs')
-            ->where('is_active', true)
-            ->whereBetween('cost_date', [
-                $start->toDateString(),
-                $end->toDateString(),
-            ]);
-
-        if ($hasCostType) {
-            $normalQuery->where(function ($query): void {
-                $query
-                    ->where('cost_type', '!=', 'annual')
-                    ->orWhereNull('cost_type');
-            });
-        } else {
-            $normalQuery->where('category', '!=', 'rent');
-        }
-
-        $normalCost = (int) $normalQuery->sum('amount');
-
-        $annualAllocation = $this->getAnnualOperationalCosts()
-            ->sum(function ($cost) use ($start, $end): int {
-                $months = $this->countAnnualCostOverlapMonths(
-                    Carbon::parse($cost->cost_date),
-                    $start,
-                    $end
-                );
-
-                if ($months <= 0) {
-                    return 0;
-                }
-
-                return (int) round(((int) $cost->amount / 12) * $months);
-            });
-
-        return $normalCost + (int) $annualAllocation;
+        return (int) $this->operationalCostRowsForPeriod($start, $end)->sum('amount');
     }
+
 
 
     private function getRevenueTrendData(Carbon $start, Carbon $end, string $periodKey, string $selectedMonth = 'all', ?int $selectedYear = null): array
@@ -595,82 +556,169 @@ class FinancialDashboard extends Page
 
     private function getOperationalCostList(Carbon $start, Carbon $end): array
     {
-        if (! Schema::hasTable('operational_costs')) {
-            return [];
-        }
-
-        $hasCostType = Schema::hasColumn('operational_costs', 'cost_type');
-
-        $normalQuery = DB::table('operational_costs')
-            ->where('is_active', true)
-            ->whereBetween('cost_date', [
-                $start->toDateString(),
-                $end->toDateString(),
-            ]);
-
-        if ($hasCostType) {
-            $normalQuery->where(function ($query): void {
-                $query
-                    ->where('cost_type', '!=', 'annual')
-                    ->orWhereNull('cost_type');
-            });
-        } else {
-            $normalQuery->where('category', '!=', 'rent');
-        }
-
-        $normalCosts = $normalQuery
-            ->get()
-            ->map(fn ($cost): array => [
-                'name' => (string) $cost->name,
-                'category' => $this->costCategoryLabel((string) $cost->category),
-                'cost_type' => $this->costType($cost),
-                'cost_type_label' => $this->costTypeLabel($this->costType($cost)),
-                'amount' => (int) $cost->amount,
-                'input_amount' => (int) $cost->amount,
-                'annual_amount' => null,
-                'date' => Carbon::parse($cost->cost_date)->format('d M Y'),
-                'is_annual' => false,
-                'description' => (string) ($cost->note ?? 'Masuk sesuai bulan tanggal bayar'),
-            ]);
-
-        $annualCosts = $this->getAnnualOperationalCosts()
-            ->map(function ($cost) use ($start, $end): ?array {
-                $months = $this->countAnnualCostOverlapMonths(
-                    Carbon::parse($cost->cost_date),
-                    $start,
-                    $end
-                );
-
-                if ($months <= 0) {
-                    return null;
-                }
-
-                $monthlyAmount = (int) round((int) $cost->amount / 12);
-                $allocatedAmount = $monthlyAmount * $months;
-                $type = $this->costType($cost);
-
-                return [
-                    'name' => (string) $cost->name,
-                    'category' => $this->costCategoryLabel((string) $cost->category),
-                    'cost_type' => $type,
-                    'cost_type_label' => $this->costTypeLabel($type),
-                    'amount' => $allocatedAmount,
-                    'input_amount' => (int) $cost->amount,
-                    'annual_amount' => (int) $cost->amount,
-                    'date' => Carbon::parse($cost->cost_date)->format('d M Y'),
-                    'is_annual' => true,
-                    'description' => 'Tahunan ' . $this->rupiah((int) $cost->amount) . ' • dihitung ' . $this->rupiah($monthlyAmount) . '/bulan' . ($months > 1 ? ' × ' . $months . ' bulan' : ''),
-                ];
-            })
-            ->filter()
-            ->values();
-
-        return $normalCosts
-            ->concat($annualCosts)
+        return $this->operationalCostRowsForPeriod($start, $end)
             ->sortByDesc('amount')
             ->values()
             ->all();
     }
+
+    private function operationalCostRowsForPeriod(Carbon $start, Carbon $end): Collection
+    {
+        if (! Schema::hasTable('operational_costs')) {
+            return collect();
+        }
+
+        return DB::table('operational_costs')
+            ->where('is_active', true)
+            ->get()
+            ->map(function ($cost) use ($start, $end): ?array {
+                $allocatedAmount = $this->allocatedOperationalCostForPeriod($cost, $start, $end);
+
+                if ($allocatedAmount <= 0) {
+                    return null;
+                }
+
+                $type = $this->costType($cost);
+                $inputAmount = (int) ($cost->amount ?? 0);
+                $monthlyAmount = $type === 'annual' ? (int) round($inputAmount / 12) : $inputAmount;
+                $adjustment = $this->monthlyAdjustmentForOperationalCost($cost, $start);
+                $isAdjusted = $adjustment !== null && ! (bool) ($adjustment->is_deleted_for_month ?? false);
+
+                return [
+                    'name' => (string) ($cost->name ?? '-'),
+                    'category' => $this->costCategoryLabel((string) ($cost->category ?? 'other')),
+                    'cost_type' => $type,
+                    'cost_type_label' => $this->costTypeLabel($type),
+                    'amount' => $allocatedAmount,
+                    'input_amount' => $inputAmount,
+                    'annual_amount' => $type === 'annual' ? $inputAmount : null,
+                    'monthly_amount' => $monthlyAmount,
+                    'date' => $this->operationalCostDateDisplay($cost, $start),
+                    'is_annual' => $type === 'annual',
+                    'is_adjusted' => $isAdjusted,
+                    'description' => $this->operationalCostDescription($cost, $start, $end, $allocatedAmount, $adjustment),
+                    'status' => $isAdjusted ? 'Disesuaikan' : 'Dihitung',
+                ];
+            })
+            ->filter()
+            ->values();
+    }
+
+    private function allocatedOperationalCostForPeriod(object $cost, Carbon $start, Carbon $end): int
+    {
+        if (! $this->operationalCostValidForPeriod($cost, $start, $end)) {
+            return 0;
+        }
+
+        $adjustment = $this->monthlyAdjustmentForOperationalCost($cost, $start);
+
+        if ($adjustment !== null) {
+            if ((bool) ($adjustment->is_deleted_for_month ?? false)) {
+                return 0;
+            }
+
+            if ($adjustment->amount !== null) {
+                return (int) $adjustment->amount;
+            }
+        }
+
+        $costDate = Carbon::parse($cost->cost_date)->startOfDay();
+        $amount = (int) ($cost->amount ?? 0);
+
+        return match ($this->costType($cost)) {
+            'annual' => $this->annualOperationalAllocationForPeriod($costDate, $amount, $start, $end),
+            'one_time' => $costDate->betweenIncluded($start->copy()->startOfDay(), $end->copy()->endOfDay()) ? $amount : 0,
+            default => $costDate->lte($end->copy()->endOfDay()) ? $amount : 0,
+        };
+    }
+
+    private function operationalCostValidForPeriod(object $cost, Carbon $start, Carbon $end): bool
+    {
+        if (empty($cost->cost_date)) {
+            return false;
+        }
+
+        $costDate = Carbon::parse($cost->cost_date)->startOfDay();
+
+        return match ($this->costType($cost)) {
+            'annual' => $this->countAnnualCostOverlapMonths($costDate, $start, $end) > 0,
+            'one_time' => $costDate->betweenIncluded($start->copy()->startOfDay(), $end->copy()->endOfDay()),
+            default => $costDate->lte($end->copy()->endOfDay()),
+        };
+    }
+
+    private function annualOperationalAllocationForPeriod(Carbon $costDate, int $amount, Carbon $start, Carbon $end): int
+    {
+        $months = $this->countAnnualCostOverlapMonths($costDate, $start, $end);
+
+        return $months > 0 ? (int) round(($amount / 12) * $months) : 0;
+    }
+
+    private function monthlyAdjustmentForOperationalCost(object $cost, Carbon $periodStart): ?object
+    {
+        if (! $this->monthlyAdjustmentTableExists()) {
+            return null;
+        }
+
+        return DB::table('operational_cost_monthly_adjustments')
+            ->where('operational_cost_id', $cost->id)
+            ->where('month', $periodStart->month)
+            ->where('year', $periodStart->year)
+            ->first();
+    }
+
+    private function monthlyAdjustmentTableExists(): bool
+    {
+        static $exists = null;
+
+        if ($exists !== null) {
+            return $exists;
+        }
+
+        return $exists = Schema::hasTable('operational_cost_monthly_adjustments');
+    }
+
+    private function operationalCostDateDisplay(object $cost, Carbon $periodStart): string
+    {
+        $costDate = Carbon::parse($cost->cost_date)->startOfDay();
+
+        if ($this->costType($cost) === 'one_time') {
+            return $costDate->format('d M Y');
+        }
+
+        $day = min($costDate->day, $periodStart->copy()->endOfMonth()->day);
+
+        return $periodStart->copy()
+            ->day($day)
+            ->format('d M Y');
+    }
+
+    private function operationalCostDescription(object $cost, Carbon $start, Carbon $end, int $allocatedAmount, ?object $adjustment): string
+    {
+        if ($adjustment !== null) {
+            if ((bool) ($adjustment->is_deleted_for_month ?? false)) {
+                return 'Dihapus dari bulan aktif';
+            }
+
+            return 'Khusus bulan ini' . (! empty($adjustment->note) ? ' • ' . (string) $adjustment->note : '');
+        }
+
+        $type = $this->costType($cost);
+        $note = trim((string) ($cost->note ?? ''));
+
+        if ($type === 'annual') {
+            $monthlyAmount = (int) round(((int) ($cost->amount ?? 0)) / 12);
+
+            return 'Tahunan ' . $this->rupiah((int) ($cost->amount ?? 0)) . ' • dihitung ' . $this->rupiah($monthlyAmount) . '/bulan';
+        }
+
+        if ($type === 'one_time') {
+            return $note !== '' ? $note : 'Sekali bayar pada bulan aktif';
+        }
+
+        return $note !== '' ? $note : 'Rutin bulanan sejak tanggal mulai';
+    }
+
 
     private function getProductMarginList(Carbon $start, Carbon $end): array
     {

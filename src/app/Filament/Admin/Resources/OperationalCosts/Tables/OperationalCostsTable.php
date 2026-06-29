@@ -59,6 +59,7 @@ class OperationalCostsTable
                     ->color(fn ($state): string => match ($state) {
                         'Disesuaikan' => 'warning',
                         'Dihapus Bulan Ini' => 'danger',
+                        'Nonaktif' => 'danger',
                         'Tahunan' => 'info',
                         'Sekali Bayar' => 'gray',
                         default => 'success',
@@ -165,8 +166,8 @@ class OperationalCostsTable
             ])
             ->toolbarActions([])
             ->emptyStateIcon('heroicon-o-receipt-percent')
-            ->emptyStateHeading('Tidak ada biaya pada bulan ini')
-            ->emptyStateDescription('Biaya rutin bulanan akan otomatis tampil jika tanggal mulai sudah melewati bulan aktif.')
+            ->emptyStateHeading('Tidak ada data sesuai filter')
+            ->emptyStateDescription('Coba ubah Status Data menjadi Aktif, Nonaktif, atau Semua.')
             ->defaultSort('cost_date', 'desc');
     }
 
@@ -176,52 +177,32 @@ class OperationalCostsTable
 
         $startDate = $start->toDateString();
         $endDate = $end->toDateString();
+        $status = self::selectedDataStatus();
 
-        $query = $query
-            ->where('is_active', true)
-            ->where(function (Builder $query) use ($startDate, $endDate): void {
-                $query
-                    ->where(function (Builder $monthlyQuery) use ($endDate): void {
-                        $monthlyQuery
-                            ->where(function (Builder $typeQuery): void {
-                                $typeQuery
-                                    ->where('cost_type', 'monthly')
-                                    ->orWhere(function (Builder $legacyNormal): void {
-                                        $legacyNormal
-                                            ->where(function (Builder $blankType): void {
-                                                $blankType
-                                                    ->whereNull('cost_type')
-                                                    ->orWhere('cost_type', '');
-                                            })
-                                            ->where('category', '!=', 'rent');
-                                    });
-                            })
-                            ->whereDate('cost_date', '<=', $endDate);
-                    })
-                    ->orWhere(function (Builder $oneTimeQuery) use ($startDate, $endDate): void {
-                        $oneTimeQuery
-                            ->where('cost_type', 'one_time')
-                            ->whereBetween('cost_date', [$startDate, $endDate]);
-                    })
-                    ->orWhere(function (Builder $annualQuery) use ($startDate, $endDate): void {
-                        $annualQuery
-                            ->where(function (Builder $typeQuery): void {
-                                $typeQuery
-                                    ->where('cost_type', 'annual')
-                                    ->orWhere(function (Builder $legacyRent): void {
-                                        $legacyRent
-                                            ->where(function (Builder $blankType): void {
-                                                $blankType
-                                                    ->whereNull('cost_type')
-                                                    ->orWhere('cost_type', '');
-                                            })
-                                            ->where('category', 'rent');
-                                    });
-                            })
-                            ->whereDate('cost_date', '<=', $endDate)
-                            ->whereRaw("DATE_ADD(DATE_FORMAT(cost_date, '%Y-%m-01'), INTERVAL 11 MONTH) >= ?", [$startDate]);
+        if ($status === 'inactive') {
+            return $query->where(function (Builder $statusQuery) use ($selectedMonth, $selectedYear): void {
+                $statusQuery->where('is_active', false);
+
+                if (self::monthlyAdjustmentTableExists()) {
+                    $statusQuery->orWhereExists(function ($subQuery) use ($selectedMonth, $selectedYear): void {
+                        $subQuery
+                            ->selectRaw('1')
+                            ->from('operational_cost_monthly_adjustments as ocma')
+                            ->whereColumn('ocma.operational_cost_id', 'operational_costs.id')
+                            ->where('ocma.month', $selectedMonth)
+                            ->where('ocma.year', $selectedYear)
+                            ->where('ocma.is_deleted_for_month', true);
                     });
+                }
             });
+        }
+
+        if ($status === 'all') {
+            return $query;
+        }
+
+        $query = self::applyActivePeriodBaseQuery($query, $startDate, $endDate)
+            ->where('is_active', true);
 
         if (self::monthlyAdjustmentTableExists()) {
             $query->whereNotExists(function ($subQuery) use ($selectedMonth, $selectedYear): void {
@@ -236,6 +217,66 @@ class OperationalCostsTable
         }
 
         return $query;
+    }
+
+    private static function applyActivePeriodBaseQuery(Builder $query, string $startDate, string $endDate): Builder
+    {
+        return $query->where(function (Builder $query) use ($startDate, $endDate): void {
+            $query
+                ->where(function (Builder $monthlyQuery) use ($endDate): void {
+                    $monthlyQuery
+                        ->where(function (Builder $typeQuery): void {
+                            $typeQuery
+                                ->where('cost_type', 'monthly')
+                                ->orWhere(function (Builder $legacyNormal): void {
+                                    $legacyNormal
+                                        ->where(function (Builder $blankType): void {
+                                            $blankType
+                                                ->whereNull('cost_type')
+                                                ->orWhere('cost_type', '');
+                                        })
+                                        ->where('category', '!=', 'rent');
+                                });
+                        })
+                        ->whereDate('cost_date', '<=', $endDate);
+                })
+                ->orWhere(function (Builder $oneTimeQuery) use ($startDate, $endDate): void {
+                    $oneTimeQuery
+                        ->where('cost_type', 'one_time')
+                        ->whereBetween('cost_date', [$startDate, $endDate]);
+                })
+                ->orWhere(function (Builder $annualQuery) use ($startDate, $endDate): void {
+                    $annualQuery
+                        ->where(function (Builder $typeQuery): void {
+                            $typeQuery
+                                ->where('cost_type', 'annual')
+                                ->orWhere(function (Builder $legacyRent): void {
+                                    $legacyRent
+                                        ->where(function (Builder $blankType): void {
+                                            $blankType
+                                                ->whereNull('cost_type')
+                                                ->orWhere('cost_type', '');
+                                        })
+                                        ->where('category', 'rent');
+                                });
+                        })
+                        ->whereDate('cost_date', '<=', $endDate)
+                        ->whereRaw("DATE_ADD(DATE_FORMAT(cost_date, '%Y-%m-01'), INTERVAL 11 MONTH) >= ?", [$startDate]);
+                });
+        });
+    }
+
+    private static function selectedDataStatus(): string
+    {
+        $status = (string) (self::queryValue('status') ?: session('ng_operational_cost_status', 'active'));
+
+        if (! in_array($status, ['active', 'inactive', 'all'], true)) {
+            $status = 'active';
+        }
+
+        session(['ng_operational_cost_status' => $status]);
+
+        return $status;
     }
 
     private static function selectedPeriod(): array
@@ -388,7 +429,15 @@ class OperationalCostsTable
     {
         $adjustment = self::currentAdjustment($record);
 
-        if ($adjustment !== null && ! (bool) $adjustment->is_deleted_for_month) {
+        if (! (bool) data_get($record, 'is_active', true)) {
+            return 'Tidak dihitung';
+        }
+
+        if ($adjustment !== null) {
+            if ((bool) $adjustment->is_deleted_for_month) {
+                return 'Tidak dihitung';
+            }
+
             return 'Khusus bulan ini';
         }
 
@@ -409,6 +458,10 @@ class OperationalCostsTable
             }
 
             return 'Disesuaikan';
+        }
+
+        if (! (bool) data_get($record, 'is_active', true)) {
+            return 'Nonaktif';
         }
 
         return match (self::costType($record)) {

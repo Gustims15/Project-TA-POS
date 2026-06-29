@@ -5,6 +5,17 @@
     $selectedMonth = (string) ($period['selected_month'] ?? request()->query('month', now()->month));
     $selectedYear = (int) ($period['selected_year'] ?? request()->query('year', now()->year));
     $periodLabel = (string) ($period['label'] ?? now()->translatedFormat('F Y'));
+    $selectedStatus = (string) request()->query('status', session('ng_operational_cost_status', 'active'));
+
+    if (! in_array($selectedStatus, ['active', 'inactive', 'all'], true)) {
+        $selectedStatus = 'active';
+    }
+
+    $statusOptions = [
+        'active' => 'Aktif',
+        'inactive' => 'Nonaktif',
+        'all' => 'Semua',
+    ];
 
     $months = $filters['months'] ?? [
         '1' => 'Januari',
@@ -24,10 +35,19 @@
     $years = $filters['years'] ?? range(now()->year - 4, now()->year + 1);
     $baseOperationalUrl = $indexUrl ?? url('/admin/operational-costs');
 
-    $makePeriodUrl = function (string|int $month, string|int $year) use ($baseOperationalUrl): string {
+    $makePeriodUrl = function (string|int $month, string|int $year) use ($baseOperationalUrl, $selectedStatus): string {
         return $baseOperationalUrl . '?' . http_build_query([
             'month' => (string) $month,
             'year' => (string) $year,
+            'status' => $selectedStatus,
+        ]);
+    };
+
+    $makeStatusUrl = function (string $status) use ($baseOperationalUrl, $selectedMonth, $selectedYear): string {
+        return $baseOperationalUrl . '?' . http_build_query([
+            'month' => (string) $selectedMonth,
+            'year' => (string) $selectedYear,
+            'status' => $status,
         ]);
     };
 
@@ -92,7 +112,7 @@
                     </div>
 
                     <div class="ng-op-period-filter" wire:ignore>
-                        <span>Filter Bulan</span>
+                        <span>Filter Data</span>
 
                         <div class="ng-op-period-selects">
                             <select class="ng-op-select" data-ng-op-month onchange="if (this.value) window.location.href = this.value;">
@@ -110,6 +130,16 @@
                                     <option value="<?php echo e($makePeriodUrl($selectedMonth, $yearOption)); ?>"
                                             <?php if((int) $selectedYear === (int) $yearOption): echo 'selected'; endif; ?>>
                                         <?php echo e($yearOption); ?>
+
+                                    </option>
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                            </select>
+
+                            <select class="ng-op-select ng-op-status-select" data-ng-op-status onchange="if (this.value) window.location.href = this.value;">
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $statusOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $statusKey => $statusLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                    <option value="<?php echo e($makeStatusUrl($statusKey)); ?>"
+                                            <?php if($selectedStatus === $statusKey): echo 'selected'; endif; ?>>
+                                        <?php echo e($statusLabel); ?>
 
                                     </option>
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
@@ -327,7 +357,7 @@
         .ng-op-period-filter {
             position: relative;
             z-index: 3;
-            min-width: 286px;
+            min-width: 430px;
             display: grid;
             gap: 8px;
             justify-items: end;
@@ -375,6 +405,11 @@
         .ng-op-year-select {
             min-width: 94px;
         }
+
+        .ng-op-status-select {
+            min-width: 118px;
+        }
+
 
         .ng-op-highlight-card {
             display: flex;
@@ -865,6 +900,80 @@
             height: 0 !important;
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIDEBAR EFFECT SYNC - BIAYA OPERASIONAL
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-operational-page) .fi-sidebar,
+        body.ng-operational-sidebar-sync .fi-sidebar {
+            background: rgba(255, 250, 242, .50) !important;
+            border-right: 1px solid rgba(255, 255, 255, .48) !important;
+            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+        }
+
+        body:has(.ng-operational-page) .fi-sidebar-nav,
+        body.ng-operational-sidebar-sync .fi-sidebar-nav {
+            padding: 18px 14px !important;
+        }
+
+        body:has(.ng-operational-page) .fi-sidebar-item a,
+        body:has(.ng-operational-page) .fi-sidebar-item-button,
+        body.ng-operational-sidebar-sync .fi-sidebar-item a,
+        body.ng-operational-sidebar-sync .fi-sidebar-item-button {
+            border-radius: 14px !important;
+            color: #6f5844 !important;
+            transition: .2s ease !important;
+        }
+
+        body:has(.ng-operational-page) .fi-sidebar-item-active a,
+        body:has(.ng-operational-page) .fi-sidebar-item a:hover,
+        body:has(.ng-operational-page) .fi-sidebar-item-active .fi-sidebar-item-button,
+        body:has(.ng-operational-page) .fi-sidebar-item .fi-sidebar-item-button:hover,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active a,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active .fi-sidebar-item-button,
+        body.ng-operational-sidebar-sync .fi-sidebar-item-active a,
+        body.ng-operational-sidebar-sync .fi-sidebar-item a:hover,
+        body.ng-operational-sidebar-sync .fi-sidebar-item-active .fi-sidebar-item-button,
+        body.ng-operational-sidebar-sync .fi-sidebar-item .fi-sidebar-item-button:hover,
+        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active a,
+        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active .fi-sidebar-item-button {
+            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
+            color: #fff !important;
+            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
+        }
+
+        body:has(.ng-operational-page) .fi-sidebar-item-active svg,
+        body:has(.ng-operational-page) .fi-sidebar-item a:hover svg,
+        body:has(.ng-operational-page) .fi-sidebar-item-active span,
+        body:has(.ng-operational-page) .fi-sidebar-item a:hover span,
+        body:has(.ng-operational-page) .fi-sidebar-item-active .fi-sidebar-item-icon,
+        body:has(.ng-operational-page) .fi-sidebar-item-active .fi-sidebar-item-label,
+        body:has(.ng-operational-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-icon,
+        body:has(.ng-operational-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-label,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active svg,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active span,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active .fi-sidebar-item-label,
+        body.ng-operational-sidebar-sync .fi-sidebar-item-active svg,
+        body.ng-operational-sidebar-sync .fi-sidebar-item a:hover svg,
+        body.ng-operational-sidebar-sync .fi-sidebar-item-active span,
+        body.ng-operational-sidebar-sync .fi-sidebar-item a:hover span,
+        body.ng-operational-sidebar-sync .fi-sidebar-item-active .fi-sidebar-item-icon,
+        body.ng-operational-sidebar-sync .fi-sidebar-item-active .fi-sidebar-item-label,
+        body.ng-operational-sidebar-sync .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-icon,
+        body.ng-operational-sidebar-sync .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-label,
+        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active svg,
+        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active span,
+        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
+        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active .fi-sidebar-item-label {
+            color: #fff !important;
+        }
+
     </style>
 
     <script>
@@ -893,6 +1002,20 @@
             bindOperationalPeriodFilter();
         })();
     </script>
+
+    <script>
+        (function () {
+            function syncOperationalSidebarClass() {
+                document.body.classList.add('ng-operational-sidebar-sync');
+            }
+
+            document.addEventListener('DOMContentLoaded', syncOperationalSidebarClass);
+            document.addEventListener('livewire:navigated', syncOperationalSidebarClass);
+            document.addEventListener('livewire:update', syncOperationalSidebarClass);
+            syncOperationalSidebarClass();
+        })();
+    </script>
+
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>

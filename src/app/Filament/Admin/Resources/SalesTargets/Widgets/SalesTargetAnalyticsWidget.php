@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Admin\Resources\SalesTargets\Widgets;
 
 use App\Filament\Admin\Pages\FinancialDashboard;
 use App\Filament\Admin\Resources\SalesTargets\SalesTargetResource;
 use App\Models\SalesTarget;
+use Carbon\Carbon;
 use Filament\Widgets\Widget;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -30,36 +34,49 @@ class SalesTargetAnalyticsWidget extends Widget
         $targetGrossProfit = (int) ($currentTarget?->target_gross_profit ?? 0);
         $targetNetProfit = (int) ($currentTarget?->target_net_profit ?? 0);
 
-        $totalTargets = (int) SalesTarget::query()->count();
-
-        $yearTargetRevenue = (int) SalesTarget::query()
-            ->whereBetween('month', [
-                now()->startOfYear()->toDateString(),
-                now()->endOfYear()->toDateString(),
-            ])
-            ->sum('target_revenue');
-
-        $highestTarget = SalesTarget::query()
-            ->orderByDesc('target_revenue')
-            ->first();
+        $revenueProgress = $this->progressPercent($monthlyRevenue, $targetRevenue);
+        $revenueGap = $monthlyRevenue - $targetRevenue;
+        $remainingRevenue = max(0, $targetRevenue - $monthlyRevenue);
+        $achievementStatus = $this->achievementStatus($monthlyRevenue, $targetRevenue);
 
         $latestTarget = SalesTarget::query()
             ->latest('month')
             ->first();
 
+        $selectedYear = $this->selectedYear();
+        $selectedStatus = $this->selectedStatus();
+
         return [
             'createUrl' => SalesTargetResource::getUrl('create'),
+            'indexUrl' => SalesTargetResource::getUrl('index'),
             'dashboardUrl' => FinancialDashboard::getUrl(),
+            'filters' => [
+                'years' => $this->yearOptions(),
+                'statuses' => $this->statusOptions(),
+                'selected_year' => $selectedYear,
+                'selected_status' => $selectedStatus,
+            ],
             'summary' => [
+                'period_label' => $monthStart->format('M Y'),
+
+                // Alias lama dan baru supaya blade tidak error.
                 'monthly_revenue' => $monthlyRevenue,
+                'current_revenue' => $monthlyRevenue,
+                'actual_revenue' => $monthlyRevenue,
+                'revenue_actual' => $monthlyRevenue,
+
                 'target_revenue' => $targetRevenue,
+                'current_target_revenue' => $targetRevenue,
+                'current_target' => $targetRevenue,
+
                 'target_gross_profit' => $targetGrossProfit,
                 'target_net_profit' => $targetNetProfit,
-                'revenue_progress' => $this->progressPercent($monthlyRevenue, $targetRevenue),
-                'year_target_revenue' => $yearTargetRevenue,
-                'total_targets' => $totalTargets,
-                'highest_target_month' => $highestTarget?->month?->format('M Y') ?? '-',
-                'highest_target_value' => (int) ($highestTarget?->target_revenue ?? 0),
+
+                'revenue_progress' => $revenueProgress,
+                'revenue_gap' => $revenueGap,
+                'remaining_revenue' => $remainingRevenue,
+                'achievement_status' => $achievementStatus,
+
                 'latest_target_month' => $latestTarget?->month?->format('M Y') ?? '-',
                 'latest_target_value' => (int) ($latestTarget?->target_revenue ?? 0),
                 'has_current_target' => ! is_null($currentTarget),
@@ -72,7 +89,7 @@ class SalesTargetAnalyticsWidget extends Widget
         return 'Rp ' . number_format((int) round((float) ($value ?? 0)), 0, ',', '.');
     }
 
-    private function monthlyRevenue($start, $end): int
+    private function monthlyRevenue(Carbon $start, Carbon $end): int
     {
         if (! Schema::hasTable('orders')) {
             return 0;
@@ -86,12 +103,34 @@ class SalesTargetAnalyticsWidget extends Widget
             return 0;
         }
 
-        return (int) DB::table('orders')
+        $query = DB::table('orders')
             ->whereBetween(
                 DB::raw('COALESCE(ordered_at, created_at)'),
                 [$start->toDateTimeString(), $end->toDateTimeString()]
-            )
-            ->sum($amountColumn);
+            );
+
+        $this->excludeCanceledOrders($query);
+
+        return (int) $query->sum($amountColumn);
+    }
+
+    private function excludeCanceledOrders(Builder $query): void
+    {
+        if (! Schema::hasColumn('orders', 'status')) {
+            return;
+        }
+
+        $query->where(function (Builder $statusQuery): void {
+            $statusQuery
+                ->whereNull('status')
+                ->orWhereNotIn(DB::raw('LOWER(status)'), [
+                    'batal',
+                    'dibatalkan',
+                    'cancel',
+                    'cancelled',
+                    'canceled',
+                ]);
+        });
     }
 
     private function progressPercent(int | float $actual, int | float $target): float
@@ -101,5 +140,108 @@ class SalesTargetAnalyticsWidget extends Widget
         }
 
         return round(min(($actual / $target) * 100, 999), 1);
+    }
+
+    private function achievementStatus(int | float $actual, int | float $target): string
+    {
+        if ($target <= 0) {
+            return 'no_target';
+        }
+
+        if ($actual <= 0) {
+            return 'no_transaction';
+        }
+
+        $progress = ($actual / $target) * 100;
+
+        if ($progress >= 100) {
+            return 'achieved';
+        }
+
+        if ($progress >= 80) {
+            return 'near';
+        }
+
+        return 'not_achieved';
+    }
+
+    private function selectedYear(): int
+    {
+        $year = (int) ($this->queryValue('year') ?: now()->year);
+
+        if ($year < 2000 || $year > 2100) {
+            return now()->year;
+        }
+
+        return $year;
+    }
+
+    private function selectedStatus(): string
+    {
+        $status = (string) ($this->queryValue('status') ?: 'all');
+
+        if (! array_key_exists($status, $this->statusOptions())) {
+            return 'all';
+        }
+
+        return $status;
+    }
+
+    private function queryValue(string $key): ?string
+    {
+        $value = request()->query($key) ?? request()->input($key);
+
+        if ($value !== null && $value !== '') {
+            return (string) $value;
+        }
+
+        $referer = (string) request()->headers->get('referer', '');
+
+        if ($referer !== '') {
+            $query = parse_url($referer, PHP_URL_QUERY);
+
+            if (is_string($query)) {
+                parse_str($query, $params);
+
+                if (isset($params[$key]) && $params[$key] !== '') {
+                    return (string) $params[$key];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function yearOptions(): array
+    {
+        $years = SalesTarget::query()
+            ->selectRaw('YEAR(month) as year')
+            ->whereNotNull('month')
+            ->distinct()
+            ->orderByDesc('year')
+            ->pluck('year')
+            ->map(fn ($year): int => (int) $year)
+            ->filter(fn (int $year): bool => $year >= 2000 && $year <= 2100)
+            ->values()
+            ->all();
+
+        $currentYear = now()->year;
+
+        if (! in_array($currentYear, $years, true)) {
+            $years[] = $currentYear;
+        }
+
+        rsort($years);
+
+        return $years;
+    }
+
+    private function statusOptions(): array
+    {
+        return [
+            'all' => 'Semua Status',
+            'achieved' => 'Tercapai',
+            'not_achieved' => 'Belum Tercapai',
+        ];
     }
 }

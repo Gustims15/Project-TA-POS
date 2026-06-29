@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\SalesTargets\Schemas;
 
-use Filament\Forms\Components\DatePicker;
+use Carbon\Carbon;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -21,13 +21,29 @@ class SalesTargetForm
                     ->description('Atur target bulanan untuk revenue, gross profit, dan net profit agar dashboard dapat menghitung progress target.')
                     ->icon('heroicon-o-flag')
                     ->schema([
-                        DatePicker::make('month')
+                        TextInput::make('month')
                             ->label('Bulan Target')
-                            ->native(false)
-                            ->displayFormat('M Y')
+                            ->type('month')
                             ->required()
-                            ->default(now()->startOfMonth())
-                            ->helperText('Pilih tanggal awal bulan, contoh: 01 Juni 2026.'),
+                            ->default(now()->format('Y-m'))
+                            ->formatStateUsing(function ($state): ?string {
+                                if (blank($state)) {
+                                    return now()->format('Y-m');
+                                }
+
+                                return Carbon::parse($state)->format('Y-m');
+                            })
+                            ->dehydrateStateUsing(function ($state): ?string {
+                                if (blank($state)) {
+                                    return null;
+                                }
+
+                                return Carbon::parse($state . '-01')->startOfMonth()->toDateString();
+                            })
+                            ->extraInputAttributes([
+                                'style' => 'min-height: 46px;',
+                            ])
+                            ->helperText('Pilih bulan target. Sistem akan menyimpan tanggal otomatis sebagai tanggal 1 pada bulan tersebut.'),
 
                         TextInput::make('target_revenue')
                             ->label('Target Revenue')
@@ -45,7 +61,7 @@ class SalesTargetForm
                             ->minValue(0)
                             ->required()
                             ->default(0)
-                            ->helperText('Target laba kotor setelah revenue dikurangi HPP.'),
+                            ->helperText('Target laba kotor sebelum dikurangi biaya operasional dan HPP.'),
 
                         TextInput::make('target_net_profit')
                             ->label('Target Net Profit')
