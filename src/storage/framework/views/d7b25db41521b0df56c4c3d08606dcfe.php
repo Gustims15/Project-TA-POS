@@ -101,9 +101,6 @@
                 <div class="ng-widget-head">
                     <div>
                         <h1>Biaya Operasional</h1>
-                        <p>
-                            Kelola pengeluaran usaha berdasarkan bulan aktif. Pilih bulan dan tahun untuk melihat biaya yang masuk ke periode tersebut.
-                        </p>
 
                         <small class="ng-op-active-period">
                             Data aktif: <?php echo e($periodLabel); ?> • <?php echo e($period['start'] ?? '-'); ?> - <?php echo e($period['end'] ?? '-'); ?>
@@ -111,59 +108,45 @@
                         </small>
                     </div>
 
-                    <div class="ng-op-period-filter" wire:ignore>
-                        <span>Filter Data</span>
+                    <div class="ng-op-hero-right">
+                        <div class="ng-op-period-filter" wire:ignore>
+                            <div class="ng-op-period-selects">
+                                <select class="ng-op-select" data-ng-op-month onchange="if (this.value) window.location.href = this.value;">
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $months; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $monthKey => $monthLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                        <option value="<?php echo e($makePeriodUrl($monthKey, $selectedYear)); ?>"
+                                                <?php if((string) $selectedMonth === (string) $monthKey): echo 'selected'; endif; ?>>
+                                            <?php echo e($monthLabel); ?>
 
-                        <div class="ng-op-period-selects">
-                            <select class="ng-op-select" data-ng-op-month onchange="if (this.value) window.location.href = this.value;">
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $months; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $monthKey => $monthLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                                    <option value="<?php echo e($makePeriodUrl($monthKey, $selectedYear)); ?>"
-                                            <?php if((string) $selectedMonth === (string) $monthKey): echo 'selected'; endif; ?>>
-                                        <?php echo e($monthLabel); ?>
+                                        </option>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                                </select>
 
-                                    </option>
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                            </select>
+                                <select class="ng-op-select ng-op-year-select" data-ng-op-year onchange="if (this.value) window.location.href = this.value;">
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yearOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                        <option value="<?php echo e($makePeriodUrl($selectedMonth, $yearOption)); ?>"
+                                                <?php if((int) $selectedYear === (int) $yearOption): echo 'selected'; endif; ?>>
+                                            <?php echo e($yearOption); ?>
 
-                            <select class="ng-op-select ng-op-year-select" data-ng-op-year onchange="if (this.value) window.location.href = this.value;">
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yearOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                                    <option value="<?php echo e($makePeriodUrl($selectedMonth, $yearOption)); ?>"
-                                            <?php if((int) $selectedYear === (int) $yearOption): echo 'selected'; endif; ?>>
-                                        <?php echo e($yearOption); ?>
+                                        </option>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                                </select>
 
-                                    </option>
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                            </select>
+                                <select class="ng-op-select ng-op-status-select" data-ng-op-status onchange="if (this.value) window.location.href = this.value;">
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $statusOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $statusKey => $statusLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                        <option value="<?php echo e($makeStatusUrl($statusKey)); ?>"
+                                                <?php if($selectedStatus === $statusKey): echo 'selected'; endif; ?>>
+                                            <?php echo e($statusLabel); ?>
 
-                            <select class="ng-op-select ng-op-status-select" data-ng-op-status onchange="if (this.value) window.location.href = this.value;">
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $statusOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $statusKey => $statusLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                                    <option value="<?php echo e($makeStatusUrl($statusKey)); ?>"
-                                            <?php if($selectedStatus === $statusKey): echo 'selected'; endif; ?>>
-                                        <?php echo e($statusLabel); ?>
-
-                                    </option>
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                            </select>
+                                        </option>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                                </select>
+                            </div>
                         </div>
+
+                        <a href="<?php echo e($createUrl); ?>" class="ng-primary-button">
+                            + New Biaya
+                        </a>
                     </div>
-                </div>
-            </article>
-
-            <article class="ng-widget-card ng-op-highlight-card">
-                <div class="ng-highlight-info">
-                    <span>Biaya Terbesar <?php echo e($periodLabel); ?></span>
-                    <strong><?php echo e($summary['highest_cost_name'] ?? '-'); ?></strong>
-                    <small><?php echo e($this->rupiah($summary['highest_cost_amount'] ?? 0)); ?> dihitung periode ini</small>
-                </div>
-
-                <div class="ng-highlight-actions">
-                    <a href="<?php echo e($dashboardUrl); ?>" class="ng-soft-button">
-                        Dashboard
-                    </a>
-
-                    <a href="<?php echo e($createUrl); ?>" class="ng-primary-button">
-                        + New Biaya
-                    </a>
                 </div>
             </article>
         </section>
@@ -269,8 +252,8 @@
 
         .ng-op-hero-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.45fr) minmax(360px, .55fr);
-            gap: 16px;
+            grid-template-columns: 1fr;
+            gap: 0;
             margin-bottom: 14px;
         }
 
@@ -307,8 +290,7 @@
             min-width: 0;
         }
 
-        .ng-op-hero-card,
-        .ng-op-highlight-card {
+        .ng-op-hero-card {
             min-height: 118px;
         }
 
@@ -323,8 +305,23 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 18px;
             width: 100%;
+        }
+
+        .ng-widget-head > div:first-child {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .ng-op-hero-right {
+            position: relative;
+            z-index: 3;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
         }
 
         .ng-widget-head h1 {
@@ -357,7 +354,7 @@
         .ng-op-period-filter {
             position: relative;
             z-index: 3;
-            min-width: 430px;
+            min-width: 0;
             display: grid;
             gap: 8px;
             justify-items: end;
@@ -410,66 +407,18 @@
             min-width: 118px;
         }
 
-
-        .ng-op-highlight-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
-        .ng-highlight-info {
-            position: relative;
-            z-index: 2;
-            min-width: 0;
-        }
-
-        .ng-highlight-info span {
-            display: block;
-            color: #765d45;
-            font-size: 11px;
-            font-weight: 900;
-        }
-
-        .ng-highlight-info strong {
-            display: block;
-            max-width: 280px;
-            margin: 8px 0;
-            overflow: hidden;
-            color: #21160d;
-            font-size: 22px;
-            line-height: 1.1;
-            font-weight: 950;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            letter-spacing: -.03em;
-        }
-
-        .ng-highlight-info small {
-            display: block;
-            color: #765d45;
-            font-size: 11px;
-            font-weight: 850;
-        }
-
-        .ng-highlight-actions {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 9px;
-            flex-wrap: wrap;
-        }
-
-        .ng-soft-button,
         .ng-primary-button {
+            position: relative;
+            z-index: 3;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             min-height: 42px;
             padding: 0 16px;
             border-radius: 15px;
+            color: #fff;
+            background: linear-gradient(135deg, #ff9d18, #ee6500);
+            box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
             font-size: 12px;
             font-weight: 950;
             text-decoration: none;
@@ -477,29 +426,13 @@
             transition: .2s ease;
         }
 
-        .ng-soft-button {
-            color: #d95d00;
-            background: rgba(255, 255, 255, .36);
-            border: 1px solid rgba(255, 255, 255, .50);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .44);
-        }
-
-        .ng-soft-button:hover {
-            color: #fff;
-            background: linear-gradient(135deg, #ff9d18, #ee6500);
-            box-shadow: 0 12px 22px rgba(238, 101, 0, .22);
-        }
-
-        .ng-primary-button {
-            color: #fff;
-            background: linear-gradient(135deg, #ff9d18, #ee6500);
-            box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
-        }
-
         .ng-primary-button:hover {
+            color: #fff;
             transform: translateY(-1px);
             box-shadow: 0 18px 32px rgba(238, 101, 0, .30);
         }
+
+
 
         .ng-operational-kpi-grid {
             display: grid;
@@ -783,14 +716,18 @@
                 flex-direction: column;
             }
 
-            .ng-op-period-filter {
+            .ng-op-hero-right {
                 width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .ng-op-period-filter {
                 min-width: 0;
                 justify-items: start;
             }
 
             .ng-op-period-selects {
-                width: 100%;
                 flex-wrap: wrap;
             }
 
@@ -813,18 +750,19 @@
                 grid-template-columns: 1fr;
             }
 
-            .ng-op-highlight-card {
-                align-items: flex-start;
+            .ng-op-hero-right {
+                width: 100%;
+                align-items: stretch;
                 flex-direction: column;
             }
 
-            .ng-highlight-actions {
+            .ng-op-period-filter,
+            .ng-op-period-selects {
                 width: 100%;
             }
 
-            .ng-soft-button,
             .ng-primary-button {
-                flex: 1;
+                width: 100%;
             }
 
             .ng-widget-head h1 {

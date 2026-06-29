@@ -36,13 +36,6 @@
                 'color' => '#3b82f6',
             ],
             [
-                'label' => 'Avg Order',
-                'value' => 'Rp ' . number_format((int) ($summary['avg_order'] ?? 0), 0, ',', '.'),
-                'caption' => 'Rata-rata order',
-                'icon' => '↗',
-                'color' => '#8b5cf6',
-            ],
-            [
                 'label' => 'Highest Order',
                 'value' => 'Rp ' . number_format((int) ($summary['highest_order'] ?? 0), 0, ',', '.'),
                 'caption' => 'Order tertinggi',
@@ -61,49 +54,49 @@
 
                         <p>
                             Pantau histori pendapatan bulanan, jumlah transaksi, unit terjual,
-                            rata-rata order, dan detail transaksi selesai berdasarkan periode laporan.
+                            dan detail transaksi selesai berdasarkan periode laporan.
                         </p>
                     </div>
+
+                    <div class="ng-report-inline-filter">
+                        <span class="ng-report-filter-title">Pilih Periode Laporan</span>
+
+                        <div class="ng-report-filter-row">
+                            <select
+                                class="ng-report-select"
+                                onchange="window.location.href = '<?php echo e($currentUrl); ?>?month=' + this.value"
+                            >
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $months; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $month): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                    <option value="<?php echo e($month); ?>" <?php if($month === $selectedMonth): echo 'selected'; endif; ?>>
+                                        <?php echo e(\Carbon\Carbon::createFromFormat('Y-m', $month)->translatedFormat('F Y')); ?>
+
+                                    </option>
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                            </select>
+
+                            <button
+                                type="button"
+                                class="ng-primary-button"
+                                wire:click="exportSelectedMonth"
+                                wire:loading.attr="disabled"
+                                wire:target="exportSelectedMonth"
+                            >
+                                <span wire:loading.remove wire:target="exportSelectedMonth">
+                                    Download Laporan
+                                </span>
+
+                                <span wire:loading wire:target="exportSelectedMonth">
+                                    Menyiapkan...
+                                </span>
+                            </button>
+                        </div>
+
+                        <small>Periode aktif: <?php echo e($selectedMonthLabel); ?></small>
+                    </div>
+
                 </div>
             </article>
 
-            <article class="ng-widget-card ng-report-filter-card">
-                <div class="ng-report-filter-info">
-                    <span>Pilih Periode Laporan</span>
-
-                    <select
-                        class="ng-report-select"
-                        onchange="window.location.href = '<?php echo e($currentUrl); ?>?month=' + this.value"
-                    >
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $months; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $month): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                            <option value="<?php echo e($month); ?>" <?php if($month === $selectedMonth): echo 'selected'; endif; ?>>
-                                <?php echo e(\Carbon\Carbon::createFromFormat('Y-m', $month)->translatedFormat('F Y')); ?>
-
-                            </option>
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                    </select>
-
-                    <small>Periode aktif: <?php echo e($selectedMonthLabel); ?></small>
-                </div>
-
-                <div class="ng-report-filter-action">
-                    <button
-                        type="button"
-                        class="ng-primary-button"
-                        wire:click="exportSelectedMonth"
-                        wire:loading.attr="disabled"
-                        wire:target="exportSelectedMonth"
-                    >
-                        <span wire:loading.remove wire:target="exportSelectedMonth">
-                            Download Laporan
-                        </span>
-
-                        <span wire:loading wire:target="exportSelectedMonth">
-                            Menyiapkan...
-                        </span>
-                    </button>
-                </div>
-            </article>
         </section>
 
         <section class="ng-kpi-grid ng-report-kpi-grid">
@@ -338,16 +331,13 @@
             overflow-x: hidden !important;
         }
 
-        body:has(.ng-monthly-revenue-page) .fi-page {
+        body:has(.ng-monthly-revenue-page) .fi-page,
+        body:has(.ng-monthly-revenue-page) .fi-main {
             padding: 0 !important;
         }
 
         body:has(.ng-monthly-revenue-page) .fi-page-header {
             display: none !important;
-        }
-
-        body:has(.ng-monthly-revenue-page) .fi-main {
-            padding: 0 !important;
         }
 
         body:has(.ng-monthly-revenue-page) .fi-page-content {
@@ -358,8 +348,7 @@
         .ng-monthly-revenue-page {
             width: 100% !important;
             max-width: 100% !important;
-            min-height: 100vh;
-            padding: 24px 24px 32px !important;
+            padding: 24px 24px 24px !important;
             overflow: hidden !important;
             font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             color: #24180f;
@@ -371,8 +360,8 @@
 
         .ng-report-hero-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.45fr) minmax(360px, .55fr);
-            gap: 16px;
+            grid-template-columns: 1fr;
+            gap: 0;
             margin-bottom: 14px;
         }
 
@@ -409,12 +398,9 @@
             min-width: 0;
         }
 
-        .ng-report-hero-card,
-        .ng-report-filter-card {
-            min-height: 126px;
-        }
-
         .ng-report-hero-card {
+            width: 100%;
+            min-height: 132px;
             display: flex;
             align-items: center;
         }
@@ -422,11 +408,16 @@
         .ng-widget-head {
             position: relative;
             z-index: 2;
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 14px;
             width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .ng-widget-head > div:first-child {
+            min-width: 0;
+            flex: 1 1 auto;
         }
 
         .ng-widget-head h1 {
@@ -440,15 +431,15 @@
 
         .ng-widget-head h2 {
             margin: 0;
-            color: #25170d;
-            font-size: 16px;
-            line-height: 1.2;
+            color: #21160d;
+            font-size: 20px;
+            line-height: 1.1;
             font-weight: 950;
             letter-spacing: -.03em;
         }
 
         .ng-widget-head p {
-            max-width: 820px;
+            max-width: 850px;
             margin: 8px 0 0;
             color: #765d45;
             font-size: 13px;
@@ -456,87 +447,119 @@
             font-weight: 700;
         }
 
-        .ng-report-filter-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
+        /*
+        |--------------------------------------------------------------------------
+        | HERO FILTER - CLEAN, NO INNER WIDGET
+        |--------------------------------------------------------------------------
+        */
 
-        .ng-report-filter-info,
-        .ng-report-filter-action {
+        .ng-report-inline-filter {
             position: relative;
             z-index: 2;
+            flex: 0 0 auto;
+            min-width: 430px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
         }
 
-        .ng-report-filter-info {
-            min-width: 0;
-        }
-
-        .ng-report-filter-info span,
-        .ng-report-filter-info small {
+        .ng-report-filter-title,
+        .ng-report-inline-filter small {
             display: block;
+            margin: 0;
             color: #765d45;
             font-size: 11px;
+            line-height: 1.25;
             font-weight: 900;
+            white-space: nowrap;
         }
 
-        .ng-report-filter-info small {
-            margin-top: 8px;
+        .ng-report-filter-title {
+            font-weight: 950;
+        }
+
+        .ng-report-inline-filter small {
             font-weight: 850;
+        }
+
+        .ng-report-filter-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 12px;
+            width: 100%;
         }
 
         .ng-report-select {
-            width: 210px;
+            width: 220px;
+            height: 40px;
             min-height: 40px;
-            margin-top: 8px;
-            padding: 0 12px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, .46);
-            background: rgba(255, 255, 255, .34);
-            color: #24180f;
-            font-size: 12px;
-            font-weight: 850;
+            margin: 0;
+            padding: 0 14px;
+            border: 1px solid rgba(255, 255, 255, .55);
             outline: none;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .42);
+            border-radius: 14px;
+            color: #2d1f16;
+            background: rgba(255, 255, 255, .38);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            font-size: 11px;
+            font-weight: 950;
+            cursor: pointer;
         }
 
         .ng-primary-button {
+            width: auto;
+            min-width: 130px;
+            max-width: 150px;
+            height: 40px;
+            min-height: 40px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 42px;
-            padding: 0 17px;
-            border: none;
-            border-radius: 15px;
+            padding: 0 14px;
+            border: 0;
+            border-radius: 14px;
             color: #fff;
             background: linear-gradient(135deg, #ff9d18, #ee6500);
-            box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
-            font-size: 12px;
+            box-shadow: 0 12px 22px rgba(238, 101, 0, .22);
+            font-size: 10px;
+            line-height: 1;
             font-weight: 950;
             white-space: nowrap;
             cursor: pointer;
-            transition: .2s ease;
+            transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
         }
 
         .ng-primary-button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 18px 32px rgba(238, 101, 0, .30);
+            filter: brightness(1.02);
+            box-shadow: 0 16px 26px rgba(238, 101, 0, .26);
         }
 
         .ng-primary-button:disabled {
+            cursor: not-allowed;
             opacity: .72;
-            cursor: wait;
             transform: none;
         }
 
-        .ng-kpi-grid {
+        /*
+        |--------------------------------------------------------------------------
+        | KPI
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-kpi-grid,
+        .ng-report-kpi-grid {
             display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 14px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .ng-kpi-card {
@@ -607,40 +630,36 @@
             text-overflow: ellipsis;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | TABLE
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-report-table-card {
+            padding: 18px;
+            border-radius: 24px;
+        }
+
+        .ng-report-table-head {
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
         .ng-widget-badge {
             position: relative;
             z-index: 2;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            min-height: 32px;
-            padding: 0 12px;
-            border-radius: 12px;
-            color: #da6200;
-            background: rgba(255, 255, 255, .36);
-            border: 1px solid rgba(255, 255, 255, .50);
+            min-height: 34px;
+            padding: 0 14px;
+            border-radius: 14px;
+            color: #d95d00;
+            background: rgba(255, 255, 255, .38);
+            border: 1px solid rgba(255, 255, 255, .52);
             font-size: 11px;
             font-weight: 950;
-            text-decoration: none;
             white-space: nowrap;
-        }
-
-        .ng-report-table-card {
-            padding: 0;
-        }
-
-        .ng-report-table-head {
-            min-height: 58px;
-            align-items: center;
-            padding: 16px 18px;
-            margin-bottom: 0;
-            background: rgba(255, 247, 235, .10);
-            border-bottom: 1px solid rgba(114, 74, 41, .07);
-        }
-
-        .ng-report-table-head p {
-            font-size: 12px;
-            font-weight: 800;
         }
 
         .ng-report-table-wrap {
@@ -648,71 +667,51 @@
             z-index: 2;
             width: 100%;
             overflow-x: auto;
-        }
-
-        .ng-report-table-wrap::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .ng-report-table-wrap::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, .26);
-            border-radius: 999px;
-        }
-
-        .ng-report-table-wrap::-webkit-scrollbar-thumb {
-            background: rgba(249, 115, 22, .45);
-            border-radius: 999px;
+            border-top: 1px solid rgba(114, 74, 41, .08);
         }
 
         .ng-report-table {
             width: 100%;
-            min-width: 920px;
+            min-width: 900px;
             border-collapse: collapse;
+            color: #3a2a1f;
         }
 
         .ng-report-table th,
         .ng-report-table td {
-            padding: 12px 14px;
-            border-bottom: 1px solid rgba(114, 74, 41, .07);
+            padding: 13px 14px;
             text-align: left;
-            vertical-align: middle;
+            border-bottom: 1px solid rgba(114, 74, 41, .08);
             background: transparent;
-        }
-
-        .ng-report-table thead tr {
-            background: rgba(255, 247, 235, .10);
         }
 
         .ng-report-table th {
             color: #4b3525;
             font-size: 11px;
+            line-height: 1;
             font-weight: 950;
             text-transform: uppercase;
             letter-spacing: .02em;
         }
 
         .ng-report-table td {
-            color: #23160d;
+            color: #4b3525;
             font-size: 12px;
-            font-weight: 800;
+            font-weight: 850;
         }
 
         .ng-report-table tbody tr {
-            transition: .18s ease;
+            transition: background .18s ease;
         }
 
         .ng-report-table tbody tr:hover {
             background: rgba(255, 255, 255, .14);
         }
 
-        .ng-report-table tfoot tr {
-            background: rgba(255, 247, 235, .16);
-        }
-
         .ng-report-table tfoot td {
             color: #21160d;
-            font-size: 13px;
             font-weight: 950;
+            background: rgba(255, 255, 255, .16);
         }
 
         .ng-number-pill,
@@ -724,22 +723,24 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 28px;
-            padding: 0 10px;
+            min-height: 30px;
+            padding: 0 11px;
             border-radius: 999px;
-            font-size: 10px;
-            font-weight: 950;
             white-space: nowrap;
+            font-size: 11px;
+            font-weight: 950;
         }
 
         .ng-number-pill {
-            min-width: 32px;
+            min-width: 34px;
             color: #64748b;
             background: rgba(148, 163, 184, .12);
-            border: 1px solid rgba(148, 163, 184, .24);
+            border: 1px solid rgba(148, 163, 184, .22);
         }
 
-        .ng-order-code-pill {
+        .ng-order-code-pill,
+        .ng-total-pill,
+        .ng-status-pill {
             color: #078657;
             background: rgba(16, 185, 129, .12);
             border: 1px solid rgba(16, 185, 129, .22);
@@ -752,151 +753,104 @@
         }
 
         .ng-item-pill {
-            min-width: 42px;
+            min-width: 38px;
             color: #2563eb;
             background: rgba(59, 130, 246, .10);
             border: 1px solid rgba(59, 130, 246, .20);
         }
 
-        .ng-total-pill,
-        .ng-status-pill {
-            color: #078657;
-            background: rgba(16, 185, 129, .12);
-            border: 1px solid rgba(16, 185, 129, .22);
-        }
-
         .ng-empty-state {
-            position: relative;
-            z-index: 2;
-            padding: 22px;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, .22);
-            border: 1px solid rgba(255, 255, 255, .40);
+            min-height: 120px;
+            display: grid;
+            place-items: center;
+            align-content: center;
+            gap: 6px;
+            color: #765d45;
             text-align: center;
         }
 
-        .ng-empty-state strong,
-        .ng-empty-state span {
-            display: block;
-        }
-
         .ng-empty-state strong {
-            color: #23160d;
-            font-size: 15px;
+            color: #21160d;
+            font-size: 16px;
             font-weight: 950;
         }
 
         .ng-empty-state span {
-            margin-top: 6px;
-            color: #765d45;
             font-size: 12px;
             font-weight: 800;
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | PAGINATION - MONTHLY REVENUE TABLE
+        | PAGINATION
         |--------------------------------------------------------------------------
         */
 
         .ng-report-pagination {
             position: relative;
             z-index: 2;
-            min-height: 62px;
+            min-height: 52px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 14px;
-            padding: 14px 18px;
-            background: rgba(255, 247, 235, .12);
-            border-top: 1px solid rgba(114, 74, 41, .07);
+            gap: 12px;
+            padding-top: 14px;
         }
 
         .ng-report-pagination-info {
             color: #765d45;
             font-size: 12px;
-            font-weight: 850;
+            font-weight: 800;
         }
 
         .ng-report-pagination-info strong {
-            color: #23160d;
+            color: #21160d;
             font-weight: 950;
         }
 
-        .ng-report-pagination-actions {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .ng-page-btn,
-        .ng-page-number,
-        .ng-page-dots {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 34px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 950;
-            text-decoration: none !important;
-            white-space: nowrap;
-        }
-
-        .ng-page-btn {
-            padding: 0 13px;
-            color: #fff !important;
-            background: linear-gradient(135deg, #ff9d18, #ee6500);
-            box-shadow: 0 10px 20px rgba(238, 101, 0, .20);
-        }
-
-        .ng-page-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
-        }
-
-        .ng-page-btn.is-disabled {
-            color: #9a8068 !important;
-            background: rgba(255, 255, 255, .28);
-            border: 1px solid rgba(255, 255, 255, .42);
-            box-shadow: none;
-            cursor: not-allowed;
-        }
-
+        .ng-report-pagination-actions,
         .ng-page-numbers {
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
+        .ng-page-btn,
         .ng-page-number,
         .ng-page-dots {
             min-width: 34px;
-            padding: 0 9px;
-            color: #6f5946 !important;
-            background: rgba(255, 255, 255, .28);
-            border: 1px solid rgba(255, 255, 255, .42);
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 11px;
+            border-radius: 12px;
+            color: #7b6049;
+            background: rgba(255, 255, 255, .32);
+            border: 1px solid rgba(255, 255, 255, .48);
+            font-size: 11px;
+            font-weight: 900;
+            text-decoration: none;
+        }
+
+        .ng-page-btn {
+            min-width: 96px;
         }
 
         .ng-page-number.is-active {
-            color: #fff !important;
+            color: #fff;
             background: linear-gradient(135deg, #ff9d18, #ee6500);
-            border-color: transparent;
-            box-shadow: 0 10px 20px rgba(238, 101, 0, .20);
+            box-shadow: 0 12px 22px rgba(238, 101, 0, .22);
         }
 
-        .ng-page-dots {
-            background: transparent;
-            border-color: transparent;
+        .ng-page-btn.is-disabled {
+            opacity: .45;
+            cursor: not-allowed;
         }
-
 
         /*
         |--------------------------------------------------------------------------
-        | SIDEBAR EFFECT SYNC
+        | SIDEBAR SYNC
         |--------------------------------------------------------------------------
         */
 
@@ -932,47 +886,62 @@
             color: #fff !important;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | RESPONSIVE
+        |--------------------------------------------------------------------------
+        */
+
         @media (max-width: 1500px) {
-            .ng-report-hero-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .ng-kpi-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 1100px) {
-            .ng-monthly-revenue-page {
-                padding: 18px 18px 26px !important;
-            }
-
-            .ng-report-filter-card {
+            .ng-widget-head {
                 align-items: flex-start;
                 flex-direction: column;
             }
 
-            .ng-report-filter-action {
+            .ng-report-inline-filter {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .ng-report-filter-row {
+                justify-content: flex-start;
+            }
+
+            .ng-kpi-grid,
+            .ng-report-kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .ng-monthly-revenue-page {
+                padding: 18px !important;
+            }
+
+            .ng-report-filter-row,
+            .ng-report-pagination {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .ng-report-select {
                 width: 100%;
             }
 
             .ng-primary-button {
-                width: fit-content;
+                width: auto;
+            }
+
+            .ng-report-table-head {
+                align-items: flex-start;
+                flex-direction: column;
             }
         }
 
         @media (max-width: 700px) {
-            .ng-monthly-revenue-page {
-                padding: 14px 14px 22px !important;
-            }
-
-            .ng-kpi-grid {
+            .ng-kpi-grid,
+            .ng-report-kpi-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .ng-widget-head {
-                align-items: flex-start;
-                flex-direction: column;
             }
 
             .ng-widget-head h1 {
@@ -982,21 +951,6 @@
             .ng-widget-card {
                 padding: 16px;
                 border-radius: 22px;
-            }
-
-            .ng-report-table-head {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .ng-report-pagination {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .ng-report-pagination-actions {
-                width: 100%;
-                justify-content: flex-start;
             }
         }
     </style>

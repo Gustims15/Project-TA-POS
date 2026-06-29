@@ -1,45 +1,70 @@
 <?php
+    $summary = $summary ?? [];
+    $period = $period ?? [];
+    $filters = $filters ?? [];
+    $links = $links ?? [];
+
+    $activePeriod = (string) ($period['key'] ?? 'month');
+    $activePeriodLabel = (string) ($period['label'] ?? 'Bulan Ini');
+    $dateRangeLabel = (string) ($period['date_range'] ?? '-');
+
+    $months = $filters['months'] ?? [];
+    $years = $filters['years'] ?? range(now()->year - 4, now()->year + 1);
+    $periods = $filters['periods'] ?? [
+        'today' => 'Hari Ini',
+        'month' => 'Bulanan',
+    ];
+
+    $selectedMonth = (int) ($period['selected_month'] ?? session('ng_order_filter.month', now()->month));
+    $selectedYear = (int) ($period['selected_year'] ?? session('ng_order_filter.year', now()->year));
+    $baseOrderUrl = $links['orders'] ?? url('/admin/orders');
+
+    $makePeriodUrl = function (string $periodKey) use ($baseOrderUrl, $selectedMonth, $selectedYear): string {
+        $params = [
+            'period' => $periodKey,
+            'month' => $selectedMonth,
+            'year' => $selectedYear,
+            '_refresh' => time(),
+        ];
+
+        return $baseOrderUrl . '?' . http_build_query($params);
+    };
+
+    $makeMonthUrl = fn (int $month, int $year): string => $baseOrderUrl . '?' . http_build_query([
+        'period' => 'month',
+        'month' => $month,
+        'year' => $year,
+        '_refresh' => time(),
+    ]);
+
+    $makeYearUrl = fn (int $year): string => $baseOrderUrl . '?' . http_build_query([
+        'period' => 'month',
+        'month' => $selectedMonth,
+        'year' => $year,
+        '_refresh' => time(),
+    ]);
+
+    $statusCounts = $summary['status_counts'] ?? [];
+
     $cards = [
-        [
-            'label' => 'Total Revenue',
-            'value' => 'Rp ' . number_format((int) ($summary['total_revenue'] ?? 0), 0, ',', '.'),
-            'caption' => 'Dari order selesai',
-            'icon' => '▣',
-            'color' => '#f97316',
-        ],
         [
             'label' => 'Total Orders',
             'value' => number_format((int) ($summary['total_orders'] ?? 0), 0, ',', '.'),
-            'caption' => 'Semua transaksi',
+            'caption' => 'Periode aktif',
             'icon' => '✓',
             'color' => '#10b981',
         ],
         [
             'label' => 'Units Sold',
             'value' => number_format((int) ($summary['units_sold'] ?? 0), 0, ',', '.'),
-            'caption' => 'Item terjual',
+            'caption' => 'Item selesai',
             'icon' => '◇',
             'color' => '#3b82f6',
-        ],
-        [
-            'label' => 'Avg Order',
-            'value' => 'Rp ' . number_format((int) ($summary['avg_order'] ?? 0), 0, ',', '.'),
-            'caption' => 'Rata-rata order',
-            'icon' => '↗',
-            'color' => '#8b5cf6',
-        ],
-        [
-            'label' => 'Order Hari Ini',
-            'value' => number_format((int) ($summary['today_orders'] ?? 0), 0, ',', '.'),
-            'caption' => 'Transaksi hari ini',
-            'icon' => '!',
-            'color' => '#ef4444',
         ],
     ];
 
     $latestOrderCode = $summary['latest_order_code'] ?? '-';
     $latestOrderTime = $summary['latest_order_time'] ?? '-';
-    $todayOrders = (int) ($summary['today_orders'] ?? 0);
 ?>
 
 <?php if (isset($component)) { $__componentOriginalb525200bfa976483b4eaa0b7685c6e24 = $component; } ?>
@@ -61,35 +86,53 @@
                     <div>
                         <h1>Order Management</h1>
 
-                        <p>
-                            Pantau seluruh transaksi kasir, item yang dibeli, total pendapatan,
-                            jumlah item terjual, status order, dan waktu transaksi.
-                        </p>
+                        <small class="ng-active-order-label">
+                            Data aktif: <?php echo e($activePeriodLabel); ?> • <?php echo e($dateRangeLabel); ?>
+
+                        </small>
+                    </div>
+
+                    <div class="ng-order-filter-panel">
+
+                        <div class="ng-period-tabs">
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $periods; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $periodKey => $periodLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                <a href="<?php echo e($makePeriodUrl((string) $periodKey)); ?>"
+                                   class="ng-period-tab <?php echo e($activePeriod === (string) $periodKey ? 'active' : ''); ?>"
+                                   data-ng-period-url="<?php echo e($makePeriodUrl((string) $periodKey)); ?>"
+                                   onclick="event.preventDefault(); window.location.assign(this.getAttribute('data-ng-period-url'));">
+                                    <?php echo e($periodLabel); ?>
+
+                                </a>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                        </div>
+
+                        <div class="ng-order-select-row">
+                            <select class="ng-order-select" onchange="window.location.assign(this.value)">
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $months; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $monthKey => $monthLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                    <option value="<?php echo e($makeMonthUrl((int) $monthKey, $selectedYear)); ?>"
+                                            <?php if((int) $selectedMonth === (int) $monthKey): echo 'selected'; endif; ?>>
+                                        <?php echo e($monthLabel); ?>
+
+                                    </option>
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                            </select>
+
+                            <select class="ng-order-select ng-order-year-select" onchange="window.location.assign(this.value)">
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                    <option value="<?php echo e($makeYearUrl((int) $year)); ?>"
+                                            <?php if((int) $selectedYear === (int) $year): echo 'selected'; endif; ?>>
+                                        <?php echo e($year); ?>
+
+                                    </option>
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </article>
 
-            <article class="ng-widget-card ng-order-highlight-card">
-                <div class="ng-highlight-info">
-                    <span>Order Terbaru</span>
-
-                    <strong>
-                        <?php echo e($latestOrderCode); ?>
-
-                    </strong>
-
-                    <small>
-                        <?php echo e($latestOrderTime); ?>
-
-                    </small>
-                </div>
-
-                <div class="ng-today-badge">
-                    <span>Hari Ini</span>
-                    <strong><?php echo e(number_format($todayOrders, 0, ',', '.')); ?></strong>
-                </div>
-            </article>
         </section>
+
 
         <section class="ng-kpi-grid ng-order-kpi-grid">
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $cards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $card): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
@@ -197,7 +240,8 @@
         }
 
         .ng-widget-card,
-        .ng-kpi-card {
+        .ng-kpi-card,
+        .ng-order-status-strip {
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, .58);
@@ -213,7 +257,8 @@
         }
 
         .ng-widget-card::before,
-        .ng-kpi-card::before {
+        .ng-kpi-card::before,
+        .ng-order-status-strip::before {
             content: "";
             position: absolute;
             inset: 0;
@@ -250,6 +295,10 @@
             position: relative;
             z-index: 2;
             width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
         }
 
         .ng-widget-head h1 {
@@ -268,6 +317,97 @@
             font-size: 13px;
             line-height: 1.55;
             font-weight: 700;
+        }
+
+        .ng-active-order-label {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            min-height: 30px;
+            margin-top: 10px;
+            padding: 0 12px;
+            border-radius: 999px;
+            color: #d95d00;
+            background: rgba(255, 255, 255, .38);
+            border: 1px solid rgba(255, 255, 255, .52);
+            font-size: 11px;
+            font-weight: 950;
+            white-space: nowrap;
+        }
+
+        .ng-order-filter-panel {
+            display: grid;
+            gap: 8px;
+            min-width: 360px;
+            justify-items: end;
+        }
+
+        .ng-order-filter-panel > span {
+            color: #d95d00;
+            font-size: 12px;
+            line-height: 1;
+            font-weight: 950;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .ng-period-tabs,
+        .ng-order-select-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, .58);
+            background: rgba(255, 255, 255, .38);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .ng-period-tab {
+            min-height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 16px;
+            border-radius: 13px;
+            color: #5f4a38;
+            font-size: 11px;
+            font-weight: 950;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .ng-period-tab.active,
+        .ng-period-tab:hover {
+            color: #fff;
+            background: linear-gradient(135deg, #ff9500, #f26a00);
+            box-shadow: 0 10px 18px rgba(242, 106, 0, .20);
+        }
+
+        .ng-order-select-row {
+            padding: 5px;
+        }
+
+        .ng-order-select {
+            min-width: 140px;
+            min-height: 34px;
+            border: 0;
+            outline: 0;
+            border-radius: 12px;
+            padding: 0 12px;
+            color: #2d1f16;
+            background: rgba(255, 255, 255, .42);
+            font-size: 11px;
+            font-weight: 950;
+            cursor: pointer;
+        }
+
+        .ng-order-year-select {
+            min-width: 92px;
         }
 
         .ng-highlight-info {
@@ -331,6 +471,75 @@
             font-size: 18px;
             line-height: 1;
             font-weight: 950;
+        }
+
+        .ng-order-status-strip {
+            position: relative;
+            z-index: 2;
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 14px;
+            padding: 12px 18px;
+            border-radius: 20px;
+        }
+
+        .ng-order-status-strip > div {
+            position: relative;
+            z-index: 2;
+        }
+
+        .ng-order-status-strip span {
+            color: #765d45;
+            font-size: 11px;
+            font-weight: 850;
+        }
+
+        .ng-order-status-strip strong {
+            display: block;
+            margin-top: 3px;
+            color: #21160d;
+            font-size: 16px;
+            font-weight: 950;
+        }
+
+        .ng-status-mini-list {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ng-status-mini-list span {
+            min-height: 28px;
+            display: inline-flex;
+            align-items: center;
+            padding: 0 10px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 950;
+            white-space: nowrap;
+        }
+
+        .ng-status-mini-list .success {
+            color: #078657;
+            background: rgba(16,185,129,.13);
+            border: 1px solid rgba(16,185,129,.24);
+        }
+
+        .ng-status-mini-list .process {
+            color: #d76a00;
+            background: rgba(255,159,64,.16);
+            border: 1px solid rgba(255,159,64,.26);
+        }
+
+        .ng-status-mini-list .danger {
+            color: #d73333;
+            background: rgba(255,98,98,.13);
+            border: 1px solid rgba(255,98,98,.24);
         }
 
         .ng-kpi-grid {
@@ -407,12 +616,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | TABLE FILAMENT - ORDER PAGE
-        |--------------------------------------------------------------------------
-        */
 
         body:has(.ng-order-page) .fi-ta-ctn {
             margin: 0 24px 24px !important;
@@ -523,12 +726,6 @@
             box-shadow: 0 12px 22px rgba(238, 101, 0, .22) !important;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIDEBAR EFFECT SYNC
-        |--------------------------------------------------------------------------
-        */
-
         body:has(.ng-order-page) .fi-sidebar {
             background: rgba(255, 250, 242, .50) !important;
             border-right: 1px solid rgba(255, 255, 255, .48) !important;
@@ -569,6 +766,17 @@
             .ng-kpi-grid {
                 grid-template-columns: repeat(3, minmax(0, 1fr));
             }
+
+            .ng-widget-head {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .ng-order-filter-panel {
+                width: 100%;
+                min-width: 0;
+                justify-items: start;
+            }
         }
 
         @media (max-width: 1100px) {
@@ -576,7 +784,8 @@
                 padding: 18px 18px 10px !important;
             }
 
-            .ng-order-highlight-card {
+            .ng-order-highlight-card,
+            .ng-order-status-strip {
                 align-items: flex-start;
                 flex-direction: column;
             }
@@ -611,6 +820,110 @@
             }
         }
     </style>
+
+    <script>
+        (function () {
+            function bindOrderPeriodTabs() {
+                document.querySelectorAll('[data-ng-period-url]').forEach(function (tab) {
+                    if (tab.dataset.periodBound === '1') {
+                        return;
+                    }
+
+                    tab.dataset.periodBound = '1';
+
+                    tab.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        const url = tab.getAttribute('data-ng-period-url');
+
+                        if (url) {
+                            window.location.assign(url);
+                        }
+                    });
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', bindOrderPeriodTabs);
+            document.addEventListener('livewire:navigated', bindOrderPeriodTabs);
+            document.addEventListener('livewire:update', bindOrderPeriodTabs);
+            bindOrderPeriodTabs();
+        })();
+    </script>
+
+    <style id="ng-order-layout-clean-kpi">
+        /*
+        |--------------------------------------------------------------------------
+        | ORDER PAGE CLEAN LAYOUT
+        |--------------------------------------------------------------------------
+        | 1. Widget Order Terbaru Periode dihapus.
+        | 2. Widget Order Management dilebarkan full width.
+        | 3. Status periode aktif dihapus.
+        | 4. KPI hanya Total Orders dan Units Sold.
+        */
+
+        body:has(.ng-order-page) .ng-order-hero-grid {
+            grid-template-columns: 1fr !important;
+            gap: 0 !important;
+            margin-bottom: 14px !important;
+        }
+
+        body:has(.ng-order-page) .ng-order-hero-card {
+            width: 100% !important;
+            min-height: 138px !important;
+        }
+
+        body:has(.ng-order-page) .ng-widget-head {
+            width: 100% !important;
+        }
+
+        body:has(.ng-order-page) .ng-widget-head p {
+            max-width: 820px !important;
+        }
+
+        body:has(.ng-order-page) .ng-order-filter-panel {
+            min-width: 360px !important;
+        }
+
+        body:has(.ng-order-page) .ng-order-status-strip,
+        body:has(.ng-order-page) .ng-order-highlight-card {
+            display: none !important;
+        }
+
+        body:has(.ng-order-page) .ng-order-kpi-grid,
+        body:has(.ng-order-page) .ng-kpi-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 14px !important;
+            margin-bottom: 16px !important;
+        }
+
+        body:has(.ng-order-page) .ng-order-kpi-grid .ng-kpi-card {
+            min-height: 106px !important;
+        }
+
+        body:has(.ng-order-page) .ng-kpi-content strong {
+            font-size: 24px !important;
+        }
+
+        @media (max-width: 900px) {
+            body:has(.ng-order-page) .ng-widget-head {
+                align-items: flex-start !important;
+                flex-direction: column !important;
+            }
+
+            body:has(.ng-order-page) .ng-order-filter-panel {
+                width: 100% !important;
+                min-width: 0 !important;
+                justify-items: start !important;
+            }
+
+            body:has(.ng-order-page) .ng-order-kpi-grid,
+            body:has(.ng-order-page) .ng-kpi-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>

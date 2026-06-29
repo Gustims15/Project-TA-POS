@@ -35,25 +35,6 @@
                 backdrop-filter: blur(13px);
                 overflow: hidden;
             ">
-                <span style="
-                    display: inline-flex;
-                    align-items: center;
-                    width: fit-content;
-                    padding: 6px 12px;
-                    margin-bottom: 10px;
-                    border-radius: 999px;
-                    background: rgba(255, 255, 255, .50);
-                    border: 1px solid rgba(255, 255, 255, .58);
-                    color: #d95d00;
-                    font-size: 12px;
-                    font-weight: 900;
-                    letter-spacing: .08em;
-                    text-transform: uppercase;
-                    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .70);
-                    backdrop-filter: blur(12px);
-                ">
-                    Sales Target Form
-                </span>
 
                 <h1 style="
                     margin: 0;

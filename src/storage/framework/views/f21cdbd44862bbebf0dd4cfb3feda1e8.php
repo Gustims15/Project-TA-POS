@@ -50,29 +50,12 @@
                             dan status aktif produk dalam satu halaman admin.
                         </p>
                     </div>
-                </div>
-            </article>
 
-            <article class="ng-widget-card ng-product-highlight-card">
-                <div class="ng-highlight-info">
-                    <span>Kategori Produk Terbanyak</span>
-
-                    <strong>
-                        <?php echo e($summary['top_category_name'] ?? '-'); ?>
-
-                    </strong>
-
-                    <small>
-                        <?php echo e(number_format((int) ($summary['top_category_products'] ?? 0), 0, ',', '.')); ?>
-
-                        produk terhubung
-                    </small>
-                </div>
-
-                <div class="ng-highlight-actions">
-                    <a href="<?php echo e($createUrl); ?>" class="ng-primary-button">
-                        + New Produk
-                    </a>
+                    <div class="ng-product-hero-actions">
+                        <a href="<?php echo e($createUrl); ?>" class="ng-primary-button">
+                            + New Product
+                        </a>
+                    </div>
                 </div>
             </article>
         </section>
@@ -177,8 +160,8 @@
 
         .ng-product-hero-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.45fr) minmax(360px, .55fr);
-            gap: 16px;
+            grid-template-columns: 1fr;
+            gap: 0;
             margin-bottom: 14px;
         }
 
@@ -215,8 +198,7 @@
             min-width: 0;
         }
 
-        .ng-product-hero-card,
-        .ng-product-highlight-card {
+        .ng-product-hero-card {
             min-height: 126px;
         }
 
@@ -225,17 +207,19 @@
             align-items: center;
         }
 
-        .ng-product-highlight-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
         .ng-widget-head {
             position: relative;
             z-index: 2;
             width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .ng-widget-head > div:first-child {
+            min-width: 0;
+            flex: 1 1 auto;
         }
 
         .ng-widget-head h1 {
@@ -256,49 +240,15 @@
             font-weight: 700;
         }
 
-        .ng-highlight-info {
+
+
+        .ng-product-hero-actions {
             position: relative;
             z-index: 2;
-            min-width: 0;
-        }
-
-        .ng-highlight-info span {
-            display: block;
-            color: #765d45;
-            font-size: 11px;
-            font-weight: 900;
-        }
-
-        .ng-highlight-info strong {
-            display: block;
-            max-width: 280px;
-            margin: 8px 0;
-            overflow: hidden;
-            color: #21160d;
-            font-size: 22px;
-            line-height: 1.1;
-            font-weight: 950;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            letter-spacing: -.03em;
-        }
-
-        .ng-highlight-info small {
-            display: block;
-            color: #765d45;
-            font-size: 11px;
-            line-height: 1.35;
-            font-weight: 850;
-        }
-
-        .ng-highlight-actions {
-            position: relative;
-            z-index: 2;
+            flex: 0 0 auto;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 9px;
-            flex-wrap: wrap;
         }
 
         .ng-primary-button {
@@ -565,12 +515,12 @@
                 padding: 18px 18px 10px !important;
             }
 
-            .ng-product-highlight-card {
+            .ng-widget-head {
                 align-items: flex-start;
                 flex-direction: column;
             }
 
-            .ng-highlight-actions {
+            .ng-product-hero-actions {
                 justify-content: flex-start;
             }
 

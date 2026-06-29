@@ -169,7 +169,7 @@
 
             <div class="ng-filter-area">
                 <div class="ng-monthly-filter-block">
-                    <span class="ng-filter-label">Periode Bulanan</span>
+                    <span class="ng-filter-label"></span>
 
                     <div class="ng-monthly-filter-card">
                         <select class="ng-monthly-select" onchange="window.location.href = this.value">
@@ -234,65 +234,15 @@
             <article class="ng-card ng-revenue-card">
                 <div class="ng-card-head">
                     <div>
-                        <h2>Tren Revenue Mingguan <?php echo e($selectedMonthLabel); ?> <?php echo e($selectedYear); ?></h2>
-                        <p>Ringkasan revenue per minggu dalam bulan aktif</p>
+                        <h2>Revenue Mingguan Bulan <?php echo e($selectedMonthLabel); ?> <?php echo e($selectedYear); ?></h2>
                     </div>
                 </div>
 
-                <div class="ng-chart-responsive">
-                    <div class="ng-y-axis">
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = [1, .75, .5, .25, 0]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $step): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                            <span><?php echo e($formatShortMoney((int) ($niceChartMax * $step))); ?></span>
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                    </div>
-
-                    <div class="ng-chart-area ng-chart-area-static">
-                        <div class="ng-grid-lines">
-                            <i></i>
-                            <i></i>
-                            <i></i>
-                            <i></i>
-                            <i></i>
-                        </div>
-
-                        <div class="ng-bars ng-bars-weekly" style="--bar-count: <?php echo e(max($revenueTrend->count(), 1)); ?>;">
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $revenueTrend; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                                <?php
-                                    $value = (int) ($row['value'] ?? 0);
-                                    $height = $niceChartMax > 0 ? max(3, min(100, ($value / $niceChartMax) * 100)) : 0;
-                                    $tooltipLabel = $row['tooltip_label'] ?? ($row['label'] ?? '-');
-                                ?>
-
-                                <div class="ng-bar-item" tabindex="0" role="button" aria-label="<?php echo e($tooltipLabel); ?> - Revenue <?php echo e($this->rupiah($value)); ?>" data-tooltip-label="<?php echo e($tooltipLabel); ?>" data-tooltip-value="<?php echo e($this->rupiah($value)); ?>" style="--item-index: <?php echo e($loop->index); ?>;">
-
-
-                                    <div class="ng-bar-wrap">
-                                        <span data-bar-height="<?php echo e($height); ?>"></span>
-                                    </div>
-
-                                    <small><?php echo e($row['short_label'] ?? $row['label'] ?? '-'); ?></small>
-                                </div>
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                                <div class="ng-empty-state">
-                                    Belum ada data revenue.
-                                </div>
-                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="ng-active-chart-tooltip" data-chart-click-tooltip aria-hidden="true">
-                    <strong data-chart-tooltip-title>-</strong>
-                    <div class="ng-active-chart-tooltip-row">
+                <div id="ngFinanceRevenueChart" wire:ignore class="ng-chart ng-chart-lg ng-finance-apex-chart">
+                    <div class="ng-chart-loader">
                         <span></span>
-                        <em>Revenue:</em>
-                        <b data-chart-tooltip-value>-</b>
+                        <p>Memuat grafik...</p>
                     </div>
-                </div>
-
-                <div class="ng-chart-caption">
-                    Ringkasan mingguan • Data dalam Rupiah (Rp)
                 </div>
             </article>
 
@@ -300,7 +250,6 @@
                 <div class="ng-card-head">
                     <div>
                         <h2>Progress Target</h2>
-                        <p>Progress target mengikuti bulan aktif yang dipilih</p>
                     </div>
                 </div>
                 <div class="ng-target-list">
@@ -337,7 +286,7 @@
                                 </div>
 
                                 <div class="ng-target-track <?php echo e($isNegativeProgress ? 'danger' : ''); ?>">
-                                    <i data-target-width="<?php echo e($barWidth); ?>"></i>
+                                    <i style="width: <?php echo e($barWidth); ?>%;"></i>
                                 </div>
 
                                 <div class="ng-target-bottom">
@@ -355,12 +304,10 @@
             <div class="ng-table-head">
                 <div>
                     <h2>Rincian Biaya Operasional</h2>
-                    <p>Biaya aktif yang dihitung pada bulan dashboard</p>
                 </div>
 
                 <div class="ng-table-actions">
                     <a href="<?php echo e($links['operational_costs'] ?? '#'); ?>">⚙ Kelola Biaya</a>
-                    <a href="<?php echo e($links['operational_costs'] ?? '#'); ?>">↧ Export</a>
                 </div>
             </div>
 
@@ -401,7 +348,6 @@
                                             <?php echo e($this->rupiah($cost['amount'] ?? 0)); ?>
 
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(! empty($cost['is_annual'])): ?>
-                                                <small><?php echo e($cost['description'] ?? 'Tahunan / 12'); ?></small>
                                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                         </td>
                                         <td><span class="ng-status-paid">Dihitung</span></td>
@@ -1889,206 +1835,6 @@
             min-height: 3px !important;
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | VISUAL POLISH + INTERACTIVE ANIMATION
-        |--------------------------------------------------------------------------
-        */
-
-        .ng-chart-responsive {
-            grid-template-columns: 72px minmax(0, 1fr) !important;
-            min-height: 300px !important;
-            align-items: stretch;
-        }
-
-        .ng-y-axis {
-            height: 280px;
-            padding: 0 12px 40px 0 !important;
-            display: grid;
-            grid-template-rows: repeat(5, minmax(0, 1fr));
-            align-items: stretch;
-        }
-
-        .ng-y-axis span {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            min-height: 0;
-            transform: none !important;
-            line-height: 1;
-            white-space: nowrap;
-        }
-
-        .ng-y-axis span:first-child {
-            align-items: flex-start;
-            padding-top: 2px;
-        }
-
-        .ng-y-axis span:last-child {
-            align-items: flex-end;
-            padding-bottom: 2px;
-        }
-
-        .ng-chart-area,
-        .ng-chart-area.ng-chart-area-static {
-            overflow: visible !important;
-            padding-bottom: 38px !important;
-        }
-
-        .ng-grid-lines {
-            inset: 10px 0 38px 0 !important;
-        }
-
-        .ng-grid-lines i,
-        .ng-grid-lines i:last-child {
-            border-color: rgba(109, 79, 50, .10) !important;
-        }
-
-        .ng-bars,
-        .ng-bars-weekly {
-            min-width: 100% !important;
-            height: 280px !important;
-            gap: 18px !important;
-            padding: 0 8px !important;
-        }
-
-        .ng-bars-weekly .ng-bar-item {
-            position: relative;
-            padding-top: 78px !important;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .ng-bar-item {
-            outline: none;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap {
-            align-items: end;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap span {
-            width: min(100%, 30px) !important;
-            height: 0;
-            min-height: 0 !important;
-            border-radius: 12px 12px 4px 4px !important;
-            background: linear-gradient(180deg, #ffa12b, #ff6a00) !important;
-            box-shadow: 0 12px 22px rgba(249, 115, 22, .18) !important;
-            transition: height .9s cubic-bezier(.22, 1, .36, 1), transform .22s ease, filter .22s ease;
-            transform-origin: bottom center;
-        }
-
-        .ng-bar-item:hover .ng-bar-wrap span,
-        .ng-bar-item:focus-visible .ng-bar-wrap span,
-        .ng-bar-item.is-open .ng-bar-wrap span {
-            filter: brightness(1.05);
-            transform: translateY(-2px);
-        }
-
-        .ng-chart-tooltip {
-            top: 8px !important;
-            min-width: 210px;
-            max-width: min(260px, calc(100vw - 40px));
-            padding: 16px 18px !important;
-            border-radius: 18px !important;
-            background: rgba(244, 244, 246, .97) !important;
-            box-shadow: 0 18px 46px rgba(77, 51, 22, .18) !important;
-            transform: translate(-50%, 8px) !important;
-        }
-
-        .ng-chart-tooltip strong {
-            color: #747b84 !important;
-            font-size: 17px !important;
-            font-weight: 950 !important;
-            margin-bottom: 12px !important;
-        }
-
-        .ng-chart-tooltip-row {
-            gap: 8px !important;
-            color: #2e2620 !important;
-            font-size: 15px !important;
-            font-weight: 800 !important;
-        }
-
-        .ng-chart-tooltip-row b {
-            color: #23170f !important;
-            font-size: 16px !important;
-            font-weight: 950 !important;
-        }
-
-        .ng-chart-tooltip-dot {
-            width: 15px !important;
-            height: 15px !important;
-        }
-
-        .ng-bar-item.is-open .ng-chart-tooltip,
-        .ng-bar-item:hover .ng-chart-tooltip,
-        .ng-bar-item:focus-visible .ng-chart-tooltip,
-        .ng-bar-item:focus-within .ng-chart-tooltip {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translate(-50%, -8px) !important;
-        }
-
-        .ng-target-row {
-            opacity: .7;
-            transform: translateY(10px);
-            transition: opacity .45s ease, transform .45s ease;
-        }
-
-        .ng-target-row.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .ng-target-top b {
-            font-size: 17px !important;
-            color: #23170f !important;
-        }
-
-        .ng-target-top b.negative,
-        .ng-target-top b.positive {
-            color: #23170f !important;
-        }
-
-        .ng-target-track {
-            overflow: hidden;
-        }
-
-        .ng-target-track i {
-            display: block;
-            width: 0;
-            transition: width .95s cubic-bezier(.22, 1, .36, 1);
-        }
-
-        @media (max-width: 960px) {
-            .ng-chart-responsive {
-                grid-template-columns: 56px minmax(0, 1fr) !important;
-            }
-
-            .ng-y-axis {
-                height: 248px;
-                padding-right: 8px !important;
-            }
-
-            .ng-bars,
-            .ng-bars-weekly {
-                height: 248px !important;
-                gap: 12px !important;
-            }
-
-            .ng-bars-weekly .ng-bar-item {
-                padding-top: 72px !important;
-            }
-
-            .ng-chart-tooltip {
-                min-width: 186px;
-                padding: 14px 16px !important;
-            }
-        }
-
-
     </style>
 
 
@@ -2161,7 +1907,9 @@
             setPage(1);
         });
     </script>
-<script>
+
+
+    <script>
         (function () {
             function syncFinanceSidebarClass() {
                 document.body.classList.add('ng-finance-sidebar-sync');
@@ -2580,206 +2328,6 @@
                 max-height: none !important;
             }
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | VISUAL POLISH + INTERACTIVE ANIMATION
-        |--------------------------------------------------------------------------
-        */
-
-        .ng-chart-responsive {
-            grid-template-columns: 72px minmax(0, 1fr) !important;
-            min-height: 300px !important;
-            align-items: stretch;
-        }
-
-        .ng-y-axis {
-            height: 280px;
-            padding: 0 12px 40px 0 !important;
-            display: grid;
-            grid-template-rows: repeat(5, minmax(0, 1fr));
-            align-items: stretch;
-        }
-
-        .ng-y-axis span {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            min-height: 0;
-            transform: none !important;
-            line-height: 1;
-            white-space: nowrap;
-        }
-
-        .ng-y-axis span:first-child {
-            align-items: flex-start;
-            padding-top: 2px;
-        }
-
-        .ng-y-axis span:last-child {
-            align-items: flex-end;
-            padding-bottom: 2px;
-        }
-
-        .ng-chart-area,
-        .ng-chart-area.ng-chart-area-static {
-            overflow: visible !important;
-            padding-bottom: 38px !important;
-        }
-
-        .ng-grid-lines {
-            inset: 10px 0 38px 0 !important;
-        }
-
-        .ng-grid-lines i,
-        .ng-grid-lines i:last-child {
-            border-color: rgba(109, 79, 50, .10) !important;
-        }
-
-        .ng-bars,
-        .ng-bars-weekly {
-            min-width: 100% !important;
-            height: 280px !important;
-            gap: 18px !important;
-            padding: 0 8px !important;
-        }
-
-        .ng-bars-weekly .ng-bar-item {
-            position: relative;
-            padding-top: 78px !important;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .ng-bar-item {
-            outline: none;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap {
-            align-items: end;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap span {
-            width: min(100%, 30px) !important;
-            height: 0;
-            min-height: 0 !important;
-            border-radius: 12px 12px 4px 4px !important;
-            background: linear-gradient(180deg, #ffa12b, #ff6a00) !important;
-            box-shadow: 0 12px 22px rgba(249, 115, 22, .18) !important;
-            transition: height .9s cubic-bezier(.22, 1, .36, 1), transform .22s ease, filter .22s ease;
-            transform-origin: bottom center;
-        }
-
-        .ng-bar-item:hover .ng-bar-wrap span,
-        .ng-bar-item:focus-visible .ng-bar-wrap span,
-        .ng-bar-item.is-open .ng-bar-wrap span {
-            filter: brightness(1.05);
-            transform: translateY(-2px);
-        }
-
-        .ng-chart-tooltip {
-            top: 8px !important;
-            min-width: 210px;
-            max-width: min(260px, calc(100vw - 40px));
-            padding: 16px 18px !important;
-            border-radius: 18px !important;
-            background: rgba(244, 244, 246, .97) !important;
-            box-shadow: 0 18px 46px rgba(77, 51, 22, .18) !important;
-            transform: translate(-50%, 8px) !important;
-        }
-
-        .ng-chart-tooltip strong {
-            color: #747b84 !important;
-            font-size: 17px !important;
-            font-weight: 950 !important;
-            margin-bottom: 12px !important;
-        }
-
-        .ng-chart-tooltip-row {
-            gap: 8px !important;
-            color: #2e2620 !important;
-            font-size: 15px !important;
-            font-weight: 800 !important;
-        }
-
-        .ng-chart-tooltip-row b {
-            color: #23170f !important;
-            font-size: 16px !important;
-            font-weight: 950 !important;
-        }
-
-        .ng-chart-tooltip-dot {
-            width: 15px !important;
-            height: 15px !important;
-        }
-
-        .ng-bar-item.is-open .ng-chart-tooltip,
-        .ng-bar-item:hover .ng-chart-tooltip,
-        .ng-bar-item:focus-visible .ng-chart-tooltip,
-        .ng-bar-item:focus-within .ng-chart-tooltip {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translate(-50%, -8px) !important;
-        }
-
-        .ng-target-row {
-            opacity: .7;
-            transform: translateY(10px);
-            transition: opacity .45s ease, transform .45s ease;
-        }
-
-        .ng-target-row.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .ng-target-top b {
-            font-size: 17px !important;
-            color: #23170f !important;
-        }
-
-        .ng-target-top b.negative,
-        .ng-target-top b.positive {
-            color: #23170f !important;
-        }
-
-        .ng-target-track {
-            overflow: hidden;
-        }
-
-        .ng-target-track i {
-            display: block;
-            width: 0;
-            transition: width .95s cubic-bezier(.22, 1, .36, 1);
-        }
-
-        @media (max-width: 960px) {
-            .ng-chart-responsive {
-                grid-template-columns: 56px minmax(0, 1fr) !important;
-            }
-
-            .ng-y-axis {
-                height: 248px;
-                padding-right: 8px !important;
-            }
-
-            .ng-bars,
-            .ng-bars-weekly {
-                height: 248px !important;
-                gap: 12px !important;
-            }
-
-            .ng-bars-weekly .ng-bar-item {
-                padding-top: 72px !important;
-            }
-
-            .ng-chart-tooltip {
-                min-width: 186px;
-                padding: 14px 16px !important;
-            }
-        }
-
-
     </style>
 
 
@@ -2893,206 +2441,6 @@
         body.ng-finance-sidebar-soft .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-label {
             color: #e45f00 !important;
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | VISUAL POLISH + INTERACTIVE ANIMATION
-        |--------------------------------------------------------------------------
-        */
-
-        .ng-chart-responsive {
-            grid-template-columns: 72px minmax(0, 1fr) !important;
-            min-height: 300px !important;
-            align-items: stretch;
-        }
-
-        .ng-y-axis {
-            height: 280px;
-            padding: 0 12px 40px 0 !important;
-            display: grid;
-            grid-template-rows: repeat(5, minmax(0, 1fr));
-            align-items: stretch;
-        }
-
-        .ng-y-axis span {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            min-height: 0;
-            transform: none !important;
-            line-height: 1;
-            white-space: nowrap;
-        }
-
-        .ng-y-axis span:first-child {
-            align-items: flex-start;
-            padding-top: 2px;
-        }
-
-        .ng-y-axis span:last-child {
-            align-items: flex-end;
-            padding-bottom: 2px;
-        }
-
-        .ng-chart-area,
-        .ng-chart-area.ng-chart-area-static {
-            overflow: visible !important;
-            padding-bottom: 38px !important;
-        }
-
-        .ng-grid-lines {
-            inset: 10px 0 38px 0 !important;
-        }
-
-        .ng-grid-lines i,
-        .ng-grid-lines i:last-child {
-            border-color: rgba(109, 79, 50, .10) !important;
-        }
-
-        .ng-bars,
-        .ng-bars-weekly {
-            min-width: 100% !important;
-            height: 280px !important;
-            gap: 18px !important;
-            padding: 0 8px !important;
-        }
-
-        .ng-bars-weekly .ng-bar-item {
-            position: relative;
-            padding-top: 78px !important;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .ng-bar-item {
-            outline: none;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap {
-            align-items: end;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap span {
-            width: min(100%, 30px) !important;
-            height: 0;
-            min-height: 0 !important;
-            border-radius: 12px 12px 4px 4px !important;
-            background: linear-gradient(180deg, #ffa12b, #ff6a00) !important;
-            box-shadow: 0 12px 22px rgba(249, 115, 22, .18) !important;
-            transition: height .9s cubic-bezier(.22, 1, .36, 1), transform .22s ease, filter .22s ease;
-            transform-origin: bottom center;
-        }
-
-        .ng-bar-item:hover .ng-bar-wrap span,
-        .ng-bar-item:focus-visible .ng-bar-wrap span,
-        .ng-bar-item.is-open .ng-bar-wrap span {
-            filter: brightness(1.05);
-            transform: translateY(-2px);
-        }
-
-        .ng-chart-tooltip {
-            top: 8px !important;
-            min-width: 210px;
-            max-width: min(260px, calc(100vw - 40px));
-            padding: 16px 18px !important;
-            border-radius: 18px !important;
-            background: rgba(244, 244, 246, .97) !important;
-            box-shadow: 0 18px 46px rgba(77, 51, 22, .18) !important;
-            transform: translate(-50%, 8px) !important;
-        }
-
-        .ng-chart-tooltip strong {
-            color: #747b84 !important;
-            font-size: 17px !important;
-            font-weight: 950 !important;
-            margin-bottom: 12px !important;
-        }
-
-        .ng-chart-tooltip-row {
-            gap: 8px !important;
-            color: #2e2620 !important;
-            font-size: 15px !important;
-            font-weight: 800 !important;
-        }
-
-        .ng-chart-tooltip-row b {
-            color: #23170f !important;
-            font-size: 16px !important;
-            font-weight: 950 !important;
-        }
-
-        .ng-chart-tooltip-dot {
-            width: 15px !important;
-            height: 15px !important;
-        }
-
-        .ng-bar-item.is-open .ng-chart-tooltip,
-        .ng-bar-item:hover .ng-chart-tooltip,
-        .ng-bar-item:focus-visible .ng-chart-tooltip,
-        .ng-bar-item:focus-within .ng-chart-tooltip {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translate(-50%, -8px) !important;
-        }
-
-        .ng-target-row {
-            opacity: .7;
-            transform: translateY(10px);
-            transition: opacity .45s ease, transform .45s ease;
-        }
-
-        .ng-target-row.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .ng-target-top b {
-            font-size: 17px !important;
-            color: #23170f !important;
-        }
-
-        .ng-target-top b.negative,
-        .ng-target-top b.positive {
-            color: #23170f !important;
-        }
-
-        .ng-target-track {
-            overflow: hidden;
-        }
-
-        .ng-target-track i {
-            display: block;
-            width: 0;
-            transition: width .95s cubic-bezier(.22, 1, .36, 1);
-        }
-
-        @media (max-width: 960px) {
-            .ng-chart-responsive {
-                grid-template-columns: 56px minmax(0, 1fr) !important;
-            }
-
-            .ng-y-axis {
-                height: 248px;
-                padding-right: 8px !important;
-            }
-
-            .ng-bars,
-            .ng-bars-weekly {
-                height: 248px !important;
-                gap: 12px !important;
-            }
-
-            .ng-bars-weekly .ng-bar-item {
-                padding-top: 72px !important;
-            }
-
-            .ng-chart-tooltip {
-                min-width: 186px;
-                padding: 14px 16px !important;
-            }
-        }
-
-
     </style>
 
     <script>
@@ -3221,206 +2569,6 @@
                 gap: 8px !important;
             }
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | VISUAL POLISH + INTERACTIVE ANIMATION
-        |--------------------------------------------------------------------------
-        */
-
-        .ng-chart-responsive {
-            grid-template-columns: 72px minmax(0, 1fr) !important;
-            min-height: 300px !important;
-            align-items: stretch;
-        }
-
-        .ng-y-axis {
-            height: 280px;
-            padding: 0 12px 40px 0 !important;
-            display: grid;
-            grid-template-rows: repeat(5, minmax(0, 1fr));
-            align-items: stretch;
-        }
-
-        .ng-y-axis span {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            min-height: 0;
-            transform: none !important;
-            line-height: 1;
-            white-space: nowrap;
-        }
-
-        .ng-y-axis span:first-child {
-            align-items: flex-start;
-            padding-top: 2px;
-        }
-
-        .ng-y-axis span:last-child {
-            align-items: flex-end;
-            padding-bottom: 2px;
-        }
-
-        .ng-chart-area,
-        .ng-chart-area.ng-chart-area-static {
-            overflow: visible !important;
-            padding-bottom: 38px !important;
-        }
-
-        .ng-grid-lines {
-            inset: 10px 0 38px 0 !important;
-        }
-
-        .ng-grid-lines i,
-        .ng-grid-lines i:last-child {
-            border-color: rgba(109, 79, 50, .10) !important;
-        }
-
-        .ng-bars,
-        .ng-bars-weekly {
-            min-width: 100% !important;
-            height: 280px !important;
-            gap: 18px !important;
-            padding: 0 8px !important;
-        }
-
-        .ng-bars-weekly .ng-bar-item {
-            position: relative;
-            padding-top: 78px !important;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .ng-bar-item {
-            outline: none;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap {
-            align-items: end;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap span {
-            width: min(100%, 30px) !important;
-            height: 0;
-            min-height: 0 !important;
-            border-radius: 12px 12px 4px 4px !important;
-            background: linear-gradient(180deg, #ffa12b, #ff6a00) !important;
-            box-shadow: 0 12px 22px rgba(249, 115, 22, .18) !important;
-            transition: height .9s cubic-bezier(.22, 1, .36, 1), transform .22s ease, filter .22s ease;
-            transform-origin: bottom center;
-        }
-
-        .ng-bar-item:hover .ng-bar-wrap span,
-        .ng-bar-item:focus-visible .ng-bar-wrap span,
-        .ng-bar-item.is-open .ng-bar-wrap span {
-            filter: brightness(1.05);
-            transform: translateY(-2px);
-        }
-
-        .ng-chart-tooltip {
-            top: 8px !important;
-            min-width: 210px;
-            max-width: min(260px, calc(100vw - 40px));
-            padding: 16px 18px !important;
-            border-radius: 18px !important;
-            background: rgba(244, 244, 246, .97) !important;
-            box-shadow: 0 18px 46px rgba(77, 51, 22, .18) !important;
-            transform: translate(-50%, 8px) !important;
-        }
-
-        .ng-chart-tooltip strong {
-            color: #747b84 !important;
-            font-size: 17px !important;
-            font-weight: 950 !important;
-            margin-bottom: 12px !important;
-        }
-
-        .ng-chart-tooltip-row {
-            gap: 8px !important;
-            color: #2e2620 !important;
-            font-size: 15px !important;
-            font-weight: 800 !important;
-        }
-
-        .ng-chart-tooltip-row b {
-            color: #23170f !important;
-            font-size: 16px !important;
-            font-weight: 950 !important;
-        }
-
-        .ng-chart-tooltip-dot {
-            width: 15px !important;
-            height: 15px !important;
-        }
-
-        .ng-bar-item.is-open .ng-chart-tooltip,
-        .ng-bar-item:hover .ng-chart-tooltip,
-        .ng-bar-item:focus-visible .ng-chart-tooltip,
-        .ng-bar-item:focus-within .ng-chart-tooltip {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translate(-50%, -8px) !important;
-        }
-
-        .ng-target-row {
-            opacity: .7;
-            transform: translateY(10px);
-            transition: opacity .45s ease, transform .45s ease;
-        }
-
-        .ng-target-row.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .ng-target-top b {
-            font-size: 17px !important;
-            color: #23170f !important;
-        }
-
-        .ng-target-top b.negative,
-        .ng-target-top b.positive {
-            color: #23170f !important;
-        }
-
-        .ng-target-track {
-            overflow: hidden;
-        }
-
-        .ng-target-track i {
-            display: block;
-            width: 0;
-            transition: width .95s cubic-bezier(.22, 1, .36, 1);
-        }
-
-        @media (max-width: 960px) {
-            .ng-chart-responsive {
-                grid-template-columns: 56px minmax(0, 1fr) !important;
-            }
-
-            .ng-y-axis {
-                height: 248px;
-                padding-right: 8px !important;
-            }
-
-            .ng-bars,
-            .ng-bars-weekly {
-                height: 248px !important;
-                gap: 12px !important;
-            }
-
-            .ng-bars-weekly .ng-bar-item {
-                padding-top: 72px !important;
-            }
-
-            .ng-chart-tooltip {
-                min-width: 186px;
-                padding: 14px 16px !important;
-            }
-        }
-
-
     </style>
 
 
@@ -3506,206 +2654,6 @@
             cursor: default !important;
             pointer-events: none !important;
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | VISUAL POLISH + INTERACTIVE ANIMATION
-        |--------------------------------------------------------------------------
-        */
-
-        .ng-chart-responsive {
-            grid-template-columns: 72px minmax(0, 1fr) !important;
-            min-height: 300px !important;
-            align-items: stretch;
-        }
-
-        .ng-y-axis {
-            height: 280px;
-            padding: 0 12px 40px 0 !important;
-            display: grid;
-            grid-template-rows: repeat(5, minmax(0, 1fr));
-            align-items: stretch;
-        }
-
-        .ng-y-axis span {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            min-height: 0;
-            transform: none !important;
-            line-height: 1;
-            white-space: nowrap;
-        }
-
-        .ng-y-axis span:first-child {
-            align-items: flex-start;
-            padding-top: 2px;
-        }
-
-        .ng-y-axis span:last-child {
-            align-items: flex-end;
-            padding-bottom: 2px;
-        }
-
-        .ng-chart-area,
-        .ng-chart-area.ng-chart-area-static {
-            overflow: visible !important;
-            padding-bottom: 38px !important;
-        }
-
-        .ng-grid-lines {
-            inset: 10px 0 38px 0 !important;
-        }
-
-        .ng-grid-lines i,
-        .ng-grid-lines i:last-child {
-            border-color: rgba(109, 79, 50, .10) !important;
-        }
-
-        .ng-bars,
-        .ng-bars-weekly {
-            min-width: 100% !important;
-            height: 280px !important;
-            gap: 18px !important;
-            padding: 0 8px !important;
-        }
-
-        .ng-bars-weekly .ng-bar-item {
-            position: relative;
-            padding-top: 78px !important;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .ng-bar-item {
-            outline: none;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap {
-            align-items: end;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap span {
-            width: min(100%, 30px) !important;
-            height: 0;
-            min-height: 0 !important;
-            border-radius: 12px 12px 4px 4px !important;
-            background: linear-gradient(180deg, #ffa12b, #ff6a00) !important;
-            box-shadow: 0 12px 22px rgba(249, 115, 22, .18) !important;
-            transition: height .9s cubic-bezier(.22, 1, .36, 1), transform .22s ease, filter .22s ease;
-            transform-origin: bottom center;
-        }
-
-        .ng-bar-item:hover .ng-bar-wrap span,
-        .ng-bar-item:focus-visible .ng-bar-wrap span,
-        .ng-bar-item.is-open .ng-bar-wrap span {
-            filter: brightness(1.05);
-            transform: translateY(-2px);
-        }
-
-        .ng-chart-tooltip {
-            top: 8px !important;
-            min-width: 210px;
-            max-width: min(260px, calc(100vw - 40px));
-            padding: 16px 18px !important;
-            border-radius: 18px !important;
-            background: rgba(244, 244, 246, .97) !important;
-            box-shadow: 0 18px 46px rgba(77, 51, 22, .18) !important;
-            transform: translate(-50%, 8px) !important;
-        }
-
-        .ng-chart-tooltip strong {
-            color: #747b84 !important;
-            font-size: 17px !important;
-            font-weight: 950 !important;
-            margin-bottom: 12px !important;
-        }
-
-        .ng-chart-tooltip-row {
-            gap: 8px !important;
-            color: #2e2620 !important;
-            font-size: 15px !important;
-            font-weight: 800 !important;
-        }
-
-        .ng-chart-tooltip-row b {
-            color: #23170f !important;
-            font-size: 16px !important;
-            font-weight: 950 !important;
-        }
-
-        .ng-chart-tooltip-dot {
-            width: 15px !important;
-            height: 15px !important;
-        }
-
-        .ng-bar-item.is-open .ng-chart-tooltip,
-        .ng-bar-item:hover .ng-chart-tooltip,
-        .ng-bar-item:focus-visible .ng-chart-tooltip,
-        .ng-bar-item:focus-within .ng-chart-tooltip {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translate(-50%, -8px) !important;
-        }
-
-        .ng-target-row {
-            opacity: .7;
-            transform: translateY(10px);
-            transition: opacity .45s ease, transform .45s ease;
-        }
-
-        .ng-target-row.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .ng-target-top b {
-            font-size: 17px !important;
-            color: #23170f !important;
-        }
-
-        .ng-target-top b.negative,
-        .ng-target-top b.positive {
-            color: #23170f !important;
-        }
-
-        .ng-target-track {
-            overflow: hidden;
-        }
-
-        .ng-target-track i {
-            display: block;
-            width: 0;
-            transition: width .95s cubic-bezier(.22, 1, .36, 1);
-        }
-
-        @media (max-width: 960px) {
-            .ng-chart-responsive {
-                grid-template-columns: 56px minmax(0, 1fr) !important;
-            }
-
-            .ng-y-axis {
-                height: 248px;
-                padding-right: 8px !important;
-            }
-
-            .ng-bars,
-            .ng-bars-weekly {
-                height: 248px !important;
-                gap: 12px !important;
-            }
-
-            .ng-bars-weekly .ng-bar-item {
-                padding-top: 72px !important;
-            }
-
-            .ng-chart-tooltip {
-                min-width: 186px;
-                padding: 14px 16px !important;
-            }
-        }
-
-
     </style>
 
 
@@ -3884,206 +2832,6 @@
             font-weight: 950 !important;
             transform: translateY(-1px) !important;
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | VISUAL POLISH + INTERACTIVE ANIMATION
-        |--------------------------------------------------------------------------
-        */
-
-        .ng-chart-responsive {
-            grid-template-columns: 72px minmax(0, 1fr) !important;
-            min-height: 300px !important;
-            align-items: stretch;
-        }
-
-        .ng-y-axis {
-            height: 280px;
-            padding: 0 12px 40px 0 !important;
-            display: grid;
-            grid-template-rows: repeat(5, minmax(0, 1fr));
-            align-items: stretch;
-        }
-
-        .ng-y-axis span {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            min-height: 0;
-            transform: none !important;
-            line-height: 1;
-            white-space: nowrap;
-        }
-
-        .ng-y-axis span:first-child {
-            align-items: flex-start;
-            padding-top: 2px;
-        }
-
-        .ng-y-axis span:last-child {
-            align-items: flex-end;
-            padding-bottom: 2px;
-        }
-
-        .ng-chart-area,
-        .ng-chart-area.ng-chart-area-static {
-            overflow: visible !important;
-            padding-bottom: 38px !important;
-        }
-
-        .ng-grid-lines {
-            inset: 10px 0 38px 0 !important;
-        }
-
-        .ng-grid-lines i,
-        .ng-grid-lines i:last-child {
-            border-color: rgba(109, 79, 50, .10) !important;
-        }
-
-        .ng-bars,
-        .ng-bars-weekly {
-            min-width: 100% !important;
-            height: 280px !important;
-            gap: 18px !important;
-            padding: 0 8px !important;
-        }
-
-        .ng-bars-weekly .ng-bar-item {
-            position: relative;
-            padding-top: 78px !important;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .ng-bar-item {
-            outline: none;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap {
-            align-items: end;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap span {
-            width: min(100%, 30px) !important;
-            height: 0;
-            min-height: 0 !important;
-            border-radius: 12px 12px 4px 4px !important;
-            background: linear-gradient(180deg, #ffa12b, #ff6a00) !important;
-            box-shadow: 0 12px 22px rgba(249, 115, 22, .18) !important;
-            transition: height .9s cubic-bezier(.22, 1, .36, 1), transform .22s ease, filter .22s ease;
-            transform-origin: bottom center;
-        }
-
-        .ng-bar-item:hover .ng-bar-wrap span,
-        .ng-bar-item:focus-visible .ng-bar-wrap span,
-        .ng-bar-item.is-open .ng-bar-wrap span {
-            filter: brightness(1.05);
-            transform: translateY(-2px);
-        }
-
-        .ng-chart-tooltip {
-            top: 8px !important;
-            min-width: 210px;
-            max-width: min(260px, calc(100vw - 40px));
-            padding: 16px 18px !important;
-            border-radius: 18px !important;
-            background: rgba(244, 244, 246, .97) !important;
-            box-shadow: 0 18px 46px rgba(77, 51, 22, .18) !important;
-            transform: translate(-50%, 8px) !important;
-        }
-
-        .ng-chart-tooltip strong {
-            color: #747b84 !important;
-            font-size: 17px !important;
-            font-weight: 950 !important;
-            margin-bottom: 12px !important;
-        }
-
-        .ng-chart-tooltip-row {
-            gap: 8px !important;
-            color: #2e2620 !important;
-            font-size: 15px !important;
-            font-weight: 800 !important;
-        }
-
-        .ng-chart-tooltip-row b {
-            color: #23170f !important;
-            font-size: 16px !important;
-            font-weight: 950 !important;
-        }
-
-        .ng-chart-tooltip-dot {
-            width: 15px !important;
-            height: 15px !important;
-        }
-
-        .ng-bar-item.is-open .ng-chart-tooltip,
-        .ng-bar-item:hover .ng-chart-tooltip,
-        .ng-bar-item:focus-visible .ng-chart-tooltip,
-        .ng-bar-item:focus-within .ng-chart-tooltip {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translate(-50%, -8px) !important;
-        }
-
-        .ng-target-row {
-            opacity: .7;
-            transform: translateY(10px);
-            transition: opacity .45s ease, transform .45s ease;
-        }
-
-        .ng-target-row.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .ng-target-top b {
-            font-size: 17px !important;
-            color: #23170f !important;
-        }
-
-        .ng-target-top b.negative,
-        .ng-target-top b.positive {
-            color: #23170f !important;
-        }
-
-        .ng-target-track {
-            overflow: hidden;
-        }
-
-        .ng-target-track i {
-            display: block;
-            width: 0;
-            transition: width .95s cubic-bezier(.22, 1, .36, 1);
-        }
-
-        @media (max-width: 960px) {
-            .ng-chart-responsive {
-                grid-template-columns: 56px minmax(0, 1fr) !important;
-            }
-
-            .ng-y-axis {
-                height: 248px;
-                padding-right: 8px !important;
-            }
-
-            .ng-bars,
-            .ng-bars-weekly {
-                height: 248px !important;
-                gap: 12px !important;
-            }
-
-            .ng-bars-weekly .ng-bar-item {
-                padding-top: 72px !important;
-            }
-
-            .ng-chart-tooltip {
-                min-width: 186px;
-                padding: 14px 16px !important;
-            }
-        }
-
-
     </style>
 
 
@@ -4213,206 +2961,6 @@
             pointer-events: none !important;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, .42) !important;
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | VISUAL POLISH + INTERACTIVE ANIMATION
-        |--------------------------------------------------------------------------
-        */
-
-        .ng-chart-responsive {
-            grid-template-columns: 72px minmax(0, 1fr) !important;
-            min-height: 300px !important;
-            align-items: stretch;
-        }
-
-        .ng-y-axis {
-            height: 280px;
-            padding: 0 12px 40px 0 !important;
-            display: grid;
-            grid-template-rows: repeat(5, minmax(0, 1fr));
-            align-items: stretch;
-        }
-
-        .ng-y-axis span {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            min-height: 0;
-            transform: none !important;
-            line-height: 1;
-            white-space: nowrap;
-        }
-
-        .ng-y-axis span:first-child {
-            align-items: flex-start;
-            padding-top: 2px;
-        }
-
-        .ng-y-axis span:last-child {
-            align-items: flex-end;
-            padding-bottom: 2px;
-        }
-
-        .ng-chart-area,
-        .ng-chart-area.ng-chart-area-static {
-            overflow: visible !important;
-            padding-bottom: 38px !important;
-        }
-
-        .ng-grid-lines {
-            inset: 10px 0 38px 0 !important;
-        }
-
-        .ng-grid-lines i,
-        .ng-grid-lines i:last-child {
-            border-color: rgba(109, 79, 50, .10) !important;
-        }
-
-        .ng-bars,
-        .ng-bars-weekly {
-            min-width: 100% !important;
-            height: 280px !important;
-            gap: 18px !important;
-            padding: 0 8px !important;
-        }
-
-        .ng-bars-weekly .ng-bar-item {
-            position: relative;
-            padding-top: 78px !important;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .ng-bar-item {
-            outline: none;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap {
-            align-items: end;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap span {
-            width: min(100%, 30px) !important;
-            height: 0;
-            min-height: 0 !important;
-            border-radius: 12px 12px 4px 4px !important;
-            background: linear-gradient(180deg, #ffa12b, #ff6a00) !important;
-            box-shadow: 0 12px 22px rgba(249, 115, 22, .18) !important;
-            transition: height .9s cubic-bezier(.22, 1, .36, 1), transform .22s ease, filter .22s ease;
-            transform-origin: bottom center;
-        }
-
-        .ng-bar-item:hover .ng-bar-wrap span,
-        .ng-bar-item:focus-visible .ng-bar-wrap span,
-        .ng-bar-item.is-open .ng-bar-wrap span {
-            filter: brightness(1.05);
-            transform: translateY(-2px);
-        }
-
-        .ng-chart-tooltip {
-            top: 8px !important;
-            min-width: 210px;
-            max-width: min(260px, calc(100vw - 40px));
-            padding: 16px 18px !important;
-            border-radius: 18px !important;
-            background: rgba(244, 244, 246, .97) !important;
-            box-shadow: 0 18px 46px rgba(77, 51, 22, .18) !important;
-            transform: translate(-50%, 8px) !important;
-        }
-
-        .ng-chart-tooltip strong {
-            color: #747b84 !important;
-            font-size: 17px !important;
-            font-weight: 950 !important;
-            margin-bottom: 12px !important;
-        }
-
-        .ng-chart-tooltip-row {
-            gap: 8px !important;
-            color: #2e2620 !important;
-            font-size: 15px !important;
-            font-weight: 800 !important;
-        }
-
-        .ng-chart-tooltip-row b {
-            color: #23170f !important;
-            font-size: 16px !important;
-            font-weight: 950 !important;
-        }
-
-        .ng-chart-tooltip-dot {
-            width: 15px !important;
-            height: 15px !important;
-        }
-
-        .ng-bar-item.is-open .ng-chart-tooltip,
-        .ng-bar-item:hover .ng-chart-tooltip,
-        .ng-bar-item:focus-visible .ng-chart-tooltip,
-        .ng-bar-item:focus-within .ng-chart-tooltip {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translate(-50%, -8px) !important;
-        }
-
-        .ng-target-row {
-            opacity: .7;
-            transform: translateY(10px);
-            transition: opacity .45s ease, transform .45s ease;
-        }
-
-        .ng-target-row.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .ng-target-top b {
-            font-size: 17px !important;
-            color: #23170f !important;
-        }
-
-        .ng-target-top b.negative,
-        .ng-target-top b.positive {
-            color: #23170f !important;
-        }
-
-        .ng-target-track {
-            overflow: hidden;
-        }
-
-        .ng-target-track i {
-            display: block;
-            width: 0;
-            transition: width .95s cubic-bezier(.22, 1, .36, 1);
-        }
-
-        @media (max-width: 960px) {
-            .ng-chart-responsive {
-                grid-template-columns: 56px minmax(0, 1fr) !important;
-            }
-
-            .ng-y-axis {
-                height: 248px;
-                padding-right: 8px !important;
-            }
-
-            .ng-bars,
-            .ng-bars-weekly {
-                height: 248px !important;
-                gap: 12px !important;
-            }
-
-            .ng-bars-weekly .ng-bar-item {
-                padding-top: 72px !important;
-            }
-
-            .ng-chart-tooltip {
-                min-width: 186px;
-                padding: 14px 16px !important;
-            }
-        }
-
-
     </style>
 
 
@@ -4486,743 +3034,449 @@
         body:has(.ng-finance-dashboard-new) .ng-cost-page-btn:not(.is-disabled):active {
             transform: translateY(0) scale(.98) !important;
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | VISUAL POLISH + INTERACTIVE ANIMATION
-        |--------------------------------------------------------------------------
-        */
-
-        .ng-chart-responsive {
-            grid-template-columns: 72px minmax(0, 1fr) !important;
-            min-height: 300px !important;
-            align-items: stretch;
-        }
-
-        .ng-y-axis {
-            height: 280px;
-            padding: 0 12px 40px 0 !important;
-            display: grid;
-            grid-template-rows: repeat(5, minmax(0, 1fr));
-            align-items: stretch;
-        }
-
-        .ng-y-axis span {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            min-height: 0;
-            transform: none !important;
-            line-height: 1;
-            white-space: nowrap;
-        }
-
-        .ng-y-axis span:first-child {
-            align-items: flex-start;
-            padding-top: 2px;
-        }
-
-        .ng-y-axis span:last-child {
-            align-items: flex-end;
-            padding-bottom: 2px;
-        }
-
-        .ng-chart-area,
-        .ng-chart-area.ng-chart-area-static {
-            overflow: visible !important;
-            padding-bottom: 38px !important;
-        }
-
-        .ng-grid-lines {
-            inset: 10px 0 38px 0 !important;
-        }
-
-        .ng-grid-lines i,
-        .ng-grid-lines i:last-child {
-            border-color: rgba(109, 79, 50, .10) !important;
-        }
-
-        .ng-bars,
-        .ng-bars-weekly {
-            min-width: 100% !important;
-            height: 280px !important;
-            gap: 18px !important;
-            padding: 0 8px !important;
-        }
-
-        .ng-bars-weekly .ng-bar-item {
-            position: relative;
-            padding-top: 78px !important;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .ng-bar-item {
-            outline: none;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap {
-            align-items: end;
-        }
-
-        .ng-bars-weekly .ng-bar-wrap span {
-            width: min(100%, 30px) !important;
-            height: 0;
-            min-height: 0 !important;
-            border-radius: 12px 12px 4px 4px !important;
-            background: linear-gradient(180deg, #ffa12b, #ff6a00) !important;
-            box-shadow: 0 12px 22px rgba(249, 115, 22, .18) !important;
-            transition: height .9s cubic-bezier(.22, 1, .36, 1), transform .22s ease, filter .22s ease;
-            transform-origin: bottom center;
-        }
-
-        .ng-bar-item:hover .ng-bar-wrap span,
-        .ng-bar-item:focus-visible .ng-bar-wrap span,
-        .ng-bar-item.is-open .ng-bar-wrap span {
-            filter: brightness(1.05);
-            transform: translateY(-2px);
-        }
-
-        .ng-chart-tooltip {
-            top: 8px !important;
-            min-width: 210px;
-            max-width: min(260px, calc(100vw - 40px));
-            padding: 16px 18px !important;
-            border-radius: 18px !important;
-            background: rgba(244, 244, 246, .97) !important;
-            box-shadow: 0 18px 46px rgba(77, 51, 22, .18) !important;
-            transform: translate(-50%, 8px) !important;
-        }
-
-        .ng-chart-tooltip strong {
-            color: #747b84 !important;
-            font-size: 17px !important;
-            font-weight: 950 !important;
-            margin-bottom: 12px !important;
-        }
-
-        .ng-chart-tooltip-row {
-            gap: 8px !important;
-            color: #2e2620 !important;
-            font-size: 15px !important;
-            font-weight: 800 !important;
-        }
-
-        .ng-chart-tooltip-row b {
-            color: #23170f !important;
-            font-size: 16px !important;
-            font-weight: 950 !important;
-        }
-
-        .ng-chart-tooltip-dot {
-            width: 15px !important;
-            height: 15px !important;
-        }
-
-        .ng-bar-item.is-open .ng-chart-tooltip,
-        .ng-bar-item:hover .ng-chart-tooltip,
-        .ng-bar-item:focus-visible .ng-chart-tooltip,
-        .ng-bar-item:focus-within .ng-chart-tooltip {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translate(-50%, -8px) !important;
-        }
-
-        .ng-target-row {
-            opacity: .7;
-            transform: translateY(10px);
-            transition: opacity .45s ease, transform .45s ease;
-        }
-
-        .ng-target-row.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .ng-target-top b {
-            font-size: 17px !important;
-            color: #23170f !important;
-        }
-
-        .ng-target-top b.negative,
-        .ng-target-top b.positive {
-            color: #23170f !important;
-        }
-
-        .ng-target-track {
-            overflow: hidden;
-        }
-
-        .ng-target-track i {
-            display: block;
-            width: 0;
-            transition: width .95s cubic-bezier(.22, 1, .36, 1);
-        }
-
-        @media (max-width: 960px) {
-            .ng-chart-responsive {
-                grid-template-columns: 56px minmax(0, 1fr) !important;
-            }
-
-            .ng-y-axis {
-                height: 248px;
-                padding-right: 8px !important;
-            }
-
-            .ng-bars,
-            .ng-bars-weekly {
-                height: 248px !important;
-                gap: 12px !important;
-            }
-
-            .ng-bars-weekly .ng-bar-item {
-                padding-top: 72px !important;
-            }
-
-            .ng-chart-tooltip {
-                min-width: 186px;
-                padding: 14px 16px !important;
-            }
-        }
-
-
     </style>
-<script>
-        (function () {
-            function initFinanceChartFinal() {
-                const card = document.querySelector('.ng-revenue-card');
-                const tooltip = document.querySelector('[data-chart-click-tooltip]');
-                const bars = Array.from(document.querySelectorAll('.ng-revenue-card .ng-bar-item'));
 
-                if (! card || ! tooltip || ! bars.length) {
-                    return;
-                }
 
-                const title = tooltip.querySelector('[data-chart-tooltip-title]');
-                const value = tooltip.querySelector('[data-chart-tooltip-value]');
-
-                function closeTooltip() {
-                    tooltip.classList.remove('is-visible');
-                    bars.forEach((bar) => bar.classList.remove('is-active-tooltip'));
-                }
-
-                function positionTooltip(bar) {
-                    const cardRect = card.getBoundingClientRect();
-                    const barRect = bar.getBoundingClientRect();
-
-                    let left = (barRect.left + (barRect.width / 2)) - cardRect.left;
-                    let top = barRect.top - cardRect.top + 6;
-
-                    left = Math.max(115, Math.min(left, cardRect.width - 115));
-                    top = Math.max(116, top);
-
-                    tooltip.style.left = left + 'px';
-                    tooltip.style.top = top + 'px';
-                }
-
-                bars.forEach((bar) => {
-                    const span = bar.querySelector('.ng-bar-wrap span[data-bar-height]');
-
-                    if (span) {
-                        span.style.height = '0%';
-                    }
-
-                    if (bar.dataset.finalChartBound === '1') {
-                        return;
-                    }
-
-                    bar.dataset.finalChartBound = '1';
-
-                    bar.addEventListener('click', function (event) {
-                        event.preventDefault();
-                        event.stopPropagation();
-
-                        const willOpen = ! bar.classList.contains('is-active-tooltip');
-
-                        closeTooltip();
-
-                        if (! willOpen) {
-                            return;
-                        }
-
-                        if (title) {
-                            title.textContent = bar.dataset.tooltipLabel || '-';
-                        }
-
-                        if (value) {
-                            value.textContent = bar.dataset.tooltipValue || '-';
-                        }
-
-                        bar.classList.add('is-active-tooltip');
-                        positionTooltip(bar);
-                        tooltip.classList.add('is-visible');
-                    });
-
-                    bar.addEventListener('keydown', function (event) {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            bar.click();
-                        }
-
-                        if (event.key === 'Escape') {
-                            closeTooltip();
-                        }
-                    });
-                });
-
-                requestAnimationFrame(() => {
-                    bars.forEach((bar, index) => {
-                        const span = bar.querySelector('.ng-bar-wrap span[data-bar-height]');
-                        if (! span) {
-                            return;
-                        }
-
-                        const targetHeight = Number(span.dataset.barHeight || 0);
-
-                        window.setTimeout(() => {
-                            span.style.height = Math.max(0, Math.min(100, targetHeight)) + '%';
-                        }, 120 + (index * 90));
-                    });
-
-                    document.querySelectorAll('.ng-target-card .ng-target-row').forEach((row, index) => {
-                        row.classList.remove('is-visible');
-                        window.setTimeout(() => row.classList.add('is-visible'), 100 + (index * 120));
-                    });
-
-                    document.querySelectorAll('.ng-target-card .ng-target-track i[data-target-width]').forEach((bar, index) => {
-                        const width = Number(bar.dataset.targetWidth || 0);
-                        bar.style.width = '0%';
-                        window.setTimeout(() => {
-                            bar.style.width = Math.max(0, Math.min(100, width)) + '%';
-                        }, 180 + (index * 140));
-                    });
-                });
-
-                if (document.documentElement.dataset.ngFinalChartClickBound !== '1') {
-                    document.documentElement.dataset.ngFinalChartClickBound = '1';
-
-                    document.addEventListener('click', function (event) {
-                        if (! event.target.closest('.ng-revenue-card')) {
-                            closeTooltip();
-                        }
-                    });
-
-                    window.addEventListener('resize', closeTooltip);
-                }
-            }
-
-            document.addEventListener('DOMContentLoaded', initFinanceChartFinal);
-            document.addEventListener('livewire:navigated', initFinanceChartFinal);
-            document.addEventListener('livewire:update', initFinanceChartFinal);
-            initFinanceChartFinal();
-        })();
-    </script>
-
-    <style id="ng-finance-tooltip-clean-position-fix">
+    <style id="ng-finance-apex-revenue-chart-style">
         /*
         |--------------------------------------------------------------------------
-        | CLEAN TOOLTIP POSITION + ACCURATE CHART SCALE
+        | FINANCE REVENUE APEX CHART
         |--------------------------------------------------------------------------
+        | Revenue chart mengikuti pola Dashboard utama.
         */
 
-        body:has(.ng-finance-dashboard-new) .ng-revenue-card {
-            position: relative !important;
-            overflow: visible !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-revenue-card .ng-chart-tooltip,
-        body:has(.ng-finance-dashboard-new) .ng-revenue-card .ng-chart-tooltip-row,
-        body:has(.ng-finance-dashboard-new) .ng-revenue-card .ng-chart-tooltip-dot {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-chart-responsive {
-            --plot-height: 244px;
-            display: grid !important;
-            grid-template-columns: 78px minmax(0, 1fr) !important;
-            align-items: start !important;
-            min-height: 298px !important;
-            height: 298px !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-y-axis {
-            position: relative !important;
-            display: block !important;
-            height: var(--plot-height) !important;
-            min-height: var(--plot-height) !important;
-            padding: 0 16px 0 0 !important;
-            margin: 0 !important;
-            text-align: right !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-y-axis span {
-            position: absolute !important;
-            right: 16px !important;
-            display: block !important;
-            min-width: 58px !important;
-            color: #6f5946 !important;
-            font-size: 12px !important;
-            line-height: 1 !important;
-            font-weight: 850 !important;
-            text-align: right !important;
-            white-space: nowrap !important;
-            transform: translateY(-50%) !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-y-axis span:nth-child(1) {
-            top: 0 !important;
-            transform: translateY(0) !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-y-axis span:nth-child(2) {
-            top: 25% !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-y-axis span:nth-child(3) {
-            top: 50% !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-y-axis span:nth-child(4) {
-            top: 75% !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-y-axis span:nth-child(5) {
-            top: 100% !important;
-            transform: translateY(-100%) !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-chart-area,
-        body:has(.ng-finance-dashboard-new) .ng-chart-area.ng-chart-area-static {
-            position: relative !important;
-            height: calc(var(--plot-height) + 34px) !important;
-            min-height: calc(var(--plot-height) + 34px) !important;
-            max-height: calc(var(--plot-height) + 34px) !important;
-            overflow: visible !important;
-            padding: 0 !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-grid-lines {
-            position: absolute !important;
-            inset: 0 0 auto 0 !important;
-            width: 100% !important;
-            height: var(--plot-height) !important;
-            display: block !important;
-            pointer-events: none !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-grid-lines i {
-            position: absolute !important;
-            left: 0 !important;
-            right: 0 !important;
-            display: block !important;
-            height: 0 !important;
-            border-top: 1px solid rgba(109, 79, 50, .105) !important;
-            border-bottom: 0 !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-grid-lines i:nth-child(1) {
-            top: 0 !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-grid-lines i:nth-child(2) {
-            top: 25% !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-grid-lines i:nth-child(3) {
-            top: 50% !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-grid-lines i:nth-child(4) {
-            top: 75% !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-grid-lines i:nth-child(5) {
-            top: 100% !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-grid-lines i:last-child {
-            border-bottom: 0 !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-bars,
-        body:has(.ng-finance-dashboard-new) .ng-bars-weekly {
+        body:has(.ng-finance-dashboard-new) .ng-finance-apex-chart {
             position: relative !important;
             z-index: 2 !important;
-            display: grid !important;
-            grid-template-columns: repeat(var(--bar-count), minmax(42px, 1fr)) !important;
-            align-items: start !important;
-            gap: 18px !important;
             width: 100% !important;
-            min-width: 100% !important;
-            height: calc(var(--plot-height) + 34px) !important;
-            min-height: calc(var(--plot-height) + 34px) !important;
-            max-height: calc(var(--plot-height) + 34px) !important;
-            padding: 0 8px !important;
-            margin: 0 !important;
+            height: 260px !important;
+            min-height: 260px !important;
         }
 
-        body:has(.ng-finance-dashboard-new) .ng-bars-weekly .ng-bar-item,
-        body:has(.ng-finance-dashboard-new) .ng-bar-item {
-            position: relative !important;
-            display: grid !important;
-            grid-template-rows: var(--plot-height) 34px !important;
-            align-items: end !important;
-            gap: 0 !important;
-            height: calc(var(--plot-height) + 34px) !important;
-            min-height: calc(var(--plot-height) + 34px) !important;
-            padding: 0 !important;
-            cursor: pointer !important;
-            outline: none !important;
+        body:has(.ng-finance-dashboard-new) .ng-finance-apex-chart,
+        body:has(.ng-finance-dashboard-new) .ng-finance-apex-chart > div,
+        body:has(.ng-finance-dashboard-new) .ng-finance-apex-chart svg,
+        body:has(.ng-finance-dashboard-new) .ng-finance-apex-chart .apexcharts-canvas {
+            max-width: 100% !important;
         }
 
-        body:has(.ng-finance-dashboard-new) .ng-bar-wrap {
-            width: 100% !important;
-            height: var(--plot-height) !important;
-            min-height: var(--plot-height) !important;
-            display: flex !important;
-            align-items: flex-end !important;
-            justify-content: center !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-bars-weekly .ng-bar-wrap span,
-        body:has(.ng-finance-dashboard-new) .ng-bar-wrap span {
-            display: block !important;
-            width: 32px !important;
-            height: 0;
-            min-height: 0 !important;
-            max-height: var(--plot-height) !important;
-            border-radius: 14px 14px 4px 4px !important;
-            background: linear-gradient(180deg, #ffa12b, #ff6a00) !important;
-            box-shadow: 0 12px 22px rgba(249, 115, 22, .18) !important;
-            transform-origin: bottom center !important;
-            transition:
-                height .85s cubic-bezier(.22, 1, .36, 1),
-                transform .18s ease,
-                filter .18s ease !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-bar-item:hover .ng-bar-wrap span,
-        body:has(.ng-finance-dashboard-new) .ng-bar-item.is-hover-tooltip .ng-bar-wrap span,
-        body:has(.ng-finance-dashboard-new) .ng-bar-item:focus-visible .ng-bar-wrap span {
-            filter: brightness(1.06) !important;
-            transform: translateY(-2px) !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-bar-item small {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            height: 34px !important;
-            color: #6f5946 !important;
-            font-size: 11px !important;
-            line-height: 1 !important;
-            font-weight: 850 !important;
-            text-align: center !important;
-            white-space: nowrap !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-chart-caption {
-            margin-top: -6px !important;
-            position: relative !important;
-            z-index: 2 !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-active-chart-tooltip {
-            position: fixed !important;
-            z-index: 99999 !important;
-            left: 0 !important;
-            top: 0 !important;
-            min-width: 190px !important;
-            max-width: 260px !important;
-            padding: 12px 14px !important;
+        body:has(.ng-finance-dashboard-new) .ng-finance-apex-chart .apexcharts-tooltip {
+            border: 1px solid rgba(255, 255, 255, .78) !important;
             border-radius: 16px !important;
-            border: 1px solid rgba(255, 255, 255, .80) !important;
             background: rgba(245, 245, 246, .97) !important;
             box-shadow: 0 18px 42px rgba(77, 51, 22, .18) !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
-            transform: translate3d(0, 0, 0) scale(.98) !important;
-            transition: opacity .12s ease, transform .12s ease, visibility .12s ease !important;
+            overflow: hidden !important;
             backdrop-filter: blur(12px) !important;
             -webkit-backdrop-filter: blur(12px) !important;
         }
 
-        body:has(.ng-finance-dashboard-new) .ng-active-chart-tooltip::after {
-            display: none !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-active-chart-tooltip.is-visible {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: translate3d(0, 0, 0) scale(1) !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-active-chart-tooltip strong {
-            display: block !important;
-            margin-bottom: 10px !important;
+        body:has(.ng-finance-dashboard-new) .ng-finance-apex-chart .apexcharts-tooltip-title {
+            margin-bottom: 0 !important;
+            border-bottom: 1px solid rgba(120, 74, 30, .08) !important;
+            background: rgba(255, 255, 255, .34) !important;
             color: #747b84 !important;
-            font-size: 14px !important;
-            line-height: 1.25 !important;
-            font-weight: 950 !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-active-chart-tooltip-row {
-            display: flex !important;
-            align-items: center !important;
-            gap: 8px !important;
-            color: #2e2620 !important;
             font-size: 13px !important;
-            font-weight: 800 !important;
-            white-space: nowrap !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-active-chart-tooltip-row span {
-            width: 13px !important;
-            height: 13px !important;
-            border-radius: 999px !important;
-            background: #f97316 !important;
-            box-shadow: 0 5px 10px rgba(249, 115, 22, .24) !important;
-            flex: 0 0 13px !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-active-chart-tooltip-row em {
-            font-style: normal !important;
-            font-weight: 800 !important;
-        }
-
-        body:has(.ng-finance-dashboard-new) .ng-active-chart-tooltip-row b {
-            color: #23170f !important;
-            font-size: 14px !important;
             font-weight: 950 !important;
+        }
+
+        body:has(.ng-finance-dashboard-new) .ng-finance-apex-chart .apexcharts-tooltip-series-group {
+            color: #23170f !important;
+            font-size: 13px !important;
+            font-weight: 850 !important;
+        }
+
+        body:has(.ng-finance-dashboard-new) .ng-chart-loader {
+            height: 100% !important;
+            min-height: inherit !important;
+            display: grid !important;
+            place-items: center !important;
+            align-content: center !important;
+            gap: 10px !important;
+            color: #8a6e55 !important;
+            font-size: 12px !important;
+            font-weight: 900 !important;
+        }
+
+        body:has(.ng-finance-dashboard-new) .ng-chart-loader span {
+            width: 26px !important;
+            height: 26px !important;
+            border-radius: 999px !important;
+            border: 3px solid rgba(249, 115, 22, .18) !important;
+            border-top-color: #f97316 !important;
+            animation: ngSpin .75s linear infinite !important;
+        }
+
+        body:has(.ng-finance-dashboard-new) .ng-chart-loader p {
+            margin: 0 !important;
+        }
+
+        body:has(.ng-finance-dashboard-new) .ng-revenue-card .ng-chart-responsive,
+        body:has(.ng-finance-dashboard-new) .ng-revenue-card .ng-y-axis,
+        body:has(.ng-finance-dashboard-new) .ng-revenue-card .ng-chart-area,
+        body:has(.ng-finance-dashboard-new) .ng-revenue-card .ng-grid-lines,
+        body:has(.ng-finance-dashboard-new) .ng-revenue-card .ng-bars-weekly,
+        body:has(.ng-finance-dashboard-new) .ng-revenue-card .ng-active-chart-tooltip {
+            display: none !important;
         }
     </style>
 
 
-    <script id="ng-finance-tooltip-clean-position-fix">
-        (function () {
-            function initCleanFinanceTooltip() {
-                const tooltip = document.querySelector('[data-chart-click-tooltip]');
-                const bars = Array.from(document.querySelectorAll('.ng-revenue-card .ng-bar-item'));
+    <script id="ng-finance-apex-revenue-chart-script">
+        window.ngFinanceChartsData = {
+            revenueTrend: <?php echo json_encode($revenueTrend ?? [], 15, 512) ?>,
+        };
 
-                if (!tooltip || !bars.length) {
-                    return;
-                }
+        window.ngFinanceApexInstances = window.ngFinanceApexInstances || {};
+        window.ngFinanceBootTimer = window.ngFinanceBootTimer || null;
+        window.ngApexCallbacks = window.ngApexCallbacks || [];
 
-                const title = tooltip.querySelector('[data-chart-tooltip-title]');
-                const value = tooltip.querySelector('[data-chart-tooltip-value]');
-
-                function moveTooltip(event) {
-                    const tooltipWidth = tooltip.offsetWidth || 220;
-                    const tooltipHeight = tooltip.offsetHeight || 84;
-                    const gap = 18;
-
-                    let left = event.clientX + gap;
-                    let top = event.clientY + gap;
-
-                    if (left + tooltipWidth + 14 > window.innerWidth) {
-                        left = event.clientX - tooltipWidth - gap;
-                    }
-
-                    if (top + tooltipHeight + 14 > window.innerHeight) {
-                        top = event.clientY - tooltipHeight - gap;
-                    }
-
-                    if (left < 14) {
-                        left = 14;
-                    }
-
-                    if (top < 14) {
-                        top = 14;
-                    }
-
-                    tooltip.style.left = left + 'px';
-                    tooltip.style.top = top + 'px';
-                }
-
-                function showTooltip(bar, event) {
-                    if (title) {
-                        title.textContent = bar.dataset.tooltipLabel || '-';
-                    }
-
-                    if (value) {
-                        value.textContent = bar.dataset.tooltipValue || '-';
-                    }
-
-                    bars.forEach((item) => item.classList.remove('is-hover-tooltip'));
-                    bar.classList.add('is-hover-tooltip');
-
-                    moveTooltip(event);
-                    tooltip.classList.add('is-visible');
-                }
-
-                function closeTooltip() {
-                    tooltip.classList.remove('is-visible');
-                    bars.forEach((bar) => bar.classList.remove('is-hover-tooltip'));
-                }
-
-                bars.forEach((bar) => {
-                    const span = bar.querySelector('.ng-bar-wrap span[data-bar-height]');
-
-                    if (span) {
-                        span.style.height = '0%';
-                    }
-
-                    if (bar.dataset.cleanTooltipBound === '1') {
-                        return;
-                    }
-
-                    bar.dataset.cleanTooltipBound = '1';
-
-                    bar.addEventListener('mouseenter', function (event) {
-                        showTooltip(bar, event);
-                    });
-
-                    bar.addEventListener('mousemove', function (event) {
-                        if (tooltip.classList.contains('is-visible')) {
-                            moveTooltip(event);
-                        }
-                    });
-
-                    bar.addEventListener('mouseleave', closeTooltip);
-
-                    bar.addEventListener('focus', function () {
-                        const rect = bar.getBoundingClientRect();
-
-                        showTooltip(bar, {
-                            clientX: rect.left + rect.width + 10,
-                            clientY: rect.top + 20,
-                        });
-                    });
-
-                    bar.addEventListener('blur', closeTooltip);
-                });
-
-                requestAnimationFrame(function () {
-                    bars.forEach((bar, index) => {
-                        const span = bar.querySelector('.ng-bar-wrap span[data-bar-height]');
-                        if (!span) {
-                            return;
-                        }
-
-                        const height = Math.max(0, Math.min(100, Number(span.dataset.barHeight || 0)));
-
-                        window.setTimeout(function () {
-                            span.style.height = height + '%';
-                        }, 110 + (index * 90));
-                    });
-                });
+        function ngFinanceLoadApexCharts(callback) {
+            if (window.ApexCharts) {
+                callback();
+                return;
             }
 
-            document.addEventListener('DOMContentLoaded', initCleanFinanceTooltip);
-            document.addEventListener('livewire:navigated', initCleanFinanceTooltip);
-            document.addEventListener('livewire:update', initCleanFinanceTooltip);
-            initCleanFinanceTooltip();
-        })();
+            window.ngApexCallbacks.push(callback);
+
+            const existingScript = document.getElementById('ng-apexcharts-script');
+
+            if (existingScript) {
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.id = 'ng-apexcharts-script';
+            script.src = 'https://cdn.jsdelivr.net/npm/apexcharts';
+            script.async = true;
+
+            script.onload = function () {
+                const callbacks = window.ngApexCallbacks || [];
+                window.ngApexCallbacks = [];
+
+                callbacks.forEach(function (cb) {
+                    try {
+                        cb();
+                    } catch (error) {
+                        console.warn('Finance dashboard chart callback skipped:', error);
+                    }
+                });
+            };
+
+            document.head.appendChild(script);
+        }
+
+        function ngFinanceFormatRupiah(value) {
+            return 'Rp ' + Number(value || 0).toLocaleString('id-ID');
+        }
+
+        function ngFinanceFormatRupiahCompact(value) {
+            const number = Number(value || 0);
+
+            if (number === 0) {
+                return 'Rp 0';
+            }
+
+            if (number >= 1000000000) {
+                const billion = number / 1000000000;
+
+                return 'Rp ' + billion
+                    .toFixed(billion % 1 === 0 ? 0 : 1)
+                    .replace('.', ',') + 'M';
+            }
+
+            if (number >= 1000000) {
+                const million = number / 1000000;
+
+                return 'Rp ' + million
+                    .toFixed(million % 1 === 0 ? 0 : 1)
+                    .replace('.', ',') + 'jt';
+            }
+
+            if (number >= 1000) {
+                const thousand = number / 1000;
+
+                return 'Rp ' + thousand
+                    .toFixed(thousand % 1 === 0 ? 0 : 1)
+                    .replace('.', ',') + 'rb';
+            }
+
+            return 'Rp ' + number.toLocaleString('id-ID');
+        }
+
+        function ngFinanceDestroyCharts() {
+            Object.keys(window.ngFinanceApexInstances || {}).forEach(function (key) {
+                const chart = window.ngFinanceApexInstances[key];
+
+                if (chart && typeof chart.destroy === 'function') {
+                    try {
+                        chart.destroy();
+                    } catch (error) {
+                        console.warn('Finance chart destroy skipped:', key);
+                    }
+                }
+
+                delete window.ngFinanceApexInstances[key];
+            });
+        }
+
+        function ngFinanceClearChartElement(selector) {
+            const el = document.querySelector(selector);
+
+            if (!el) {
+                return null;
+            }
+
+            el.innerHTML = '';
+
+            return el;
+        }
+
+        function ngFinanceRenderChart(selector, key, options) {
+            if (!window.ApexCharts) {
+                return;
+            }
+
+            if (window.ngFinanceApexInstances[key]) {
+                return;
+            }
+
+            const el = ngFinanceClearChartElement(selector);
+
+            if (!el) {
+                return;
+            }
+
+            const chart = new ApexCharts(el, options);
+
+            window.ngFinanceApexInstances[key] = chart;
+
+            chart.render();
+        }
+
+        function ngFinanceNormalizeTrendRows(rawRows) {
+            const rows = Array.isArray(rawRows) ? rawRows : [];
+
+            return rows.map(function (row, index) {
+                const shortLabel = row.short_label || row.label || ('M' + (index + 1));
+                const tooltipLabel = row.tooltip_label || row.label || shortLabel;
+                const value = Number(row.value || 0);
+
+                return {
+                    shortLabel: shortLabel,
+                    tooltipLabel: tooltipLabel,
+                    value: value,
+                };
+            });
+        }
+
+        function ngFinanceInitCharts() {
+            const dashboard = document.querySelector('.ng-finance-dashboard-new');
+
+            if (!dashboard || !window.ApexCharts) {
+                return;
+            }
+
+            const rows = ngFinanceNormalizeTrendRows((window.ngFinanceChartsData || {}).revenueTrend || []);
+            const labels = rows.map(function (row) { return row.shortLabel; });
+            const tooltipLabels = rows.map(function (row) { return row.tooltipLabel; });
+            const values = rows.map(function (row) { return row.value; });
+
+            ngFinanceDestroyCharts();
+
+            requestAnimationFrame(function () {
+                ngFinanceRenderChart('#ngFinanceRevenueChart', 'financeRevenue', {
+                    chart: {
+                        type: 'bar',
+                        height: 260,
+                        toolbar: { show: false },
+                        fontFamily: 'Inter, Poppins, sans-serif',
+                        foreColor: '#7a6048',
+                        parentHeightOffset: 0,
+                        zoom: { enabled: false },
+                        animations: {
+                            enabled: true,
+                            speed: 420,
+                            animateGradually: {
+                                enabled: true,
+                                delay: 90,
+                            },
+                            dynamicAnimation: {
+                                enabled: true,
+                                speed: 260,
+                            },
+                        },
+                    },
+                    series: [
+                        {
+                            name: 'Revenue',
+                            data: values,
+                        },
+                    ],
+                    colors: ['#f97316'],
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 10,
+                            columnWidth: '26%',
+                            distributed: false,
+                        },
+                    },
+                    dataLabels: {
+                        enabled: false,
+                    },
+                    grid: {
+                        borderColor: 'rgba(124, 92, 63, .12)',
+                        strokeDashArray: 0,
+                        padding: {
+                            top: 10,
+                            left: 14,
+                            right: 18,
+                            bottom: 10,
+                        },
+                    },
+                    xaxis: {
+                        categories: labels,
+                        tickPlacement: 'on',
+                        labels: {
+                            rotate: 0,
+                            trim: false,
+                            hideOverlappingLabels: false,
+                            style: {
+                                colors: '#6b5541',
+                                fontSize: '11px',
+                                fontWeight: 900,
+                            },
+                        },
+                        tooltip: {
+                            enabled: false,
+                        },
+                        axisBorder: {
+                            show: false,
+                        },
+                        axisTicks: {
+                            show: false,
+                        },
+                    },
+                    yaxis: {
+                        min: 0,
+                        tickAmount: 4,
+                        forceNiceScale: true,
+                        labels: {
+                            offsetX: -4,
+                            formatter: function (value) {
+                                return ngFinanceFormatRupiahCompact(value);
+                            },
+                            style: {
+                                colors: '#6b5541',
+                                fontSize: '11px',
+                                fontWeight: 850,
+                            },
+                        },
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shade: 'light',
+                            type: 'vertical',
+                            shadeIntensity: 0.2,
+                            gradientToColors: ['#ff6a00'],
+                            inverseColors: false,
+                            opacityFrom: 0.95,
+                            opacityTo: 1,
+                            stops: [0, 100],
+                        },
+                    },
+                    states: {
+                        hover: {
+                            filter: {
+                                type: 'lighten',
+                                value: 0.04,
+                            },
+                        },
+                        active: {
+                            filter: {
+                                type: 'none',
+                            },
+                        },
+                    },
+                    tooltip: {
+                        enabled: true,
+                        shared: false,
+                        intersect: false,
+                        followCursor: true,
+                        x: {
+                            formatter: function (value, opts) {
+                                return tooltipLabels[opts.dataPointIndex] || value;
+                            },
+                        },
+                        y: {
+                            formatter: function (value) {
+                                return ngFinanceFormatRupiah(value);
+                            },
+                            title: {
+                                formatter: function () {
+                                    return 'Revenue:';
+                                },
+                            },
+                        },
+                    },
+                    legend: {
+                        show: false,
+                    },
+                });
+            });
+        }
+
+        function ngFinanceBootCharts() {
+            clearTimeout(window.ngFinanceBootTimer);
+
+            window.ngFinanceBootTimer = setTimeout(function () {
+                ngFinanceLoadApexCharts(ngFinanceInitCharts);
+            }, 80);
+        }
+
+        if (!window.ngFinanceChartEventsRegistered) {
+            window.ngFinanceChartEventsRegistered = true;
+
+            document.addEventListener('DOMContentLoaded', ngFinanceBootCharts);
+            document.addEventListener('livewire:navigated', ngFinanceBootCharts);
+            document.addEventListener('livewire:update', ngFinanceBootCharts);
+            document.addEventListener('livewire:updated', ngFinanceBootCharts);
+        }
+
+        if (document.readyState !== 'loading') {
+            ngFinanceBootCharts();
+        }
     </script>
+
+
+    <style id="ng-finance-cost-widget-height-slim">
+        /*
+        |--------------------------------------------------------------------------
+        | COST WIDGET HEIGHT SLIM
+        |--------------------------------------------------------------------------
+        | Lebar widget tetap dipertahankan.
+        | Tinggi widget Rincian Biaya Operasional dikurangi sedikit.
+        */
+
+        body:has(.ng-finance-dashboard-new) .ng-cost-table-card {
+            height: 382px !important;
+            min-height: 382px !important;
+            max-height: 382px !important;
+            padding-bottom: 50px !important;
+        }
+
+        body:has(.ng-finance-dashboard-new) .ng-cost-table-wrap {
+            height: 268px !important;
+            min-height: 268px !important;
+            max-height: 268px !important;
+            overflow: auto !important;
+        }
+
+        body:has(.ng-finance-dashboard-new) .ng-table-footer {
+            right: 26px !important;
+            bottom: 14px !important;
+        }
+    </style>
 
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

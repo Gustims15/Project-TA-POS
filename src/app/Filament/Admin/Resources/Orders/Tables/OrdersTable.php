@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\Orders\Tables;
 
+use Carbon\Carbon;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class OrdersTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query): Builder => self::applyActivePeriod($query))
             ->columns([
                 TextColumn::make('order_code')
                     ->label('ID Order')
@@ -38,11 +42,34 @@ class OrdersTable
                         </span>
                     '),
 
-                TextColumn::make('items_summary')
-                    ->label('Item')
+                TextColumn::make('ordered_at')
+                    ->label('Waktu')
+                    ->dateTime('d M Y H:i')
+                    ->sortable()
                     ->html()
-                    ->searchable(query: function ($query, string $search): void {
-                        $query->whereHas('items', function ($itemQuery) use ($search): void {
+                    ->formatStateUsing(fn ($state): string => '
+                        <span style="
+                            display:inline-flex;
+                            align-items:center;
+                            min-height:28px;
+                            padding:0 10px;
+                            border-radius:999px;
+                            color:#6f5946;
+                            background:rgba(255,255,255,.24);
+                            border:1px solid rgba(255,255,255,.38);
+                            font-size:10px;
+                            font-weight:850;
+                            white-space:nowrap;
+                        ">
+                            ' . e(optional($state)->format('d M Y H:i') ?? '-') . '
+                        </span>
+                    '),
+
+                TextColumn::make('items_summary')
+                    ->label('Ringkasan Item')
+                    ->html()
+                    ->searchable(query: function (Builder $query, string $search): void {
+                        $query->whereHas('items', function (Builder $itemQuery) use ($search): void {
                             $itemQuery->where('product_name', 'like', "%{$search}%");
                         });
                     })
@@ -68,11 +95,18 @@ class OrdersTable
                             ';
                         }
 
-                        $maxVisible = 4;
+                        $maxVisible = 3;
 
                         $chips = $items
                             ->take($maxVisible)
                             ->map(function ($item): string {
+                                $name = trim((string) ($item->product_name ?? '-'));
+                                $size = trim((string) ($item->size_name ?? ''));
+
+                                $label = $size !== '' && $size !== 'Regular'
+                                    ? $name . ' • ' . $size
+                                    : $name;
+
                                 return '
                                     <span style="
                                         display:inline-flex;
@@ -89,7 +123,7 @@ class OrdersTable
                                         font-weight:900;
                                         white-space:nowrap;
                                     ">
-                                        ' . e($item->product_name ?? '-') . '
+                                        ' . e($label) . '
                                     </span>
                                 ';
                             })
@@ -217,29 +251,6 @@ class OrdersTable
                             </span>
                         ';
                     }),
-
-                TextColumn::make('ordered_at')
-                    ->label('Waktu Order')
-                    ->dateTime('d M Y H:i')
-                    ->sortable()
-                    ->html()
-                    ->formatStateUsing(fn ($state): string => '
-                        <span style="
-                            display:inline-flex;
-                            align-items:center;
-                            min-height:28px;
-                            padding:0 10px;
-                            border-radius:999px;
-                            color:#6f5946;
-                            background:rgba(255,255,255,.24);
-                            border:1px solid rgba(255,255,255,.38);
-                            font-size:10px;
-                            font-weight:850;
-                            white-space:nowrap;
-                        ">
-                            ' . e(optional($state)->format('d M Y H:i') ?? '-') . '
-                        </span>
-                    '),
             ])
             ->filters([
                 SelectFilter::make('status')
@@ -257,5 +268,64 @@ class OrdersTable
                     ->color('primary'),
             ])
             ->defaultSort('ordered_at', 'desc');
+    }
+
+    protected static function applyActivePeriod(Builder $query): Builder
+    {
+        $filter = self::activeFilterState();
+        $range = self::dateRange($filter['period'], $filter['month'], $filter['year']);
+
+        return $query->whereBetween(DB::raw('COALESCE(ordered_at, created_at)'), $range);
+    }
+
+    protected static function activeFilterState(): array
+    {
+        $hasFilterRequest = request()->has('period') || request()->has('month') || request()->has('year');
+
+        $period = $hasFilterRequest
+            ? (string) request()->input('period', request()->query('period', 'month'))
+            : (string) session('ng_order_filter.period', 'month');
+
+        if (! in_array($period, ['today', 'month'], true)) {
+            $period = 'month';
+        }
+
+        $month = $hasFilterRequest
+            ? (int) request()->input('month', request()->query('month', session('ng_order_filter.month', now()->month)))
+            : (int) session('ng_order_filter.month', now()->month);
+
+        $year = $hasFilterRequest
+            ? (int) request()->input('year', request()->query('year', session('ng_order_filter.year', now()->year)))
+            : (int) session('ng_order_filter.year', now()->year);
+
+        $month = min(12, max(1, $month));
+        $year = min(now()->year + 2, max(now()->year - 10, $year));
+
+        session([
+            'ng_order_filter.period' => $period,
+            'ng_order_filter.month' => $month,
+            'ng_order_filter.year' => $year,
+        ]);
+
+        return [
+            'period' => $period,
+            'month' => $month,
+            'year' => $year,
+        ];
+    }
+
+    protected static function dateRange(string $period, int $month, int $year): array
+    {
+        if ($period === 'today') {
+            return [
+                now()->startOfDay(),
+                now()->endOfDay(),
+            ];
+        }
+
+        return [
+            Carbon::create($year, $month, 1)->startOfMonth(),
+            Carbon::create($year, $month, 1)->endOfMonth(),
+        ];
     }
 }

@@ -42,19 +42,6 @@
         ?? 0
     );
 
-    $latestTargetMonth = (string) (
-        $summary['latest_target_month']
-        ?? $summary['latest_month']
-        ?? '-'
-    );
-
-    $latestTargetValue = (int) (
-        $summary['latest_target_value']
-        ?? $summary['latest_target_revenue']
-        ?? $summary['latest_value']
-        ?? 0
-    );
-
     $achievementStatus = (string) (
         $summary['achievement_status']
         ?? 'Belum Ada Target'
@@ -69,13 +56,6 @@
     ];
 
     $achievementStatusLabel = $statusLabels[$achievementStatus] ?? $achievementStatus;
-
-    $remainingRevenue = (int) (
-        $summary['remaining_revenue']
-        ?? max(0, $currentTargetRevenue - $currentRevenue)
-    );
-
-    $progressWidth = min(100, max(0, $revenueProgress));
 
     $cards = [
         [
@@ -120,9 +100,6 @@
                 <div class="ng-widget-head">
                     <div>
                         <h1>Target Penjualan</h1>
-                        <p>
-                            Atur target revenue, gross profit, dan net profit bulanan agar Dashboard Keuangan dapat menampilkan progress pencapaian bisnis.
-                        </p>
 
                         <small class="ng-target-active-period">
                             Data tabel: <?php echo e($selectedYear); ?> • <?php echo e($statuses[$selectedStatus] ?? 'Semua Status'); ?>
@@ -130,49 +107,35 @@
                         </small>
                     </div>
 
-                    <div class="ng-target-filter" wire:ignore>
-                        <span>Filter Data</span>
+                    <div class="ng-target-hero-right">
+                        <div class="ng-target-filter" wire:ignore>
+                            <div class="ng-target-filter-selects">
+                                <select class="ng-target-select ng-target-year-select" onchange="if (this.value) window.location.href = this.value;">
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yearOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                        <option value="<?php echo e($makeFilterUrl($yearOption, $selectedStatus)); ?>"
+                                                <?php if((int) $selectedYear === (int) $yearOption): echo 'selected'; endif; ?>>
+                                            <?php echo e($yearOption); ?>
 
-                        <div class="ng-target-filter-selects">
-                            <select class="ng-target-select ng-target-year-select" onchange="if (this.value) window.location.href = this.value;">
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yearOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                                    <option value="<?php echo e($makeFilterUrl($yearOption, $selectedStatus)); ?>"
-                                            <?php if((int) $selectedYear === (int) $yearOption): echo 'selected'; endif; ?>>
-                                        <?php echo e($yearOption); ?>
+                                        </option>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                                </select>
 
-                                    </option>
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                            </select>
+                                <select class="ng-target-select ng-target-status-select" onchange="if (this.value) window.location.href = this.value;">
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $statuses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $statusKey => $statusLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                        <option value="<?php echo e($makeFilterUrl($selectedYear, $statusKey)); ?>"
+                                                <?php if($selectedStatus === $statusKey): echo 'selected'; endif; ?>>
+                                            <?php echo e($statusLabel); ?>
 
-                            <select class="ng-target-select ng-target-status-select" onchange="if (this.value) window.location.href = this.value;">
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $statuses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $statusKey => $statusLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                                    <option value="<?php echo e($makeFilterUrl($selectedYear, $statusKey)); ?>"
-                                            <?php if($selectedStatus === $statusKey): echo 'selected'; endif; ?>>
-                                        <?php echo e($statusLabel); ?>
-
-                                    </option>
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                            </select>
+                                        </option>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                                </select>
+                            </div>
                         </div>
+
+                        <a href="<?php echo e($createUrl); ?>" class="ng-primary-button">
+                            + New Target
+                        </a>
                     </div>
-                </div>
-            </article>
-
-            <article class="ng-widget-card ng-op-highlight-card">
-                <div class="ng-highlight-info">
-                    <span>Target Terbaru</span>
-                    <strong><?php echo e($latestTargetMonth); ?></strong>
-                    <small><?php echo e($this->rupiah($latestTargetValue)); ?></small>
-                </div>
-
-                <div class="ng-highlight-actions">
-                    <a href="<?php echo e($dashboardUrl); ?>" class="ng-soft-button">
-                        Dashboard
-                    </a>
-
-                    <a href="<?php echo e($createUrl); ?>" class="ng-primary-button">
-                        + New Target
-                    </a>
                 </div>
             </article>
         </section>
@@ -277,8 +240,8 @@
 
         .ng-op-hero-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.45fr) minmax(360px, .55fr);
-            gap: 16px;
+            grid-template-columns: 1fr;
+            gap: 0;
             margin-bottom: 14px;
         }
 
@@ -315,8 +278,7 @@
             min-width: 0;
         }
 
-        .ng-op-hero-card,
-        .ng-op-highlight-card {
+        .ng-op-hero-card {
             min-height: 118px;
         }
 
@@ -331,8 +293,23 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 18px;
             width: 100%;
+        }
+
+        .ng-widget-head > div:first-child {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .ng-target-hero-right {
+            position: relative;
+            z-index: 3;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
         }
 
         .ng-widget-head h1 {
@@ -365,7 +342,7 @@
         .ng-target-filter {
             position: relative;
             z-index: 3;
-            min-width: 430px;
+            min-width: 0;
             display: grid;
             gap: 8px;
             justify-items: end;
@@ -418,66 +395,18 @@
             min-width: 118px;
         }
 
-
-        .ng-op-highlight-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
-        .ng-highlight-info {
-            position: relative;
-            z-index: 2;
-            min-width: 0;
-        }
-
-        .ng-highlight-info span {
-            display: block;
-            color: #765d45;
-            font-size: 11px;
-            font-weight: 900;
-        }
-
-        .ng-highlight-info strong {
-            display: block;
-            max-width: 280px;
-            margin: 8px 0;
-            overflow: hidden;
-            color: #21160d;
-            font-size: 22px;
-            line-height: 1.1;
-            font-weight: 950;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            letter-spacing: -.03em;
-        }
-
-        .ng-highlight-info small {
-            display: block;
-            color: #765d45;
-            font-size: 11px;
-            font-weight: 850;
-        }
-
-        .ng-highlight-actions {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 9px;
-            flex-wrap: wrap;
-        }
-
-        .ng-soft-button,
         .ng-primary-button {
+            position: relative;
+            z-index: 3;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             min-height: 42px;
             padding: 0 16px;
             border-radius: 15px;
+            color: #fff;
+            background: linear-gradient(135deg, #ff9d18, #ee6500);
+            box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
             font-size: 12px;
             font-weight: 950;
             text-decoration: none;
@@ -485,29 +414,13 @@
             transition: .2s ease;
         }
 
-        .ng-soft-button {
-            color: #d95d00;
-            background: rgba(255, 255, 255, .36);
-            border: 1px solid rgba(255, 255, 255, .50);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .44);
-        }
-
-        .ng-soft-button:hover {
-            color: #fff;
-            background: linear-gradient(135deg, #ff9d18, #ee6500);
-            box-shadow: 0 12px 22px rgba(238, 101, 0, .22);
-        }
-
-        .ng-primary-button {
-            color: #fff;
-            background: linear-gradient(135deg, #ff9d18, #ee6500);
-            box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
-        }
-
         .ng-primary-button:hover {
+            color: #fff;
             transform: translateY(-1px);
             box-shadow: 0 18px 32px rgba(238, 101, 0, .30);
         }
+
+
 
         .ng-sales-target-kpi-grid {
             display: grid;
@@ -791,14 +704,18 @@
                 flex-direction: column;
             }
 
-            .ng-target-filter {
+            .ng-target-hero-right {
                 width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .ng-target-filter {
                 min-width: 0;
                 justify-items: start;
             }
 
             .ng-target-filter-selects {
-                width: 100%;
                 flex-wrap: wrap;
             }
 
@@ -821,18 +738,19 @@
                 grid-template-columns: 1fr;
             }
 
-            .ng-op-highlight-card {
-                align-items: flex-start;
+            .ng-target-hero-right {
+                width: 100%;
+                align-items: stretch;
                 flex-direction: column;
             }
 
-            .ng-highlight-actions {
+            .ng-target-filter,
+            .ng-target-filter-selects {
                 width: 100%;
             }
 
-            .ng-soft-button,
             .ng-primary-button {
-                flex: 1;
+                width: 100%;
             }
 
             .ng-widget-head h1 {
@@ -927,11 +845,7 @@
             }
         }
 
-        /* Filter target dibuat mengikuti ukuran filter Biaya Operasional */
-        .ng-target-filter {
-            min-width: 340px;
-        }
-
+        /* Filter target tetap ringkas karena tombol New Target sudah masuk ke hero */
         .ng-target-status-select {
             min-width: 166px;
         }
