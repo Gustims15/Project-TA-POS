@@ -29,6 +29,9 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Auth\Events\Logout;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Event;
 use Jacobtims\FilamentLogger\FilamentLoggerPlugin;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Openplain\FilamentShadcnTheme\Color;
@@ -37,6 +40,8 @@ final class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $this->registerLogoutActivityLogger();
+
         return $panel
             ->default()
             ->id('admin')
@@ -422,4 +427,31 @@ final class AdminPanelProvider extends PanelProvider
 </style>
 HTML);
     }
+
+    private function registerLogoutActivityLogger(): void
+    {
+        static $registered = false;
+
+        if ($registered) {
+            return;
+        }
+
+        $registered = true;
+
+        Event::listen(Logout::class, function (Logout $event): void {
+            if (! $event->user instanceof Authenticatable) {
+                return;
+            }
+
+            activity('access')
+                ->causedBy($event->user)
+                ->event('logout')
+                ->withProperties([
+                    'ip' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ])
+                ->log('Logout');
+        });
+    }
+
 }

@@ -39,9 +39,27 @@ class ActivityLogResource extends Resource
         return $schema;
     }
 
+
+    protected static function applyLoginLogoutFilter(Builder $query): Builder
+    {
+        return $query->where(function (Builder $query): void {
+            $query
+                ->whereIn('event', ['login', 'logout'])
+                ->orWhere('description', 'like', '%login%')
+                ->orWhere('description', 'like', '%logout%')
+                ->orWhere('description', 'like', '%logged in%')
+                ->orWhere('description', 'like', '%logged out%');
+        });
+    }
+
+    protected static function loginLogoutQuery(): Builder
+    {
+        return static::applyLoginLogoutFilter(Activity::query());
+    }
+
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
+        return static::applyLoginLogoutFilter(parent::getEloquentQuery())
             ->with(['causer', 'subject']);
     }
 
@@ -49,6 +67,7 @@ class ActivityLogResource extends Resource
     {
         return $table
             ->heading(static::getOrangeHeading())
+            ->modifyQueryUsing(fn (Builder $query): Builder => static::applyLoginLogoutFilter($query))
             ->columns([
                 TextColumn::make('log_name')
                     ->label('Type')
@@ -97,6 +116,7 @@ class ActivityLogResource extends Resource
                             str_contains(strtolower($event), 'created') => '#10b981',
                             str_contains(strtolower($event), 'updated') => '#3b82f6',
                             str_contains(strtolower($event), 'deleted') => '#ef4444',
+                            str_contains(strtolower($event), 'logout') => '#ef4444',
                             str_contains(strtolower($event), 'login') => '#64748b',
                             default => '#f97316',
                         };
@@ -126,45 +146,6 @@ class ActivityLogResource extends Resource
                             </span>
                         ';
                     }),
-
-                TextColumn::make('subject_type')
-                    ->label('Subject')
-                    ->searchable()
-                    ->html()
-                    ->formatStateUsing(function (?string $state, Activity $record): string {
-                        $subjectName = $state ? class_basename($state) : 'Activity Subject';
-                        $subjectId = $record->subject_id ? ('#' . $record->subject_id) : '';
-
-                        return '
-                            <div style="min-width:190px;">
-                                <div style="
-                                    color:#23160d;
-                                    font-size:13px;
-                                    font-weight:950;
-                                    line-height:1.25;
-                                ">
-                                    ' . e($subjectName . ' ' . $subjectId) . '
-                                </div>
-
-                                <div style="
-                                    display:inline-flex;
-                                    align-items:center;
-                                    min-height:24px;
-                                    margin-top:5px;
-                                    padding:0 10px;
-                                    border-radius:999px;
-                                    color:#6f5946;
-                                    background:rgba(255,255,255,.26);
-                                    border:1px solid rgba(255,255,255,.38);
-                                    font-size:10px;
-                                    font-weight:850;
-                                ">
-                                    Activity Subject
-                                </div>
-                            </div>
-                        ';
-                    }),
-
                 TextColumn::make('causer.name')
                     ->label('User')
                     ->searchable()
@@ -222,28 +203,14 @@ class ActivityLogResource extends Resource
                     ->wrap(),
             ])
             ->filters([
-                SelectFilter::make('log_name')
-                    ->label('Type')
-                    ->options(fn (): array => Activity::query()
-                        ->whereNotNull('log_name')
-                        ->distinct()
-                        ->pluck('log_name', 'log_name')
-                        ->mapWithKeys(fn ($value, $key): array => [
-                            (string) $key => Str::headline((string) $value),
-                        ])
-                        ->toArray()),
-
                 SelectFilter::make('event')
-                    ->label('Event')
-                    ->options(fn (): array => Activity::query()
-                        ->whereNotNull('event')
-                        ->distinct()
-                        ->pluck('event', 'event')
-                        ->mapWithKeys(fn ($value, $key): array => [
-                            (string) $key => Str::headline((string) $value),
-                        ])
-                        ->toArray()),
+                    ->label('Aktivitas')
+                    ->options([
+                        'login' => 'Login',
+                        'logout' => 'Logout',
+                    ]),
             ])
+            ->recordUrl(null)
             ->recordActions([])
             ->toolbarActions([])
             ->defaultSort('created_at', 'desc')
@@ -252,130 +219,26 @@ class ActivityLogResource extends Resource
 
     protected static function getOrangeHeading(): HtmlString
     {
-        $totalLogs = Activity::query()->count();
+        $totalLogs = static::loginLogoutQuery()->count();
+        $totalText = number_format((int) $totalLogs, 0, ',', '.');
 
-        $updatedLogs = Activity::query()
-            ->where(function ($query): void {
-                $query->where('event', 'updated')
-                    ->orWhere('description', 'like', '%updated%')
-                    ->orWhere('description', 'like', '%diperbarui%');
-            })
-            ->count();
-
-        $createdLogs = Activity::query()
-            ->where(function ($query): void {
-                $query->where('event', 'created')
-                    ->orWhere('description', 'like', '%created%')
-                    ->orWhere('description', 'like', '%dibuat%');
-            })
-            ->count();
-
-        $deletedLogs = Activity::query()
-            ->where(function ($query): void {
-                $query->where('event', 'deleted')
-                    ->orWhere('description', 'like', '%deleted%')
-                    ->orWhere('description', 'like', '%dihapus%');
-            })
-            ->count();
-
-        $accessLogs = Activity::query()
-            ->where(function ($query): void {
-                $query->where('log_name', 'access')
-                    ->orWhere('event', 'login')
-                    ->orWhere('description', 'like', '%login%');
-            })
-            ->count();
-
-        $latestLog = Activity::query()
-            ->with('causer')
-            ->latest()
-            ->first();
-
-        $topCauser = Activity::query()
-            ->select('causer_id', DB::raw('COUNT(*) as total_activity'))
-            ->whereNotNull('causer_id')
-            ->groupBy('causer_id')
-            ->orderByDesc('total_activity')
-            ->with('causer')
-            ->first();
-
-        $topUserName = e($topCauser?->causer?->name ?? '-');
-        $topUserTotal = number_format((int) ($topCauser?->total_activity ?? 0), 0, ',', '.');
-
-        $latestUser = e($latestLog?->causer?->name ?? '-');
-        $latestEvent = e(Str::headline($latestLog?->event ?? $latestLog?->description ?? '-'));
-        $latestTime = e($latestLog?->created_at?->diffForHumans() ?? '-');
-
-        return new HtmlString('
+        return new HtmlString(<<<HTML
             <div class="ng-activity-head">
-                <div class="ng-activity-hero">
-                    <div class="ng-activity-hero-main">
+                <div class="ng-activity-hero-clean">
+                    <div class="ng-activity-hero-copy">
+
                         <h1>Activity Log Analytics</h1>
+
                         <p>
                             Pantau seluruh aktivitas sistem seperti login, perubahan produk, order, kategori,
                             user, role, dan riwayat aksi admin atau karyawan yang tercatat otomatis.
                         </p>
                     </div>
 
-                    <div class="ng-activity-side">
-                        <div>
-                            <span>User Teraktif</span>
-                            <strong>' . $topUserName . '</strong>
-                            <small>' . $topUserTotal . ' aktivitas</small>
-                        </div>
-
-                        <div>
-                            <span>Aktivitas Terbaru</span>
-                            <strong>' . $latestEvent . '</strong>
-                            <small>' . $latestUser . ' • ' . $latestTime . '</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ng-activity-kpis">
-                    <div class="ng-kpi" style="--accent:#f97316">
-                        <i>▣</i>
-                        <div>
-                            <span>Total Logs</span>
-                            <strong>' . number_format($totalLogs, 0, ',', '.') . '</strong>
-                            <small>Semua aktivitas</small>
-                        </div>
-                    </div>
-
-                    <div class="ng-kpi" style="--accent:#3b82f6">
-                        <i>↗</i>
-                        <div>
-                            <span>Updated Logs</span>
-                            <strong>' . number_format($updatedLogs, 0, ',', '.') . '</strong>
-                            <small>Data diperbarui</small>
-                        </div>
-                    </div>
-
-                    <div class="ng-kpi" style="--accent:#10b981">
-                        <i>✓</i>
-                        <div>
-                            <span>Created Logs</span>
-                            <strong>' . number_format($createdLogs, 0, ',', '.') . '</strong>
-                            <small>Data dibuat</small>
-                        </div>
-                    </div>
-
-                    <div class="ng-kpi" style="--accent:#ef4444">
-                        <i>!</i>
-                        <div>
-                            <span>Deleted Logs</span>
-                            <strong>' . number_format($deletedLogs, 0, ',', '.') . '</strong>
-                            <small>Data dihapus</small>
-                        </div>
-                    </div>
-
-                    <div class="ng-kpi" style="--accent:#8b5cf6">
-                        <i>◇</i>
-                        <div>
-                            <span>Access Logs</span>
-                            <strong>' . number_format($accessLogs, 0, ',', '.') . '</strong>
-                            <small>Login / akses</small>
-                        </div>
+                    <div class="ng-activity-total-box">
+                        <span>Total Login/Logout</span>
+                        <strong>{$totalText}</strong>
+                        <small>Login dan logout tercatat</small>
                     </div>
                 </div>
             </div>
@@ -384,6 +247,9 @@ class ActivityLogResource extends Resource
                 html,
                 body {
                     overflow-x: hidden !important;
+                    overflow-y: auto !important;
+                    height: auto !important;
+                    max-height: none !important;
                 }
 
                 body:has(.ng-activity-head) {
@@ -396,7 +262,7 @@ class ActivityLogResource extends Resource
                         linear-gradient(135deg, #fff3df 0%, #ffd394 48%, #ff9c45 100%) !important;
                     background-size: cover !important;
                     background-position: center !important;
-                    background-attachment: fixed !important;
+                    background-attachment: scroll !important;
                 }
 
                 body:has(.ng-activity-head) .fi-main,
@@ -405,8 +271,12 @@ class ActivityLogResource extends Resource
                 body:has(.ng-activity-head) .fi-page-content {
                     width: 100% !important;
                     max-width: 100% !important;
+                    height: auto !important;
+                    min-height: 0 !important;
+                    max-height: none !important;
                     background: transparent !important;
                     overflow-x: hidden !important;
+                    overflow-y: visible !important;
                 }
 
                 body:has(.ng-activity-head) .fi-page,
@@ -418,11 +288,17 @@ class ActivityLogResource extends Resource
                     display: none !important;
                 }
 
+                body:has(.ng-activity-head) .fi-page-content {
+                    gap: 0 !important;
+                    row-gap: 0 !important;
+                }
+
                 body:has(.ng-activity-head) .fi-sidebar {
                     background: rgba(255, 250, 242, .50) !important;
                     border-right: 1px solid rgba(255, 255, 255, .48) !important;
                     box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
                     backdrop-filter: blur(16px) !important;
+                    -webkit-backdrop-filter: blur(16px) !important;
                 }
 
                 body:has(.ng-activity-head) .fi-sidebar-nav {
@@ -442,25 +318,28 @@ class ActivityLogResource extends Resource
                     box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
                 }
 
-                /* CONTAINER UTAMA TABLE PLUGIN */
+                /*
+                 * Hilangkan kotak besar pembungkus table.
+                 * Yang terlihat hanya widget/komponen masing-masing.
+                 */
                 body:has(.ng-activity-head) .fi-ta-ctn {
                     width: calc(100% - 36px) !important;
                     margin: 18px 18px 28px !important;
-                    border-radius: 28px !important;
-                    border: 1px solid rgba(255, 255, 255, .56) !important;
-                    background: rgba(255, 247, 235, .20) !important;
-                    box-shadow:
-                        0 22px 55px rgba(101, 58, 21, .11),
-                        inset 0 1px 0 rgba(255, 255, 255, .60) !important;
-                    backdrop-filter: blur(15px) !important;
-                    overflow: hidden !important;
+                    border: none !important;
+                    border-radius: 0 !important;
+                    background: transparent !important;
+                    box-shadow: none !important;
+                    backdrop-filter: none !important;
+                    -webkit-backdrop-filter: none !important;
+                    overflow-x: hidden !important;
+                    overflow-y: visible !important;
                 }
 
                 body:has(.ng-activity-head) .fi-ta-header {
                     display: block !important;
                     padding: 0 !important;
                     background: transparent !important;
-                    border-bottom: 1px solid rgba(114, 74, 41, .08) !important;
+                    border: none !important;
                 }
 
                 body:has(.ng-activity-head) .fi-ta-heading {
@@ -470,15 +349,20 @@ class ActivityLogResource extends Resource
                 body:has(.ng-activity-head) .fi-ta-header-toolbar,
                 body:has(.ng-activity-head) .fi-ta-toolbar {
                     min-height: 58px !important;
+                    margin-top: 14px !important;
                     padding: 10px 18px !important;
-                    background: rgba(255, 247, 235, .16) !important;
+                    border-radius: 24px 24px 0 0 !important;
+                    background: rgba(255, 247, 235, .18) !important;
+                    border: 1px solid rgba(255, 255, 255, .46) !important;
                     border-bottom: 1px solid rgba(114, 74, 41, .08) !important;
+                    box-shadow:
+                        0 18px 44px rgba(101, 58, 21, .08),
+                        inset 0 1px 0 rgba(255, 255, 255, .44) !important;
                 }
 
-                /* HEADER CUSTOM */
                 .ng-activity-head {
                     width: 100%;
-                    padding: 18px;
+                    padding: 18px 0 0;
                     font-family: Inter, Poppins, ui-sans-serif, system-ui, sans-serif;
                     color: #24180f;
                     box-sizing: border-box;
@@ -488,29 +372,30 @@ class ActivityLogResource extends Resource
                     box-sizing: border-box;
                 }
 
-                .ng-activity-hero {
-                    display: grid;
-                    grid-template-columns: minmax(0, 1.35fr) minmax(360px, .65fr);
-                    gap: 12px;
-                    margin-bottom: 12px;
-                }
-
-                .ng-activity-hero-main,
-                .ng-activity-side,
-                .ng-kpi {
-                    overflow: hidden;
-                    border: 1px solid rgba(255, 255, 255, .58);
-                    background: rgba(255, 247, 235, .22);
-                    box-shadow:
-                        0 18px 44px rgba(101, 58, 21, .09),
-                        inset 0 1px 0 rgba(255, 255, 255, .60);
-                    backdrop-filter: blur(14px);
-                }
-
-                .ng-activity-hero-main {
-                    min-height: 122px;
-                    padding: 20px 22px;
+                .ng-activity-hero-clean {
+                    width: 100%;
+                    min-height: 126px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 22px;
+                    padding: 22px 24px;
                     border-radius: 24px;
+                    border: 1px solid rgba(255, 255, 255, .58);
+                    background:
+                        linear-gradient(145deg, rgba(255, 255, 255, .46), rgba(255, 246, 231, .22)),
+                        radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .16), transparent 38%) !important;
+                    box-shadow:
+                        0 18px 44px rgba(101, 58, 21, .10),
+                        inset 0 1px 0 rgba(255, 255, 255, .60);
+                    overflow: hidden;
+                    backdrop-filter: none;
+                    -webkit-backdrop-filter: none;
+                }
+
+                .ng-activity-hero-copy {
+                    min-width: 0;
+                    flex: 1;
                 }
 
                 .ng-kicker {
@@ -528,17 +413,17 @@ class ActivityLogResource extends Resource
                     text-transform: uppercase;
                 }
 
-                .ng-activity-hero-main h1 {
+                .ng-activity-hero-copy h1 {
                     margin: 0;
                     color: #21160d;
-                    font-size: 30px;
+                    font-size: 31px;
                     line-height: 1.05;
                     font-weight: 950;
                     letter-spacing: -.04em;
                 }
 
-                .ng-activity-hero-main p {
-                    max-width: 850px;
+                .ng-activity-hero-copy p {
+                    max-width: 920px;
                     margin: 8px 0 0;
                     color: #72583f;
                     font-size: 12px;
@@ -546,97 +431,60 @@ class ActivityLogResource extends Resource
                     line-height: 1.55;
                 }
 
-                .ng-activity-side {
-                    min-height: 122px;
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 12px;
-                    padding: 20px 22px;
-                    border-radius: 24px;
+                .ng-activity-total-box {
+                    flex: 0 0 210px;
+                    min-height: 86px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    padding: 16px 18px;
+                    border-radius: 20px;
+                    background: rgba(255, 255, 255, .32);
+                    border: 1px solid rgba(255, 255, 255, .48);
+                    box-shadow:
+                        inset 0 1px 0 rgba(255, 255, 255, .50),
+                        0 14px 28px rgba(101, 58, 21, .08);
                 }
 
-                .ng-activity-side > div + div {
-                    padding-left: 14px;
-                    border-left: 1px solid rgba(114, 74, 41, .12);
-                }
-
-                .ng-activity-side span,
-                .ng-activity-side small {
+                .ng-activity-total-box span {
                     display: block;
+                    color: #72583f;
+                    font-size: 11px;
+                    font-weight: 950;
+                    text-transform: uppercase;
+                    letter-spacing: .06em;
+                }
+
+                .ng-activity-total-box strong {
+                    display: block;
+                    margin-top: 6px;
+                    color: #21160d;
+                    font-size: 25px;
+                    line-height: 1;
+                    font-weight: 950;
+                    letter-spacing: -.04em;
+                }
+
+                .ng-activity-total-box small {
+                    display: block;
+                    margin-top: 7px;
                     color: #72583f;
                     font-size: 11px;
                     font-weight: 850;
                 }
 
-                .ng-activity-side strong {
-                    display: block;
-                    max-width: 250px;
-                    margin: 7px 0;
-                    color: #21160d;
-                    font-size: 20px;
-                    line-height: 1.1;
-                    font-weight: 950;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-
-                .ng-activity-kpis {
-                    display: grid;
-                    grid-template-columns: repeat(5, minmax(0, 1fr));
-                    gap: 10px;
-                }
-
+                /*
+                 * KPI dan widget kanan lama dihilangkan.
+                 */
+                .ng-activity-side,
+                .ng-activity-kpis,
                 .ng-kpi {
-                    min-height: 86px;
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    padding: 14px;
-                    border-radius: 20px;
+                    display: none !important;
                 }
 
-                .ng-kpi i {
-                    display: grid;
-                    place-items: center;
-                    flex: 0 0 auto;
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 14px;
-                    color: #fff;
-                    background: linear-gradient(135deg, var(--accent), #d95d00);
-                    box-shadow: 0 14px 24px rgba(249, 115, 22, .20);
-                    font-style: normal;
-                    font-size: 15px;
-                    font-weight: 950;
-                }
-
-                .ng-kpi span {
-                    display: block;
-                    color: #6f5946;
-                    font-size: 11px;
-                    font-weight: 900;
-                }
-
-                .ng-kpi strong {
-                    display: block;
-                    margin-top: 5px;
-                    color: #23160d;
-                    font-size: 18px;
-                    line-height: 1.15;
-                    font-weight: 950;
-                    letter-spacing: -.03em;
-                }
-
-                .ng-kpi small {
-                    display: block;
-                    margin-top: 5px;
-                    color: #6f5946;
-                    font-size: 10px;
-                    font-weight: 850;
-                }
-
-                /* TABLE BAWAH BIAR MIRIP HALAMAN LAIN */
+                /*
+                 * Table tetap rapi, tapi bukan berada di dalam kotak besar parent.
+                 */
                 body:has(.ng-activity-head) .fi-ta,
                 body:has(.ng-activity-head) .fi-section,
                 body:has(.ng-activity-head) .fi-ta-content,
@@ -646,6 +494,18 @@ class ActivityLogResource extends Resource
                     background: transparent !important;
                     border: none !important;
                     box-shadow: none !important;
+                }
+
+                body:has(.ng-activity-head) .fi-ta-content {
+                    border-radius: 0 0 24px 24px !important;
+                    background: rgba(255, 247, 235, .13) !important;
+                    border: 1px solid rgba(255, 255, 255, .40) !important;
+                    border-top: none !important;
+                    box-shadow:
+                        0 18px 44px rgba(101, 58, 21, .07),
+                        inset 0 1px 0 rgba(255, 255, 255, .24) !important;
+                    overflow-x: hidden !important;
+                    overflow-y: visible !important;
                 }
 
                 body:has(.ng-activity-head) .fi-ta-table {
@@ -706,7 +566,8 @@ class ActivityLogResource extends Resource
                     box-shadow:
                         inset 0 1px 0 rgba(255, 255, 255, .42),
                         0 10px 24px rgba(101, 58, 21, .06) !important;
-                    backdrop-filter: blur(10px) !important;
+                    backdrop-filter: none !important;
+                    -webkit-backdrop-filter: none !important;
                 }
 
                 body:has(.ng-activity-head) .fi-ta-search-field {
@@ -717,39 +578,112 @@ class ActivityLogResource extends Resource
                     min-height: 38px !important;
                 }
 
+
+                /*
+                 * Rapihkan lebar kolom Activity Log.
+                 * Setelah kolom Subject dihapus, 4 kolom dibuat rata agar kanan tidak kosong.
+                 */
+                body:has(.ng-activity-head) .fi-ta-table {
+                    width: 100% !important;
+                    table-layout: fixed !important;
+                }
+
+                body:has(.ng-activity-head) .fi-ta-header-cell,
+                body:has(.ng-activity-head) .fi-ta-cell {
+                    width: 25% !important;
+                    text-align: center !important;
+                    vertical-align: middle !important;
+                }
+
+                body:has(.ng-activity-head) .fi-ta-header-cell > *,
+                body:has(.ng-activity-head) .fi-ta-cell > * {
+                    justify-content: center !important;
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                }
+
+                body:has(.ng-activity-head) .fi-ta-header-cell-label,
+                body:has(.ng-activity-head) .fi-ta-cell .fi-ta-text,
+                body:has(.ng-activity-head) .fi-ta-cell .fi-ta-text-item {
+                    justify-content: center !important;
+                    text-align: center !important;
+                }
+
+                body:has(.ng-activity-head) .fi-ta-table th:nth-child(1),
+                body:has(.ng-activity-head) .fi-ta-table td:nth-child(1),
+                body:has(.ng-activity-head) .fi-ta-table th:nth-child(2),
+                body:has(.ng-activity-head) .fi-ta-table td:nth-child(2),
+                body:has(.ng-activity-head) .fi-ta-table th:nth-child(3),
+                body:has(.ng-activity-head) .fi-ta-table td:nth-child(3),
+                body:has(.ng-activity-head) .fi-ta-table th:nth-child(4),
+                body:has(.ng-activity-head) .fi-ta-table td:nth-child(4) {
+                    width: 25% !important;
+                }
+
+                body:has(.ng-activity-head) .fi-ta-table th:nth-child(n+5),
+                body:has(.ng-activity-head) .fi-ta-table td:nth-child(n+5) {
+                    display: none !important;
+                }
+
                 body:has(.ng-activity-head) .fi-ta-filter-indicators,
                 body:has(.ng-activity-head) .fi-ta-empty-state {
                     background: transparent !important;
                 }
 
-                @media (max-width: 1500px) {
-                    .ng-activity-hero {
-                        grid-template-columns: 1fr;
-                    }
+                /*
+                 * One scroll tetap dipertahankan.
+                 */
+                body:has(.ng-activity-head) .fi-layout,
+                body:has(.ng-activity-head) main,
+                body:has(.ng-activity-head) .fi-ta,
+                body:has(.ng-activity-head) .fi-ta-content,
+                body:has(.ng-activity-head) .fi-ta-table-wrap,
+                body:has(.ng-activity-head) .fi-section {
+                    height: auto !important;
+                    min-height: 0 !important;
+                    max-height: none !important;
+                    overflow-x: hidden !important;
+                    overflow-y: visible !important;
+                }
 
-                    .ng-activity-kpis {
-                        grid-template-columns: repeat(3, minmax(0, 1fr));
-                    }
+                body:has(.ng-activity-head) .fi-main,
+                body:has(.ng-activity-head) .fi-main-ctn,
+                body:has(.ng-activity-head) .fi-page,
+                body:has(.ng-activity-head) .fi-page-content,
+                body:has(.ng-activity-head) .fi-ta-ctn,
+                body:has(.ng-activity-head) .fi-ta-content,
+                body:has(.ng-activity-head) .fi-ta-table-wrap {
+                    scrollbar-width: none !important;
+                    -ms-overflow-style: none !important;
+                }
+
+                body:has(.ng-activity-head) .fi-main::-webkit-scrollbar,
+                body:has(.ng-activity-head) .fi-main-ctn::-webkit-scrollbar,
+                body:has(.ng-activity-head) .fi-page::-webkit-scrollbar,
+                body:has(.ng-activity-head) .fi-page-content::-webkit-scrollbar,
+                body:has(.ng-activity-head) .fi-ta-ctn::-webkit-scrollbar,
+                body:has(.ng-activity-head) .fi-ta-content::-webkit-scrollbar,
+                body:has(.ng-activity-head) .fi-ta-table-wrap::-webkit-scrollbar {
+                    display: none !important;
+                    width: 0 !important;
+                    height: 0 !important;
                 }
 
                 @media (max-width: 900px) {
-                    body:has(.ng-activity-head) .fi-ta-ctn {
-                        width: calc(100% - 28px) !important;
-                        margin: 14px !important;
+                    .ng-activity-hero-clean {
+                        flex-direction: column;
+                        align-items: flex-start;
                     }
 
-                    .ng-activity-head {
-                        padding: 14px;
-                    }
-
-                    .ng-activity-side,
-                    .ng-activity-kpis {
-                        grid-template-columns: 1fr;
+                    .ng-activity-total-box {
+                        width: 100%;
+                        flex-basis: auto;
                     }
                 }
             </style>
-        ');
+        HTML);
     }
+
 
     public static function canCreate(): bool
     {
@@ -774,8 +708,7 @@ class ActivityLogResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \Jacobtims\FilamentLogger\Resources\ActivityResource\Pages\ListActivities::route('/'),
-            'view' => \Jacobtims\FilamentLogger\Resources\ActivityResource\Pages\ViewActivity::route('/{record}'),
+            'index' => Pages\ListActivityLogs::route('/'),
         ];
     }
 

@@ -1,0 +1,543 @@
+app/Filament/Admin/Logger/ActivityLogResource.php:405:                body:has(.ng-activity-head) .fi-page-content {
+app/Providers/Filament/AdminPanelProvider.php:174:        min-height: 100vh !important;
+app/Providers/Filament/AdminPanelProvider.php:209:        min-height: 100vh !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:401:        body:has(.ng-finance-dashboard-new) .fi-page-content {
+resources/views/filament/admin/pages/financial-dashboard.blade.php:419:            min-height: 100vh;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:824:            overflow-y: hidden;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:1919:            min-height: 100vh !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:1991:            max-height: 106px !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:2057:            max-height: 354px !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:2083:            max-height: 258px !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:2090:            max-height: 258px !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:2098:            max-height: 220px !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:2196:            max-height: 372px !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:2231:            max-height: 266px !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:2309:                max-height: none !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:2830:            max-height: 420px !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:2838:            max-height: 306px !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:2976:            max-height: 30px !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:3445:            max-height: 382px !important;
+resources/views/filament/admin/pages/financial-dashboard.blade.php:3452:            max-height: 268px !important;
+resources/views/filament/admin/pages/dashboard.blade.php:313:        body:has(.ng-dashboard) .fi-page-content {
+resources/views/filament/admin/pages/dashboard.blade.php:356:            min-height: 100vh;
+resources/views/filament/admin/pages/dashboard.blade.php:770:            max-height: 250px;
+resources/views/filament/admin/pages/dashboard.blade.php:771:            overflow-y: auto;
+resources/views/filament/admin/pages/dashboard.blade.php:927:            max-height: 278px;
+resources/views/filament/admin/pages/dashboard.blade.php:928:            overflow-y: auto;
+resources/views/filament/admin/pages/monthly-revenue-report.blade.php:300:        body:has(.ng-monthly-revenue-page) .fi-page-content {
+resources/views/filament/admin/pages/monthly-revenue-report.blade.php:316:        body:has(.ng-monthly-revenue-page) .fi-page-content {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:44:    <div class="ng-activity-page">
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:97:            overflow-y: auto !important;
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:99:            max-height: none !important;
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:102:        body:has(.ng-activity-page) {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:115:        body:has(.ng-activity-page) .fi-main,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:116:        body:has(.ng-activity-page) .fi-main-ctn,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:117:        body:has(.ng-activity-page) .fi-page,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:118:        body:has(.ng-activity-page) .fi-page-content {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:123:            max-height: none !important;
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:126:            overflow-y: visible !important;
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:129:        body:has(.ng-activity-page) .fi-page {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:133:        body:has(.ng-activity-page) .fi-page-header {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:137:        body:has(.ng-activity-page) .fi-main {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:141:        body:has(.ng-activity-page) .fi-page-content {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:146:        body:has(.ng-activity-page) .fi-sidebar {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:153:        body:has(.ng-activity-page) .fi-sidebar-nav {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:157:        body:has(.ng-activity-page) .fi-sidebar-item a {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:163:        body:has(.ng-activity-page) .fi-sidebar-item-active a,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:164:        body:has(.ng-activity-page) .fi-sidebar-item a:hover {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:170:        .ng-activity-page {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:180:        .ng-activity-page * {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:342:        body:has(.ng-activity-page) .fi-ta-ctn {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:350:            overflow-y: visible !important;
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:353:        body:has(.ng-activity-page) .fi-ta,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:354:        body:has(.ng-activity-page) .fi-section,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:355:        body:has(.ng-activity-page) .fi-ta-content,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:356:        body:has(.ng-activity-page) .fi-ta-table,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:357:        body:has(.ng-activity-page) .fi-ta-table thead,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:358:        body:has(.ng-activity-page) .fi-ta-table tbody {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:365:        body:has(.ng-activity-page) .fi-ta-header,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:366:        body:has(.ng-activity-page) .fi-ta-toolbar {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:373:        body:has(.ng-activity-page) .fi-ta-table thead tr {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:377:        body:has(.ng-activity-page) .fi-ta-row,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:378:        body:has(.ng-activity-page) .fi-ta-cell,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:379:        body:has(.ng-activity-page) .fi-ta-header-cell {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:383:        body:has(.ng-activity-page) .fi-ta-row {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:389:        body:has(.ng-activity-page) .fi-ta-row:hover {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:393:        body:has(.ng-activity-page) .fi-ta-cell {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:399:        body:has(.ng-activity-page) .fi-ta-header-cell {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:405:        body:has(.ng-activity-page) .fi-ta-header-cell-label {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:411:        body:has(.ng-activity-page) .fi-ta-pagination,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:412:        body:has(.ng-activity-page) .fi-pagination {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:419:        body:has(.ng-activity-page) .fi-input-wrp,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:420:        body:has(.ng-activity-page) .fi-ta-search-field .fi-input-wrp,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:421:        body:has(.ng-activity-page) .fi-select-input {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:429:        body:has(.ng-activity-page) .fi-ta-search-field {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:433:        body:has(.ng-activity-page) .fi-ta-search-field .fi-input-wrp {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:443:        | Scroll internal dari .fi-main/.fi-page-content/table/widget dimatikan.
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:447:        html:has(.ng-activity-page),
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:448:        body:has(.ng-activity-page) {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:451:            max-height: none !important;
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:453:            overflow-y: auto !important;
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:456:        body:has(.ng-activity-page) {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:460:        body:has(.ng-activity-page) .fi-layout,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:461:        body:has(.ng-activity-page) .fi-main,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:462:        body:has(.ng-activity-page) .fi-main-ctn,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:463:        body:has(.ng-activity-page) .fi-page,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:464:        body:has(.ng-activity-page) .fi-page-content,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:465:        body:has(.ng-activity-page) main,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:466:        body:has(.ng-activity-page) .fi-wi-widget,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:467:        body:has(.ng-activity-page) .fi-wi-widget-content,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:468:        body:has(.ng-activity-page) .ng-activity-page,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:469:        body:has(.ng-activity-page) .ng-activity-table-wrap,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:470:        body:has(.ng-activity-page) .ng-activity-table-card,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:471:        body:has(.ng-activity-page) .fi-section,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:472:        body:has(.ng-activity-page) .fi-ta-ctn,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:473:        body:has(.ng-activity-page) .fi-ta,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:474:        body:has(.ng-activity-page) .fi-ta-content,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:475:        body:has(.ng-activity-page) .fi-ta-table-wrap,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:476:        body:has(.ng-activity-page) .fi-ta-table {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:479:            max-height: none !important;
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:481:            overflow-y: visible !important;
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:486:        body:has(.ng-activity-page) [class*="overflow-auto"],
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:487:        body:has(.ng-activity-page) [class*="overflow-y-auto"],
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:488:        body:has(.ng-activity-page) [class*="overflow-scroll"],
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:489:        body:has(.ng-activity-page) [class*="overflow-y-scroll"] {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:492:            max-height: none !important;
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:494:            overflow-y: visible !important;
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:497:        body:has(.ng-activity-page) .fi-main,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:498:        body:has(.ng-activity-page) .fi-main-ctn,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:499:        body:has(.ng-activity-page) .fi-page,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:500:        body:has(.ng-activity-page) .fi-page-content,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:501:        body:has(.ng-activity-page) main,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:502:        body:has(.ng-activity-page) .fi-wi-widget,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:503:        body:has(.ng-activity-page) .fi-wi-widget-content,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:504:        body:has(.ng-activity-page) .ng-activity-page,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:505:        body:has(.ng-activity-page) .ng-activity-table-wrap,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:506:        body:has(.ng-activity-page) .ng-activity-table-card,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:507:        body:has(.ng-activity-page) .fi-ta-ctn,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:508:        body:has(.ng-activity-page) .fi-ta-content,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:509:        body:has(.ng-activity-page) .fi-ta-table-wrap {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:514:        body:has(.ng-activity-page) .fi-main::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:515:        body:has(.ng-activity-page) .fi-main-ctn::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:516:        body:has(.ng-activity-page) .fi-page::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:517:        body:has(.ng-activity-page) .fi-page-content::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:518:        body:has(.ng-activity-page) main::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:519:        body:has(.ng-activity-page) .fi-wi-widget::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:520:        body:has(.ng-activity-page) .fi-wi-widget-content::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:521:        body:has(.ng-activity-page) .ng-activity-page::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:522:        body:has(.ng-activity-page) .ng-activity-table-wrap::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:523:        body:has(.ng-activity-page) .ng-activity-table-card::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:524:        body:has(.ng-activity-page) .fi-ta-ctn::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:525:        body:has(.ng-activity-page) .fi-ta-content::-webkit-scrollbar,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:526:        body:has(.ng-activity-page) .fi-ta-table-wrap::-webkit-scrollbar {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:532:        body:has(.ng-activity-page) .ng-activity-hero-main,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:533:        body:has(.ng-activity-page) .ng-activity-side-card,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:534:        body:has(.ng-activity-page) .ng-activity-kpi,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:535:        body:has(.ng-activity-page) .ng-widget-card,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:536:        body:has(.ng-activity-page) .ng-kpi-card,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:537:        body:has(.ng-activity-page) .fi-input-wrp,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:538:        body:has(.ng-activity-page) .fi-ta-search-field .fi-input-wrp,
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:539:        body:has(.ng-activity-page) .fi-select-input {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:555:            .ng-activity-page {
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:574:                return Boolean(document.querySelector('.ng-activity-page'));
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:588:                setImportant(document.documentElement, 'overflow-y', 'auto');
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:590:                setImportant(document.documentElement, 'max-height', 'none');
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:593:                setImportant(document.body, 'overflow-y', 'auto');
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:595:                setImportant(document.body, 'max-height', 'none');
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:602:                    '.fi-page-content',
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:606:                    '.ng-activity-page',
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:615:                    '[class*="overflow-auto"]',
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:616:                    '[class*="overflow-y-auto"]',
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:617:                    '[class*="overflow-scroll"]',
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:618:                    '[class*="overflow-y-scroll"]'
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:627:                        setImportant(el, 'max-height', 'none');
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:629:                        setImportant(el, 'overflow-y', 'visible');
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:656:                        setImportant(el, 'max-height', 'none');
+resources/views/filament/admin/logger/pages/list-activity-logs.blade.php:658:                        setImportant(el, 'overflow-y', 'visible');
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:42:    <div class="ng-activity-widget">
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:93:        body:has(.ng-activity-page), body:has(.ng-activity-widget) {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:106:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-main,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:107:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-main-ctn,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:108:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-page,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:109:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-page-content {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:116:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-page {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:120:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-page-header {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:124:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-main {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:128:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-page-content {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:133:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-sidebar {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:140:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-sidebar-nav {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:144:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-sidebar-item a {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:150:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-sidebar-item-active a,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:151:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-sidebar-item a:hover {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:157:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-wi-widget {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:163:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-wi-widget-content {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:167:        .ng-activity-widget {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:177:        .ng-activity-widget * {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:333:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-ctn {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:348:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:349:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-section,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:350:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-content,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:351:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-table,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:352:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-table thead,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:353:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-table tbody {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:360:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-header,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:361:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-toolbar {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:368:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-table thead tr {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:372:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-row,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:373:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-cell,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:374:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-header-cell {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:378:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-row {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:384:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-row:hover {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:388:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-cell {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:394:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-header-cell {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:400:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-header-cell-label {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:406:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-pagination,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:407:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-pagination {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:414:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-input-wrp,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:415:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-search-field .fi-input-wrp,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:416:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-select-input {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:424:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-search-field {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:428:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-search-field .fi-input-wrp {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:441:        .ng-activity-widget,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:442:        .ng-activity-widget .ng-activity-hero,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:443:        .ng-activity-widget .ng-activity-kpi-grid,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:444:        .ng-activity-widget .ng-activity-hero-main,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:445:        .ng-activity-widget .ng-activity-side-card,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:446:        .ng-activity-widget .ng-activity-kpi {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:449:            max-height: none !important;
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:450:            overflow-y: visible !important;
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:453:        body:has(.ng-activity-widget) .fi-wi-widget,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:454:        body:has(.ng-activity-widget) .fi-wi-widget-content {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:457:            max-height: none !important;
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:459:            overflow-y: visible !important;
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:464:        body:has(.ng-activity-widget) .fi-wi-widget::-webkit-scrollbar,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:465:        body:has(.ng-activity-widget) .fi-wi-widget-content::-webkit-scrollbar {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:471:        body:has(.ng-activity-widget) .ng-activity-hero-main,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:472:        body:has(.ng-activity-widget) .ng-activity-side-card,
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:473:        body:has(.ng-activity-widget) .ng-activity-kpi {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:489:            .ng-activity-widget {
+resources/views/filament/admin/logger/widgets/activity-log-analytics-widget.blade.php:498:            body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-ctn {
+resources/views/filament/admin/resources/products/widgets/product-form-hero-widget.blade.php:114:        body:has(.ng-product-form-page) .fi-page-content {
+resources/views/filament/admin/resources/products/widgets/product-form-hero-widget.blade.php:133:        body:has(.ng-product-form-page) .fi-page-content {
+resources/views/filament/admin/resources/products/widgets/product-form-hero-widget.blade.php:411:        body:has(.ng-product-form-page) .fi-page-content > form {
+resources/views/filament/admin/resources/products/widgets/product-analytics-widget.blade.php:100:        body:has(.ng-product-page) .fi-page-content {
+resources/views/filament/admin/resources/products/widgets/product-analytics-widget.blade.php:116:        body:has(.ng-product-page) .fi-page-content {
+resources/views/filament/admin/resources/roles/pages/view-role.blade.php:238:        body:has(.ng-role-detail-page) .fi-page-content {
+resources/views/filament/admin/resources/roles/pages/view-role.blade.php:257:        body:has(.ng-role-detail-page) .fi-page-content {
+resources/views/filament/admin/resources/roles/pages/view-role.blade.php:265:            min-height: 100vh;
+resources/views/filament/admin/resources/roles/widgets/role-analytics-widget.blade.php:131:        body:has(.ng-role-page) .fi-page-content {
+resources/views/filament/admin/resources/roles/widgets/role-analytics-widget.blade.php:147:        body:has(.ng-role-page) .fi-page-content {
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:115:        body:has(.ng-role-form-page) .fi-page-content {
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:134:        body:has(.ng-role-form-page) .fi-page-content {
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:412:        body:has(.ng-role-form-page) .fi-page-content > form {
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:745:        body:has(.ng-role-form-page) .fi-page-content {
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:775:        body:has(.ng-role-form-page) .fi-page-content > form,
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:776:        body:has(.ng-role-form-page) .fi-page-content > .fi-form,
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:777:        body:has(.ng-role-form-page) .fi-page-content > .fi-sc,
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:920:            body:has(.ng-role-form-page) .fi-page-content > form,
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:921:            body:has(.ng-role-form-page) .fi-page-content > .fi-form,
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:922:            body:has(.ng-role-form-page) .fi-page-content > .fi-sc,
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:944:            body:has(.ng-role-form-page) .fi-page-content > form,
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:945:            body:has(.ng-role-form-page) .fi-page-content > .fi-form,
+resources/views/filament/admin/resources/roles/widgets/role-form-hero-widget.blade.php:946:            body:has(.ng-role-form-page) .fi-page-content > .fi-sc,
+resources/views/filament/admin/resources/categories/widgets/category-form-hero-widget.blade.php:128:        body:has(.ng-category-form-page) .fi-page-content {
+resources/views/filament/admin/resources/categories/widgets/category-form-hero-widget.blade.php:147:        body:has(.ng-category-form-page) .fi-page-content {
+resources/views/filament/admin/resources/categories/widgets/category-form-hero-widget.blade.php:430:        body:has(.ng-category-form-page) .fi-page-content > form {
+resources/views/filament/admin/resources/categories/widgets/category-analytics-widget.blade.php:114:        body:has(.ng-category-page) .fi-page-content {
+resources/views/filament/admin/resources/categories/widgets/category-analytics-widget.blade.php:133:        body:has(.ng-category-page) .fi-page-content {
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-form-hero-widget.blade.php:146:        body:has(.ng-sales-target-form-page) .fi-page-content {
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-form-hero-widget.blade.php:175:        body:has(.ng-sales-target-form-page) .fi-page-content {
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-form-hero-widget.blade.php:184:        body:has(.ng-sales-target-form-page) .fi-page-content > form {
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-form-hero-widget.blade.php:330:        body:has(.ng-sales-target-form-page) .fi-page-content,
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:175:        body:has(.ng-sales-target-page) .fi-page-content {
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:194:        body:has(.ng-sales-target-page) .fi-page-content {
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:637:        body:has(.ng-sales-target-page) .fi-page-content {
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:645:            overflow-y: visible !important;
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:748:            overflow-y: auto !important;
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:750:            max-height: none !important;
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:757:        body:has(.ng-sales-target-page) .fi-page-content,
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:760:            overflow-y: visible !important;
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:762:            max-height: none !important;
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:772:            overflow-y: visible !important;
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:774:            max-height: none !important;
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:783:        body:has(.ng-sales-target-page) .fi-page-content::-webkit-scrollbar,
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:792:        body:has(.ng-sales-target-page) [class*="overflow-auto"],
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:793:        body:has(.ng-sales-target-page) [class*="overflow-y-auto"],
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:794:        body:has(.ng-sales-target-page) [class*="overflow-scroll"],
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:795:        body:has(.ng-sales-target-page) [class*="overflow-y-scroll"] {
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:796:            overflow-y: visible !important;
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:798:            max-height: none !important;
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:803:        body:has(.ng-sales-target-page) [class*="overflow-auto"]::-webkit-scrollbar,
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:804:        body:has(.ng-sales-target-page) [class*="overflow-y-auto"]::-webkit-scrollbar,
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:805:        body:has(.ng-sales-target-page) [class*="overflow-scroll"]::-webkit-scrollbar,
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:806:        body:has(.ng-sales-target-page) [class*="overflow-y-scroll"]::-webkit-scrollbar {
+resources/views/filament/admin/resources/sales-targets/widgets/sales-target-analytics-widget.blade.php:866:            overflow-y: visible !important;
+resources/views/filament/admin/resources/orders/pages/view-order.blade.php:250:        body:has(.ng-order-detail-page) .fi-page-content {
+resources/views/filament/admin/resources/orders/pages/view-order.blade.php:266:        body:has(.ng-order-detail-page) .fi-page-content {
+resources/views/filament/admin/resources/orders/pages/view-order.blade.php:274:            min-height: 100vh;
+resources/views/filament/admin/resources/orders/pages/view-order.blade.php:873:            max-height: 326px !important;
+resources/views/filament/admin/resources/orders/pages/view-order.blade.php:886:            max-height: 238px !important;
+resources/views/filament/admin/resources/orders/pages/view-order.blade.php:887:            overflow-y: auto !important;
+resources/views/filament/admin/resources/orders/pages/view-order.blade.php:951:                max-height: none !important;
+resources/views/filament/admin/resources/orders/pages/view-order.blade.php:955:                max-height: none !important;
+resources/views/filament/admin/resources/orders/widgets/order-analytics-widget.blade.php:170:        body:has(.ng-order-page) .fi-page-content {
+resources/views/filament/admin/resources/orders/widgets/order-analytics-widget.blade.php:186:        body:has(.ng-order-page) .fi-page-content {
+resources/views/filament/admin/resources/users/pages/view-user.blade.php:210:        body:has(.ng-user-detail-page) .fi-page-content {
+resources/views/filament/admin/resources/users/pages/view-user.blade.php:229:        body:has(.ng-user-detail-page) .fi-page-content {
+resources/views/filament/admin/resources/users/pages/view-user.blade.php:237:            min-height: 100vh;
+resources/views/filament/admin/resources/users/widgets/user-form-hero-widget.blade.php:118:        body:has(.ng-user-form-page) .fi-page-content {
+resources/views/filament/admin/resources/users/widgets/user-form-hero-widget.blade.php:137:        body:has(.ng-user-form-page) .fi-page-content {
+resources/views/filament/admin/resources/users/widgets/user-form-hero-widget.blade.php:417:        body:has(.ng-user-form-page) .fi-page-content > form {
+resources/views/filament/admin/resources/users/widgets/user-analytics-widget.blade.php:125:        body:has(.ng-user-page) .fi-page-content {
+resources/views/filament/admin/resources/users/widgets/user-analytics-widget.blade.php:141:        body:has(.ng-user-page) .fi-page-content {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:44:    <div class="ng-activity-page">
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:114:            overflow-y: auto !important;
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:116:            max-height: none !important;
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:119:        body:has(.ng-activity-page) {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:132:        body:has(.ng-activity-page) .fi-main,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:133:        body:has(.ng-activity-page) .fi-main-ctn,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:134:        body:has(.ng-activity-page) .fi-page,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:135:        body:has(.ng-activity-page) .fi-page-content {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:140:            max-height: none !important;
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:143:            overflow-y: visible !important;
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:146:        body:has(.ng-activity-page) .fi-page {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:150:        body:has(.ng-activity-page) .fi-page-header {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:154:        body:has(.ng-activity-page) .fi-main {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:158:        body:has(.ng-activity-page) .fi-page-content {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:163:        .ng-activity-page {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:173:        .ng-activity-page * {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:407:        body:has(.ng-activity-page) .fi-ta-ctn {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:415:            overflow-y: visible !important;
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:418:        body:has(.ng-activity-page) .fi-section,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:419:        body:has(.ng-activity-page) .fi-ta,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:420:        body:has(.ng-activity-page) .fi-ta-content,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:421:        body:has(.ng-activity-page) .fi-ta-table,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:422:        body:has(.ng-activity-page) .fi-ta-ctn > div,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:423:        body:has(.ng-activity-page) .fi-ta-ctn > div > div,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:424:        body:has(.ng-activity-page) .fi-ta-ctn > div > div > div,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:425:        body:has(.ng-activity-page) table,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:426:        body:has(.ng-activity-page) thead,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:427:        body:has(.ng-activity-page) tbody,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:428:        body:has(.ng-activity-page) tr,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:429:        body:has(.ng-activity-page) th,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:430:        body:has(.ng-activity-page) td {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:435:        body:has(.ng-activity-page) .fi-ta-header,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:436:        body:has(.ng-activity-page) .fi-ta-toolbar {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:443:        body:has(.ng-activity-page) .fi-ta-header-cell {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:450:        body:has(.ng-activity-page) .fi-ta-header-cell-label {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:456:        body:has(.ng-activity-page) .fi-ta-row {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:463:        body:has(.ng-activity-page) .fi-ta-row:hover {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:467:        body:has(.ng-activity-page) .fi-ta-cell {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:474:        body:has(.ng-activity-page) .fi-ta-pagination,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:475:        body:has(.ng-activity-page) .fi-pagination {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:482:        body:has(.ng-activity-page) .fi-input-wrp,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:483:        body:has(.ng-activity-page) .fi-ta-search-field .fi-input-wrp,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:484:        body:has(.ng-activity-page) .fi-select-input {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:494:        body:has(.ng-activity-page) .fi-ta-search-field {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:498:        body:has(.ng-activity-page) .fi-btn {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:503:        body:has(.ng-activity-page) .fi-btn-color-primary,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:504:        body:has(.ng-activity-page) .fi-btn-color-warning {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:515:        body:has(.ng-activity-page) .fi-sidebar {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:523:        body:has(.ng-activity-page) .fi-sidebar-nav {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:527:        body:has(.ng-activity-page) .fi-sidebar-item a {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:533:        body:has(.ng-activity-page) .fi-sidebar-item-active a,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:534:        body:has(.ng-activity-page) .fi-sidebar-item a:hover {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:540:        body:has(.ng-activity-page) .fi-sidebar-item-active svg,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:541:        body:has(.ng-activity-page) .fi-sidebar-item a:hover svg,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:542:        body:has(.ng-activity-page) .fi-sidebar-item-active span,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:543:        body:has(.ng-activity-page) .fi-sidebar-item a:hover span {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:553:        | Scroll internal dari .fi-main/.fi-page-content/table/widget dimatikan.
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:557:        html:has(.ng-activity-page),
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:558:        body:has(.ng-activity-page) {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:561:            max-height: none !important;
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:563:            overflow-y: auto !important;
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:566:        body:has(.ng-activity-page) {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:570:        body:has(.ng-activity-page) .fi-layout,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:571:        body:has(.ng-activity-page) .fi-main,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:572:        body:has(.ng-activity-page) .fi-main-ctn,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:573:        body:has(.ng-activity-page) .fi-page,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:574:        body:has(.ng-activity-page) .fi-page-content,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:575:        body:has(.ng-activity-page) main,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:576:        body:has(.ng-activity-page) .fi-wi-widget,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:577:        body:has(.ng-activity-page) .fi-wi-widget-content,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:578:        body:has(.ng-activity-page) .ng-activity-page,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:579:        body:has(.ng-activity-page) .ng-activity-table-wrap,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:580:        body:has(.ng-activity-page) .ng-activity-table-card,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:581:        body:has(.ng-activity-page) .fi-section,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:582:        body:has(.ng-activity-page) .fi-ta-ctn,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:583:        body:has(.ng-activity-page) .fi-ta,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:584:        body:has(.ng-activity-page) .fi-ta-content,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:585:        body:has(.ng-activity-page) .fi-ta-table-wrap,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:586:        body:has(.ng-activity-page) .fi-ta-table {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:589:            max-height: none !important;
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:591:            overflow-y: visible !important;
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:596:        body:has(.ng-activity-page) [class*="overflow-auto"],
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:597:        body:has(.ng-activity-page) [class*="overflow-y-auto"],
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:598:        body:has(.ng-activity-page) [class*="overflow-scroll"],
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:599:        body:has(.ng-activity-page) [class*="overflow-y-scroll"] {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:602:            max-height: none !important;
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:604:            overflow-y: visible !important;
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:607:        body:has(.ng-activity-page) .fi-main,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:608:        body:has(.ng-activity-page) .fi-main-ctn,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:609:        body:has(.ng-activity-page) .fi-page,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:610:        body:has(.ng-activity-page) .fi-page-content,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:611:        body:has(.ng-activity-page) main,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:612:        body:has(.ng-activity-page) .fi-wi-widget,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:613:        body:has(.ng-activity-page) .fi-wi-widget-content,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:614:        body:has(.ng-activity-page) .ng-activity-page,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:615:        body:has(.ng-activity-page) .ng-activity-table-wrap,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:616:        body:has(.ng-activity-page) .ng-activity-table-card,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:617:        body:has(.ng-activity-page) .fi-ta-ctn,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:618:        body:has(.ng-activity-page) .fi-ta-content,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:619:        body:has(.ng-activity-page) .fi-ta-table-wrap {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:624:        body:has(.ng-activity-page) .fi-main::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:625:        body:has(.ng-activity-page) .fi-main-ctn::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:626:        body:has(.ng-activity-page) .fi-page::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:627:        body:has(.ng-activity-page) .fi-page-content::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:628:        body:has(.ng-activity-page) main::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:629:        body:has(.ng-activity-page) .fi-wi-widget::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:630:        body:has(.ng-activity-page) .fi-wi-widget-content::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:631:        body:has(.ng-activity-page) .ng-activity-page::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:632:        body:has(.ng-activity-page) .ng-activity-table-wrap::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:633:        body:has(.ng-activity-page) .ng-activity-table-card::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:634:        body:has(.ng-activity-page) .fi-ta-ctn::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:635:        body:has(.ng-activity-page) .fi-ta-content::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:636:        body:has(.ng-activity-page) .fi-ta-table-wrap::-webkit-scrollbar {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:642:        body:has(.ng-activity-page) .ng-activity-hero-main,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:643:        body:has(.ng-activity-page) .ng-activity-side-card,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:644:        body:has(.ng-activity-page) .ng-activity-kpi,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:645:        body:has(.ng-activity-page) .ng-widget-card,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:646:        body:has(.ng-activity-page) .ng-kpi-card,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:647:        body:has(.ng-activity-page) .fi-input-wrp,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:648:        body:has(.ng-activity-page) .fi-ta-search-field .fi-input-wrp,
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:649:        body:has(.ng-activity-page) .fi-select-input {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:665:            .ng-activity-page {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:684:            .ng-activity-page {
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:707:                return Boolean(document.querySelector('.ng-activity-page'));
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:721:                setImportant(document.documentElement, 'overflow-y', 'auto');
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:723:                setImportant(document.documentElement, 'max-height', 'none');
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:726:                setImportant(document.body, 'overflow-y', 'auto');
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:728:                setImportant(document.body, 'max-height', 'none');
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:735:                    '.fi-page-content',
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:739:                    '.ng-activity-page',
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:748:                    '[class*="overflow-auto"]',
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:749:                    '[class*="overflow-y-auto"]',
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:750:                    '[class*="overflow-scroll"]',
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:751:                    '[class*="overflow-y-scroll"]'
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:760:                        setImportant(el, 'max-height', 'none');
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:762:                        setImportant(el, 'overflow-y', 'visible');
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:789:                        setImportant(el, 'max-height', 'none');
+resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php:791:                        setImportant(el, 'overflow-y', 'visible');
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:42:    <div class="ng-activity-widget">
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:93:        body:has(.ng-activity-page), body:has(.ng-activity-widget) {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:106:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-main,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:107:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-main-ctn,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:108:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-page,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:109:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-page-content {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:116:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-page {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:120:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-page-header {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:124:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-main {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:128:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-page-content {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:133:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-sidebar {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:140:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-sidebar-nav {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:144:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-sidebar-item a {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:150:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-sidebar-item-active a,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:151:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-sidebar-item a:hover {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:157:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-wi-widget {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:163:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-wi-widget-content {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:167:        .ng-activity-widget {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:177:        .ng-activity-widget * {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:333:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-ctn {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:348:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:349:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-section,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:350:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-content,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:351:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-table,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:352:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-table thead,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:353:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-table tbody {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:360:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-header,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:361:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-toolbar {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:368:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-table thead tr {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:372:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-row,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:373:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-cell,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:374:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-header-cell {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:378:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-row {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:384:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-row:hover {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:388:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-cell {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:394:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-header-cell {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:400:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-header-cell-label {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:406:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-pagination,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:407:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-pagination {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:414:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-input-wrp,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:415:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-search-field .fi-input-wrp,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:416:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-select-input {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:424:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-search-field {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:428:        body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-search-field .fi-input-wrp {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:441:        .ng-activity-widget,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:442:        .ng-activity-widget .ng-activity-hero,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:443:        .ng-activity-widget .ng-activity-kpi-grid,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:444:        .ng-activity-widget .ng-activity-hero-main,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:445:        .ng-activity-widget .ng-activity-side-card,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:446:        .ng-activity-widget .ng-activity-kpi {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:449:            max-height: none !important;
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:450:            overflow-y: visible !important;
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:453:        body:has(.ng-activity-widget) .fi-wi-widget,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:454:        body:has(.ng-activity-widget) .fi-wi-widget-content {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:457:            max-height: none !important;
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:459:            overflow-y: visible !important;
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:464:        body:has(.ng-activity-widget) .fi-wi-widget::-webkit-scrollbar,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:465:        body:has(.ng-activity-widget) .fi-wi-widget-content::-webkit-scrollbar {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:471:        body:has(.ng-activity-widget) .ng-activity-hero-main,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:472:        body:has(.ng-activity-widget) .ng-activity-side-card,
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:473:        body:has(.ng-activity-widget) .ng-activity-kpi {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:489:            .ng-activity-widget {
+resources/views/filament/admin/resources/activity-logs/widgets/activity-log-analytics-widget.blade.php:498:            body:has(.ng-activity-page), body:has(.ng-activity-widget) .fi-ta-ctn {
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:186:        body:has(.ng-operational-page) .fi-page-content {
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:205:        body:has(.ng-operational-page) .fi-page-content {
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:648:        body:has(.ng-operational-page) .fi-page-content {
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:656:            overflow-y: visible !important;
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:759:            overflow-y: auto !important;
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:761:            max-height: none !important;
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:768:        body:has(.ng-operational-page) .fi-page-content,
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:771:            overflow-y: visible !important;
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:773:            max-height: none !important;
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:783:            overflow-y: visible !important;
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:785:            max-height: none !important;
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:794:        body:has(.ng-operational-page) .fi-page-content::-webkit-scrollbar,
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:803:        body:has(.ng-operational-page) [class*="overflow-auto"],
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:804:        body:has(.ng-operational-page) [class*="overflow-y-auto"],
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:805:        body:has(.ng-operational-page) [class*="overflow-scroll"],
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:806:        body:has(.ng-operational-page) [class*="overflow-y-scroll"] {
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:807:            overflow-y: visible !important;
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:809:            max-height: none !important;
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:814:        body:has(.ng-operational-page) [class*="overflow-auto"]::-webkit-scrollbar,
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:815:        body:has(.ng-operational-page) [class*="overflow-y-auto"]::-webkit-scrollbar,
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:816:        body:has(.ng-operational-page) [class*="overflow-scroll"]::-webkit-scrollbar,
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-analytics-widget.blade.php:817:        body:has(.ng-operational-page) [class*="overflow-y-scroll"]::-webkit-scrollbar {
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-form-hero-widget.blade.php:64:        body:has(.ng-operational-form-page) .fi-page-content {
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-form-hero-widget.blade.php:83:        body:has(.ng-operational-form-page) .fi-page-content {
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-form-hero-widget.blade.php:291:        body:has(.ng-operational-form-page) .fi-page-content > form {
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-form-hero-widget.blade.php:396:        body:has(.ng-operational-form-page) .fi-page-content,
+resources/views/filament/admin/resources/operational-costs/widgets/operational-cost-form-hero-widget.blade.php:582:        body:has(.ng-operational-form-page) .fi-page-content,
+resources/views/filament/admin/auth/login.blade.php:14:            min-height: 100vh !important;
+resources/views/filament/admin/auth/login.blade.php:52:            min-height: 100vh !important;
+resources/views/vendor/filament-breezy/livewire/personal-info.blade.php:59:        body:has(.ng-profile-card) .fi-page-content {
+resources/views/vendor/filament-breezy/livewire/personal-info.blade.php:78:        body:has(.ng-profile-card) .fi-page-content {
+resources/views/vendor/filament-breezy/livewire/personal-info.blade.php:409:            body:has(.ng-profile-card) .fi-page-content {
+resources/views/vendor/filament-breezy/livewire/update-password.blade.php:59:        body:has(.ng-profile-card) .fi-page-content {
+resources/views/vendor/filament-breezy/livewire/update-password.blade.php:78:        body:has(.ng-profile-card) .fi-page-content {
+resources/views/vendor/filament-breezy/livewire/update-password.blade.php:409:            body:has(.ng-profile-card) .fi-page-content {
+resources/views/vendor/filament-breezy/livewire/browser-sessions.blade.php:53:        body:has(.ng-profile-card) .fi-page-content {
+resources/views/vendor/filament-breezy/livewire/browser-sessions.blade.php:72:        body:has(.ng-profile-card) .fi-page-content {
+resources/views/vendor/filament-breezy/livewire/browser-sessions.blade.php:403:            body:has(.ng-profile-card) .fi-page-content {
+resources/css/filament/admin/theme.css:46:    min-height: 100vh !important;
+resources/css/filament/admin/theme.css:1625:.fi-page:has(.ng-profile-card) .fi-page-content {
+resources/css/filament/admin/theme.css:1990:    .fi-page:has(.ng-profile-card) .fi-page-content {
+resources/css/filament/admin/theme.css:2039:.fi-page:has(.ng-profile-card) .fi-page-content {
+resources/css/filament/admin/theme.css:2049:.fi-page:has(.ng-profile-card) .fi-page-content > * {
+resources/css/filament/admin/theme.css:2108:.fi-page-content {
+resources/css/filament/admin/theme.css:2150:.dark .fi-page-content {
+resources/css/filament/admin/theme.css:2408:    max-height: 245px !important;
+resources/css/filament/admin/theme.css:2416:    max-height: 300px !important;
+resources/css/filament/admin/theme.css:2425:    max-height: 305px;
+resources/css/filament/admin/theme.css:2724:    max-height: 220px !important;
+resources/css/filament/admin/theme.css:2834:    max-height: 235px !important;

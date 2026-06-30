@@ -178,28 +178,28 @@
             background-size: cover !important;
             background-position: center !important;
             background-attachment: fixed !important;
+            overflow-x: hidden !important;
         }
 
+        body:has(.ng-operational-page) .fi-layout,
         body:has(.ng-operational-page) .fi-main,
         body:has(.ng-operational-page) .fi-main-ctn,
         body:has(.ng-operational-page) .fi-page,
-        body:has(.ng-operational-page) .fi-page-content {
+        body:has(.ng-operational-page) .fi-page-content,
+        body:has(.ng-operational-page) main {
             width: 100% !important;
             max-width: 100% !important;
             background: transparent !important;
             overflow-x: hidden !important;
         }
 
-        body:has(.ng-operational-page) .fi-page {
+        body:has(.ng-operational-page) .fi-page,
+        body:has(.ng-operational-page) .fi-main {
             padding: 0 !important;
         }
 
         body:has(.ng-operational-page) .fi-page-header {
             display: none !important;
-        }
-
-        body:has(.ng-operational-page) .fi-main {
-            padding: 0 !important;
         }
 
         body:has(.ng-operational-page) .fi-page-content {
@@ -223,7 +223,7 @@
             width: 100% !important;
             max-width: 100% !important;
             padding: 24px 24px 10px !important;
-            overflow: visible !important;
+            overflow: hidden !important;
             font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             color: #24180f;
         }
@@ -231,6 +231,12 @@
         .ng-operational-page * {
             box-sizing: border-box;
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | HERO + FILTER
+        |--------------------------------------------------------------------------
+        */
 
         .ng-op-hero-grid {
             display: grid;
@@ -267,16 +273,13 @@
         }
 
         .ng-widget-card {
-            border-radius: 24px;
-            padding: 18px;
             min-width: 0;
+            padding: 18px;
+            border-radius: 24px;
         }
 
         .ng-op-hero-card {
             min-height: 118px;
-        }
-
-        .ng-op-hero-card {
             display: flex;
             align-items: center;
         }
@@ -296,16 +299,6 @@
             flex: 1 1 auto;
         }
 
-        .ng-op-hero-right {
-            position: relative;
-            z-index: 3;
-            flex: 0 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
         .ng-widget-head h1 {
             margin: 0;
             color: #21160d;
@@ -313,15 +306,6 @@
             line-height: 1.05;
             font-weight: 950;
             letter-spacing: -.04em;
-        }
-
-        .ng-widget-head p {
-            max-width: 760px;
-            margin: 8px 0 0;
-            color: #765d45;
-            font-size: 13px;
-            line-height: 1.55;
-            font-weight: 700;
         }
 
         .ng-op-active-period {
@@ -333,6 +317,16 @@
             font-weight: 950;
         }
 
+        .ng-op-hero-right {
+            position: relative;
+            z-index: 3;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
         .ng-op-period-filter {
             position: relative;
             z-index: 3;
@@ -340,15 +334,6 @@
             display: grid;
             gap: 8px;
             justify-items: end;
-        }
-
-        .ng-op-period-filter span {
-            color: #d95d00;
-            font-size: 12px;
-            line-height: 1;
-            font-weight: 950;
-            letter-spacing: .04em;
-            text-transform: uppercase;
         }
 
         .ng-op-period-selects {
@@ -414,7 +399,11 @@
             box-shadow: 0 18px 32px rgba(238, 101, 0, .30);
         }
 
-
+        /*
+        |--------------------------------------------------------------------------
+        | KPI - SAME AS CATEGORY
+        |--------------------------------------------------------------------------
+        */
 
         .ng-operational-kpi-grid {
             display: grid;
@@ -424,119 +413,168 @@
         }
 
         .ng-kpi-card {
-            min-height: 112px;
-            border-radius: 22px;
-            padding: 16px;
+            min-height: 108px;
             display: flex;
-            align-items: center;
-            gap: 14px;
+            gap: 12px;
+            padding: 16px 15px;
+            border-radius: 22px;
             min-width: 0;
         }
 
         .ng-kpi-icon {
             position: relative;
-            z-index: 2;
-            flex: 0 0 48px;
-            width: 48px;
-            height: 48px;
+            z-index: 1;
             display: grid;
             place-items: center;
+            flex: 0 0 auto;
+            width: 44px;
+            height: 44px;
             border-radius: 15px;
             color: #fff;
-            font-size: 22px;
+            background: linear-gradient(135deg, var(--accent), #d95d00);
+            box-shadow: 0 15px 28px rgba(249, 115, 22, .22);
+            font-size: 17px;
             font-weight: 950;
-            background:
-                radial-gradient(circle at 35% 25%, rgba(255, 255, 255, .28), transparent 32%),
-                linear-gradient(135deg, var(--accent), #e45700);
-            box-shadow: 0 12px 24px rgba(238, 101, 0, .20);
         }
 
         .ng-kpi-content {
             position: relative;
-            z-index: 2;
+            z-index: 1;
             min-width: 0;
             flex: 1;
         }
 
         .ng-kpi-label {
             display: flex;
+            align-items: center;
             justify-content: space-between;
             gap: 8px;
-            color: #765d45;
+            color: #6f5946;
             font-size: 12px;
             line-height: 1.2;
-            font-weight: 950;
-            letter-spacing: .05em;
+            font-weight: 900;
             text-transform: uppercase;
-        }
-
-        .ng-kpi-label span {
-            color: #8a7259;
+            letter-spacing: .06em;
         }
 
         .ng-kpi-content strong {
             display: block;
             margin-top: 7px;
-            color: #21160d;
-            font-size: 24px;
-            line-height: 1.05;
+            color: #23160d;
+            font-size: 22px;
+            line-height: 1.15;
             font-weight: 950;
-            letter-spacing: -.04em;
+            letter-spacing: -.03em;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .ng-kpi-content p {
             margin: 8px 0 0;
-            color: #3d556f;
-            font-size: 12px;
-            line-height: 1.35;
+            color: #6f5946;
+            font-size: 11px;
+            line-height: 1.25;
             font-weight: 850;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-
-
-        /* No horizontal scroll table: content fixed inside widget width */
-        body:has(.ng-operational-page) {
-            overflow-x: hidden !important;
-        }
+        /*
+        |--------------------------------------------------------------------------
+        | TABLE FILAMENT - SAME COLOR STYLE AS CATEGORY
+        |--------------------------------------------------------------------------
+        */
 
         body:has(.ng-operational-page) .fi-ta-ctn {
+            margin: 0 24px 24px !important;
             width: calc(100% - 48px) !important;
             max-width: calc(100% - 48px) !important;
-            margin: 10px 24px 24px !important;
             border-radius: 24px !important;
-            overflow: hidden !important;
             border: 1px solid rgba(255, 255, 255, .58) !important;
             background:
-                linear-gradient(145deg, rgba(255, 255, 255, .46), rgba(255, 246, 231, .22)),
-                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .16), transparent 38%) !important;
+                linear-gradient(145deg, rgba(255, 255, 255, .34), rgba(255, 246, 231, .18)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .12), transparent 38%) !important;
             box-shadow:
                 0 22px 54px rgba(101, 58, 21, .12),
                 0 0 0 1px rgba(255, 255, 255, .12) inset,
-                inset 0 1px 0 rgba(255, 255, 255, .62) !important;
+                inset 0 1px 0 rgba(255, 255, 255, .54) !important;
             backdrop-filter: blur(14px) !important;
             -webkit-backdrop-filter: blur(14px) !important;
+            overflow: hidden !important;
+            transform: none !important;
         }
 
+        body:has(.ng-operational-page) .fi-section,
         body:has(.ng-operational-page) .fi-ta,
         body:has(.ng-operational-page) .fi-ta-content,
         body:has(.ng-operational-page) .fi-ta-table,
+        body:has(.ng-operational-page) .fi-ta-ctn > div,
+        body:has(.ng-operational-page) .fi-ta-ctn > div > div,
+        body:has(.ng-operational-page) .fi-ta-ctn > div > div > div,
+        body:has(.ng-operational-page) table,
+        body:has(.ng-operational-page) thead,
+        body:has(.ng-operational-page) tbody,
+        body:has(.ng-operational-page) tr,
+        body:has(.ng-operational-page) th,
+        body:has(.ng-operational-page) td {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
         body:has(.ng-operational-page) .fi-ta-header,
         body:has(.ng-operational-page) .fi-ta-toolbar {
+            min-height: 46px !important;
+            padding: 8px 16px !important;
+            background: rgba(255, 247, 235, .10) !important;
+            border-bottom: 1px solid rgba(114, 74, 41, .08) !important;
+            box-shadow: none !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-header-cell,
+        body:has(.ng-operational-page) .fi-ta-table thead th {
+            padding-top: 9px !important;
+            padding-bottom: 9px !important;
+            background: rgba(255, 255, 255, .10) !important;
+            border-color: rgba(114, 74, 41, .08) !important;
+            box-shadow: none !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-header-cell-label {
+            color: #4b3525 !important;
+            font-size: 12px !important;
+            font-weight: 950 !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-row,
+        body:has(.ng-operational-page) .fi-ta-table tbody tr,
+        body:has(.ng-operational-page) .fi-ta-table tbody tr:nth-child(odd),
+        body:has(.ng-operational-page) .fi-ta-table tbody tr:nth-child(even) {
+            min-height: 52px !important;
+            border-bottom: 1px solid rgba(114, 74, 41, .08) !important;
+            background: rgba(255, 247, 235, .04) !important;
+            transition: .18s ease !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-row:hover,
+        body:has(.ng-operational-page) .fi-ta-table tbody tr:hover {
+            background: rgba(255, 255, 255, .14) !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-cell,
+        body:has(.ng-operational-page) .fi-ta-table tbody td {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+            border-color: rgba(114, 74, 41, .08) !important;
             background: transparent !important;
-            border-color: rgba(255, 255, 255, .20) !important;
         }
 
-        body:has(.ng-operational-page) .fi-ta-header {
-            min-height: 62px !important;
-            padding: 12px 18px !important;
-        }
-
-        body:has(.ng-operational-page) .fi-ta-header-heading {
-            display: none !important;
+        body:has(.ng-operational-page) .fi-ta-table {
+            table-layout: fixed !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
         }
 
         body:has(.ng-operational-page) .fi-ta-content,
@@ -544,29 +582,7 @@
             width: 100% !important;
             max-width: 100% !important;
             overflow-x: hidden !important;
-        }
-
-        body:has(.ng-operational-page) .fi-ta-table {
-            width: 100% !important;
-            max-width: 100% !important;
-            min-width: 0 !important;
-            table-layout: fixed !important;
-        }
-
-        body:has(.ng-operational-page) .fi-ta-table thead th {
-            background: rgba(255, 255, 255, .22) !important;
-            border-color: rgba(255, 255, 255, .18) !important;
-            padding-top: 12px !important;
-            padding-bottom: 12px !important;
-        }
-
-        body:has(.ng-operational-page) .fi-ta-table tbody tr {
-            background: rgba(255, 255, 255, .08) !important;
-            border-color: rgba(255, 255, 255, .16) !important;
-        }
-
-        body:has(.ng-operational-page) .fi-ta-table tbody tr:hover {
-            background: rgba(255, 255, 255, .20) !important;
+            overflow-y: visible !important;
         }
 
         body:has(.ng-operational-page) .fi-ta-table th,
@@ -625,62 +641,403 @@
             white-space: nowrap !important;
         }
 
-        @media (max-width: 1100px) {
-            body:has(.ng-operational-page) .fi-ta-ctn {
-                width: calc(100% - 28px) !important;
-                max-width: calc(100% - 28px) !important;
-                margin-left: 14px !important;
-                margin-right: 14px !important;
-            }
+        body:has(.ng-operational-page) .fi-ta-pagination,
+        body:has(.ng-operational-page) .fi-pagination {
+            min-height: 50px !important;
+            padding: 8px 16px !important;
+            background: rgba(255, 247, 235, .10) !important;
+            border-top: 1px solid rgba(114, 74, 41, .08) !important;
+        }
 
-            body:has(.ng-operational-page) .fi-ta-content,
-            body:has(.ng-operational-page) .fi-ta-table-wrap {
-                overflow-x: hidden !important;
-            }
+        body:has(.ng-operational-page) .fi-input-wrp,
+        body:has(.ng-operational-page) .fi-ta-search-field .fi-input-wrp,
+        body:has(.ng-operational-page) .fi-select-input {
+            min-height: 38px !important;
+            border-radius: 16px !important;
+            background: rgba(255, 255, 255, .28) !important;
+            border-color: rgba(255, 255, 255, .42) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .36) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-search-field {
+            max-width: 280px !important;
+        }
+
+        body:has(.ng-operational-page) .fi-btn {
+            border-radius: 14px !important;
+            font-weight: 900 !important;
+        }
+
+        body:has(.ng-operational-page) .fi-btn-color-primary,
+        body:has(.ng-operational-page) .fi-btn-color-warning {
+            background: linear-gradient(135deg, #ff9d18, #ee6500) !important;
+            box-shadow: 0 12px 22px rgba(238, 101, 0, .22) !important;
         }
 
 
-        /* Final cleanup: 4 KPI, no double scroll, softer flat glass */
-        body:has(.ng-operational-page),
-        body:has(.ng-operational-page) .fi-main,
-        body:has(.ng-operational-page) .fi-main-ctn,
-        body:has(.ng-operational-page) .fi-page,
-        body:has(.ng-operational-page) .fi-page-content {
-            overflow-x: hidden !important;
+        /*
+        |--------------------------------------------------------------------------
+        | OPERATIONAL TABLE COLUMN BALANCE
+        |--------------------------------------------------------------------------
+        | Rapihkan lebar kolom agar bagian kanan tidak kosong.
+        | Kolom: Biaya, Nominal, Status, Tanggal, Action.
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-operational-page) .fi-ta-table {
+            width: 100% !important;
+            table-layout: fixed !important;
         }
 
-        body:has(.ng-operational-page) .fi-ta-content,
-        body:has(.ng-operational-page) .fi-ta-table-wrap,
-        body:has(.ng-operational-page) .fi-ta-ctn {
-            overflow-x: hidden !important;
-            overflow-y: visible !important;
+        body:has(.ng-operational-page) .fi-ta-table th,
+        body:has(.ng-operational-page) .fi-ta-table td {
+            vertical-align: middle !important;
         }
 
-        body:has(.ng-operational-page) .fi-ta-ctn::-webkit-scrollbar,
-        body:has(.ng-operational-page) .fi-ta-content::-webkit-scrollbar,
-        body:has(.ng-operational-page) .fi-ta-table-wrap::-webkit-scrollbar {
-            display: none !important;
-            width: 0 !important;
-            height: 0 !important;
+        /*
+         * Biaya
+         */
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(1),
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) {
+            width: 38% !important;
+            max-width: 38% !important;
+            text-align: left !important;
+            padding-left: 16px !important;
+            padding-right: 14px !important;
         }
 
-        .ng-widget-card,
-        .ng-kpi-card,
-        body:has(.ng-operational-page) .fi-ta-ctn {
-            box-shadow:
-                0 0 0 1px rgba(255, 255, 255, .14) inset,
-                inset 0 1px 0 rgba(255, 255, 255, .42) !important;
+        /*
+         * Nominal
+         */
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(2),
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(2) {
+            width: 18% !important;
+            max-width: 18% !important;
+            text-align: center !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
         }
 
-        .ng-widget-card::before,
-        .ng-kpi-card::before {
-            opacity: .20 !important;
+        /*
+         * Status
+         */
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(3),
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(3) {
+            width: 18% !important;
+            max-width: 18% !important;
+            text-align: center !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
         }
 
-        body:has(.ng-operational-page) .fi-ta-row,
-        body:has(.ng-operational-page) .fi-ta-table tbody tr {
-            box-shadow: none !important;
+        /*
+         * Tanggal
+         */
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(4),
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(4) {
+            width: 18% !important;
+            max-width: 18% !important;
+            text-align: center !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
         }
+
+        /*
+         * Action/menu kanan
+         */
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(5),
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(5),
+        body:has(.ng-operational-page) .fi-ta-actions-cell,
+        body:has(.ng-operational-page) td:has(.fi-ta-actions) {
+            width: 8% !important;
+            max-width: 8% !important;
+            min-width: 70px !important;
+            text-align: center !important;
+            padding-left: 8px !important;
+            padding-right: 16px !important;
+            overflow: visible !important;
+        }
+
+        /*
+         * Center-kan isi kolom selain Biaya.
+         */
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(2) > *,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(2) > *,
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(3) > *,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(3) > *,
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(4) > *,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(4) > *,
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(5) > *,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(5) > * {
+            justify-content: center !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-actions {
+            display: flex !important;
+            justify-content: center !important;
+            width: 100% !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-actions .fi-btn {
+            min-width: 36px !important;
+            width: 36px !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            border-radius: 999px !important;
+        }
+
+        /*
+         * Pastikan text panjang tetap rapi.
+         */
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) .fi-ta-text,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) .fi-ta-text-item,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) .fi-ta-text-item-label {
+            text-align: left !important;
+            justify-content: flex-start !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(2) .fi-ta-text,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(2) .fi-ta-text-item,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(3) .fi-ta-text,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(3) .fi-ta-text-item,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(4) .fi-ta-text,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(4) .fi-ta-text-item {
+            text-align: center !important;
+            justify-content: center !important;
+        }
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | OPERATIONAL BIAYA COLUMN POSITION TWEAK
+        |--------------------------------------------------------------------------
+        | Data kolom Biaya jangan terlalu kiri.
+        | Jarak visual dari Biaya ke Nominal dibuat lebih rapat tanpa mengubah
+        | jarak kolom Nominal, Status, Tanggal, dan action/menu kanan.
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(1),
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) {
+            padding-left: 34px !important;
+            padding-right: 10px !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) .fi-ta-text,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) .fi-ta-text-item,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) .fi-ta-text-item-label {
+            text-align: left !important;
+            justify-content: flex-start !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(1) > * {
+            justify-content: flex-start !important;
+        }
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | OPERATIONAL TABLE COLUMN FINAL POSITION
+        |--------------------------------------------------------------------------
+        | Revisi posisi:
+        | - Kolom Biaya digeser ke area kanan sesuai garis referensi.
+        | - Kolom Nominal, Status, dan Tanggal digeser sedikit ke kiri.
+        | - Jarak antar Nominal, Status, Tanggal tetap rapi.
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-operational-page) .fi-ta-table {
+            width: 100% !important;
+            table-layout: fixed !important;
+        }
+
+        /*
+         * Biaya: dibuat lebih pendek supaya Nominal mendekat,
+         * tapi isi teksnya digeser ke kanan.
+         */
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(1),
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) {
+            width: 32% !important;
+            max-width: 32% !important;
+            text-align: left !important;
+            padding-left: 78px !important;
+            padding-right: 10px !important;
+        }
+
+        /*
+         * Nominal: geser kiri mengikuti lebar Biaya yang diperkecil.
+         */
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(2),
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(2) {
+            width: 18% !important;
+            max-width: 18% !important;
+            text-align: center !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+
+        /*
+         * Status
+         */
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(3),
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(3) {
+            width: 18% !important;
+            max-width: 18% !important;
+            text-align: center !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+
+        /*
+         * Tanggal
+         */
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(4),
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(4) {
+            width: 20% !important;
+            max-width: 20% !important;
+            text-align: center !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+
+        /*
+         * Action/menu kanan tetap rapi.
+         */
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(5),
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(5),
+        body:has(.ng-operational-page) .fi-ta-actions-cell,
+        body:has(.ng-operational-page) td:has(.fi-ta-actions) {
+            width: 12% !important;
+            max-width: 12% !important;
+            min-width: 76px !important;
+            text-align: center !important;
+            padding-left: 8px !important;
+            padding-right: 18px !important;
+            overflow: visible !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(2) > *,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(2) > *,
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(3) > *,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(3) > *,
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(4) > *,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(4) > *,
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(5) > *,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(5) > * {
+            justify-content: center !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table th:nth-child(1) > *,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) > *,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) .fi-ta-text,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) .fi-ta-text-item,
+        body:has(.ng-operational-page) .fi-ta-table td:nth-child(1) .fi-ta-text-item-label {
+            text-align: left !important;
+            justify-content: flex-start !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-actions {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+        }
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | OPERATIONAL BIAYA HEADER ALIGN FIX
+        |--------------------------------------------------------------------------
+        | Judul kolom "Biaya" disejajarkan dengan data biaya di bawahnya.
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-operational-page) .fi-ta-table thead th:nth-child(1),
+        body:has(.ng-operational-page) .fi-ta-header-cell:nth-child(1) {
+            padding-left: 78px !important;
+            text-align: left !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table thead th:nth-child(1) > *,
+        body:has(.ng-operational-page) .fi-ta-header-cell:nth-child(1) > *,
+        body:has(.ng-operational-page) .fi-ta-table thead th:nth-child(1) .fi-ta-header-cell-label,
+        body:has(.ng-operational-page) .fi-ta-header-cell:nth-child(1) .fi-ta-header-cell-label {
+            justify-content: flex-start !important;
+            text-align: left !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table tbody td:nth-child(1) {
+            padding-left: 78px !important;
+            text-align: left !important;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIDEBAR EFFECT SYNC
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-operational-page) .fi-sidebar {
+            background: rgba(255, 250, 242, .50) !important;
+            border-right: 1px solid rgba(255, 255, 255, .48) !important;
+            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+        }
+
+        body:has(.ng-operational-page) .fi-sidebar-nav {
+            padding: 18px 14px !important;
+        }
+
+        body:has(.ng-operational-page) .fi-sidebar-item a,
+        body:has(.ng-operational-page) .fi-sidebar-item-button {
+            border-radius: 14px !important;
+            color: #6f5844 !important;
+            transition: .2s ease !important;
+        }
+
+        body:has(.ng-operational-page) .fi-sidebar-item-active a,
+        body:has(.ng-operational-page) .fi-sidebar-item a:hover,
+        body:has(.ng-operational-page) .fi-sidebar-item-active .fi-sidebar-item-button,
+        body:has(.ng-operational-page) .fi-sidebar-item .fi-sidebar-item-button:hover,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active a,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active .fi-sidebar-item-button {
+            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
+            color: #fff !important;
+            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
+        }
+
+        body:has(.ng-operational-page) .fi-sidebar-item-active svg,
+        body:has(.ng-operational-page) .fi-sidebar-item a:hover svg,
+        body:has(.ng-operational-page) .fi-sidebar-item-active span,
+        body:has(.ng-operational-page) .fi-sidebar-item a:hover span,
+        body:has(.ng-operational-page) .fi-sidebar-item-active .fi-sidebar-item-icon,
+        body:has(.ng-operational-page) .fi-sidebar-item-active .fi-sidebar-item-label,
+        body:has(.ng-operational-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-icon,
+        body:has(.ng-operational-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-label,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active svg,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active span,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
+        body:has(.ng-operational-page) .fi-sidebar-item.fi-active .fi-sidebar-item-label {
+            color: #fff !important;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | RESPONSIVE
+        |--------------------------------------------------------------------------
+        */
 
         @media (max-width: 1500px) {
             .ng-operational-kpi-grid {
@@ -689,8 +1046,8 @@
         }
 
         @media (max-width: 1100px) {
-            .ng-op-hero-grid {
-                grid-template-columns: 1fr;
+            .ng-operational-page {
+                padding: 18px 18px 10px !important;
             }
 
             .ng-widget-head {
@@ -721,11 +1078,17 @@
             .ng-operational-kpi-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
+
+            body:has(.ng-operational-page) .fi-ta-ctn {
+                width: calc(100% - 36px) !important;
+                max-width: calc(100% - 36px) !important;
+                margin: 0 18px 22px !important;
+            }
         }
 
         @media (max-width: 700px) {
             .ng-operational-page {
-                padding: 16px 14px 8px !important;
+                padding: 14px 14px 8px !important;
             }
 
             .ng-operational-kpi-grid {
@@ -750,180 +1113,15 @@
             .ng-widget-head h1 {
                 font-size: 25px;
             }
-        }
 
-        /* Hard fix: remove internal / double scrollbars, keep page using main browser scroll */
-        html:has(.ng-operational-page),
-        body:has(.ng-operational-page) {
-            overflow-x: hidden !important;
-            overflow-y: auto !important;
-            height: auto !important;
-            max-height: none !important;
-        }
-
-        body:has(.ng-operational-page) .fi-layout,
-        body:has(.ng-operational-page) .fi-main,
-        body:has(.ng-operational-page) .fi-main-ctn,
-        body:has(.ng-operational-page) .fi-page,
-        body:has(.ng-operational-page) .fi-page-content,
-        body:has(.ng-operational-page) main {
-            overflow-x: hidden !important;
-            overflow-y: visible !important;
-            height: auto !important;
-            max-height: none !important;
-            min-height: 0 !important;
-        }
-
-        body:has(.ng-operational-page) .fi-ta-ctn,
-        body:has(.ng-operational-page) .fi-ta,
-        body:has(.ng-operational-page) .fi-ta-content,
-        body:has(.ng-operational-page) .fi-ta-table-wrap,
-        body:has(.ng-operational-page) .fi-ta-table {
-            overflow-x: hidden !important;
-            overflow-y: visible !important;
-            height: auto !important;
-            max-height: none !important;
-            min-height: 0 !important;
-            scrollbar-width: none !important;
-            -ms-overflow-style: none !important;
-        }
-
-        body:has(.ng-operational-page) .fi-main::-webkit-scrollbar,
-        body:has(.ng-operational-page) .fi-main-ctn::-webkit-scrollbar,
-        body:has(.ng-operational-page) .fi-page::-webkit-scrollbar,
-        body:has(.ng-operational-page) .fi-page-content::-webkit-scrollbar,
-        body:has(.ng-operational-page) .fi-ta-ctn::-webkit-scrollbar,
-        body:has(.ng-operational-page) .fi-ta-content::-webkit-scrollbar,
-        body:has(.ng-operational-page) .fi-ta-table-wrap::-webkit-scrollbar {
-            display: none !important;
-            width: 0 !important;
-            height: 0 !important;
-        }
-
-        body:has(.ng-operational-page) [class*="overflow-auto"],
-        body:has(.ng-operational-page) [class*="overflow-y-auto"],
-        body:has(.ng-operational-page) [class*="overflow-scroll"],
-        body:has(.ng-operational-page) [class*="overflow-y-scroll"] {
-            overflow-y: visible !important;
-            overflow-x: hidden !important;
-            max-height: none !important;
-            scrollbar-width: none !important;
-            -ms-overflow-style: none !important;
-        }
-
-        body:has(.ng-operational-page) [class*="overflow-auto"]::-webkit-scrollbar,
-        body:has(.ng-operational-page) [class*="overflow-y-auto"]::-webkit-scrollbar,
-        body:has(.ng-operational-page) [class*="overflow-scroll"]::-webkit-scrollbar,
-        body:has(.ng-operational-page) [class*="overflow-y-scroll"]::-webkit-scrollbar {
-            display: none !important;
-            width: 0 !important;
-            height: 0 !important;
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | SIDEBAR EFFECT SYNC - BIAYA OPERASIONAL
-        |--------------------------------------------------------------------------
-        */
-
-        body:has(.ng-operational-page) .fi-sidebar,
-        body.ng-operational-sidebar-sync .fi-sidebar {
-            background: rgba(255, 250, 242, .50) !important;
-            border-right: 1px solid rgba(255, 255, 255, .48) !important;
-            box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
-            backdrop-filter: blur(16px) !important;
-            -webkit-backdrop-filter: blur(16px) !important;
-        }
-
-        body:has(.ng-operational-page) .fi-sidebar-nav,
-        body.ng-operational-sidebar-sync .fi-sidebar-nav {
-            padding: 18px 14px !important;
-        }
-
-        body:has(.ng-operational-page) .fi-sidebar-item a,
-        body:has(.ng-operational-page) .fi-sidebar-item-button,
-        body.ng-operational-sidebar-sync .fi-sidebar-item a,
-        body.ng-operational-sidebar-sync .fi-sidebar-item-button {
-            border-radius: 14px !important;
-            color: #6f5844 !important;
-            transition: .2s ease !important;
-        }
-
-        body:has(.ng-operational-page) .fi-sidebar-item-active a,
-        body:has(.ng-operational-page) .fi-sidebar-item a:hover,
-        body:has(.ng-operational-page) .fi-sidebar-item-active .fi-sidebar-item-button,
-        body:has(.ng-operational-page) .fi-sidebar-item .fi-sidebar-item-button:hover,
-        body:has(.ng-operational-page) .fi-sidebar-item.fi-active a,
-        body:has(.ng-operational-page) .fi-sidebar-item.fi-active .fi-sidebar-item-button,
-        body.ng-operational-sidebar-sync .fi-sidebar-item-active a,
-        body.ng-operational-sidebar-sync .fi-sidebar-item a:hover,
-        body.ng-operational-sidebar-sync .fi-sidebar-item-active .fi-sidebar-item-button,
-        body.ng-operational-sidebar-sync .fi-sidebar-item .fi-sidebar-item-button:hover,
-        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active a,
-        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active .fi-sidebar-item-button {
-            background: linear-gradient(135deg, #ff9500, #f26a00) !important;
-            color: #fff !important;
-            box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
-        }
-
-        body:has(.ng-operational-page) .fi-sidebar-item-active svg,
-        body:has(.ng-operational-page) .fi-sidebar-item a:hover svg,
-        body:has(.ng-operational-page) .fi-sidebar-item-active span,
-        body:has(.ng-operational-page) .fi-sidebar-item a:hover span,
-        body:has(.ng-operational-page) .fi-sidebar-item-active .fi-sidebar-item-icon,
-        body:has(.ng-operational-page) .fi-sidebar-item-active .fi-sidebar-item-label,
-        body:has(.ng-operational-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-icon,
-        body:has(.ng-operational-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-label,
-        body:has(.ng-operational-page) .fi-sidebar-item.fi-active svg,
-        body:has(.ng-operational-page) .fi-sidebar-item.fi-active span,
-        body:has(.ng-operational-page) .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
-        body:has(.ng-operational-page) .fi-sidebar-item.fi-active .fi-sidebar-item-label,
-        body.ng-operational-sidebar-sync .fi-sidebar-item-active svg,
-        body.ng-operational-sidebar-sync .fi-sidebar-item a:hover svg,
-        body.ng-operational-sidebar-sync .fi-sidebar-item-active span,
-        body.ng-operational-sidebar-sync .fi-sidebar-item a:hover span,
-        body.ng-operational-sidebar-sync .fi-sidebar-item-active .fi-sidebar-item-icon,
-        body.ng-operational-sidebar-sync .fi-sidebar-item-active .fi-sidebar-item-label,
-        body.ng-operational-sidebar-sync .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-icon,
-        body.ng-operational-sidebar-sync .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-label,
-        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active svg,
-        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active span,
-        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
-        body.ng-operational-sidebar-sync .fi-sidebar-item.fi-active .fi-sidebar-item-label {
-            color: #fff !important;
-        }
-
-    </style>
-
-    <script>
-        (function () {
-            function bindOperationalPeriodFilter() {
-                document.querySelectorAll('[data-ng-op-month], [data-ng-op-year]').forEach(function (select) {
-                    if (select.dataset.ngBound === '1') {
-                        return;
-                    }
-
-                    select.dataset.ngBound = '1';
-
-                    select.addEventListener('change', function () {
-                        if (! select.value) {
-                            return;
-                        }
-
-                        window.location.href = select.value;
-                    });
-                });
+            body:has(.ng-operational-page) .fi-ta-ctn {
+                width: calc(100% - 28px) !important;
+                max-width: calc(100% - 28px) !important;
+                margin: 0 14px 20px !important;
             }
-
-            document.addEventListener('DOMContentLoaded', bindOperationalPeriodFilter);
-            document.addEventListener('livewire:navigated', bindOperationalPeriodFilter);
-            document.addEventListener('livewire:update', bindOperationalPeriodFilter);
-            bindOperationalPeriodFilter();
-        })();
-    </script>
-
-    <script>
+        }
+    </style>
+<script>
         (function () {
             function syncOperationalSidebarClass() {
                 document.body.classList.add('ng-operational-sidebar-sync');

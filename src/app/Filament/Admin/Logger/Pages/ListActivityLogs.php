@@ -14,7 +14,7 @@ class ListActivityLogs extends ListRecords
 {
     protected static string $resource = ActivityLogResource::class;
 
-    protected string $view = 'filament.admin.resources.activity-logs.pages.list-activity-logs';
+    protected string $view = 'filament.admin.logger.pages.list-activity-logs';
 
     public function getTitle(): string
     {
@@ -26,9 +26,38 @@ class ListActivityLogs extends ListRecords
         return [];
     }
 
+
+    protected function getHeaderWidgets(): array
+    {
+        return [];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [];
+    }
+
+
+    protected function applyLoginLogoutFilter($query)
+    {
+        return $query->where(function ($query): void {
+            $query
+                ->whereIn('event', ['login', 'logout'])
+                ->orWhere('description', 'like', '%login%')
+                ->orWhere('description', 'like', '%logout%')
+                ->orWhere('description', 'like', '%logged in%')
+                ->orWhere('description', 'like', '%logged out%');
+        });
+    }
+
+    protected function loginLogoutQuery()
+    {
+        return $this->applyLoginLogoutFilter(Activity::query());
+    }
+
     public function getActivitySummary(): array
     {
-        $totalLogs = Activity::query()->count();
+        $totalLogs = $this->loginLogoutQuery()->count();
 
         $updatedLogs = Activity::query()
             ->where(function ($query): void {
@@ -54,20 +83,14 @@ class ListActivityLogs extends ListRecords
             })
             ->count();
 
-        $accessLogs = Activity::query()
-            ->where(function ($query): void {
-                $query->where('log_name', 'access')
-                    ->orWhere('event', 'login')
-                    ->orWhere('description', 'like', '%login%');
-            })
-            ->count();
+        $accessLogs = $this->loginLogoutQuery()->count();
 
-        $latestLog = Activity::query()
+        $latestLog = $this->loginLogoutQuery()
             ->with('causer')
             ->latest()
             ->first();
 
-        $topCauser = Activity::query()
+        $topCauser = $this->loginLogoutQuery()
             ->select('causer_id', DB::raw('COUNT(*) as total_activity'))
             ->whereNotNull('causer_id')
             ->groupBy('causer_id')

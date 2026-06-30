@@ -38,8 +38,6 @@
             'color' => '#8b5cf6',
         ],
     ];
-
-    $topRoleName = (string) ($summary['top_role_name'] ?? '-');
 ?>
 
 <?php if (isset($component)) { $__componentOriginalb525200bfa976483b4eaa0b7685c6e24 = $component; } ?>
@@ -67,25 +65,8 @@
                         </p>
                     </div>
                 </div>
-            </article>
 
-            <article class="ng-widget-card ng-role-highlight-card">
-                <div class="ng-highlight-info">
-                    <span>Role Permission Terbanyak</span>
-
-                    <strong>
-                        <?php echo e(str($topRoleName)->replace('_', ' ')->title()); ?>
-
-                    </strong>
-
-                    <small>
-                        <?php echo e(number_format((int) ($summary['top_role_permissions'] ?? 0), 0, ',', '.')); ?>
-
-                        permission
-                    </small>
-                </div>
-
-                <div class="ng-highlight-actions">
+                <div class="ng-hero-actions">
                     <a href="<?php echo e($createUrl); ?>" class="ng-primary-button">
                         + New Role
                     </a>
@@ -193,7 +174,7 @@
 
         .ng-role-hero-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.45fr) minmax(360px, .55fr);
+            grid-template-columns: 1fr;
             gap: 16px;
             margin-bottom: 14px;
         }
@@ -231,21 +212,12 @@
             min-width: 0;
         }
 
-        .ng-role-hero-card,
-        .ng-role-highlight-card {
-            min-height: 126px;
-        }
-
         .ng-role-hero-card {
-            display: flex;
-            align-items: center;
-        }
-
-        .ng-role-highlight-card {
+            min-height: 126px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 18px;
         }
 
         .ng-widget-head {
@@ -264,7 +236,7 @@
         }
 
         .ng-widget-head p {
-            max-width: 790px;
+            max-width: 980px;
             margin: 8px 0 0;
             color: #765d45;
             font-size: 13px;
@@ -315,6 +287,10 @@
             justify-content: flex-end;
             gap: 9px;
             flex-wrap: wrap;
+        }
+
+        .ng-role-highlight-card {
+            display: none !important;
         }
 
         .ng-primary-button {
@@ -581,12 +557,12 @@
                 padding: 18px 18px 10px !important;
             }
 
-            .ng-role-highlight-card {
+            .ng-role-hero-card {
                 align-items: flex-start;
                 flex-direction: column;
             }
 
-            .ng-highlight-actions {
+            .ng-hero-actions {
                 justify-content: flex-start;
             }
 

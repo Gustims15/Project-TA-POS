@@ -47,26 +47,8 @@
                         </p>
                     </div>
                 </div>
-            </article>
 
-            <article class="ng-widget-card ng-user-highlight-card">
-                <div class="ng-highlight-info">
-                    <span>User Terbaru</span>
-
-                    <strong>
-                        {{ $summary['latest_user_name'] ?? '-' }}
-                    </strong>
-
-                    <small>
-                        {{ $summary['latest_user_email'] ?? '-' }}
-                    </small>
-
-                    <b>
-                        {{ $summary['latest_user_role'] ?? '-' }}
-                    </b>
-                </div>
-
-                <div class="ng-highlight-actions">
+                <div class="ng-hero-actions">
                     <a href="{{ $createUrl }}" class="ng-primary-button">
                         + Add New User
                     </a>
@@ -170,7 +152,7 @@
 
         .ng-user-hero-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.45fr) minmax(360px, .55fr);
+            grid-template-columns: 1fr;
             gap: 16px;
             margin-bottom: 14px;
         }
@@ -208,21 +190,16 @@
             min-width: 0;
         }
 
-        .ng-user-hero-card,
-        .ng-user-highlight-card {
-            min-height: 126px;
-        }
-
         .ng-user-hero-card {
-            display: flex;
-            align-items: center;
-        }
-
-        .ng-user-highlight-card {
+            min-height: 126px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 18px;
+        }
+
+        .ng-user-highlight-card {
+            display: none !important;
         }
 
         .ng-widget-head {
@@ -241,7 +218,7 @@
         }
 
         .ng-widget-head p {
-            max-width: 760px;
+            max-width: 980px;
             margin: 8px 0 0;
             color: #765d45;
             font-size: 13px;
@@ -298,7 +275,8 @@
             font-weight: 950;
         }
 
-        .ng-highlight-actions {
+        .ng-highlight-actions,
+        .ng-hero-actions {
             position: relative;
             z-index: 2;
             display: flex;
@@ -306,6 +284,7 @@
             justify-content: flex-end;
             gap: 9px;
             flex-wrap: wrap;
+            flex: 0 0 auto;
         }
 
         .ng-primary-button {
@@ -572,12 +551,12 @@
                 padding: 18px 18px 10px !important;
             }
 
-            .ng-user-highlight-card {
+            .ng-user-hero-card {
                 align-items: flex-start;
                 flex-direction: column;
             }
 
-            .ng-highlight-actions {
+            .ng-hero-actions {
                 justify-content: flex-start;
             }
 

@@ -1,0 +1,62 @@
+app/Filament/Admin/Logger/Pages/ListActivityLogs.php:13:class ListActivityLogs extends ListRecords
+app/Filament/Admin/Logger/Pages/ListActivityLogs.php:17:    protected string $view = 'filament.admin.logger.pages.list-activity-logs';
+app/Filament/Admin/Logger/Widgets/ActivityLogAnalyticsWidget.php:12:class ActivityLogAnalyticsWidget extends Widget
+app/Filament/Admin/Logger/Widgets/ActivityLogAnalyticsWidget.php:14:    protected string $view = 'filament.admin.logger.widgets.activity-log-analytics-widget';
+app/Filament/Admin/Resources/Users/Pages/ListUsers.php:20:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Users/Pages/ViewUser.php:14:    protected string $view = 'filament.admin.resources.users.pages.view-user';
+app/Filament/Admin/Resources/Users/Pages/EditUser.php:27:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Users/Pages/CreateUser.php:25:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Users/Widgets/UserAnalyticsWidget.php:12:    protected string $view = 'filament.admin.resources.users.widgets.user-analytics-widget';
+app/Filament/Admin/Resources/Users/Widgets/UserFormHeroWidget.php:13:    protected string $view = 'filament.admin.resources.users.widgets.user-form-hero-widget';
+app/Filament/Admin/Resources/Roles/Pages/ViewRole.php:14:    protected string $view = 'filament.admin.resources.roles.pages.view-role';
+app/Filament/Admin/Resources/Roles/Pages/ListRoles.php:20:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Roles/Pages/CreateRole.php:25:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Roles/Pages/EditRole.php:27:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Roles/Widgets/RoleFormHeroWidget.php:13:    protected string $view = 'filament.admin.resources.roles.widgets.role-form-hero-widget';
+app/Filament/Admin/Resources/Roles/Widgets/RoleAnalyticsWidget.php:12:    protected string $view = 'filament.admin.resources.roles.widgets.role-analytics-widget';
+app/Filament/Admin/Resources/Products/Pages/ListProducts.php:20:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Products/Pages/CreateProduct.php:25:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Products/Pages/EditProduct.php:26:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Products/Widgets/ProductFormHeroWidget.php:14:    protected string $view = 'filament.admin.resources.products.widgets.product-form-hero-widget';
+app/Filament/Admin/Resources/Products/Widgets/ProductAnalyticsWidget.php:13:    protected string $view = 'filament.admin.resources.products.widgets.product-analytics-widget';
+app/Filament/Admin/Resources/SalesTargets/Pages/ListSalesTargets.php:14:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/SalesTargets/Pages/EditSalesTarget.php:16:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/SalesTargets/Pages/CreateSalesTarget.php:15:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/SalesTargets/Widgets/SalesTargetAnalyticsWidget.php:18:    protected string $view = 'filament.admin.resources.sales-targets.widgets.sales-target-analytics-widget';
+app/Filament/Admin/Resources/SalesTargets/Widgets/SalesTargetFormHeroWidget.php:11:    protected string $view = 'filament.admin.resources.sales-targets.widgets.sales-target-form-hero-widget';
+app/Filament/Admin/Resources/OperationalCosts/Pages/CreateOperationalCost.php:14:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/OperationalCosts/Pages/ListOperationalCosts.php:26:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/OperationalCosts/Pages/ListOperationalCosts.php:33:    protected function getHeaderWidgetsData(): array
+app/Filament/Admin/Resources/OperationalCosts/Pages/EditOperationalCost.php:15:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/OperationalCosts/Widgets/OperationalCostFormHeroWidget.php:12:    protected string $view = 'filament.admin.resources.operational-costs.widgets.operational-cost-form-hero-widget';
+app/Filament/Admin/Resources/OperationalCosts/Widgets/OperationalCostAnalyticsWidget.php:15:    protected string $view = 'filament.admin.resources.operational-costs.widgets.operational-cost-analytics-widget';
+app/Filament/Admin/Resources/ActivityLogs/Pages/ListActivityLogs.php:13:class ListActivityLogs extends ListRecords
+app/Filament/Admin/Resources/ActivityLogs/Pages/ListActivityLogs.php:17:    protected string $view = 'filament.admin.logger.pages.list-activity-logs';
+app/Filament/Admin/Resources/ActivityLogs/Widgets/ActivityLogAnalyticsWidget.php:10:class ActivityLogAnalyticsWidget extends Widget
+app/Filament/Admin/Resources/ActivityLogs/Widgets/ActivityLogAnalyticsWidget.php:12:    protected string $view = 'filament.admin.resources.activity-logs.widgets.activity-log-analytics-widget';
+app/Filament/Admin/Resources/Orders/Pages/ViewOrder.php:14:    protected string $view = 'filament.admin.resources.orders.pages.view-order';
+app/Filament/Admin/Resources/Orders/Pages/ListOrders.php:20:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Orders/Widgets/OrderAnalyticsWidget.php:15:    protected string $view = 'filament.admin.resources.orders.widgets.order-analytics-widget';
+app/Filament/Admin/Resources/Categories/Pages/EditCategory.php:26:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Categories/Pages/ListCategories.php:20:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Categories/Pages/CreateCategory.php:25:    protected function getHeaderWidgets(): array
+app/Filament/Admin/Resources/Categories/Widgets/CategoryAnalyticsWidget.php:13:    protected string $view = 'filament.admin.resources.categories.widgets.category-analytics-widget';
+app/Filament/Admin/Resources/Categories/Widgets/CategoryFormHeroWidget.php:14:    protected string $view = 'filament.admin.resources.categories.widgets.category-form-hero-widget';
+app/Filament/Admin/Pages/Auth/Login.php:9:    protected string $view = 'filament.admin.auth.login';
+app/Filament/Admin/Pages/Dashboard.php:28:    protected string $view = 'filament.admin.pages.dashboard';
+app/Filament/Admin/Pages/Dashboard.php:92:    public function getWidgets(): array
+app/Filament/Admin/Pages/MonthlyRevenueReport.php:17:    protected string $view = 'filament.admin.pages.monthly-revenue-report';
+app/Filament/Admin/Pages/FinancialDashboard.php:27:    protected string $view = 'filament.admin.pages.financial-dashboard';
+app/Filament/Admin/Widgets/MonthlyComparisonChart.php:16:    protected string $view = 'filament.admin.widgets.monthly-comparison-chart';
+app/Filament/Admin/Widgets/CategoryContributionChart.php:16:    protected string $view = 'filament.admin.widgets.category-contribution-chart';
+app/Filament/Admin/Widgets/MonthlyTrendChart.php:16:    protected string $view = 'filament.admin.widgets.monthly-trend-chart';
+app/Filament/Admin/Widgets/RecentSalesTimeline.php:16:    protected string $view = 'filament.admin.widgets.recent-sales-timeline';
+app/Filament/Admin/Widgets/MetricTabsWidget.php:11:    protected string $view = 'filament.admin.widgets.metric-tabs';
+app/Filament/Admin/Widgets/ProductPerformanceMatrix.php:16:    protected string $view = 'filament.admin.widgets.product-performance-matrix';
+app/Filament/Admin/Widgets/DashboardLuxuryOverviewWidget.php:20:    protected string $view = 'filament.admin.widgets.dashboard-luxury-overview-widget';
+app/Filament/Admin/Widgets/StockHealthGauge.php:12:    protected string $view = 'filament.admin.widgets.stock-health-gauge';
+app/Filament/Admin/Widgets/ProductCategoryChart.php:16:    protected string $view = 'filament.admin.widgets.product-category-chart';
+app/Filament/Admin/Widgets/LatestAccessLogs.php:11:    protected string $view = 'filament.admin.widgets.latest-access-logs';
+app/Filament/Admin/Widgets/PeakSalesTimeChart.php:16:    protected string $view = 'filament.admin.widgets.peak-sales-time-chart';
+app/Filament/Admin/Widgets/RestockPriorityChart.php:12:    protected string $view = 'filament.admin.widgets.restock-priority-chart';
+resources/views/filament/admin/resources/activity-logs/partials/activity-log-table-header.blade.php:2:    @livewire(\App\Filament\Admin\Resources\ActivityLogs\Widgets\ActivityLogAnalyticsWidget::class)
