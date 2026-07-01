@@ -13,6 +13,8 @@ class CreateProduct extends CreateRecord
 {
     protected static string $resource = ProductResource::class;
 
+    protected static bool $isLazy = false;
+
     protected ?string $heading = '';
 
     protected ?string $subheading = '';

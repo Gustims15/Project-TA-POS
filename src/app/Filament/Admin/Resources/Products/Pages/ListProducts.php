@@ -12,6 +12,8 @@ class ListProducts extends ListRecords
 {
     protected static string $resource = ProductResource::class;
 
+    protected static bool $isLazy = false;
+
     public function getTitle(): string
     {
         return '';

@@ -10,6 +10,8 @@ class SalesTargetFormHeroWidget extends Widget
 {
     protected string $view = 'filament.admin.resources.sales-targets.widgets.sales-target-form-hero-widget';
 
+    protected static bool $isLazy = false;
+
     protected int | string | array $columnSpan = 'full';
 
     protected function getViewData(): array

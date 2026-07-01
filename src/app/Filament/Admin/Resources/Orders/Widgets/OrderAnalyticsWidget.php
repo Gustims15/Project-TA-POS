@@ -14,6 +14,8 @@ class OrderAnalyticsWidget extends Widget
 {
     protected string $view = 'filament.admin.resources.orders.widgets.order-analytics-widget';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = 'full';
 
     public function getViewData(): array

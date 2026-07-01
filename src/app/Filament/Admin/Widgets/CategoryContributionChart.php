@@ -15,6 +15,8 @@ class CategoryContributionChart extends Widget
 
     protected string $view = 'filament.admin.widgets.category-contribution-chart';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = [
         'default' => 1,
         'md' => 6,

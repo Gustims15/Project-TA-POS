@@ -1,44 +1,30 @@
-@php
-    $cards = [
-        [
-            'label' => 'Total Produk',
-            'value' => number_format((int) ($stats['total_products'] ?? 0), 0, ',', '.'),
-            'caption' => 'Semua data produk',
-            'icon' => '▣',
-            'color' => '#f97316',
-        ],
-        [
-            'label' => 'Produk Aktif',
-            'value' => number_format((int) ($stats['active_products'] ?? 0), 0, ',', '.'),
-            'caption' => 'Tampil di kasir',
-            'icon' => '✓',
-            'color' => '#10b981',
-        ],
-        [
-            'label' => 'Total Kategori',
-            'value' => number_format((int) ($stats['total_categories'] ?? 0), 0, ',', '.'),
-            'caption' => 'Kategori produk',
-            'icon' => '◇',
-            'color' => '#3b82f6',
-        ],
-    ];
-@endphp
+<?php if (isset($component)) { $__componentOriginalb525200bfa976483b4eaa0b7685c6e24 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalb525200bfa976483b4eaa0b7685c6e24 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'filament-widgets::components.widget','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('filament-widgets::widget'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-<x-filament-widgets::widget>
-    <div class="ng-product-form-page">
-        <section class="ng-product-form-hero-grid">
-            <article class="ng-widget-card ng-product-form-hero-card">
+    <div class="ng-category-form-page">
+        <section class="ng-category-form-hero-grid">
+            <article class="ng-widget-card ng-category-form-hero-card">
                 <div class="ng-widget-head">
                     <div>
-                        <h1>{{ $title }}</h1>
+                        <h1><?php echo e($title); ?></h1>
 
                         <p>
-                            {{ $description }}
+                            <?php echo e($description); ?>
+
                         </p>
                     </div>
 
-                    <div class="ng-product-form-hero-actions">
-                        <a href="{{ $backUrl }}" class="ng-primary-button">
+                    <div class="ng-category-form-hero-actions">
+                        <a href="<?php echo e($backUrl); ?>" class="ng-primary-button">
                             ← Kembali
                         </a>
                     </div>
@@ -46,29 +32,72 @@
             </article>
         </section>
 
-        <section class="ng-kpi-grid ng-product-form-kpi-grid">
-            @foreach ($cards as $card)
-                <article class="ng-kpi-card" style="--accent: {{ $card['color'] ?? '#f97316' }};">
-                    <div class="ng-kpi-icon">
-                        {{ $card['icon'] ?? '▣' }}
+        <section class="ng-kpi-grid">
+            <article class="ng-kpi-card" style="--accent: #f97316;">
+                <div class="ng-kpi-icon">
+                    ▣
+                </div>
+
+                <div class="ng-kpi-content">
+                    <div class="ng-kpi-label">
+                        Total Kategori
+                        <span>⋮</span>
                     </div>
 
-                    <div class="ng-kpi-content">
-                        <div class="ng-kpi-label">
-                            {{ $card['label'] ?? '-' }}
-                            <span>⋮</span>
-                        </div>
+                    <strong>
+                        <?php echo e(number_format((int) ($stats['total_categories'] ?? 0), 0, ',', '.')); ?>
 
-                        <strong>
-                            {{ $card['value'] ?? '-' }}
-                        </strong>
+                    </strong>
 
-                        <p class="neutral">
-                            {{ $card['caption'] ?? '-' }}
-                        </p>
+                    <p class="neutral">
+                        Semua kategori
+                    </p>
+                </div>
+            </article>
+
+            <article class="ng-kpi-card" style="--accent: #10b981;">
+                <div class="ng-kpi-icon">
+                    ✓
+                </div>
+
+                <div class="ng-kpi-content">
+                    <div class="ng-kpi-label">
+                        Kategori Aktif
+                        <span>⋮</span>
                     </div>
-                </article>
-            @endforeach
+
+                    <strong>
+                        <?php echo e(number_format((int) ($stats['active_categories'] ?? 0), 0, ',', '.')); ?>
+
+                    </strong>
+
+                    <p class="neutral">
+                        Tampil pada sistem
+                    </p>
+                </div>
+            </article>
+
+            <article class="ng-kpi-card" style="--accent: #3b82f6;">
+                <div class="ng-kpi-icon">
+                    ◇
+                </div>
+
+                <div class="ng-kpi-content">
+                    <div class="ng-kpi-label">
+                        Total Produk
+                        <span>⋮</span>
+                    </div>
+
+                    <strong>
+                        <?php echo e(number_format((int) ($stats['total_products'] ?? 0), 0, ',', '.')); ?>
+
+                    </strong>
+
+                    <p class="neutral">
+                        Produk terhubung
+                    </p>
+                </div>
+            </article>
         </section>
     </div>
     <style>
@@ -77,7 +106,7 @@
             overflow-x: hidden !important;
         }
 
-        body:has(.ng-product-form-page) {
+        body:has(.ng-category-form-page) {
             background:
                 linear-gradient(120deg, rgba(255, 248, 237, .18), rgba(255, 224, 185, .05)),
                 url('/images/pos-orange-bg.png'),
@@ -90,37 +119,37 @@
             background-attachment: fixed !important;
         }
 
-        body:has(.ng-product-form-page) .fi-layout,
-        body:has(.ng-product-form-page) .fi-main,
-        body:has(.ng-product-form-page) .fi-main-ctn,
-        body:has(.ng-product-form-page) .fi-page,
-        body:has(.ng-product-form-page) .fi-page-content,
-        body:has(.ng-product-form-page) main {
+        body:has(.ng-category-form-page) .fi-layout,
+        body:has(.ng-category-form-page) .fi-main,
+        body:has(.ng-category-form-page) .fi-main-ctn,
+        body:has(.ng-category-form-page) .fi-page,
+        body:has(.ng-category-form-page) .fi-page-content,
+        body:has(.ng-category-form-page) main {
             width: 100% !important;
             max-width: 100% !important;
             background: transparent !important;
             overflow-x: hidden !important;
         }
 
-        body:has(.ng-product-form-page) .fi-page,
-        body:has(.ng-product-form-page) .fi-main {
+        body:has(.ng-category-form-page) .fi-page,
+        body:has(.ng-category-form-page) .fi-main {
             padding: 0 !important;
         }
 
-        body:has(.ng-product-form-page) .fi-page-header {
+        body:has(.ng-category-form-page) .fi-page-header {
             display: none !important;
         }
 
-        body:has(.ng-product-form-page) .fi-page-content {
+        body:has(.ng-category-form-page) .fi-page-content {
             gap: 0 !important;
             row-gap: 0 !important;
         }
 
-        body:has(.ng-product-form-page) .fi-wi,
-        body:has(.ng-product-form-page) .fi-wi-widget,
-        body:has(.ng-product-form-page) .fi-wi-widget-content,
-        body:has(.ng-product-form-page) .fi-wi-widgets,
-        body:has(.ng-product-form-page) .fi-wi-widgets > * {
+        body:has(.ng-category-form-page) .fi-wi,
+        body:has(.ng-category-form-page) .fi-wi-widget,
+        body:has(.ng-category-form-page) .fi-wi-widget-content,
+        body:has(.ng-category-form-page) .fi-wi-widgets,
+        body:has(.ng-category-form-page) .fi-wi-widgets > * {
             margin: 0 !important;
             padding: 0 !important;
             background: transparent !important;
@@ -128,7 +157,7 @@
             box-shadow: none !important;
         }
 
-        .ng-product-form-page {
+        .ng-category-form-page {
             width: 100% !important;
             max-width: 100% !important;
             padding: 24px 24px 10px !important;
@@ -137,7 +166,7 @@
             color: #24180f;
         }
 
-        .ng-product-form-page * {
+        .ng-category-form-page * {
             box-sizing: border-box;
         }
 
@@ -147,7 +176,7 @@
         |--------------------------------------------------------------------------
         */
 
-        .ng-product-form-hero-grid {
+        .ng-category-form-hero-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 0;
@@ -182,7 +211,7 @@
             opacity: .38;
         }
 
-        .ng-product-form-hero-card {
+        .ng-category-form-hero-card {
             min-height: 126px;
             display: flex;
             align-items: center;
@@ -221,7 +250,7 @@
             font-weight: 700;
         }
 
-        .ng-product-form-hero-actions {
+        .ng-category-form-hero-actions {
             position: relative;
             z-index: 2;
             flex: 0 0 auto;
@@ -259,19 +288,19 @@
         |--------------------------------------------------------------------------
         */
 
-        body:has(.ng-product-form-page) form,
-        body:has(.ng-product-form-page) .fi-section,
-        body:has(.ng-product-form-page) .fi-fo-component-ctn,
-        body:has(.ng-product-form-page) .fi-section-content {
+        body:has(.ng-category-form-page) form,
+        body:has(.ng-category-form-page) .fi-section,
+        body:has(.ng-category-form-page) .fi-fo-component-ctn,
+        body:has(.ng-category-form-page) .fi-section-content {
             background: transparent !important;
         }
 
-        body:has(.ng-product-form-page) .fi-page-content > form {
+        body:has(.ng-category-form-page) .fi-page-content > form {
             margin-top: -16px !important;
         }
 
-        body:has(.ng-product-form-page) form .fi-section,
-        body:has(.ng-product-form-page) .fi-section {
+        body:has(.ng-category-form-page) form .fi-section,
+        body:has(.ng-category-form-page) .fi-section {
             position: relative !important;
             z-index: 25 !important;
             margin-left: 24px !important;
@@ -292,8 +321,8 @@
             overflow: visible !important;
         }
 
-        body:has(.ng-product-form-page) form .fi-section::before,
-        body:has(.ng-product-form-page) .fi-section::before {
+        body:has(.ng-category-form-page) form .fi-section::before,
+        body:has(.ng-category-form-page) .fi-section::before {
             content: "";
             position: absolute;
             inset: 0;
@@ -304,25 +333,25 @@
             opacity: .38;
         }
 
-        body:has(.ng-product-form-page) .fi-section-header,
-        body:has(.ng-product-form-page) .fi-section-content {
+        body:has(.ng-category-form-page) .fi-section-header,
+        body:has(.ng-category-form-page) .fi-section-content {
             position: relative !important;
             z-index: 2 !important;
         }
 
-        body:has(.ng-product-form-page) .fi-section-header {
+        body:has(.ng-category-form-page) .fi-section-header {
             background: rgba(255, 247, 235, .10) !important;
             border-bottom: 1px solid rgba(114, 74, 41, .08) !important;
         }
 
-        body:has(.ng-product-form-page) .fi-section-header-heading,
-        body:has(.ng-product-form-page) .fi-section-header-description {
+        body:has(.ng-category-form-page) .fi-section-header-heading,
+        body:has(.ng-category-form-page) .fi-section-header-description {
             color: #4b3525 !important;
         }
 
-        body:has(.ng-product-form-page) .fi-input-wrp,
-        body:has(.ng-product-form-page) .fi-select-input,
-        body:has(.ng-product-form-page) .fi-textarea {
+        body:has(.ng-category-form-page) .fi-input-wrp,
+        body:has(.ng-category-form-page) .fi-select-input,
+        body:has(.ng-category-form-page) .fi-textarea {
             min-height: 40px !important;
             border-radius: 16px !important;
             background: rgba(255, 255, 255, .28) !important;
@@ -332,49 +361,49 @@
             -webkit-backdrop-filter: blur(10px) !important;
         }
 
-        body:has(.ng-product-form-page) .fi-input,
-        body:has(.ng-product-form-page) .fi-select-input,
-        body:has(.ng-product-form-page) textarea {
+        body:has(.ng-category-form-page) .fi-input,
+        body:has(.ng-category-form-page) .fi-select-input,
+        body:has(.ng-category-form-page) textarea {
             color: #2d1f16 !important;
             font-weight: 750 !important;
         }
 
-        body:has(.ng-product-form-page) .fi-input::placeholder,
-        body:has(.ng-product-form-page) textarea::placeholder {
+        body:has(.ng-category-form-page) .fi-input::placeholder,
+        body:has(.ng-category-form-page) textarea::placeholder {
             color: rgba(111, 88, 68, .62) !important;
         }
 
-        body:has(.ng-product-form-page) .fi-fo-field-wrp-label span,
-        body:has(.ng-product-form-page) label {
+        body:has(.ng-category-form-page) .fi-fo-field-wrp-label span,
+        body:has(.ng-category-form-page) label {
             color: #4b3525 !important;
             font-size: 12px !important;
             font-weight: 950 !important;
         }
 
-        body:has(.ng-product-form-page) .fi-fo-field-wrp-helper-text,
-        body:has(.ng-product-form-page) .fi-fo-field-wrp-error-message {
+        body:has(.ng-category-form-page) .fi-fo-field-wrp-helper-text,
+        body:has(.ng-category-form-page) .fi-fo-field-wrp-error-message {
             font-size: 11px !important;
             font-weight: 800 !important;
         }
 
-        body:has(.ng-product-form-page) .fi-btn {
+        body:has(.ng-category-form-page) .fi-btn {
             border-radius: 14px !important;
             font-weight: 900 !important;
         }
 
-        body:has(.ng-product-form-page) .fi-btn-color-primary,
-        body:has(.ng-product-form-page) .fi-btn-color-warning {
+        body:has(.ng-category-form-page) .fi-btn-color-primary,
+        body:has(.ng-category-form-page) .fi-btn-color-warning {
             background: linear-gradient(135deg, #ff9d18, #ee6500) !important;
             box-shadow: 0 12px 22px rgba(238, 101, 0, .22) !important;
         }
 
-        body:has(.ng-product-form-page) .fi-btn-color-primary:hover,
-        body:has(.ng-product-form-page) .fi-btn-color-warning:hover {
+        body:has(.ng-category-form-page) .fi-btn-color-primary:hover,
+        body:has(.ng-category-form-page) .fi-btn-color-warning:hover {
             box-shadow: 0 16px 28px rgba(238, 101, 0, .28) !important;
         }
 
-        body:has(.ng-product-form-page) form .fi-form-actions,
-        body:has(.ng-product-form-page) form .fi-ac {
+        body:has(.ng-category-form-page) form .fi-form-actions,
+        body:has(.ng-category-form-page) form .fi-ac {
             margin-top: 14px !important;
             padding-left: 24px !important;
             padding-right: 24px !important;
@@ -386,52 +415,52 @@
         |--------------------------------------------------------------------------
         */
 
-        body:has(.ng-product-form-page),
-        body:has(.ng-product-form-page) .fi-main,
-        body:has(.ng-product-form-page) .fi-main-ctn,
-        body:has(.ng-product-form-page) .fi-page,
-        body:has(.ng-product-form-page) .fi-page-content,
-        body:has(.ng-product-form-page) form,
-        body:has(.ng-product-form-page) form .fi-section,
-        body:has(.ng-product-form-page) .fi-section,
-        body:has(.ng-product-form-page) .fi-section-content,
-        body:has(.ng-product-form-page) .fi-fo-component-ctn,
-        body:has(.ng-product-form-page) .fi-fo-field-wrp,
-        body:has(.ng-product-form-page) .ng-product-form-page,
-        body:has(.ng-product-form-page) .ng-widget-card {
+        body:has(.ng-category-form-page),
+        body:has(.ng-category-form-page) .fi-main,
+        body:has(.ng-category-form-page) .fi-main-ctn,
+        body:has(.ng-category-form-page) .fi-page,
+        body:has(.ng-category-form-page) .fi-page-content,
+        body:has(.ng-category-form-page) form,
+        body:has(.ng-category-form-page) form .fi-section,
+        body:has(.ng-category-form-page) .fi-section,
+        body:has(.ng-category-form-page) .fi-section-content,
+        body:has(.ng-category-form-page) .fi-fo-component-ctn,
+        body:has(.ng-category-form-page) .fi-fo-field-wrp,
+        body:has(.ng-category-form-page) .ng-category-form-page,
+        body:has(.ng-category-form-page) .ng-widget-card {
             overflow: visible !important;
         }
 
-        body:has(.ng-product-form-page) form {
+        body:has(.ng-category-form-page) form {
             position: relative !important;
             z-index: 20 !important;
         }
 
-        body:has(.ng-product-form-page) .fi-input-wrp,
-        body:has(.ng-product-form-page) .fi-select-input,
-        body:has(.ng-product-form-page) .fi-textarea,
-        body:has(.ng-product-form-page) input,
-        body:has(.ng-product-form-page) textarea {
+        body:has(.ng-category-form-page) .fi-input-wrp,
+        body:has(.ng-category-form-page) .fi-select-input,
+        body:has(.ng-category-form-page) .fi-textarea,
+        body:has(.ng-category-form-page) input,
+        body:has(.ng-category-form-page) textarea {
             position: relative !important;
             z-index: 1 !important;
         }
 
-        body:has(.ng-product-form-page) .flatpickr-calendar,
-        body:has(.ng-product-form-page) .flatpickr-calendar.open,
-        body:has(.ng-product-form-page) .flatpickr-calendar.animate.open,
-        body:has(.ng-product-form-page) .fi-date-time-picker-panel,
-        body:has(.ng-product-form-page) .fi-dropdown-panel,
-        body:has(.ng-product-form-page) .fi-popover,
-        body:has(.ng-product-form-page) .fi-popover-panel,
-        body:has(.ng-product-form-page) [role="dialog"],
-        body:has(.ng-product-form-page) [role="listbox"],
-        body:has(.ng-product-form-page) [data-headlessui-state],
-        body:has(.ng-product-form-page) [data-floating-ui-portal],
-        body:has(.ng-product-form-page) .choices__list--dropdown {
+        body:has(.ng-category-form-page) .flatpickr-calendar,
+        body:has(.ng-category-form-page) .flatpickr-calendar.open,
+        body:has(.ng-category-form-page) .flatpickr-calendar.animate.open,
+        body:has(.ng-category-form-page) .fi-date-time-picker-panel,
+        body:has(.ng-category-form-page) .fi-dropdown-panel,
+        body:has(.ng-category-form-page) .fi-popover,
+        body:has(.ng-category-form-page) .fi-popover-panel,
+        body:has(.ng-category-form-page) [role="dialog"],
+        body:has(.ng-category-form-page) [role="listbox"],
+        body:has(.ng-category-form-page) [data-headlessui-state],
+        body:has(.ng-category-form-page) [data-floating-ui-portal],
+        body:has(.ng-category-form-page) .choices__list--dropdown {
             z-index: 999999 !important;
         }
 
-        body:has(.ng-product-form-page) .flatpickr-calendar {
+        body:has(.ng-category-form-page) .flatpickr-calendar {
             isolation: isolate !important;
             overflow: hidden !important;
             border-radius: 16px !important;
@@ -444,26 +473,26 @@
             -webkit-backdrop-filter: blur(16px) !important;
         }
 
-        body:has(.ng-product-form-page) .flatpickr-calendar * {
+        body:has(.ng-category-form-page) .flatpickr-calendar * {
             z-index: auto !important;
         }
 
-        body:has(.ng-product-form-page) .flatpickr-calendar .flatpickr-day,
-        body:has(.ng-product-form-page) .flatpickr-calendar .flatpickr-weekday,
-        body:has(.ng-product-form-page) .flatpickr-calendar .cur-month,
-        body:has(.ng-product-form-page) .flatpickr-calendar .numInputWrapper {
+        body:has(.ng-category-form-page) .flatpickr-calendar .flatpickr-day,
+        body:has(.ng-category-form-page) .flatpickr-calendar .flatpickr-weekday,
+        body:has(.ng-category-form-page) .flatpickr-calendar .cur-month,
+        body:has(.ng-category-form-page) .flatpickr-calendar .numInputWrapper {
             color: #3b2a1c !important;
         }
 
-        body:has(.ng-product-form-page) .flatpickr-calendar .flatpickr-day.selected,
-        body:has(.ng-product-form-page) .flatpickr-calendar .flatpickr-day.startRange,
-        body:has(.ng-product-form-page) .flatpickr-calendar .flatpickr-day.endRange {
+        body:has(.ng-category-form-page) .flatpickr-calendar .flatpickr-day.selected,
+        body:has(.ng-category-form-page) .flatpickr-calendar .flatpickr-day.startRange,
+        body:has(.ng-category-form-page) .flatpickr-calendar .flatpickr-day.endRange {
             color: #fff !important;
             border-color: #f97316 !important;
             background: #f97316 !important;
         }
 
-        body:has(.ng-product-form-page) .flatpickr-calendar .flatpickr-day:hover {
+        body:has(.ng-category-form-page) .flatpickr-calendar .flatpickr-day:hover {
             border-color: rgba(249, 115, 22, .24) !important;
             background: rgba(249, 115, 22, .12) !important;
         }
@@ -474,7 +503,7 @@
         |--------------------------------------------------------------------------
         */
 
-        body:has(.ng-product-form-page) .fi-sidebar {
+        body:has(.ng-category-form-page) .fi-sidebar {
             background: rgba(255, 250, 242, .50) !important;
             border-right: 1px solid rgba(255, 255, 255, .48) !important;
             box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
@@ -482,51 +511,50 @@
             -webkit-backdrop-filter: blur(16px) !important;
         }
 
-        body:has(.ng-product-form-page) .fi-sidebar-nav {
+        body:has(.ng-category-form-page) .fi-sidebar-nav {
             padding: 18px 14px !important;
         }
 
-        body:has(.ng-product-form-page) .fi-sidebar-item a,
-        body:has(.ng-product-form-page) .fi-sidebar-item-button {
+        body:has(.ng-category-form-page) .fi-sidebar-item a,
+        body:has(.ng-category-form-page) .fi-sidebar-item-button {
             border-radius: 14px !important;
             color: #6f5844 !important;
             transition: .2s ease !important;
         }
 
-        body:has(.ng-product-form-page) .fi-sidebar-item-active a,
-        body:has(.ng-product-form-page) .fi-sidebar-item a:hover,
-        body:has(.ng-product-form-page) .fi-sidebar-item-active .fi-sidebar-item-button,
-        body:has(.ng-product-form-page) .fi-sidebar-item .fi-sidebar-item-button:hover,
-        body:has(.ng-product-form-page) .fi-sidebar-item.fi-active a,
-        body:has(.ng-product-form-page) .fi-sidebar-item.fi-active .fi-sidebar-item-button {
+        body:has(.ng-category-form-page) .fi-sidebar-item-active a,
+        body:has(.ng-category-form-page) .fi-sidebar-item a:hover,
+        body:has(.ng-category-form-page) .fi-sidebar-item-active .fi-sidebar-item-button,
+        body:has(.ng-category-form-page) .fi-sidebar-item .fi-sidebar-item-button:hover,
+        body:has(.ng-category-form-page) .fi-sidebar-item.fi-active a,
+        body:has(.ng-category-form-page) .fi-sidebar-item.fi-active .fi-sidebar-item-button {
             background: linear-gradient(135deg, #ff9500, #f26a00) !important;
             color: #fff !important;
             box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
         }
 
-        body:has(.ng-product-form-page) .fi-sidebar-item-active svg,
-        body:has(.ng-product-form-page) .fi-sidebar-item a:hover svg,
-        body:has(.ng-product-form-page) .fi-sidebar-item-active span,
-        body:has(.ng-product-form-page) .fi-sidebar-item a:hover span,
-        body:has(.ng-product-form-page) .fi-sidebar-item-active .fi-sidebar-item-icon,
-        body:has(.ng-product-form-page) .fi-sidebar-item-active .fi-sidebar-item-label,
-        body:has(.ng-product-form-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-icon,
-        body:has(.ng-product-form-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-label,
-        body:has(.ng-product-form-page) .fi-sidebar-item.fi-active svg,
-        body:has(.ng-product-form-page) .fi-sidebar-item.fi-active span,
-        body:has(.ng-product-form-page) .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
-        body:has(.ng-product-form-page) .fi-sidebar-item.fi-active .fi-sidebar-item-label {
+        body:has(.ng-category-form-page) .fi-sidebar-item-active svg,
+        body:has(.ng-category-form-page) .fi-sidebar-item a:hover svg,
+        body:has(.ng-category-form-page) .fi-sidebar-item-active span,
+        body:has(.ng-category-form-page) .fi-sidebar-item a:hover span,
+        body:has(.ng-category-form-page) .fi-sidebar-item-active .fi-sidebar-item-icon,
+        body:has(.ng-category-form-page) .fi-sidebar-item-active .fi-sidebar-item-label,
+        body:has(.ng-category-form-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-icon,
+        body:has(.ng-category-form-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-label,
+        body:has(.ng-category-form-page) .fi-sidebar-item.fi-active svg,
+        body:has(.ng-category-form-page) .fi-sidebar-item.fi-active span,
+        body:has(.ng-category-form-page) .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
+        body:has(.ng-category-form-page) .fi-sidebar-item.fi-active .fi-sidebar-item-label {
             color: #fff !important;
         }
 
         /*
         |--------------------------------------------------------------------------
-        | KPI PRODUCT - IKUT WARNA WIDGET PATOKAN
+        | KPI - DISAMAKAN DENGAN WARNA WIDGET PATOKAN
         |--------------------------------------------------------------------------
         */
 
-        .ng-kpi-grid,
-        .ng-product-form-kpi-grid {
+        .ng-kpi-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 14px;
@@ -623,53 +651,14 @@
             text-overflow: ellipsis;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | PRODUCT FORM EXTRA PANEL - IKUT WARNA PATOKAN
-        |--------------------------------------------------------------------------
-        */
-
-        body:has(.ng-product-form-page) .fi-section + .fi-section,
-        body:has(.ng-product-form-page) .fi-sc-section + .fi-sc-section {
-            margin-top: 14px !important;
-        }
-
-        body:has(.ng-product-form-page) .fi-fo-repeater,
-        body:has(.ng-product-form-page) .fi-fo-repeater-item {
-            border-radius: 20px !important;
-            background: rgba(255, 255, 255, .20) !important;
-            border: 1px solid rgba(255, 255, 255, .42) !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32) !important;
-            overflow: hidden !important;
-        }
-
-        body:has(.ng-product-form-page) .fi-fo-file-upload,
-        body:has(.ng-product-form-page) .fi-fo-file-upload .filepond--root,
-        body:has(.ng-product-form-page) .fi-fo-file-upload .filepond--panel-root,
-        body:has(.ng-product-form-page) .filepond--panel-root {
-            border-radius: 18px !important;
-            background: rgba(255, 255, 255, .24) !important;
-            border-color: rgba(255, 255, 255, .42) !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32) !important;
-        }
-
-        body:has(.ng-product-form-page) .fi-btn-color-gray {
-            background: rgba(255, 255, 255, .42) !important;
-            border: 1px solid rgba(255, 255, 255, .55) !important;
-            color: #6f5844 !important;
-        }
-
-        body:has(.ng-product-form-page) .fi-btn-color-danger {
-            box-shadow: 0 12px 22px rgba(239, 68, 68, .18) !important;
+        @media (max-width: 1100px) {
+            .ng-kpi-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 1100px) {
-            .ng-kpi-grid,
-            .ng-product-form-kpi-grid {
-                grid-template-columns: 1fr !important;
-            }
-
-            .ng-product-form-page {
+            .ng-category-form-page {
                 padding: 18px 18px 10px !important;
             }
 
@@ -678,26 +667,26 @@
                 flex-direction: column;
             }
 
-            .ng-product-form-hero-actions {
+            .ng-category-form-hero-actions {
                 justify-content: flex-start;
             }
 
-            body:has(.ng-product-form-page) form .fi-section,
-            body:has(.ng-product-form-page) .fi-section {
+            body:has(.ng-category-form-page) form .fi-section,
+            body:has(.ng-category-form-page) .fi-section {
                 margin-left: 18px !important;
                 margin-right: 18px !important;
                 width: calc(100% - 36px) !important;
             }
 
-            body:has(.ng-product-form-page) form .fi-form-actions,
-            body:has(.ng-product-form-page) form .fi-ac {
+            body:has(.ng-category-form-page) form .fi-form-actions,
+            body:has(.ng-category-form-page) form .fi-ac {
                 padding-left: 18px !important;
                 padding-right: 18px !important;
             }
         }
 
         @media (max-width: 640px) {
-            .ng-product-form-page {
+            .ng-category-form-page {
                 padding: 14px 14px 8px !important;
             }
 
@@ -710,19 +699,29 @@
                 border-radius: 22px;
             }
 
-            body:has(.ng-product-form-page) form .fi-section,
-            body:has(.ng-product-form-page) .fi-section {
+            body:has(.ng-category-form-page) form .fi-section,
+            body:has(.ng-category-form-page) .fi-section {
                 margin-left: 14px !important;
                 margin-right: 14px !important;
                 width: calc(100% - 28px) !important;
             }
 
-            body:has(.ng-product-form-page) form .fi-form-actions,
-            body:has(.ng-product-form-page) form .fi-ac {
+            body:has(.ng-category-form-page) form .fi-form-actions,
+            body:has(.ng-category-form-page) form .fi-ac {
                 padding-left: 14px !important;
                 padding-right: 14px !important;
             }
         }
     
     </style>
-</x-filament-widgets::widget>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>
+<?php $attributes = $__attributesOriginalb525200bfa976483b4eaa0b7685c6e24; ?>
+<?php unset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>
+<?php $component = $__componentOriginalb525200bfa976483b4eaa0b7685c6e24; ?>
+<?php unset($__componentOriginalb525200bfa976483b4eaa0b7685c6e24); ?>
+<?php endif; ?>
+<?php /**PATH /var/www/html/resources/views/filament/admin/resources/categories/widgets/category-form-hero-widget.blade.php ENDPATH**/ ?>

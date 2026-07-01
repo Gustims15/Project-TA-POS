@@ -15,6 +15,8 @@ class PeakSalesTimeChart extends Widget
 
     protected string $view = 'filament.admin.widgets.peak-sales-time-chart';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = [
         'default' => 1,
         'md' => 1,

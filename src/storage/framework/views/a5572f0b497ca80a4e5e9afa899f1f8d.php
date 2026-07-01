@@ -1,18 +1,30 @@
-<x-filament-widgets::widget>
+<?php if (isset($component)) { $__componentOriginalb525200bfa976483b4eaa0b7685c6e24 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalb525200bfa976483b4eaa0b7685c6e24 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'filament-widgets::components.widget','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('filament-widgets::widget'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
     <div class="ng-sales-target-form-page">
         <section class="ng-target-form-hero-grid">
             <article class="ng-widget-card ng-target-form-hero-card">
                 <div class="ng-widget-head">
                     <div>
-                        <h1>{{ $title }}</h1>
+                        <h1><?php echo e($title); ?></h1>
 
                         <p>
-                            {{ $description }}
+                            <?php echo e($description); ?>
+
                         </p>
                     </div>
 
                     <div class="ng-target-form-hero-actions">
-                        <a href="{{ $backUrl }}" class="ng-primary-button">
+                        <a href="<?php echo e($backUrl); ?>" class="ng-primary-button">
                             ← Kembali
                         </a>
                     </div>
@@ -525,4 +537,14 @@
             }
         }
     </style>
-</x-filament-widgets::widget>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>
+<?php $attributes = $__attributesOriginalb525200bfa976483b4eaa0b7685c6e24; ?>
+<?php unset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>
+<?php $component = $__componentOriginalb525200bfa976483b4eaa0b7685c6e24; ?>
+<?php unset($__componentOriginalb525200bfa976483b4eaa0b7685c6e24); ?>
+<?php endif; ?>
+<?php /**PATH /var/www/html/resources/views/filament/admin/resources/sales-targets/widgets/sales-target-form-hero-widget.blade.php ENDPATH**/ ?>

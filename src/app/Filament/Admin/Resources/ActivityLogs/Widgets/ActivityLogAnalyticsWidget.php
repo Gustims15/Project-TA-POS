@@ -11,6 +11,8 @@ class ActivityLogAnalyticsWidget extends Widget
 {
     protected string $view = 'filament.admin.resources.activity-logs.widgets.activity-log-analytics-widget';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = 'full';
 
     protected function getViewData(): array

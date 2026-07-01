@@ -10,6 +10,8 @@ class MetricTabsWidget extends Widget
 {
     protected string $view = 'filament.admin.widgets.metric-tabs';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = 'full';
 
     protected function getViewData(): array

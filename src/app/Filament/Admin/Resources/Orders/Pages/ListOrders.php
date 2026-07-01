@@ -12,6 +12,8 @@ class ListOrders extends ListRecords
 {
     protected static string $resource = OrderResource::class;
 
+    protected static bool $isLazy = false;
+
     public function getTitle(): string
     {
         return '';

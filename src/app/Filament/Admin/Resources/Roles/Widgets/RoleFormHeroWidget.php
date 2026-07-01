@@ -14,6 +14,8 @@ class RoleFormHeroWidget extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
+    protected static bool $isLazy = false;
+
     public function getViewData(): array
     {
         $routeName = request()->route()?->getName() ?? '';

@@ -15,6 +15,8 @@ class ProductPerformanceMatrix extends Widget
 
     protected string $view = 'filament.admin.widgets.product-performance-matrix';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = [
         'default' => 1,
         'md' => 6,

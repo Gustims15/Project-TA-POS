@@ -11,6 +11,8 @@ class UserAnalyticsWidget extends Widget
 {
     protected string $view = 'filament.admin.resources.users.widgets.user-analytics-widget';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = 'full';
 
     public function getViewData(): array

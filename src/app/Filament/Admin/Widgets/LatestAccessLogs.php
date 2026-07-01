@@ -10,6 +10,8 @@ class LatestAccessLogs extends Widget
 {
     protected string $view = 'filament.admin.widgets.latest-access-logs';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 99;

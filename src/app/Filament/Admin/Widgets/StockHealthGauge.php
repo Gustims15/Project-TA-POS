@@ -11,6 +11,8 @@ class StockHealthGauge extends Widget
 {
     protected string $view = 'filament.admin.widgets.stock-health-gauge';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = [
         'default' => 1,
         'md' => 1,

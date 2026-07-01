@@ -47,19 +47,11 @@ class RoleResource extends Resource
             ->components([
                 Grid::make()
                     ->schema([
-                        Section::make('Informasi Role')
-                            ->description('Atur nama role, guard, dan konfigurasi dasar role sistem.')
-                            ->icon('heroicon-o-shield-check')
+                        Section::make('Data Role')
+                            ->description('Fallback form untuk data role.')
                             ->schema([
                                 TextInput::make('name')
                                     ->label(__('filament-shield::filament-shield.field.name'))
-                                    ->placeholder('Contoh: super_admin / karyawan')
-                                    ->unique(
-                                        ignoreRecord: true,
-                                        modifyRuleUsing: fn (Unique $rule): Unique => Utils::isTenancyEnabled()
-                                            ? $rule->where(Utils::getTenantModelForeignKey(), Filament::getTenant()?->id)
-                                            : $rule
-                                    )
                                     ->required()
                                     ->maxLength(255),
 
@@ -67,30 +59,15 @@ class RoleResource extends Resource
                                     ->label(__('filament-shield::filament-shield.field.guard_name'))
                                     ->default(Utils::getFilamentAuthGuard())
                                     ->nullable()
-                                    ->maxLength(255)
-                                    ->helperText('Default guard biasanya web.'),
-
-                                Select::make(config('permission.column_names.team_foreign_key'))
-                                    ->label(__('filament-shield::filament-shield.field.team'))
-                                    ->placeholder(__('filament-shield::filament-shield.field.team.placeholder'))
-                                    ->default(Filament::getTenant()?->id)
-                                    ->options(fn (): array => in_array(Utils::getTenantModel(), [null, '', '0'], true)
-                                        ? []
-                                        : Utils::getTenantModel()::pluck('name', 'id')->toArray())
-                                    ->visible(fn (): bool => static::shield()->isCentralApp() && Utils::isTenancyEnabled())
-                                    ->dehydrated(fn (): bool => static::shield()->isCentralApp() && Utils::isTenancyEnabled()),
-
-                                static::getSelectAllFormComponent(),
+                                    ->maxLength(255),
                             ])
                             ->columns([
-                                'sm' => 2,
-                                'lg' => 3,
+                                'default' => 1,
+                                'md' => 2,
                             ])
                             ->columnSpanFull(),
                     ])
                     ->columnSpanFull(),
-
-                static::getShieldFormComponents(),
             ]);
     }
 

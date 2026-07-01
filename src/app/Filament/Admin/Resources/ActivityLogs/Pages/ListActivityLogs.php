@@ -16,6 +16,8 @@ class ListActivityLogs extends ListRecords
 
     protected string $view = 'filament.admin.logger.pages.list-activity-logs';
 
+    protected static bool $isLazy = false;
+
     public function getTitle(): string
     {
         return '';

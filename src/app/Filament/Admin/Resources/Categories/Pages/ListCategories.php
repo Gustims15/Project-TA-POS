@@ -12,6 +12,8 @@ class ListCategories extends ListRecords
 {
     protected static string $resource = CategoryResource::class;
 
+    protected static bool $isLazy = false;
+
     public function getTitle(): string
     {
         return '';

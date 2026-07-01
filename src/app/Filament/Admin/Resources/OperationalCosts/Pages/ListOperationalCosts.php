@@ -11,6 +11,8 @@ class ListOperationalCosts extends ListRecords
 {
     protected static string $resource = OperationalCostResource::class;
 
+    protected static bool $isLazy = false;
+
     public function mount(): void
     {
         $this->syncSelectedOperationalPeriod();

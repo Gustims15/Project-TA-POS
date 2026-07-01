@@ -12,6 +12,8 @@ class ProductAnalyticsWidget extends Widget
 {
     protected string $view = 'filament.admin.resources.products.widgets.product-analytics-widget';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = 'full';
 
     public function getViewData(): array

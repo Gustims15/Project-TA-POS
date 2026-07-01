@@ -19,6 +19,8 @@ class DashboardLuxuryOverviewWidget extends Widget
 
     protected string $view = 'filament.admin.widgets.dashboard-luxury-overview-widget';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = 'full';
 
     protected function getViewData(): array

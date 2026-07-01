@@ -15,6 +15,8 @@ class RecentSalesTimeline extends Widget
 
     protected string $view = 'filament.admin.widgets.recent-sales-timeline';
 
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = [
         'default' => 1,
         'md' => 1,

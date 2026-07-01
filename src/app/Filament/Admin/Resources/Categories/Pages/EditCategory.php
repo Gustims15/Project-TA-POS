@@ -14,6 +14,8 @@ class EditCategory extends EditRecord
 {
     protected static string $resource = CategoryResource::class;
 
+    protected static bool $isLazy = false;
+
     protected ?string $heading = '';
 
     protected ?string $subheading = '';

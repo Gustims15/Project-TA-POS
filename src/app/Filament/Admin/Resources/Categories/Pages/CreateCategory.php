@@ -13,6 +13,8 @@ class CreateCategory extends CreateRecord
 {
     protected static string $resource = CategoryResource::class;
 
+    protected static bool $isLazy = false;
+
     protected ?string $heading = '';
 
     protected ?string $subheading = '';

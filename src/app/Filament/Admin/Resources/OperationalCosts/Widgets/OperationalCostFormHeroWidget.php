@@ -11,6 +11,8 @@ class OperationalCostFormHeroWidget extends Widget
 {
     protected string $view = 'filament.admin.resources.operational-costs.widgets.operational-cost-form-hero-widget';
 
+    protected static bool $isLazy = false;
+
     protected int | string | array $columnSpan = 'full';
 
     protected function getViewData(): array

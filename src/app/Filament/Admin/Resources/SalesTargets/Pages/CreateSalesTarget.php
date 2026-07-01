@@ -12,6 +12,8 @@ class CreateSalesTarget extends CreateRecord
 {
     protected static string $resource = SalesTargetResource::class;
 
+    protected static bool $isLazy = false;
+
     protected function getHeaderWidgets(): array
     {
         return [

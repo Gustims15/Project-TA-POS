@@ -17,6 +17,8 @@ class SalesTargetAnalyticsWidget extends Widget
 {
     protected string $view = 'filament.admin.resources.sales-targets.widgets.sales-target-analytics-widget';
 
+    protected static bool $isLazy = false;
+
     protected int | string | array $columnSpan = 'full';
 
     protected function getViewData(): array

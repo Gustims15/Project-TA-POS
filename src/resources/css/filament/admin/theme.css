@@ -2878,3 +2878,96 @@ body .fi-main .fi-section-header-description {
         grid-template-columns: 1fr !important;
     }
 }
+
+/*
+|--------------------------------------------------------------------------
+| NGUNJUK GLOBAL NO-RAW CLEANER - NO LOADER VERSION
+|--------------------------------------------------------------------------
+| Catatan:
+| - Tidak memakai overlay.
+| - Tidak memakai spinner/loading screen.
+| - Hanya membersihkan wrapper/placeholder putih bawaan Filament.
+| - Style utama widget tetap dari Blade masing-masing.
+|--------------------------------------------------------------------------
+*/
+
+html,
+body,
+.fi-body {
+    overflow-x: hidden !important;
+}
+
+.fi-body,
+.fi-layout,
+.fi-main-ctn,
+.fi-main,
+.fi-page,
+.fi-page-content,
+main {
+    background-color: transparent !important;
+}
+
+.fi-main-ctn,
+.fi-main,
+.fi-page,
+.fi-page-content {
+    position: relative !important;
+}
+
+/* Wrapper widget bawaan Filament dibuat transparan supaya tidak muncul card putih mentah */
+.fi-wi,
+.fi-wi-widget,
+.fi-wi-widget-content,
+.fi-wi-widgets,
+.fi-wi-widgets > * {
+    background: transparent !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Placeholder kosong benar-benar dihilangkan */
+.fi-wi:empty,
+.fi-wi-widget:empty,
+.fi-wi-widget-content:empty,
+.fi-wi-widgets > *:empty {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    min-height: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+@supports selector(:has(*)) {
+    .fi-wi-widget:not(:has(*)),
+    .fi-wi-widget-content:not(:has(*)),
+    .fi-wi-widgets > *:not(:has(*)) {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        min-height: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+}
+
+/* Hapus kemungkinan animasi/spinner overlay dari patch sebelumnya */
+html.ngunjuk-page-transition .fi-main::before,
+html.ngunjuk-page-transition .fi-main::after {
+    display: none !important;
+    content: none !important;
+}
+
+html.ngunjuk-page-transition .fi-main {
+    pointer-events: auto !important;
+}
+

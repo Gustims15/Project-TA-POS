@@ -321,10 +321,12 @@
             background-attachment: fixed !important;
         }
 
+        body:has(.ng-monthly-revenue-page) .fi-layout,
         body:has(.ng-monthly-revenue-page) .fi-main,
         body:has(.ng-monthly-revenue-page) .fi-main-ctn,
         body:has(.ng-monthly-revenue-page) .fi-page,
-        body:has(.ng-monthly-revenue-page) .fi-page-content {
+        body:has(.ng-monthly-revenue-page) .fi-page-content,
+        body:has(.ng-monthly-revenue-page) main {
             width: 100% !important;
             max-width: 100% !important;
             background: transparent !important;
@@ -348,7 +350,7 @@
         .ng-monthly-revenue-page {
             width: 100% !important;
             max-width: 100% !important;
-            padding: 24px 24px 24px !important;
+            padding: 24px 24px 10px !important;
             overflow: hidden !important;
             font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             color: #24180f;
@@ -358,12 +360,11 @@
             box-sizing: border-box;
         }
 
-        .ng-report-hero-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0;
-            margin-bottom: 14px;
-        }
+        /*
+        |--------------------------------------------------------------------------
+        | CARD UTAMA - DIAMBIL DARI CATEGORY MANAGEMENT
+        |--------------------------------------------------------------------------
+        */
 
         .ng-widget-card,
         .ng-kpi-card {
@@ -393,14 +394,26 @@
         }
 
         .ng-widget-card {
-            border-radius: 24px;
-            padding: 18px;
             min-width: 0;
+            padding: 18px;
+            border-radius: 24px;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | HERO
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-report-hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+            margin-bottom: 14px;
         }
 
         .ng-report-hero-card {
-            width: 100%;
-            min-height: 132px;
+            min-height: 126px;
             display: flex;
             align-items: center;
         }
@@ -408,11 +421,11 @@
         .ng-widget-head {
             position: relative;
             z-index: 2;
-            width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 24px;
+            gap: 18px;
+            width: 100%;
         }
 
         .ng-widget-head > div:first-child {
@@ -439,7 +452,7 @@
         }
 
         .ng-widget-head p {
-            max-width: 850px;
+            max-width: 760px;
             margin: 8px 0 0;
             color: #765d45;
             font-size: 13px;
@@ -447,19 +460,12 @@
             font-weight: 700;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | HERO FILTER - CLEAN, NO INNER WIDGET
-        |--------------------------------------------------------------------------
-        */
-
         .ng-report-inline-filter {
             position: relative;
             z-index: 2;
             flex: 0 0 auto;
             min-width: 430px;
             display: grid;
-            grid-template-columns: 1fr;
             gap: 6px;
             padding: 0;
             border: 0;
@@ -479,67 +485,68 @@
         }
 
         .ng-report-filter-title {
+            color: #d95d00;
             font-weight: 950;
-        }
-
-        .ng-report-inline-filter small {
-            font-weight: 850;
+            letter-spacing: .04em;
+            text-transform: uppercase;
         }
 
         .ng-report-filter-row {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
             gap: 12px;
             width: 100%;
         }
 
         .ng-report-select {
             width: 220px;
-            height: 40px;
-            min-height: 40px;
+            height: 42px;
+            min-height: 42px;
             margin: 0;
             padding: 0 14px;
-            border: 1px solid rgba(255, 255, 255, .55);
+            border: 1px solid rgba(255, 255, 255, .42);
             outline: none;
-            border-radius: 14px;
-            color: #2d1f16;
-            background: rgba(255, 255, 255, .38);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45);
+            border-radius: 16px;
+            color: #4a321f;
+            background: rgba(255, 255, 255, .28);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .36);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 950;
             cursor: pointer;
+        }
+
+        .ng-report-select option {
+            color: #2d1f16;
+            background: #fff6ea;
+            font-weight: 850;
         }
 
         .ng-primary-button {
-            width: auto;
-            min-width: 130px;
-            max-width: 150px;
-            height: 40px;
-            min-height: 40px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0 14px;
+            min-height: 42px;
+            height: 42px;
+            padding: 0 16px;
             border: 0;
-            border-radius: 14px;
+            border-radius: 15px;
             color: #fff;
             background: linear-gradient(135deg, #ff9d18, #ee6500);
-            box-shadow: 0 12px 22px rgba(238, 101, 0, .22);
-            font-size: 10px;
-            line-height: 1;
+            box-shadow: 0 14px 26px rgba(238, 101, 0, .26);
+            font-size: 12px;
             font-weight: 950;
+            text-decoration: none;
             white-space: nowrap;
             cursor: pointer;
-            transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+            transition: .2s ease;
         }
 
         .ng-primary-button:hover {
+            color: #fff;
             transform: translateY(-1px);
-            filter: brightness(1.02);
-            box-shadow: 0 16px 26px rgba(238, 101, 0, .26);
+            box-shadow: 0 18px 32px rgba(238, 101, 0, .30);
         }
 
         .ng-primary-button:disabled {
@@ -550,7 +557,7 @@
 
         /*
         |--------------------------------------------------------------------------
-        | KPI
+        | KPI - WARNA DAN UKURAN IKUT CATEGORY
         |--------------------------------------------------------------------------
         */
 
@@ -632,13 +639,14 @@
 
         /*
         |--------------------------------------------------------------------------
-        | TABLE
+        | TABLE CARD - TIDAK ADA LAPISAN PUTIH DI DALAM WIDGET
         |--------------------------------------------------------------------------
         */
 
         .ng-report-table-card {
             padding: 18px;
             border-radius: 24px;
+            margin-bottom: 14px;
         }
 
         .ng-report-table-head {
@@ -667,7 +675,12 @@
             z-index: 2;
             width: 100%;
             overflow-x: auto;
-            border-top: 1px solid rgba(114, 74, 41, .08);
+            border: 0 !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
         }
 
         .ng-report-table {
@@ -675,6 +688,18 @@
             min-width: 900px;
             border-collapse: collapse;
             color: #3a2a1f;
+            background: transparent !important;
+        }
+
+        .ng-report-table,
+        .ng-report-table thead,
+        .ng-report-table tbody,
+        .ng-report-table tfoot,
+        .ng-report-table tr,
+        .ng-report-table th,
+        .ng-report-table td {
+            background: transparent !important;
+            box-shadow: none !important;
         }
 
         .ng-report-table th,
@@ -682,16 +707,18 @@
             padding: 13px 14px;
             text-align: left;
             border-bottom: 1px solid rgba(114, 74, 41, .08);
-            background: transparent;
+        }
+
+        .ng-report-table thead tr,
+        .ng-report-table thead th {
+            background: rgba(255, 247, 235, .04) !important;
         }
 
         .ng-report-table th {
             color: #4b3525;
-            font-size: 11px;
+            font-size: 12px;
             line-height: 1;
             font-weight: 950;
-            text-transform: uppercase;
-            letter-spacing: .02em;
         }
 
         .ng-report-table td {
@@ -700,19 +727,30 @@
             font-weight: 850;
         }
 
-        .ng-report-table tbody tr {
-            transition: background .18s ease;
+        .ng-report-table tbody tr,
+        .ng-report-table tbody tr:nth-child(odd),
+        .ng-report-table tbody tr:nth-child(even) {
+            min-height: 52px;
+            background: rgba(255, 247, 235, .04) !important;
+            transition: .18s ease;
         }
 
         .ng-report-table tbody tr:hover {
-            background: rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .14) !important;
         }
 
+        .ng-report-table tfoot tr,
         .ng-report-table tfoot td {
             color: #21160d;
             font-weight: 950;
-            background: rgba(255, 255, 255, .16);
+            background: rgba(255, 247, 235, .04) !important;
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | PILL DI TABLE - DIBUAT LEBIH SOFT AGAR MENYATU
+        |--------------------------------------------------------------------------
+        */
 
         .ng-number-pill,
         .ng-order-code-pill,
@@ -723,11 +761,11 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 30px;
-            padding: 0 11px;
+            min-height: 26px;
+            padding: 0 10px;
             border-radius: 999px;
             white-space: nowrap;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 950;
         }
 
@@ -782,19 +820,22 @@
 
         /*
         |--------------------------------------------------------------------------
-        | PAGINATION
+        | PAGINATION - IKUT CATEGORY
         |--------------------------------------------------------------------------
         */
 
         .ng-report-pagination {
             position: relative;
             z-index: 2;
-            min-height: 52px;
+            min-height: 50px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
             padding-top: 14px;
+            color: #6f5946;
+            font-size: 12px;
+            font-weight: 800;
         }
 
         .ng-report-pagination-info {
@@ -824,7 +865,7 @@
             align-items: center;
             justify-content: center;
             padding: 0 11px;
-            border-radius: 12px;
+            border-radius: 14px;
             color: #7b6049;
             background: rgba(255, 255, 255, .32);
             border: 1px solid rgba(255, 255, 255, .48);
@@ -837,7 +878,9 @@
             min-width: 96px;
         }
 
-        .ng-page-number.is-active {
+        .ng-page-number.is-active,
+        .ng-page-btn:hover,
+        .ng-page-number:hover {
             color: #fff;
             background: linear-gradient(135deg, #ff9d18, #ee6500);
             box-shadow: 0 12px 22px rgba(238, 101, 0, .22);
@@ -846,11 +889,12 @@
         .ng-page-btn.is-disabled {
             opacity: .45;
             cursor: not-allowed;
+            pointer-events: none;
         }
 
         /*
         |--------------------------------------------------------------------------
-        | SIDEBAR SYNC
+        | SIDEBAR EFFECT SYNC - IKUT CATEGORY
         |--------------------------------------------------------------------------
         */
 
@@ -866,14 +910,19 @@
             padding: 18px 14px !important;
         }
 
-        body:has(.ng-monthly-revenue-page) .fi-sidebar-item a {
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item a,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item-button {
             border-radius: 14px !important;
             color: #6f5844 !important;
             transition: .2s ease !important;
         }
 
         body:has(.ng-monthly-revenue-page) .fi-sidebar-item-active a,
-        body:has(.ng-monthly-revenue-page) .fi-sidebar-item a:hover {
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item a:hover,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item-active .fi-sidebar-item-button,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item .fi-sidebar-item-button:hover,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item.fi-active a,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item.fi-active .fi-sidebar-item-button {
             background: linear-gradient(135deg, #ff9500, #f26a00) !important;
             color: #fff !important;
             box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
@@ -882,17 +931,168 @@
         body:has(.ng-monthly-revenue-page) .fi-sidebar-item-active svg,
         body:has(.ng-monthly-revenue-page) .fi-sidebar-item a:hover svg,
         body:has(.ng-monthly-revenue-page) .fi-sidebar-item-active span,
-        body:has(.ng-monthly-revenue-page) .fi-sidebar-item a:hover span {
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item a:hover span,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item-active .fi-sidebar-item-icon,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item-active .fi-sidebar-item-label,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-icon,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-label,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item.fi-active svg,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item.fi-active span,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
+        body:has(.ng-monthly-revenue-page) .fi-sidebar-item.fi-active .fi-sidebar-item-label {
             color: #fff !important;
         }
 
+
         /*
         |--------------------------------------------------------------------------
-        | RESPONSIVE
+        | MONTHLY REVENUE SOFT CATEGORY TONE
+        |--------------------------------------------------------------------------
+        | Tone widget dibuat lebih soft dan tidak terlalu terang.
+        | Tetap mengikuti konsep Category, tapi lapisan putih dikurangi.
         |--------------------------------------------------------------------------
         */
 
+        .ng-widget-card,
+        .ng-kpi-card {
+            background:
+                linear-gradient(145deg, rgba(255, 242, 221, .36), rgba(255, 214, 165, .18)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .13), transparent 38%) !important;
+            box-shadow:
+                0 18px 44px rgba(101, 58, 21, .10),
+                0 0 0 1px rgba(255, 255, 255, .10) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .42) !important;
+        }
+
+        .ng-widget-card::before,
+        .ng-kpi-card::before {
+            background:
+                linear-gradient(120deg, rgba(255, 255, 255, .20), transparent 30%, transparent 72%, rgba(255, 236, 210, .12)) !important;
+            opacity: .24 !important;
+        }
+
+        .ng-report-table-card {
+            background:
+                linear-gradient(145deg, rgba(255, 239, 213, .34), rgba(255, 204, 145, .17)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .12), transparent 38%) !important;
+        }
+
+        .ng-report-table-wrap {
+            background: rgba(255, 230, 195, .06) !important;
+        }
+
+        .ng-report-table thead tr,
+        .ng-report-table thead th {
+            background: rgba(255, 226, 190, .08) !important;
+        }
+
+        .ng-report-table tbody tr,
+        .ng-report-table tbody tr:nth-child(odd),
+        .ng-report-table tbody tr:nth-child(even),
+        .ng-report-table tfoot tr,
+        .ng-report-table tfoot td {
+            background: rgba(255, 226, 190, .035) !important;
+        }
+
+        .ng-report-table tbody tr:hover {
+            background: rgba(255, 255, 255, .10) !important;
+        }
+
+        .ng-report-select,
+        .ng-widget-badge,
+        .ng-page-btn,
+        .ng-page-number,
+        .ng-page-dots {
+            background: rgba(255, 239, 218, .28) !important;
+            border-color: rgba(255, 255, 255, .38) !important;
+        }
+
+        .ng-date-pill {
+            background: rgba(255, 239, 218, .20) !important;
+        }
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MONTHLY REVENUE BALANCED CATEGORY BRIGHTNESS
+        |--------------------------------------------------------------------------
+        | Versi sebelumnya terlalu redup. Ini dinaikkan lagi efek terang/glass-nya,
+        | tetapi tidak kembali terlalu putih.
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-widget-card,
+        .ng-kpi-card {
+            background:
+                linear-gradient(145deg, rgba(255, 248, 237, .42), rgba(255, 224, 185, .21)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .15), transparent 38%) !important;
+            box-shadow:
+                0 20px 50px rgba(101, 58, 21, .11),
+                0 0 0 1px rgba(255, 255, 255, .11) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .54) !important;
+        }
+
+        .ng-widget-card::before,
+        .ng-kpi-card::before {
+            background:
+                linear-gradient(120deg, rgba(255, 255, 255, .28), transparent 28%, transparent 70%, rgba(255, 255, 255, .14)) !important;
+            opacity: .32 !important;
+        }
+
+        .ng-report-table-card {
+            background:
+                linear-gradient(145deg, rgba(255, 248, 237, .40), rgba(255, 224, 185, .20)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .14), transparent 38%) !important;
+            box-shadow:
+                0 20px 50px rgba(101, 58, 21, .11),
+                0 0 0 1px rgba(255, 255, 255, .11) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .52) !important;
+        }
+
+        .ng-report-table-wrap {
+            background: rgba(255, 245, 231, .035) !important;
+        }
+
+        .ng-report-table thead tr,
+        .ng-report-table thead th {
+            background: rgba(255, 255, 255, .055) !important;
+        }
+
+        .ng-report-table tbody tr,
+        .ng-report-table tbody tr:nth-child(odd),
+        .ng-report-table tbody tr:nth-child(even),
+        .ng-report-table tfoot tr,
+        .ng-report-table tfoot td {
+            background: rgba(255, 247, 235, .045) !important;
+        }
+
+        .ng-report-table tbody tr:hover {
+            background: rgba(255, 255, 255, .13) !important;
+        }
+
+        .ng-report-select,
+        .ng-widget-badge,
+        .ng-page-btn,
+        .ng-page-number,
+        .ng-page-dots {
+            background: rgba(255, 255, 255, .34) !important;
+            border-color: rgba(255, 255, 255, .46) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .42) !important;
+        }
+
+        .ng-date-pill {
+            background: rgba(255, 255, 255, .24) !important;
+            border-color: rgba(255, 255, 255, .38) !important;
+        }
+
+
         @media (max-width: 1500px) {
+            .ng-kpi-grid,
+            .ng-report-kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
             .ng-widget-head {
                 align-items: flex-start;
                 flex-direction: column;
@@ -902,46 +1102,26 @@
                 width: 100%;
                 min-width: 0;
             }
-
-            .ng-report-filter-row {
-                justify-content: flex-start;
-            }
-
-            .ng-kpi-grid,
-            .ng-report-kpi-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .ng-monthly-revenue-page {
-                padding: 18px !important;
+                padding: 18px 18px 10px !important;
             }
 
-            .ng-report-filter-row,
-            .ng-report-pagination {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .ng-report-select {
-                width: 100%;
-            }
-
-            .ng-primary-button {
-                width: auto;
-            }
-
-            .ng-report-table-head {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-        }
-
-        @media (max-width: 700px) {
             .ng-kpi-grid,
             .ng-report-kpi-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .ng-report-filter-row {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .ng-monthly-revenue-page {
+                padding: 14px 14px 8px !important;
             }
 
             .ng-widget-head h1 {
@@ -952,8 +1132,22 @@
                 padding: 16px;
                 border-radius: 22px;
             }
+
+            .ng-report-select {
+                width: 100%;
+            }
+
+            .ng-primary-button {
+                width: 100%;
+            }
+
+            .ng-report-pagination {
+                align-items: flex-start;
+                flex-direction: column;
+            }
         }
     </style>
+
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal166a02a7c5ef5a9331faf66fa665c256)): ?>

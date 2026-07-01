@@ -11,6 +11,8 @@ class CreateOperationalCost extends CreateRecord
 {
     protected static string $resource = OperationalCostResource::class;
 
+    protected static bool $isLazy = false;
+
     protected function getHeaderWidgets(): array
     {
         return [

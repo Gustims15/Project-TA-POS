@@ -14,6 +14,8 @@ class OperationalCostAnalyticsWidget extends Widget
 {
     protected string $view = 'filament.admin.resources.operational-costs.widgets.operational-cost-analytics-widget';
 
+    protected static bool $isLazy = false;
+
     protected int | string | array $columnSpan = 'full';
 
     public int|string|null $selectedMonth = null;

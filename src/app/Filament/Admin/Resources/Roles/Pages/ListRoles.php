@@ -12,6 +12,8 @@ class ListRoles extends ListRecords
 {
     protected static string $resource = RoleResource::class;
 
+    protected static bool $isLazy = false;
+
     public function getTitle(): string
     {
         return '';

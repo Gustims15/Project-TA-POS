@@ -4,36 +4,18 @@
             <article class="ng-widget-card ng-op-form-hero-card">
                 <div class="ng-widget-head">
                     <div>
-
                         <h1>{{ $title }}</h1>
 
                         <p>
                             {{ $description }}
                         </p>
                     </div>
-                </div>
-            </article>
 
-            <article class="ng-widget-card ng-op-form-highlight-card">
-                <div class="ng-highlight-info">
-                    <span>Estimasi Biaya Bulan Aktif</span>
-
-                    <strong>
-                        {{ $this->rupiah($stats['monthly_cost'] ?? 0) }}
-                    </strong>
-
-                    <small>
-                        {{ number_format((int) ($stats['active_costs'] ?? 0), 0, ',', '.') }}
-                        biaya aktif dari
-                        {{ number_format((int) ($stats['total_costs'] ?? 0), 0, ',', '.') }}
-                        total data
-                    </small>
-                </div>
-
-                <div class="ng-highlight-actions">
-                    <a href="{{ $backUrl }}" class="ng-primary-button">
-                        ← Kembali
-                    </a>
+                    <div class="ng-op-form-hero-actions">
+                        <a href="{{ $backUrl }}" class="ng-primary-button">
+                            ← Kembali
+                        </a>
+                    </div>
                 </div>
             </article>
         </section>
@@ -58,26 +40,25 @@
             background-attachment: fixed !important;
         }
 
+        body:has(.ng-operational-form-page) .fi-layout,
         body:has(.ng-operational-form-page) .fi-main,
         body:has(.ng-operational-form-page) .fi-main-ctn,
         body:has(.ng-operational-form-page) .fi-page,
-        body:has(.ng-operational-form-page) .fi-page-content {
+        body:has(.ng-operational-form-page) .fi-page-content,
+        body:has(.ng-operational-form-page) main {
             width: 100% !important;
             max-width: 100% !important;
             background: transparent !important;
             overflow-x: hidden !important;
         }
 
-        body:has(.ng-operational-form-page) .fi-page {
+        body:has(.ng-operational-form-page) .fi-page,
+        body:has(.ng-operational-form-page) .fi-main {
             padding: 0 !important;
         }
 
         body:has(.ng-operational-form-page) .fi-page-header {
             display: none !important;
-        }
-
-        body:has(.ng-operational-form-page) .fi-main {
-            padding: 0 !important;
         }
 
         body:has(.ng-operational-form-page) .fi-page-content {
@@ -110,10 +91,16 @@
             box-sizing: border-box;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | HERO - FULL WIDTH, IKUT CATEGORY
+        |--------------------------------------------------------------------------
+        */
+
         .ng-op-form-hero-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.45fr) minmax(360px, .55fr);
-            gap: 16px;
+            grid-template-columns: 1fr;
+            gap: 0;
             margin-bottom: 14px;
         }
 
@@ -121,8 +108,8 @@
             position: relative;
             overflow: hidden;
             min-width: 0;
-            border-radius: 24px;
             padding: 18px;
+            border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, .58);
             background:
                 linear-gradient(145deg, rgba(255, 255, 255, .46), rgba(255, 246, 231, .22)),
@@ -145,50 +132,25 @@
             opacity: .38;
         }
 
-        .ng-op-form-hero-card,
-        .ng-op-form-highlight-card {
-            min-height: 126px;
-        }
-
         .ng-op-form-hero-card {
+            min-height: 126px;
             display: flex;
             align-items: center;
-        }
-
-        .ng-op-form-highlight-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
         }
 
         .ng-widget-head {
             position: relative;
             z-index: 2;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
-            gap: 14px;
+            gap: 18px;
             width: 100%;
         }
 
-        .ng-kicker {
-            display: inline-flex;
-            align-items: center;
-            width: fit-content;
-            padding: 6px 12px;
-            margin-bottom: 10px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, .50);
-            border: 1px solid rgba(255, 255, 255, .58);
-            color: #d95d00;
-            font-size: 12px;
-            font-weight: 900;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .70);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+        .ng-widget-head > div:first-child {
+            min-width: 0;
+            flex: 1 1 auto;
         }
 
         .ng-widget-head h1 {
@@ -201,7 +163,7 @@
         }
 
         .ng-widget-head p {
-            max-width: 760px;
+            max-width: 900px;
             margin: 8px 0 0;
             color: #765d45;
             font-size: 13px;
@@ -209,49 +171,13 @@
             font-weight: 700;
         }
 
-        .ng-highlight-info {
+        .ng-op-form-hero-actions {
             position: relative;
             z-index: 2;
-            min-width: 0;
-        }
-
-        .ng-highlight-info span {
-            display: block;
-            color: #765d45;
-            font-size: 11px;
-            font-weight: 900;
-        }
-
-        .ng-highlight-info strong {
-            display: block;
-            max-width: 280px;
-            margin: 8px 0;
-            overflow: hidden;
-            color: #21160d;
-            font-size: 22px;
-            line-height: 1.1;
-            font-weight: 950;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            letter-spacing: -.03em;
-        }
-
-        .ng-highlight-info small {
-            display: block;
-            color: #765d45;
-            font-size: 11px;
-            line-height: 1.35;
-            font-weight: 850;
-        }
-
-        .ng-highlight-actions {
-            position: relative;
-            z-index: 2;
+            flex: 0 0 auto;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 9px;
-            flex-wrap: wrap;
         }
 
         .ng-primary-button {
@@ -272,19 +198,21 @@
         }
 
         .ng-primary-button:hover {
+            color: #fff;
             transform: translateY(-1px);
             box-shadow: 0 18px 32px rgba(238, 101, 0, .30);
         }
 
         /*
         |--------------------------------------------------------------------------
-        | FORM PANEL - DISAMAKAN DENGAN RASA DASHBOARD KEUANGAN
+        | FORM PANEL - WARNA WIDGET DISAMAKAN DENGAN CATEGORY
         |--------------------------------------------------------------------------
         */
 
         body:has(.ng-operational-form-page) form,
         body:has(.ng-operational-form-page) .fi-section,
-        body:has(.ng-operational-form-page) .fi-fo-component-ctn {
+        body:has(.ng-operational-form-page) .fi-fo-component-ctn,
+        body:has(.ng-operational-form-page) .fi-section-content {
             background: transparent !important;
         }
 
@@ -294,6 +222,8 @@
 
         body:has(.ng-operational-form-page) form .fi-section,
         body:has(.ng-operational-form-page) .fi-section {
+            position: relative !important;
+            z-index: 25 !important;
             margin-left: 24px !important;
             margin-right: 24px !important;
             margin-top: 0 !important;
@@ -301,20 +231,43 @@
             border-radius: 24px !important;
             border: 1px solid rgba(255, 255, 255, .58) !important;
             background:
-                linear-gradient(145deg, rgba(255, 255, 255, .34), rgba(255, 246, 231, .18)),
-                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .12), transparent 38%) !important;
+                linear-gradient(145deg, rgba(255, 255, 255, .46), rgba(255, 246, 231, .22)),
+                radial-gradient(circle at 100% 0%, rgba(255, 153, 30, .16), transparent 38%) !important;
             box-shadow:
                 0 22px 54px rgba(101, 58, 21, .12),
                 0 0 0 1px rgba(255, 255, 255, .12) inset,
-                inset 0 1px 0 rgba(255, 255, 255, .54) !important;
+                inset 0 1px 0 rgba(255, 255, 255, .62) !important;
             backdrop-filter: blur(14px) !important;
             -webkit-backdrop-filter: blur(14px) !important;
             overflow: visible !important;
         }
 
-        body:has(.ng-operational-form-page) .fi-section-content,
-        body:has(.ng-operational-form-page) .fi-fo-component-ctn {
-            background: transparent !important;
+        body:has(.ng-operational-form-page) form .fi-section::before,
+        body:has(.ng-operational-form-page) .fi-section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border-radius: inherit;
+            background:
+                linear-gradient(120deg, rgba(255, 255, 255, .34), transparent 28%, transparent 70%, rgba(255, 255, 255, .16));
+            opacity: .38;
+        }
+
+        body:has(.ng-operational-form-page) .fi-section-header,
+        body:has(.ng-operational-form-page) .fi-section-content {
+            position: relative !important;
+            z-index: 2 !important;
+        }
+
+        body:has(.ng-operational-form-page) .fi-section-header {
+            background: rgba(255, 247, 235, .10) !important;
+            border-bottom: 1px solid rgba(114, 74, 41, .08) !important;
+        }
+
+        body:has(.ng-operational-form-page) .fi-section-header-heading,
+        body:has(.ng-operational-form-page) .fi-section-header-description {
+            color: #4b3525 !important;
         }
 
         body:has(.ng-operational-form-page) .fi-input-wrp,
@@ -381,13 +334,10 @@
             padding-right: 24px !important;
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | FORM DROPDOWN / DATEPICKER STACKING FIX
+        | DROPDOWN / DATEPICKER STACKING FIX
         |--------------------------------------------------------------------------
-        | Membuat dropdown select dan kalender datepicker muncul di atas field lain,
-        | tidak ketimpa saat form discroll.
         */
 
         body:has(.ng-operational-form-page) .fi-main,
@@ -399,19 +349,15 @@
         body:has(.ng-operational-form-page) .fi-section,
         body:has(.ng-operational-form-page) .fi-section-content,
         body:has(.ng-operational-form-page) .fi-fo-component-ctn,
-        body:has(.ng-operational-form-page) .fi-fo-field-wrp {
+        body:has(.ng-operational-form-page) .fi-fo-field-wrp,
+        body:has(.ng-operational-form-page) .ng-operational-form-page,
+        body:has(.ng-operational-form-page) .ng-widget-card {
             overflow: visible !important;
         }
 
         body:has(.ng-operational-form-page) form {
             position: relative !important;
             z-index: 20 !important;
-        }
-
-        body:has(.ng-operational-form-page) form .fi-section,
-        body:has(.ng-operational-form-page) .fi-section {
-            position: relative !important;
-            z-index: 25 !important;
         }
 
         body:has(.ng-operational-form-page) .fi-dropdown-panel,
@@ -422,12 +368,10 @@
         body:has(.ng-operational-form-page) [role="listbox"],
         body:has(.ng-operational-form-page) [data-headlessui-state],
         body:has(.ng-operational-form-page) .choices__list--dropdown,
-        body:has(.ng-operational-form-page) .flatpickr-calendar {
-            z-index: 99999 !important;
-        }
-
-        body:has(.ng-operational-form-page) .fi-fo-field-wrp {
-            isolation: auto !important;
+        body:has(.ng-operational-form-page) .flatpickr-calendar,
+        body:has(.ng-operational-form-page) .fi-select-input-ctn,
+        body:has(.ng-operational-form-page) .fi-fo-date-time-picker-panel {
+            z-index: 999999 !important;
         }
 
         body:has(.ng-operational-form-page) .fi-input-wrp:focus-within,
@@ -436,18 +380,13 @@
             z-index: 80 !important;
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | SIDEBAR EFFECT SYNC - FINANCE PAGES
+        | SIDEBAR EFFECT SYNC
         |--------------------------------------------------------------------------
         */
 
-        body:has(.ng-finance-dashboard) .fi-sidebar,
-        body:has(.ng-operational-page) .fi-sidebar,
-        body:has(.ng-operational-form-page) .fi-sidebar,
-        body:has(.ng-sales-target-page) .fi-sidebar,
-        body:has(.ng-sales-target-form-page) .fi-sidebar {
+        body:has(.ng-operational-form-page) .fi-sidebar {
             background: rgba(255, 250, 242, .50) !important;
             border-right: 1px solid rgba(255, 255, 255, .48) !important;
             box-shadow: 18px 0 55px rgba(137, 78, 26, .10) !important;
@@ -455,66 +394,41 @@
             -webkit-backdrop-filter: blur(16px) !important;
         }
 
-        body:has(.ng-finance-dashboard) .fi-sidebar-nav,
-        body:has(.ng-operational-page) .fi-sidebar-nav,
-        body:has(.ng-operational-form-page) .fi-sidebar-nav,
-        body:has(.ng-sales-target-page) .fi-sidebar-nav,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-nav {
+        body:has(.ng-operational-form-page) .fi-sidebar-nav {
             padding: 18px 14px !important;
         }
 
-        body:has(.ng-finance-dashboard) .fi-sidebar-item a,
-        body:has(.ng-operational-page) .fi-sidebar-item a,
         body:has(.ng-operational-form-page) .fi-sidebar-item a,
-        body:has(.ng-sales-target-page) .fi-sidebar-item a,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item a {
+        body:has(.ng-operational-form-page) .fi-sidebar-item-button {
             border-radius: 14px !important;
             color: #6f5844 !important;
             transition: .2s ease !important;
         }
 
-        body:has(.ng-finance-dashboard) .fi-sidebar-item-active a,
-        body:has(.ng-finance-dashboard) .fi-sidebar-item a:hover,
-        body:has(.ng-operational-page) .fi-sidebar-item-active a,
-        body:has(.ng-operational-page) .fi-sidebar-item a:hover,
         body:has(.ng-operational-form-page) .fi-sidebar-item-active a,
         body:has(.ng-operational-form-page) .fi-sidebar-item a:hover,
-        body:has(.ng-sales-target-page) .fi-sidebar-item-active a,
-        body:has(.ng-sales-target-page) .fi-sidebar-item a:hover,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item-active a,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item a:hover {
+        body:has(.ng-operational-form-page) .fi-sidebar-item-active .fi-sidebar-item-button,
+        body:has(.ng-operational-form-page) .fi-sidebar-item .fi-sidebar-item-button:hover,
+        body:has(.ng-operational-form-page) .fi-sidebar-item.fi-active a,
+        body:has(.ng-operational-form-page) .fi-sidebar-item.fi-active .fi-sidebar-item-button {
             background: linear-gradient(135deg, #ff9500, #f26a00) !important;
             color: #fff !important;
             box-shadow: 0 14px 24px rgba(242, 106, 0, .24) !important;
         }
 
-        body:has(.ng-finance-dashboard) .fi-sidebar-item-active svg,
-        body:has(.ng-finance-dashboard) .fi-sidebar-item a:hover svg,
-        body:has(.ng-operational-page) .fi-sidebar-item-active svg,
-        body:has(.ng-operational-page) .fi-sidebar-item a:hover svg,
         body:has(.ng-operational-form-page) .fi-sidebar-item-active svg,
         body:has(.ng-operational-form-page) .fi-sidebar-item a:hover svg,
-        body:has(.ng-sales-target-page) .fi-sidebar-item-active svg,
-        body:has(.ng-sales-target-page) .fi-sidebar-item a:hover svg,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item-active svg,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item a:hover svg,
-        body:has(.ng-finance-dashboard) .fi-sidebar-item-active span,
-        body:has(.ng-finance-dashboard) .fi-sidebar-item a:hover span,
-        body:has(.ng-operational-page) .fi-sidebar-item-active span,
-        body:has(.ng-operational-page) .fi-sidebar-item a:hover span,
         body:has(.ng-operational-form-page) .fi-sidebar-item-active span,
         body:has(.ng-operational-form-page) .fi-sidebar-item a:hover span,
-        body:has(.ng-sales-target-page) .fi-sidebar-item-active span,
-        body:has(.ng-sales-target-page) .fi-sidebar-item a:hover span,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item-active span,
-        body:has(.ng-sales-target-form-page) .fi-sidebar-item a:hover span {
+        body:has(.ng-operational-form-page) .fi-sidebar-item-active .fi-sidebar-item-icon,
+        body:has(.ng-operational-form-page) .fi-sidebar-item-active .fi-sidebar-item-label,
+        body:has(.ng-operational-form-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-icon,
+        body:has(.ng-operational-form-page) .fi-sidebar-item .fi-sidebar-item-button:hover .fi-sidebar-item-label,
+        body:has(.ng-operational-form-page) .fi-sidebar-item.fi-active svg,
+        body:has(.ng-operational-form-page) .fi-sidebar-item.fi-active span,
+        body:has(.ng-operational-form-page) .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
+        body:has(.ng-operational-form-page) .fi-sidebar-item.fi-active .fi-sidebar-item-label {
             color: #fff !important;
-        }
-
-        @media (max-width: 1500px) {
-            .ng-op-form-hero-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 1100px) {
@@ -522,12 +436,12 @@
                 padding: 18px 18px 10px !important;
             }
 
-            .ng-op-form-highlight-card {
+            .ng-widget-head {
                 align-items: flex-start;
                 flex-direction: column;
             }
 
-            .ng-highlight-actions {
+            .ng-op-form-hero-actions {
                 justify-content: flex-start;
             }
 
@@ -572,30 +486,6 @@
                 padding-right: 14px !important;
             }
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | FIX DATEPICKER / SELECT DROPDOWN TERTIMPA
-        |--------------------------------------------------------------------------
-        */
-
-        body:has(.ng-operational-form-page) .fi-page-content,
-        body:has(.ng-operational-form-page) form,
-        body:has(.ng-operational-form-page) .fi-section,
-        body:has(.ng-operational-form-page) .fi-section-content,
-        body:has(.ng-operational-form-page) .fi-fo-component-ctn,
-        body:has(.ng-operational-form-page) .ng-operational-form-page,
-        body:has(.ng-operational-form-page) .ng-widget-card {
-            overflow: visible !important;
-        }
-
-        body:has(.ng-operational-form-page) .fi-dropdown-panel,
-        body:has(.ng-operational-form-page) .fi-select-input-ctn,
-        body:has(.ng-operational-form-page) [role="listbox"],
-        body:has(.ng-operational-form-page) [data-headlessui-state],
-        body:has(.ng-operational-form-page) .fi-fo-date-time-picker-panel {
-            z-index: 999999 !important;
-        }
-
     </style>
+
 </x-filament-widgets::widget>

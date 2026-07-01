@@ -12,6 +12,8 @@ class ListUsers extends ListRecords
 {
     protected static string $resource = UserResource::class;
 
+    protected static bool $isLazy = false;
+
     public function getTitle(): string
     {
         return '';
