@@ -19,6 +19,7 @@ class SalesTargetsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->heading(fn (): string => 'Total Data ' . self::totalDataForFilter())
             ->modifyQueryUsing(fn (EloquentBuilder $query): EloquentBuilder => self::applyYearAndStatusFilter($query))
             ->columns([
                 TextColumn::make('month')
@@ -26,12 +27,13 @@ class SalesTargetsTable
                     ->date('M Y')
                     ->sortable()
                     ->weight('bold')
-                    ->description(fn ($record): string => self::monthDescription($record))
                     ->extraHeaderAttributes([
-                        'style' => 'width: 24%;',
+                        'class' => 'ng-sales-target-month-col',
+                        'style' => 'width: 28%; max-width: 28%; padding-left: 148px !important; padding-right: 8px !important; text-align: left !important;',
                     ])
                     ->extraCellAttributes([
-                        'style' => 'width: 24%; max-width: 24%;',
+                        'class' => 'ng-sales-target-month-col',
+                        'style' => 'width: 28%; max-width: 28%; padding-left: 148px !important; padding-right: 8px !important; text-align: left !important;',
                     ]),
 
                 TextColumn::make('target_revenue')
@@ -260,9 +262,42 @@ class SalesTargetsTable
         ][$status] ?? 'Belum Tercapai';
     }
 
-    private static function monthDescription(object $record): string
+    private static function totalDataForFilter(): int
     {
-        return 'Status: ' . self::achievementStatusLabel(self::achievementStatusKey($record));
+        if (! Schema::hasTable('sales_targets')) {
+            return 0;
+        }
+
+        $year = self::selectedYear();
+        $status = self::selectedStatus();
+
+        $records = DB::table('sales_targets')
+            ->whereYear('month', $year)
+            ->get();
+
+        if ($status === 'all') {
+            return $records->count();
+        }
+
+        return $records
+            ->filter(function (object $record) use ($status): bool {
+                $recordStatus = self::achievementStatusKey($record);
+
+                if ($status === 'achieved') {
+                    return $recordStatus === 'achieved';
+                }
+
+                return $recordStatus !== 'achieved';
+            })
+            ->count();
+    }
+
+    private static function tableHeaderDescription(): string
+    {
+        return 'Ringkasan target revenue, aktual transaksi, progress, dan selisih per bulan. Filter aktif: '
+            . self::selectedYear()
+            . ' • '
+            . self::achievementStatusLabel(self::selectedStatus());
     }
 
     private static function statusOptions(): array

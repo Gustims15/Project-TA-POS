@@ -13,91 +13,116 @@
     <?php
         $dashboard = $this->getDashboardData();
         $activePeriod = $dashboard['period']['key'];
-        $selectedYearMonth = (string) ($dashboard['period']['selectedMonth'] ?? 'all');
-        $yearMonthOptions = $dashboard['period']['monthOptions'] ?? [];
+        $periodOptions = $dashboard['period']['options'] ?? [];
         $charts = $dashboard['charts'];
         $user = auth()->user();
 
         $productSales = $charts['topProducts']['items'] ?? [];
         $maxProductUnits = max(1, (int) collect($productSales)->max('units'));
+        $visibleMetrics = collect($dashboard['metrics'] ?? [])
+            ->reject(fn ($metric) => ($metric['label'] ?? '') === 'Avg Order Value')
+            ->values();
     ?>
 
-    <div class="ng-dashboard" wire:ignore.self wire:loading.class="ng-dashboard-loading" wire:target="setPeriod,setYearMonth">
+    <div class="ng-dashboard" wire:ignore.self wire:loading.class="ng-dashboard-loading" wire:target="setPeriod,applyCustomRange,resetSmartFilter">
         <section class="ng-dashboard-header">
             <div class="ng-title-area">
                 <h1>Dashboard Performa Penjualan</h1>
-                <p>Ringkasan performa penjualan toko Anda</p>
+                <p>Ringkasan performa penjualan UMKM Ngunjuk</p>
             </div>
 
             <div class="ng-filter-area">
-                <div class="ng-period-tabs">
-                    <button
-                        type="button"
-                        wire:click="setPeriod('today')"
-                        wire:loading.attr="disabled"
-                        wire:target="setPeriod,setYearMonth"
-                        class="ng-tab <?php echo e($activePeriod === 'today' ? 'active' : ''); ?>"
-                    >
-                        Hari Ini
-                    </button>
+                <details class="ng-smart-filter">
+                    <summary class="ng-filter-trigger" aria-label="Filter periode dashboard">
+                        <span class="ng-filter-trigger-text">
+                            <small>Periode</small>
+                            <strong><?php echo e($dashboard['period']['label']); ?></strong>
+                            <em><?php echo e($dashboard['period']['rangeLabel']); ?></em>
+                        </span>
 
-                    <button
-                        type="button"
-                        wire:click="setPeriod('week')"
-                        wire:loading.attr="disabled"
-                        wire:target="setPeriod,setYearMonth"
-                        class="ng-tab <?php echo e($activePeriod === 'week' ? 'active' : ''); ?>"
-                    >
-                        Minggu Ini
-                    </button>
+                        <span class="ng-filter-chevron" aria-hidden="true"></span>
+                    </summary>
 
-                    <button
-                        type="button"
-                        wire:click="setPeriod('month')"
-                        wire:loading.attr="disabled"
-                        wire:target="setPeriod,setYearMonth"
-                        class="ng-tab <?php echo e($activePeriod === 'month' ? 'active' : ''); ?>"
-                    >
-                        Bulan Ini
-                    </button>
+                    <div class="ng-filter-menu">
+                        <div class="ng-filter-menu-head">
+                            <div>
+                                <strong>Smart Period Filter</strong>
+                                <span><?php echo e($dashboard['period']['compareLabel']); ?></span>
+                            </div>
 
-                    <button
-                        type="button"
-                        wire:click="setPeriod('year')"
-                        wire:loading.attr="disabled"
-                        wire:target="setPeriod,setYearMonth"
-                        class="ng-tab <?php echo e($activePeriod === 'year' ? 'active' : ''); ?>"
-                    >
-                        Tahun Ini
-                    </button>
-                </div>
+                            <i><?php echo e($dashboard['period']['chartGroupingLabel']); ?></i>
+                        </div>
 
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activePeriod === 'year'): ?>
-                    <div class="ng-month-form">
-                        <select
-                            class="ng-select-pill"
-                            wire:change="setYearMonth($event.target.value)"
-                            wire:loading.attr="disabled"
-                            wire:target="setPeriod,setYearMonth"
-                            aria-label="Pilih bulan tahunan"
-                        >
-                            <option value="all" <?php echo e($selectedYearMonth === 'all' ? 'selected' : ''); ?>>
-                                Semua Bulan
-                            </option>
-
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $yearMonthOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $monthOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                                <option
-                                    value="<?php echo e($monthOption['value']); ?>"
-                                    <?php echo e($selectedYearMonth === (string) $monthOption['value'] ? 'selected' : ''); ?>
-
+                        <div class="ng-filter-options">
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $periodOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                <button
+                                    type="button"
+                                    wire:click="setPeriod('<?php echo e($option['key']); ?>')"
+                                    wire:loading.attr="disabled"
+                                    wire:target="setPeriod,applyCustomRange,resetSmartFilter"
+                                    onclick="this.closest('details')?.removeAttribute('open')"
+                                    class="ng-filter-option <?php echo e($activePeriod === $option['key'] ? 'active' : ''); ?>"
                                 >
-                                    <?php echo e($monthOption['label']); ?>
-
-                                </option>
+                                    <span><?php echo e($option['label']); ?></span>
+                                    <small><?php echo e($option['caption']); ?></small>
+                                </button>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                        </select>
+                        </div>
+
+                        <div class="ng-custom-range <?php echo e($activePeriod === 'custom' ? 'active' : ''); ?>">
+                            <div class="ng-custom-range-title">
+                                <strong>Custom Range</strong>
+                                <span>Pilih tanggal manual</span>
+                            </div>
+
+                            <div class="ng-custom-range-fields">
+                                <label class="ng-date-field">
+                                    <span>Mulai</span>
+                                    <input
+                                        type="date"
+                                        wire:model="customStartDate"
+                                        wire:loading.attr="disabled"
+                                        wire:target="setPeriod,applyCustomRange,resetSmartFilter"
+                                    >
+                                </label>
+
+                                <label class="ng-date-field">
+                                    <span>Akhir</span>
+                                    <input
+                                        type="date"
+                                        wire:model="customEndDate"
+                                        wire:loading.attr="disabled"
+                                        wire:target="setPeriod,applyCustomRange,resetSmartFilter"
+                                    >
+                                </label>
+                            </div>
+
+                            <div class="ng-filter-actions">
+                                <button
+                                    type="button"
+                                    class="ng-reset-filter"
+                                    wire:click="resetSmartFilter"
+                                    wire:loading.attr="disabled"
+                                    wire:target="setPeriod,applyCustomRange,resetSmartFilter"
+                                    onclick="this.closest('details')?.removeAttribute('open')"
+                                >
+                                    Reset
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="ng-apply-custom"
+                                    wire:click="applyCustomRange"
+                                    wire:loading.attr="disabled"
+                                    wire:target="setPeriod,applyCustomRange,resetSmartFilter"
+                                    onclick="this.closest('details')?.removeAttribute('open')"
+                                >
+                                    Terapkan
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </details>
 
                 <div class="ng-admin-profile">
                     <div class="ng-avatar">
@@ -114,7 +139,7 @@
         </section>
 
         <section class="ng-kpi-grid">
-            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $dashboard['metrics']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $metric): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $visibleMetrics; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $metric): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
                 <article class="ng-kpi-card" style="--accent: <?php echo e($metric['color']); ?>;">
                     <div class="ng-kpi-icon">
                         <?php echo e($metric['icon']); ?>
@@ -129,17 +154,6 @@
                         </div>
 
                         <strong><?php echo e($metric['value']); ?></strong>
-
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(! is_null($metric['trend'])): ?>
-                            <p class="<?php echo e($metric['trend'] >= 0 ? 'positive' : 'negative'); ?>">
-                                <?php echo e($metric['trend'] >= 0 ? '↑' : '↓'); ?>
-
-                                <?php echo e(abs($metric['trend'])); ?>%
-                                <span><?php echo e($metric['caption']); ?></span>
-                            </p>
-                        <?php else: ?>
-                            <p class="neutral"><?php echo e($metric['caption']); ?></p>
-                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </div>
                 </article>
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
@@ -420,53 +434,393 @@
             max-width: 100%;
         }
 
-        .ng-month-form {
-            margin: 0;
+        .ng-smart-filter,
+        .ng-admin-profile {
+            flex: 0 0 auto;
         }
 
-        .ng-period-tabs {
+        .ng-smart-filter {
+            position: relative;
+            z-index: 30;
+        }
+
+        .ng-smart-filter summary {
+            list-style: none;
+        }
+
+        .ng-smart-filter summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .ng-filter-trigger,
+        .ng-admin-profile {
             min-height: 48px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px;
-            border-radius: 18px;
+            border-radius: 16px;
             background: rgba(255, 255, 255, .42);
             border: 1px solid rgba(255, 255, 255, .58);
             box-shadow: 0 18px 50px rgba(120, 74, 30, .09), inset 0 1px 0 rgba(255, 255, 255, .58);
             backdrop-filter: blur(13px);
         }
 
-        .ng-tab {
+        .ng-filter-trigger {
+            width: 255px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 8px 10px 8px 15px;
+            cursor: pointer;
+            user-select: none;
+            transition: .2s ease;
+        }
+
+        .ng-smart-filter[open] .ng-filter-trigger,
+        .ng-filter-trigger:hover {
+            background: rgba(255, 255, 255, .50);
+            box-shadow: 0 18px 50px rgba(120, 74, 30, .11), inset 0 1px 0 rgba(255, 255, 255, .64);
+        }
+
+        .ng-filter-trigger-text {
+            display: grid;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .ng-filter-trigger-text small,
+        .ng-filter-trigger-text em {
+            color: #7a614c;
+            font-style: normal;
+            font-size: 10px;
+            font-weight: 850;
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ng-filter-trigger-text strong {
+            color: #2d1f16;
+            font-size: 13px;
+            line-height: 1.15;
+            font-weight: 950;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ng-filter-chevron {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border-radius: 11px;
+            color: #24180f;
+            background: rgba(255, 255, 255, .42);
+            border: 1px solid rgba(255, 255, 255, .58);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .62);
+            transition: .2s ease;
+        }
+
+        .ng-filter-chevron::before {
+            content: "∨";
+            display: block;
+            color: #24180f;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            line-height: 1;
+            font-weight: 900;
+            transform: translateY(-1.5px);
+        }
+
+        .ng-smart-filter[open] .ng-filter-chevron {
+            transform: rotate(180deg);
+        }
+
+        .ng-filter-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            z-index: 80;
+            width: 360px;
+            padding: 18px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, .66);
+            background-color: #fff0dc !important;
+            background:
+                linear-gradient(145deg, #fff6ea 0%, #ffedd7 48%, #ffe1c2 100%),
+                radial-gradient(circle at 92% 88%, rgba(255, 142, 36, .18) 0 145px, transparent 245px) !important;
+            box-shadow:
+                0 26px 60px rgba(101, 58, 21, .16),
+                0 0 0 1px rgba(255, 255, 255, .14) inset,
+                inset 0 1px 0 rgba(255, 255, 255, .68);
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            opacity: 1 !important;
+            isolation: isolate;
+        }
+
+        .ng-filter-menu::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background:
+                linear-gradient(120deg, rgba(255, 255, 255, .46), rgba(255, 255, 255, .18) 34%, rgba(255, 224, 190, .24) 100%);
+            opacity: 1;
+        }
+
+        .ng-filter-menu::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            border-radius: inherit;
+            pointer-events: none;
+            background: rgba(255, 239, 219, .54);
+        }
+
+        .ng-filter-menu-head,
+        .ng-filter-options,
+        .ng-custom-range {
+            position: relative;
+            z-index: 3;
+        }
+
+        .ng-filter-menu-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .ng-filter-menu-head strong,
+        .ng-custom-range-title strong {
+            display: block;
+            color: #25170d;
+            font-size: 14px;
+            line-height: 1.2;
+            font-weight: 950;
+            letter-spacing: -.02em;
+        }
+
+        .ng-filter-menu-head span,
+        .ng-custom-range-title span {
+            display: block;
+            margin-top: 4px;
+            color: #7b624c;
+            font-size: 10px;
+            line-height: 1.25;
+            font-weight: 800;
+        }
+
+        .ng-filter-menu-head i {
+            flex: 0 0 auto;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 36px;
-            padding: 0 17px;
-            border: 0;
-            border-radius: 13px;
-            color: #6b5541;
-            background: transparent;
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 900;
-            text-decoration: none;
-            transition: .2s ease;
+            min-height: 30px;
+            padding: 0 11px;
+            border-radius: 12px;
+            color: #da6200;
+            background: rgba(255, 255, 255, .36);
+            border: 1px solid rgba(255, 255, 255, .50);
+            font-style: normal;
+            font-size: 10px;
+            font-weight: 950;
             white-space: nowrap;
-            cursor: pointer;
         }
 
-        .ng-tab.active,
-        .ng-tab:hover {
+        .ng-filter-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 9px;
+        }
+
+        .ng-filter-option {
+            min-height: 54px;
+            display: grid;
+            align-content: center;
+            gap: 3px;
+            padding: 9px 10px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, .38);
+            background: rgba(255, 255, 255, .24);
+            color: #5f4a37;
+            font-family: inherit;
+            text-align: left;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .ng-filter-option span {
+            color: inherit;
+            font-size: 11px;
+            line-height: 1.15;
+            font-weight: 950;
+        }
+
+        .ng-filter-option small {
+            color: #8a6e55;
+            font-size: 9px;
+            line-height: 1.25;
+            font-weight: 750;
+        }
+
+        .ng-filter-option.active,
+        .ng-filter-option:hover {
             color: #fff;
             background: linear-gradient(135deg, #ff9d18, #ee6500);
-            box-shadow: 0 12px 22px rgba(238, 101, 0, .24);
+            border-color: rgba(255, 255, 255, .35);
+            box-shadow: 0 13px 24px rgba(238, 101, 0, .22);
         }
 
-        .ng-tab:disabled,
-        .ng-select-pill:disabled {
+        .ng-filter-option.active small,
+        .ng-filter-option:hover small {
+            color: rgba(255, 255, 255, .82);
+        }
+
+        .ng-custom-range {
+            margin-top: 10px;
+            padding: 11px;
+            border-radius: 17px;
+            background: rgba(255, 255, 255, .24);
+            border: 1px solid rgba(255, 255, 255, .38);
+        }
+
+        .ng-custom-range.active {
+            box-shadow: 0 0 0 1px rgba(249, 115, 22, .25) inset;
+        }
+
+        .ng-custom-range-fields {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 9px;
+        }
+
+        .ng-date-field {
+            display: grid;
+            gap: 5px;
+        }
+
+        .ng-date-field span {
+            color: #6f5946;
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .ng-date-field input {
+            width: 100%;
+            min-height: 36px;
+            padding: 0 9px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, .50);
+            background: rgba(255, 255, 255, .42);
+            color: #2d1f16;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 850;
+            outline: none;
+        }
+
+        .ng-date-field input:focus {
+            border-color: rgba(249, 115, 22, .52);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, .12);
+        }
+
+        .ng-filter-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .ng-reset-filter,
+        .ng-apply-custom {
+            min-height: 34px;
+            padding: 0 13px;
+            border: 0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 950;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .ng-reset-filter {
+            color: #6b5541;
+            background: rgba(255, 255, 255, .42);
+            border: 1px solid rgba(255, 255, 255, .48);
+        }
+
+        .ng-apply-custom {
+            color: #fff;
+            background: linear-gradient(135deg, #ff9d18, #ee6500);
+            box-shadow: 0 12px 22px rgba(238, 101, 0, .22);
+        }
+
+        .ng-filter-option:disabled,
+        .ng-reset-filter:disabled,
+        .ng-apply-custom:disabled,
+        .ng-date-field input:disabled {
             opacity: .72;
             cursor: wait;
+        }
+
+        .ng-admin-profile {
+            min-width: 154px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 7px 12px 7px 7px;
+            overflow: hidden;
+        }
+
+        .ng-avatar {
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: #fff;
+            font-weight: 950;
+            background: linear-gradient(135deg, #ff9b1a, #f05e00);
+            box-shadow: 0 10px 22px rgba(240, 94, 0, .25);
+        }
+
+        .ng-admin-profile > div:last-child {
+            min-width: 0;
+        }
+
+        .ng-admin-profile strong,
+        .ng-admin-profile span {
+            display: block;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .ng-admin-profile strong {
+            overflow: hidden;
+            color: #2d1f16;
+            font-size: 13px;
+            font-weight: 950;
+            text-overflow: ellipsis;
+        }
+
+        .ng-admin-profile span {
+            margin-top: 3px;
+            color: #7a614c;
+            font-size: 11px;
+            font-weight: 750;
         }
 
         .ng-dashboard-loading .ng-widget-card,
@@ -478,69 +832,9 @@
             opacity: .72;
         }
 
-        .ng-select-pill,
-        .ng-admin-profile {
-            min-height: 48px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, .42);
-            border: 1px solid rgba(255, 255, 255, .58);
-            box-shadow: 0 18px 50px rgba(120, 74, 30, .09), inset 0 1px 0 rgba(255, 255, 255, .58);
-            backdrop-filter: blur(13px);
-        }
-
-        .ng-select-pill {
-            min-width: 150px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 18px;
-            padding: 0 15px;
-            color: #5e4937;
-            font-size: 12px;
-            font-weight: 900;
-        }
-
-        .ng-admin-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 7px 12px 7px 7px;
-        }
-
-        .ng-avatar {
-            display: grid;
-            place-items: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            color: #fff;
-            font-weight: 950;
-            background: linear-gradient(135deg, #ff9b1a, #f05e00);
-            box-shadow: 0 10px 22px rgba(240, 94, 0, .25);
-        }
-
-        .ng-admin-profile strong,
-        .ng-admin-profile span {
-            display: block;
-            line-height: 1.2;
-        }
-
-        .ng-admin-profile strong {
-            color: #2d1f16;
-            font-size: 13px;
-            font-weight: 950;
-        }
-
-        .ng-admin-profile span {
-            margin-top: 3px;
-            color: #7a614c;
-            font-size: 11px;
-            font-weight: 750;
-        }
-
         .ng-kpi-grid {
             display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 14px;
             margin-bottom: 16px;
         }
@@ -572,10 +866,11 @@
         }
 
         .ng-kpi-card {
-            min-height: 100px;
+            min-height: 92px;
             display: flex;
+            align-items: center;
             gap: 12px;
-            padding: 15px;
+            padding: 15px 17px;
             border-radius: 22px;
         }
 
@@ -615,41 +910,15 @@
 
         .ng-kpi-content strong {
             display: block;
-            margin-top: 6px;
+            margin-top: 8px;
             color: #23160d;
-            font-size: 19px;
+            font-size: 22px;
             line-height: 1.15;
             font-weight: 950;
             letter-spacing: -.03em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
-
-        .ng-kpi-content p {
-            margin: 7px 0 0;
-            font-size: 11px;
-            line-height: 1.25;
-            font-weight: 850;
-        }
-
-        .ng-kpi-content p span {
-            display: inline;
-            margin-left: 3px;
-            color: #6f5946;
-            font-weight: 750;
-        }
-
-        .ng-kpi-content .positive {
-            color: #07945d;
-        }
-
-        .ng-kpi-content .negative {
-            color: #e23b3b;
-        }
-
-        .ng-kpi-content .neutral {
-            color: #6f5946;
         }
 
         .ng-main-grid {
@@ -1027,7 +1296,7 @@
 
         @media (max-width: 1500px) {
             .ng-kpi-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
             .ng-main-grid {
@@ -1057,10 +1326,19 @@
                 justify-content: flex-start;
             }
 
-            .ng-period-tabs {
+            .ng-smart-filter,
+            .ng-filter-trigger {
                 width: 100%;
-                height: auto;
-                flex-wrap: wrap;
+            }
+
+            .ng-filter-menu {
+                left: 0;
+                right: auto;
+                width: min(360px, calc(100vw - 28px));
+            }
+
+            .ng-custom-range-fields {
+                grid-template-columns: 1fr;
             }
 
             .ng-kpi-grid,

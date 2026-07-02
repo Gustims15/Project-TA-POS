@@ -6,7 +6,6 @@
         $activePeriod = $period['key'] ?? 'month';
 
         $summary = $finance['summary'] ?? [];
-        $metrics = collect($finance['metrics'] ?? [])->keyBy('label');
         $costs = collect($finance['costs'] ?? []);
         $costPages = $costs->chunk(5)->values();
         $totalCostPages = max(1, $costPages->count());
@@ -81,40 +80,30 @@
             ],
         ];
 
-        $trendFor = fn (string $label) => $metrics->get($label)['trend'] ?? null;
-
         $kpiCards = [
             [
                 'label' => 'Revenue',
                 'value' => $this->rupiah($revenue),
-                'trend' => $trendFor('Revenue'),
                 'icon' => '↗',
                 'color' => '#f97316',
-                'trend_good_when' => 'up',
             ],
             [
                 'label' => 'Gross Profit',
                 'value' => $this->rupiah($grossProfit),
-                'trend' => $trendFor('Gross Profit'),
                 'icon' => '◔',
                 'color' => '#16a34a',
-                'trend_good_when' => 'up',
             ],
             [
                 'label' => 'Biaya Operasional',
                 'value' => $this->rupiah($operationalCost),
-                'trend' => $trendFor('Biaya Operasional'),
                 'icon' => '▣',
                 'color' => '#f97316',
-                'trend_good_when' => 'down',
             ],
             [
                 'label' => 'Net Profit',
                 'value' => $this->rupiah($netProfit),
-                'trend' => $trendFor('Net Profit'),
                 'icon' => '▥',
                 'color' => $netProfit >= 0 ? '#f97316' : '#ef4444',
-                'trend_good_when' => 'up',
             ],
         ];
 
@@ -149,7 +138,7 @@
         <section class="ng-topbar">
             <div class="ng-title-area">
                 <h1>Dashboard Keuangan</h1>
-                <p>Ringkasan kinerja keuangan Ngunjuk POS</p>
+                <p>Ringkasan kinerja keuangan UMKM Ngunjuk </p>
                 <small class="ng-active-data-label">
                     Data bulan aktif: {{ $selectedMonthLabel }} {{ $selectedYear }} • {{ $dateRangeLabel }}
                 </small>
@@ -186,15 +175,6 @@
 
         <section class="ng-kpi-grid">
             @foreach ($kpiCards as $card)
-                @php
-                    $trend = $card['trend'];
-                    $trendValue = is_null($trend) ? 0 : (float) $trend;
-                    $isTrendUp = $trendValue >= 0;
-                    $isGood = ($card['trend_good_when'] ?? 'up') === 'up'
-                        ? $isTrendUp
-                        : ! $isTrendUp;
-                @endphp
-
                 <article class="ng-kpi-card" style="--accent: {{ $card['color'] }};">
                     <div class="ng-kpi-icon">
                         {{ $card['icon'] }}
@@ -203,12 +183,6 @@
                     <div class="ng-kpi-content">
                         <span>{{ $card['label'] }}</span>
                         <strong>{{ $card['value'] }}</strong>
-
-                        <p class="{{ $isGood ? 'positive' : 'negative' }}">
-                            {{ $isTrendUp ? '↑' : '↓' }}
-                            {{ number_format(abs($trendValue), 1, ',', '.') }}%
-                            <em>dibandingkan periode sebelumnya</em>
-                        </p>
                     </div>
                 </article>
             @endforeach

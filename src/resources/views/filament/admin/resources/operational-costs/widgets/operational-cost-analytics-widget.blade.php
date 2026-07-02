@@ -982,6 +982,37 @@
         }
 
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | OPERATIONAL BIAYA HEADER FINAL ALIGN
+        |--------------------------------------------------------------------------
+        | Header "Biaya" digeser sedikit ke kanan agar sejajar dengan
+        | data biaya di bawahnya. Data baris tetap dipertahankan posisinya.
+        |--------------------------------------------------------------------------
+        */
+
+        body:has(.ng-operational-page) .fi-ta-table thead th:nth-child(1),
+        body:has(.ng-operational-page) .fi-ta-header-cell:nth-child(1) {
+            padding-left: 92px !important;
+            text-align: left !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table tbody td:nth-child(1) {
+            padding-left: 78px !important;
+            text-align: left !important;
+        }
+
+        body:has(.ng-operational-page) .fi-ta-table thead th:nth-child(1) > *,
+        body:has(.ng-operational-page) .fi-ta-header-cell:nth-child(1) > *,
+        body:has(.ng-operational-page) .fi-ta-table thead th:nth-child(1) .fi-ta-header-cell-label,
+        body:has(.ng-operational-page) .fi-ta-header-cell:nth-child(1) .fi-ta-header-cell-label {
+            justify-content: flex-start !important;
+            text-align: left !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+
         /*
         |--------------------------------------------------------------------------
         | SIDEBAR EFFECT SYNC

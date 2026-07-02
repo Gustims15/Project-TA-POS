@@ -45,24 +45,16 @@ class FinancialDashboard extends Page
     {
         [$start, $end, $periodLabel, $periodKey, $selectedMonth, $selectedYear, $isYearMonthDetail] = $this->getSelectedRange();
 
-        [$previousStart, $previousEnd] = $this->getPreviousRange($start, $end, $periodKey, $selectedMonth);
-
         $revenue = $this->revenueBetween($start, $end);
-        $previousRevenue = $this->revenueBetween($previousStart, $previousEnd);
 
         $finance = $this->financeBetween($start, $end);
-        $previousFinance = $this->financeBetween($previousStart, $previousEnd);
 
         $totalHpp = $finance['total_hpp'];
         $grossProfit = $finance['gross_profit'];
-        $previousHpp = $previousFinance['total_hpp'];
-        $previousGrossProfit = $previousFinance['gross_profit'];
 
         $operationalCost = $this->operationalCostBetween($start, $end);
-        $previousOperationalCost = $this->operationalCostBetween($previousStart, $previousEnd);
 
         $netProfit = $grossProfit - $operationalCost;
-        $previousNetProfit = $previousGrossProfit - $previousOperationalCost;
 
         /*
         |--------------------------------------------------------------------------
@@ -114,7 +106,7 @@ class FinancialDashboard extends Page
                 [
                     'label' => 'Revenue',
                     'value' => $this->rupiah($revenue),
-                    'trend' => $this->trendPercent($revenue, $previousRevenue),
+                    'trend' => null,
                     'caption' => 'Total penjualan periode ini',
                     'icon' => '▣',
                     'color' => '#f97316',
@@ -122,7 +114,7 @@ class FinancialDashboard extends Page
                 [
                     'label' => 'Total HPP',
                     'value' => $this->rupiah($totalHpp),
-                    'trend' => $this->trendPercent($totalHpp, $previousHpp),
+                    'trend' => null,
                     'caption' => 'Modal produk terjual',
                     'icon' => '∑',
                     'color' => '#14b8a6',
@@ -130,7 +122,7 @@ class FinancialDashboard extends Page
                 [
                     'label' => 'Gross Profit',
                     'value' => $this->rupiah($grossProfit),
-                    'trend' => $this->trendPercent($grossProfit, $previousGrossProfit),
+                    'trend' => null,
                     'caption' => 'Revenue dikurangi HPP',
                     'icon' => '▥',
                     'color' => '#22c55e',
@@ -138,7 +130,7 @@ class FinancialDashboard extends Page
                 [
                     'label' => 'Biaya Operasional',
                     'value' => $this->rupiah($operationalCost),
-                    'trend' => $this->trendPercent($operationalCost, $previousOperationalCost),
+                    'trend' => null,
                     'caption' => 'Sesuai tanggal bayar dan tipe biaya',
                     'icon' => '⌁',
                     'color' => '#ef4444',
@@ -146,7 +138,7 @@ class FinancialDashboard extends Page
                 [
                     'label' => 'Net Profit',
                     'value' => $this->rupiah($netProfit),
-                    'trend' => $this->trendPercent($netProfit, $previousNetProfit),
+                    'trend' => null,
                     'caption' => 'Gross profit dikurangi biaya',
                     'icon' => '◆',
                     'color' => $netProfit >= 0 ? '#16a34a' : '#dc2626',

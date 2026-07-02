@@ -8,7 +8,6 @@ use Carbon\CarbonPeriod;
 use Filament\Pages\Page;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class Dashboard extends Page
 {
@@ -27,36 +26,53 @@ class Dashboard extends Page
      */
     protected string $view = 'filament.admin.pages.dashboard';
 
-    public string $period = 'week';
+    public string $period = 'last_7_days';
 
-    public string $selectedMonth = 'all';
+    public string $customStartDate = '';
+
+    public string $customEndDate = '';
 
     protected ?array $dashboardDataCache = null;
 
     public function mount(): void
     {
-        $this->period = $this->normalizePeriod((string) request()->query('period', 'week'));
+        $this->period = $this->normalizePeriod((string) request()->query('period', 'last_7_days'));
 
-        $this->selectedMonth = $this->period === 'year'
-            ? $this->normalizeMonth((string) request()->query('month', 'all'))
-            : 'all';
+        $defaultStart = now()->subDays(6)->toDateString();
+        $defaultEnd = now()->toDateString();
+
+        $this->customStartDate = $this->normalizeDateString((string) request()->query('start_date', $defaultStart)) ?? $defaultStart;
+        $this->customEndDate = $this->normalizeDateString((string) request()->query('end_date', $defaultEnd)) ?? $defaultEnd;
+
+        if ($this->period === 'custom') {
+            $this->syncCustomRangeOrder();
+        }
     }
 
     public function setPeriod(string $period): void
     {
         $this->period = $this->normalizePeriod($period);
 
-        if ($this->period !== 'year') {
-            $this->selectedMonth = 'all';
+        if ($this->period === 'custom') {
+            $this->syncCustomRangeOrder();
         }
 
         $this->refreshDashboardAfterFilterChange();
     }
 
-    public function setYearMonth(string $month): void
+    public function applyCustomRange(): void
     {
-        $this->period = 'year';
-        $this->selectedMonth = $this->normalizeMonth($month);
+        $this->period = 'custom';
+        $this->syncCustomRangeOrder();
+
+        $this->refreshDashboardAfterFilterChange();
+    }
+
+    public function resetSmartFilter(): void
+    {
+        $this->period = 'last_7_days';
+        $this->customStartDate = now()->subDays(6)->toDateString();
+        $this->customEndDate = now()->toDateString();
 
         $this->refreshDashboardAfterFilterChange();
     }
@@ -72,7 +88,6 @@ class Dashboard extends Page
             charts: $dashboard['charts'],
         );
     }
-
 
     public static function canAccess(): bool
     {
@@ -105,50 +120,20 @@ class Dashboard extends Page
             return $this->dashboardDataCache;
         }
 
-        [$start, $end, $periodLabel, $periodKey, $selectedMonth] = $this->getSelectedRange();
+        [$start, $end, $periodLabel, $periodKey] = $this->getSelectedRange();
+        [$previousStart, $previousEnd] = $this->getPreviousRange($start, $end, $periodKey);
 
-        $previousRange = $this->getPreviousRange($start, $end, $periodKey, $selectedMonth);
+        $chartGrouping = $this->getChartGrouping($start, $end, $periodKey);
 
         $revenue = (int) $this->ordersBetween($start, $end)->sum('total_price');
-        $previousRevenue = (int) $this->ordersBetween($previousRange[0], $previousRange[1])->sum('total_price');
+        $previousRevenue = (int) $this->ordersBetween($previousStart, $previousEnd)->sum('total_price');
 
         $totalOrders = (int) $this->ordersBetween($start, $end)->count();
-        $previousOrders = (int) $this->ordersBetween($previousRange[0], $previousRange[1])->count();
+        $previousOrders = (int) $this->ordersBetween($previousStart, $previousEnd)->count();
 
         $unitsSold = (int) $this->ordersBetween($start, $end)->sum('total_item');
-        $previousUnits = (int) $this->ordersBetween($previousRange[0], $previousRange[1])->sum('total_item');
+        $previousUnits = (int) $this->ordersBetween($previousStart, $previousEnd)->sum('total_item');
 
-        $avgOrder = $totalOrders > 0 ? (int) round($revenue / $totalOrders) : 0;
-        $previousAvgOrder = $previousOrders > 0 ? (int) round($previousRevenue / $previousOrders) : 0;
-
-        $finance = $this->financeBetween($start, $end);
-        $previousFinance = $this->financeBetween($previousRange[0], $previousRange[1]);
-
-        $totalHpp = $finance['total_hpp'];
-        $grossProfit = $finance['gross_profit'];
-
-        $previousHpp = $previousFinance['total_hpp'];
-        $previousGrossProfit = $previousFinance['gross_profit'];
-
-        $operationalCost = $this->operationalCostBetween($start, $end);
-        $previousOperationalCost = $this->operationalCostBetween($previousRange[0], $previousRange[1]);
-
-        $netProfit = $grossProfit - $operationalCost;
-        $previousNetProfit = $previousGrossProfit - $previousOperationalCost;
-
-        $target = $this->targetForRange($start);
-
-        $targetRevenue = (int) ($target?->target_revenue ?? 0);
-        $targetGrossProfit = (int) ($target?->target_gross_profit ?? 0);
-        $targetNetProfit = (int) ($target?->target_net_profit ?? 0);
-
-        $revenueProgress = $this->progressPercent($revenue, $targetRevenue);
-        $grossProfitProgress = $this->progressPercent($grossProfit, $targetGrossProfit);
-        $netProfitProgress = $this->progressPercent($netProfit, $targetNetProfit);
-
-        $remainingRevenueTarget = max($targetRevenue - $revenue, 0);
-        $remainingGrossProfitTarget = max($targetGrossProfit - $grossProfit, 0);
-        $remainingNetProfitTarget = max($targetNetProfit - $netProfit, 0);
 
         $totalProduct = (int) DB::table('products')
             ->where('is_active', true)
@@ -160,11 +145,13 @@ class Dashboard extends Page
                 'label' => $periodLabel,
                 'start' => $start->format('d M Y'),
                 'end' => $end->format('d M Y'),
-                'selectedMonth' => $selectedMonth,
-                'monthLabel' => $this->getMonthLabel($selectedMonth),
-                'monthOptions' => $this->getYearMonthOptions(),
-                'isMonthFiltered' => $periodKey === 'year' && $selectedMonth !== 'all',
-                'year' => now()->year,
+                'rangeLabel' => $this->formatPeriodRange($start, $end),
+                'compareLabel' => 'Periode sebelumnya',
+                'chartGrouping' => $chartGrouping,
+                'chartGroupingLabel' => $this->getChartGroupingLabel($chartGrouping),
+                'options' => $this->getPeriodOptions(),
+                'customStartDate' => $this->customStartDate,
+                'customEndDate' => $this->customEndDate,
             ],
 
             'metrics' => [
@@ -193,20 +180,6 @@ class Dashboard extends Page
                     'color' => '#f59e0b',
                 ],
                 [
-                    'label' => 'Avg Order Value',
-                    'value' => $this->rupiah($avgOrder),
-                    'trend' => $this->trendPercent($avgOrder, $previousAvgOrder),
-                    'caption' => 'dari periode sebelumnya',
-                    'icon' => '↗',
-                    'color' => '#8b5cf6',
-                ],
-
-                /*
-                |--------------------------------------------------------------------------
-                | METRIC PRODUK EXISTING
-                |--------------------------------------------------------------------------
-                */
-                [
                     'label' => 'Total Product',
                     'value' => number_format($totalProduct, 0, ',', '.'),
                     'trend' => null,
@@ -216,29 +189,8 @@ class Dashboard extends Page
                 ],
             ],
 
-            'finance' => [
-                'total_hpp' => $totalHpp,
-                'gross_profit' => $grossProfit,
-                'operational_cost' => $operationalCost,
-                'net_profit' => $netProfit,
-
-                'target_revenue' => $targetRevenue,
-                'target_gross_profit' => $targetGrossProfit,
-                'target_net_profit' => $targetNetProfit,
-
-                'revenue_progress' => $revenueProgress,
-                'gross_profit_progress' => $grossProfitProgress,
-                'net_profit_progress' => $netProfitProgress,
-
-                'remaining_revenue_target' => $remainingRevenueTarget,
-                'remaining_gross_profit_target' => $remainingGrossProfitTarget,
-                'remaining_net_profit_target' => $remainingNetProfitTarget,
-
-                'has_target' => $target !== null,
-            ],
-
             'charts' => [
-                'revenue' => $this->getRevenueChart($start, $end, $periodKey, $selectedMonth),
+                'revenue' => $this->getRevenueChart($start, $end, $chartGrouping),
                 'topProducts' => $this->getProductSales($start, $end),
                 'category' => $this->getCategoryContribution($start, $end),
                 'salesByTime' => $this->getSalesByTime($start, $end),
@@ -256,124 +208,151 @@ class Dashboard extends Page
     private function getSelectedRange(): array
     {
         $period = $this->normalizePeriod($this->period);
-        $selectedMonth = 'all';
+        $now = now();
 
         return match ($period) {
             'today' => [
-                now()->startOfDay(),
-                now()->endOfDay(),
+                $now->copy()->startOfDay(),
+                $now->copy()->endOfDay(),
                 'Hari Ini',
                 'today',
-                $selectedMonth,
+            ],
+
+            'yesterday' => [
+                $now->copy()->subDay()->startOfDay(),
+                $now->copy()->subDay()->endOfDay(),
+                'Kemarin',
+                'yesterday',
             ],
 
             'month' => [
-                now()->startOfMonth(),
-                now()->endOfMonth(),
+                $now->copy()->startOfMonth(),
+                $now->copy()->endOfDay(),
                 'Bulan Ini',
                 'month',
-                $selectedMonth,
             ],
 
-            'year' => $this->getYearRangeWithOptionalMonth(),
+            'year' => [
+                $now->copy()->startOfYear(),
+                $now->copy()->endOfDay(),
+                'Tahun Ini',
+                'year',
+            ],
+
+            'custom' => $this->getCustomRange(),
 
             default => [
-                now()->subDays(6)->startOfDay(),
-                now()->endOfDay(),
-                'Minggu Ini',
-                'week',
-                $selectedMonth,
+                $now->copy()->subDays(6)->startOfDay(),
+                $now->copy()->endOfDay(),
+                '7 Hari Terakhir',
+                'last_7_days',
             ],
         };
     }
 
-    private function getYearRangeWithOptionalMonth(): array
+    private function getCustomRange(): array
     {
-        $requestedMonth = $this->normalizeMonth($this->selectedMonth);
-
-        if ($requestedMonth !== 'all') {
-            $monthNumber = (int) $requestedMonth;
-            $monthDate = Carbon::create(now()->year, $monthNumber, 1);
-
-            return [
-                $monthDate->copy()->startOfMonth(),
-                $monthDate->copy()->endOfMonth(),
-                'Tahun Ini',
-                'year',
-                (string) $monthNumber,
-            ];
-        }
+        [$start, $end] = $this->getResolvedCustomDates();
 
         return [
-            now()->startOfYear(),
-            now()->endOfYear(),
-            'Tahun Ini',
-            'year',
-            'all',
+            $start->copy()->startOfDay(),
+            $end->copy()->endOfDay(),
+            'Custom Range',
+            'custom',
         ];
     }
 
-    private function getYearMonthOptions(): array
+    private function getResolvedCustomDates(): array
     {
-        $months = [
-            1 => 'Januari',
-            2 => 'Februari',
-            3 => 'Maret',
-            4 => 'April',
-            5 => 'Mei',
-            6 => 'Juni',
-            7 => 'Juli',
-            8 => 'Agustus',
-            9 => 'September',
-            10 => 'Oktober',
-            11 => 'November',
-            12 => 'Desember',
-        ];
+        $start = $this->parseDate($this->customStartDate) ?? now()->subDays(6);
+        $end = $this->parseDate($this->customEndDate) ?? now();
 
-        return collect($months)
-            ->map(fn (string $label, int $value): array => [
-                'value' => (string) $value,
-                'label' => $label,
-            ])
-            ->values()
-            ->all();
-    }
-
-    private function getMonthLabel(string $selectedMonth): string
-    {
-        if ($selectedMonth === 'all') {
-            return 'Semua Bulan';
+        if ($start->greaterThan($end)) {
+            [$start, $end] = [$end, $start];
         }
 
-        $month = collect($this->getYearMonthOptions())
-            ->firstWhere('value', $selectedMonth);
+        return [$start, $end];
+    }
 
-        return $month['label'] ?? 'Semua Bulan';
+    private function syncCustomRangeOrder(): void
+    {
+        [$start, $end] = $this->getResolvedCustomDates();
+
+        $this->customStartDate = $start->toDateString();
+        $this->customEndDate = $end->toDateString();
+    }
+
+    private function parseDate(?string $date): ?Carbon
+    {
+        if (! is_string($date) || trim($date) === '') {
+            return null;
+        }
+
+        try {
+            return Carbon::parse($date);
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    private function normalizeDateString(?string $date): ?string
+    {
+        return $this->parseDate($date)?->toDateString();
     }
 
     private function normalizePeriod(string $period): string
     {
-        return in_array($period, ['today', 'week', 'month', 'year'], true)
-            ? $period
-            : 'week';
-    }
-
-    private function normalizeMonth(string $month): string
-    {
-        if ($month === 'all') {
-            return 'all';
+        /*
+        |--------------------------------------------------------------------------
+        | Smart Period Filter
+        |--------------------------------------------------------------------------
+        | Opsi mingguan lama sudah dihapus dari tampilan filter karena fungsinya
+        | digantikan oleh "7 Hari Terakhir". Mapping "week" tetap diterima agar
+        | URL/cache lama tidak error, namun diarahkan ke last_7_days.
+        */
+        if ($period === 'week') {
+            return 'last_7_days';
         }
 
-        $monthNumber = (int) $month;
-
-        return $monthNumber >= 1 && $monthNumber <= 12
-            ? (string) $monthNumber
-            : 'all';
+        return in_array($period, ['today', 'yesterday', 'last_7_days', 'month', 'year', 'custom'], true)
+            ? $period
+            : 'last_7_days';
     }
 
-    private function getPreviousRange(Carbon $start, Carbon $end, string $periodKey, string $selectedMonth = 'all'): array
+    private function getPeriodOptions(): array
     {
-        if ($periodKey === 'today') {
+        return [
+            [
+                'key' => 'today',
+                'label' => 'Hari Ini',
+                'caption' => 'Transaksi hari berjalan',
+            ],
+            [
+                'key' => 'yesterday',
+                'label' => 'Kemarin',
+                'caption' => 'Transaksi satu hari sebelumnya',
+            ],
+            [
+                'key' => 'last_7_days',
+                'label' => '7 Hari Terakhir',
+                'caption' => 'Rentang tujuh hari terakhir',
+            ],
+            [
+                'key' => 'month',
+                'label' => 'Bulan Ini',
+                'caption' => 'Awal bulan sampai hari ini',
+            ],
+            [
+                'key' => 'year',
+                'label' => 'Tahun Ini',
+                'caption' => 'Awal tahun sampai hari ini',
+            ],
+        ];
+    }
+
+    private function getPreviousRange(Carbon $start, Carbon $end, string $periodKey): array
+    {
+        if (in_array($periodKey, ['today', 'yesterday'], true)) {
             return [
                 $start->copy()->subDay()->startOfDay(),
                 $start->copy()->subDay()->endOfDay(),
@@ -381,32 +360,73 @@ class Dashboard extends Page
         }
 
         if ($periodKey === 'month') {
-            return [
-                $start->copy()->subMonthNoOverflow()->startOfMonth(),
-                $start->copy()->subMonthNoOverflow()->endOfMonth(),
-            ];
+            $days = $this->inclusiveDays($start, $end);
+            $previousStart = $start->copy()->subMonthNoOverflow()->startOfMonth();
+            $previousEnd = $previousStart->copy()->addDays($days - 1)->endOfDay();
+
+            if ($previousEnd->greaterThan($previousStart->copy()->endOfMonth())) {
+                $previousEnd = $previousStart->copy()->endOfMonth();
+            }
+
+            return [$previousStart, $previousEnd];
         }
 
-        if ($periodKey === 'year' && $selectedMonth !== 'all') {
-            return [
-                $start->copy()->subMonthNoOverflow()->startOfMonth(),
-                $start->copy()->subMonthNoOverflow()->endOfMonth(),
-            ];
-        }
-
-        if ($periodKey === 'year' && $selectedMonth === 'all') {
+        if ($periodKey === 'year') {
             return [
                 $start->copy()->subYear()->startOfYear(),
-                $start->copy()->subYear()->endOfYear(),
+                $end->copy()->subYear()->endOfDay(),
             ];
         }
 
-        $days = max(1, ((int) floor($start->diffInDays($end))) + 1);
-
+        $days = $this->inclusiveDays($start, $end);
         $previousEnd = $start->copy()->subSecond();
         $previousStart = $previousEnd->copy()->subDays($days - 1)->startOfDay();
 
         return [$previousStart, $previousEnd];
+    }
+
+    private function inclusiveDays(Carbon $start, Carbon $end): int
+    {
+        return max(1, ((int) floor($start->copy()->startOfDay()->diffInDays($end->copy()->startOfDay()))) + 1);
+    }
+
+    private function getChartGrouping(Carbon $start, Carbon $end, string $periodKey): string
+    {
+        if (in_array($periodKey, ['today', 'yesterday'], true)) {
+            return 'hour';
+        }
+
+        if ($periodKey === 'year') {
+            return 'month';
+        }
+
+        return $this->inclusiveDays($start, $end) > 31 ? 'month' : 'day';
+    }
+
+    private function getChartGroupingLabel(string $grouping): string
+    {
+        return match ($grouping) {
+            'hour' => 'Per Jam',
+            'month' => 'Per Bulan',
+            default => 'Per Hari',
+        };
+    }
+
+    private function formatPeriodRange(Carbon $start, Carbon $end): string
+    {
+        if ($start->isSameDay($end)) {
+            return $start->format('d M Y');
+        }
+
+        if ($start->isSameMonth($end) && $start->isSameYear($end)) {
+            return $start->format('d') . ' - ' . $end->format('d M Y');
+        }
+
+        if ($start->isSameYear($end)) {
+            return $start->format('d M') . ' - ' . $end->format('d M Y');
+        }
+
+        return $start->format('d M Y') . ' - ' . $end->format('d M Y');
     }
 
     private function ordersBetween(Carbon $start, Carbon $end): Builder
@@ -421,124 +441,52 @@ class Dashboard extends Page
             );
     }
 
-    private function financeBetween(Carbon $start, Carbon $end): array
+    private function getRevenueChart(Carbon $start, Carbon $end, string $grouping): array
     {
-        if (! Schema::hasTable('order_items') || ! Schema::hasTable('orders')) {
-            return [
-                'total_hpp' => 0,
-                'gross_profit' => 0,
-            ];
-        }
-
-        $hasTotalHpp = Schema::hasColumn('order_items', 'total_hpp');
-        $hasGrossProfit = Schema::hasColumn('order_items', 'gross_profit');
-        $hasHpp = Schema::hasColumn('order_items', 'hpp');
-        $hasQuantity = Schema::hasColumn('order_items', 'quantity');
-        $hasSubtotal = Schema::hasColumn('order_items', 'subtotal');
-
-        $totalHppExpression = match (true) {
-            $hasTotalHpp => 'COALESCE(SUM(order_items.total_hpp), 0)',
-            $hasHpp && $hasQuantity => 'COALESCE(SUM(order_items.hpp * order_items.quantity), 0)',
-            default => '0',
+        return match ($grouping) {
+            'hour' => $this->getRevenueChartByHour($start, $end),
+            'month' => $this->getRevenueChartByMonth($start, $end),
+            default => $this->getRevenueChartByDay($start, $end),
         };
+    }
 
-        $grossProfitExpression = match (true) {
-            $hasGrossProfit => 'COALESCE(SUM(order_items.gross_profit), 0)',
-            $hasSubtotal && $hasTotalHpp => 'COALESCE(SUM(order_items.subtotal - order_items.total_hpp), 0)',
-            $hasSubtotal && $hasHpp && $hasQuantity => 'COALESCE(SUM(order_items.subtotal - (order_items.hpp * order_items.quantity)), 0)',
-            default => '0',
-        };
-
-        $finance = DB::table('order_items')
-            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+    private function getRevenueChartByHour(Carbon $start, Carbon $end): array
+    {
+        $rows = DB::table('orders')
+            ->selectRaw('HOUR(COALESCE(ordered_at, created_at)) as order_hour')
+            ->selectRaw('SUM(total_price) as revenue')
+            ->selectRaw('COUNT(*) as orders')
             ->whereBetween(
-                DB::raw('COALESCE(orders.ordered_at, orders.created_at)'),
+                DB::raw('COALESCE(ordered_at, created_at)'),
                 [
                     $start->toDateTimeString(),
                     $end->toDateTimeString(),
                 ]
             )
-            ->selectRaw($totalHppExpression . ' as total_hpp')
-            ->selectRaw($grossProfitExpression . ' as gross_profit')
-            ->first();
+            ->groupBy('order_hour')
+            ->orderBy('order_hour')
+            ->get()
+            ->keyBy('order_hour');
+
+        $labels = [];
+        $revenue = [];
+        $orders = [];
+
+        for ($hour = 10; $hour <= 22; $hour++) {
+            $labels[] = str_pad((string) $hour, 2, '0', STR_PAD_LEFT) . ':00';
+            $revenue[] = (int) ($rows[$hour]->revenue ?? 0);
+            $orders[] = (int) ($rows[$hour]->orders ?? 0);
+        }
 
         return [
-            'total_hpp' => (int) ($finance->total_hpp ?? 0),
-            'gross_profit' => (int) ($finance->gross_profit ?? 0),
+            'labels' => $labels,
+            'revenue' => $revenue,
+            'orders' => $orders,
         ];
     }
 
-    private function operationalCostBetween(Carbon $start, Carbon $end): int
+    private function getRevenueChartByDay(Carbon $start, Carbon $end): array
     {
-        if (! Schema::hasTable('operational_costs')) {
-            return 0;
-        }
-
-        return (int) DB::table('operational_costs')
-            ->where('is_active', true)
-            ->whereBetween('cost_date', [
-                $start->toDateString(),
-                $end->toDateString(),
-            ])
-            ->sum('amount');
-    }
-
-    private function targetForRange(Carbon $start): ?object
-    {
-        if (! Schema::hasTable('sales_targets')) {
-            return null;
-        }
-
-        return DB::table('sales_targets')
-            ->whereDate('month', $start->copy()->startOfMonth()->toDateString())
-            ->first();
-    }
-
-    private function progressPercent(int|float $actual, int|float $target): float
-    {
-        if ($target <= 0) {
-            return 0.0;
-        }
-
-        return round(min(($actual / $target) * 100, 999), 1);
-    }
-
-    private function getRevenueChart(Carbon $start, Carbon $end, string $periodKey, string $selectedMonth = 'all'): array
-    {
-        if ($periodKey === 'year' && $selectedMonth === 'all') {
-            $rows = DB::table('orders')
-                ->selectRaw('MONTH(COALESCE(ordered_at, created_at)) as order_month')
-                ->selectRaw('SUM(total_price) as revenue')
-                ->selectRaw('COUNT(*) as orders')
-                ->whereBetween(
-                    DB::raw('COALESCE(ordered_at, created_at)'),
-                    [
-                        $start->toDateTimeString(),
-                        $end->toDateTimeString(),
-                    ]
-                )
-                ->groupBy('order_month')
-                ->orderBy('order_month')
-                ->get()
-                ->keyBy('order_month');
-
-            $labels = [];
-            $revenue = [];
-            $orders = [];
-
-            for ($month = 1; $month <= 12; $month++) {
-                $labels[] = Carbon::create(null, $month, 1)->translatedFormat('M');
-                $revenue[] = (int) ($rows[$month]->revenue ?? 0);
-                $orders[] = (int) ($rows[$month]->orders ?? 0);
-            }
-
-            return [
-                'labels' => $labels,
-                'revenue' => $revenue,
-                'orders' => $orders,
-            ];
-        }
-
         $rows = DB::table('orders')
             ->selectRaw('DATE(COALESCE(ordered_at, created_at)) as order_date')
             ->selectRaw('SUM(total_price) as revenue')
@@ -558,24 +506,56 @@ class Dashboard extends Page
         $labels = [];
         $revenue = [];
         $orders = [];
+        $sameMonth = $start->isSameMonth($end) && $start->isSameYear($end);
 
         foreach (CarbonPeriod::create($start->copy()->startOfDay(), '1 day', $end->copy()->startOfDay()) as $date) {
-        $key = $date->format('Y-m-d');
+            $key = $date->format('Y-m-d');
+            $labels[] = $sameMonth ? $date->format('d') : $date->format('d M');
+            $revenue[] = (int) ($rows[$key]->revenue ?? 0);
+            $orders[] = (int) ($rows[$key]->orders ?? 0);
+        }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Label tanggal Revenue Performance
-        |--------------------------------------------------------------------------
-        | Tampilkan full tanggal dalam bulan:
-        | 01, 02, 03, 04, 05, ... 30 / 31
-        |
-        | Bulan tidak ditampilkan supaya label bawah lebih pendek.
-        */
-        $labels[] = $date->format('d');
-
-        $revenue[] = (int) ($rows[$key]->revenue ?? 0);
-        $orders[] = (int) ($rows[$key]->orders ?? 0);
+        return [
+            'labels' => $labels,
+            'revenue' => $revenue,
+            'orders' => $orders,
+        ];
     }
+
+    private function getRevenueChartByMonth(Carbon $start, Carbon $end): array
+    {
+        $rows = DB::table('orders')
+            ->selectRaw('YEAR(COALESCE(ordered_at, created_at)) as order_year')
+            ->selectRaw('MONTH(COALESCE(ordered_at, created_at)) as order_month')
+            ->selectRaw('SUM(total_price) as revenue')
+            ->selectRaw('COUNT(*) as orders')
+            ->whereBetween(
+                DB::raw('COALESCE(ordered_at, created_at)'),
+                [
+                    $start->toDateTimeString(),
+                    $end->toDateTimeString(),
+                ]
+            )
+            ->groupBy('order_year', 'order_month')
+            ->orderBy('order_year')
+            ->orderBy('order_month')
+            ->get()
+            ->keyBy(fn ($row): string => $row->order_year . '-' . str_pad((string) $row->order_month, 2, '0', STR_PAD_LEFT));
+
+        $labels = [];
+        $revenue = [];
+        $orders = [];
+        $cursor = $start->copy()->startOfMonth();
+        $lastMonth = $end->copy()->startOfMonth();
+        $sameYear = $start->isSameYear($end);
+
+        while ($cursor->lessThanOrEqualTo($lastMonth)) {
+            $key = $cursor->format('Y-m');
+            $labels[] = $sameYear ? $cursor->translatedFormat('M') : $cursor->translatedFormat('M Y');
+            $revenue[] = (int) ($rows[$key]->revenue ?? 0);
+            $orders[] = (int) ($rows[$key]->orders ?? 0);
+            $cursor->addMonthNoOverflow();
+        }
 
         return [
             'labels' => $labels,
@@ -692,7 +672,6 @@ class Dashboard extends Page
         $labels = [];
         $orders = [];
 
-        // Mulai dari jam 10.00 sampai 22.00 saja
         for ($hour = 10; $hour <= 22; $hour++) {
             $labels[] = str_pad((string) $hour, 2, '0', STR_PAD_LEFT) . ':00';
             $orders[] = (int) ($rows[$hour]->orders ?? 0);

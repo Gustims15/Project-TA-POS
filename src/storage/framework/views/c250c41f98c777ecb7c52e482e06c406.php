@@ -17,7 +17,6 @@
         $activePeriod = $period['key'] ?? 'month';
 
         $summary = $finance['summary'] ?? [];
-        $metrics = collect($finance['metrics'] ?? [])->keyBy('label');
         $costs = collect($finance['costs'] ?? []);
         $costPages = $costs->chunk(5)->values();
         $totalCostPages = max(1, $costPages->count());
@@ -92,40 +91,30 @@
             ],
         ];
 
-        $trendFor = fn (string $label) => $metrics->get($label)['trend'] ?? null;
-
         $kpiCards = [
             [
                 'label' => 'Revenue',
                 'value' => $this->rupiah($revenue),
-                'trend' => $trendFor('Revenue'),
                 'icon' => '↗',
                 'color' => '#f97316',
-                'trend_good_when' => 'up',
             ],
             [
                 'label' => 'Gross Profit',
                 'value' => $this->rupiah($grossProfit),
-                'trend' => $trendFor('Gross Profit'),
                 'icon' => '◔',
                 'color' => '#16a34a',
-                'trend_good_when' => 'up',
             ],
             [
                 'label' => 'Biaya Operasional',
                 'value' => $this->rupiah($operationalCost),
-                'trend' => $trendFor('Biaya Operasional'),
                 'icon' => '▣',
                 'color' => '#f97316',
-                'trend_good_when' => 'down',
             ],
             [
                 'label' => 'Net Profit',
                 'value' => $this->rupiah($netProfit),
-                'trend' => $trendFor('Net Profit'),
                 'icon' => '▥',
                 'color' => $netProfit >= 0 ? '#f97316' : '#ef4444',
-                'trend_good_when' => 'up',
             ],
         ];
 
@@ -160,7 +149,7 @@
         <section class="ng-topbar">
             <div class="ng-title-area">
                 <h1>Dashboard Keuangan</h1>
-                <p>Ringkasan kinerja keuangan Ngunjuk POS</p>
+                <p>Ringkasan kinerja keuangan UMKM Ngunjuk </p>
                 <small class="ng-active-data-label">
                     Data bulan aktif: <?php echo e($selectedMonthLabel); ?> <?php echo e($selectedYear); ?> • <?php echo e($dateRangeLabel); ?>
 
@@ -200,15 +189,6 @@
 
         <section class="ng-kpi-grid">
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $kpiCards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $card): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                <?php
-                    $trend = $card['trend'];
-                    $trendValue = is_null($trend) ? 0 : (float) $trend;
-                    $isTrendUp = $trendValue >= 0;
-                    $isGood = ($card['trend_good_when'] ?? 'up') === 'up'
-                        ? $isTrendUp
-                        : ! $isTrendUp;
-                ?>
-
                 <article class="ng-kpi-card" style="--accent: <?php echo e($card['color']); ?>;">
                     <div class="ng-kpi-icon">
                         <?php echo e($card['icon']); ?>
@@ -218,13 +198,6 @@
                     <div class="ng-kpi-content">
                         <span><?php echo e($card['label']); ?></span>
                         <strong><?php echo e($card['value']); ?></strong>
-
-                        <p class="<?php echo e($isGood ? 'positive' : 'negative'); ?>">
-                            <?php echo e($isTrendUp ? '↑' : '↓'); ?>
-
-                            <?php echo e(number_format(abs($trendValue), 1, ',', '.')); ?>%
-                            <em>dibandingkan periode sebelumnya</em>
-                        </p>
                     </div>
                 </article>
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>

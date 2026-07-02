@@ -482,6 +482,46 @@
             text-align: right !important;
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | ALIGNMENT FIX - KOLOM AKTIF
+        |--------------------------------------------------------------------------
+        | Posisi header "Aktif" dan ikon status aktif/nonaktif dipaksa sejajar.
+        | Filament kadang memberi wrapper flex di dalam cell, jadi text-align saja
+        | belum cukup untuk menyamakan posisi header dan isi data.
+        */
+        body:has(.ng-category-page) .fi-ta-table th:nth-child(4),
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(4) {
+            width: 15% !important;
+            text-align: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-table th:nth-child(4) > *,
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(4) > * {
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        body:has(.ng-category-page) .fi-ta-table th:nth-child(4) .fi-ta-header-cell-label,
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(4) .fi-ta-icon,
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(4) .fi-ta-text,
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(4) svg,
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(4) span,
+        body:has(.ng-category-page) .fi-ta-table td:nth-child(4) div {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
         body:has(.ng-category-page) .fi-ta-cell div[style*="min-width:210px"] {
             min-width: 170px !important;
             gap: 10px !important;
