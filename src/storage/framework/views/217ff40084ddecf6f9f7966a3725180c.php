@@ -1,4 +1,4 @@
-@php
+<?php
     $summary = method_exists($this, 'getActivitySummary') ? $this->getActivitySummary() : [];
 
     $totalLogs = number_format((int) ($summary['total_logs'] ?? 0), 0, ',', '.');
@@ -43,9 +43,20 @@
             'color' => '#f97316',
         ],
     ];
-@endphp
+?>
 
-<x-filament-panels::page>
+<?php if (isset($component)) { $__componentOriginal166a02a7c5ef5a9331faf66fa665c256 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal166a02a7c5ef5a9331faf66fa665c256 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'filament-panels::components.page.index','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('filament-panels::page'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
     <div class="ng-activity-page">
         <section class="ng-activity-hero-grid">
             <article class="ng-widget-card ng-activity-hero-card">
@@ -76,7 +87,8 @@
             </div>
 
             <div class="ng-activity-table-wrap">
-                {{ $this->table }}
+                <?php echo e($this->table); ?>
+
             </div>
         </section>
     </div>
@@ -694,4 +706,14 @@
         }
 
     </style>
-</x-filament-panels::page>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal166a02a7c5ef5a9331faf66fa665c256)): ?>
+<?php $attributes = $__attributesOriginal166a02a7c5ef5a9331faf66fa665c256; ?>
+<?php unset($__attributesOriginal166a02a7c5ef5a9331faf66fa665c256); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal166a02a7c5ef5a9331faf66fa665c256)): ?>
+<?php $component = $__componentOriginal166a02a7c5ef5a9331faf66fa665c256; ?>
+<?php unset($__componentOriginal166a02a7c5ef5a9331faf66fa665c256); ?>
+<?php endif; ?>
+<?php /**PATH /var/www/html/resources/views/filament/admin/resources/activity-logs/pages/list-activity-logs.blade.php ENDPATH**/ ?>

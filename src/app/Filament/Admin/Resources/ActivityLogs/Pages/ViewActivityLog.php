@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\ActivityLogs\Pages;
 
-use App\Filament\Admin\Logger\ActivityLogResource;
+use App\Filament\Admin\Resources\ActivityLogs\ActivityLogResource;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewActivityLog extends ViewRecord

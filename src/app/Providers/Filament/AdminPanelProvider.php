@@ -32,9 +32,9 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Event;
-use Jacobtims\FilamentLogger\FilamentLoggerPlugin;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Openplain\FilamentShadcnTheme\Color;
+use App\Filament\Admin\Resources\ActivityLogs\ActivityLogResource as CustomActivityLogResource;
 
 final class AdminPanelProvider extends PanelProvider
 {
@@ -67,6 +67,9 @@ final class AdminPanelProvider extends PanelProvider
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
+            ->resources([
+                CustomActivityLogResource::class,
+            ])
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
             ->pages([
             ])
@@ -121,10 +124,7 @@ final class AdminPanelProvider extends PanelProvider
                     ->navigationGroup('Administration')
                     ->navigationSort(2)
                     ->navigationIcon(Heroicon::ShieldCheck),
-
-                FilamentLoggerPlugin::make(),
-
-                /*
+/*
                 |--------------------------------------------------------------------------
                 | Developer Login
                 |--------------------------------------------------------------------------

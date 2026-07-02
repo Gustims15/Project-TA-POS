@@ -30,7 +30,6 @@ class ProductForm
                         Select::make('category_id')
                             ->label('Kategori Produk')
                             ->relationship('category', 'name')
-                            ->searchable()
                             ->preload()
                             ->native(false)
                             ->required()

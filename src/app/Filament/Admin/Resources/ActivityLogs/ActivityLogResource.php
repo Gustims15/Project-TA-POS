@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Admin\Logger;
+namespace App\Filament\Admin\Resources\ActivityLogs;
 
 use BackedEnum;
 use Filament\Resources\Resource;

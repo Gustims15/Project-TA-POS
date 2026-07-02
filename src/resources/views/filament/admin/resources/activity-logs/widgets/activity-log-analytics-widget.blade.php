@@ -1,6 +1,7 @@
 <x-filament-widgets::widget>
-    {{-- Widget ini sengaja dikosongkan.
-        Activity Log sudah memakai header + KPI langsung dari list-activity-logs.blade.php.
-        Dikosongkan supaya tidak ada CSS/scroll kedua dari widget lama.
+    {{-- Tidak dipakai.
+        Activity Log sekarang memakai Resource aktif di:
+        app/Filament/Admin/Resources/ActivityLogs/ActivityLogResource.php
+        dan semua tampilan ada di Blade page.
     --}}
 </x-filament-widgets::widget>

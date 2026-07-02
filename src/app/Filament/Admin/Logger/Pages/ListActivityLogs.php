@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Logger\Pages;
 
-use App\Filament\Admin\Logger\ActivityLogResource;
+use App\Filament\Admin\Resources\ActivityLogs\ActivityLogResource;
 use App\Models\User;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +14,9 @@ class ListActivityLogs extends ListRecords
 {
     protected static string $resource = ActivityLogResource::class;
 
-    protected string $view = 'filament.admin.logger.pages.list-activity-logs';
+    protected string $view = 'filament.admin.resources.activity-logs.pages.list-activity-logs';
+
+    protected static bool $isLazy = false;
 
     public function getTitle(): string
     {
@@ -26,7 +28,6 @@ class ListActivityLogs extends ListRecords
         return [];
     }
 
-
     protected function getHeaderWidgets(): array
     {
         return [];
@@ -36,7 +37,6 @@ class ListActivityLogs extends ListRecords
     {
         return [];
     }
-
 
     protected function applyLoginLogoutFilter($query)
     {
@@ -59,31 +59,23 @@ class ListActivityLogs extends ListRecords
     {
         $totalLogs = $this->loginLogoutQuery()->count();
 
-        $updatedLogs = Activity::query()
+        $loginLogs = $this->loginLogoutQuery()
             ->where(function ($query): void {
-                $query->where('event', 'updated')
-                    ->orWhere('description', 'like', '%updated%')
-                    ->orWhere('description', 'like', '%diperbarui%');
+                $query
+                    ->where('event', 'login')
+                    ->orWhere('description', 'like', '%login%')
+                    ->orWhere('description', 'like', '%logged in%');
             })
             ->count();
 
-        $createdLogs = Activity::query()
+        $logoutLogs = $this->loginLogoutQuery()
             ->where(function ($query): void {
-                $query->where('event', 'created')
-                    ->orWhere('description', 'like', '%created%')
-                    ->orWhere('description', 'like', '%dibuat%');
+                $query
+                    ->where('event', 'logout')
+                    ->orWhere('description', 'like', '%logout%')
+                    ->orWhere('description', 'like', '%logged out%');
             })
             ->count();
-
-        $deletedLogs = Activity::query()
-            ->where(function ($query): void {
-                $query->where('event', 'deleted')
-                    ->orWhere('description', 'like', '%deleted%')
-                    ->orWhere('description', 'like', '%dihapus%');
-            })
-            ->count();
-
-        $accessLogs = $this->loginLogoutQuery()->count();
 
         $latestLog = $this->loginLogoutQuery()
             ->with('causer')
@@ -103,10 +95,9 @@ class ListActivityLogs extends ListRecords
 
         return [
             'total_logs' => (int) $totalLogs,
-            'updated_logs' => (int) $updatedLogs,
-            'created_logs' => (int) $createdLogs,
-            'deleted_logs' => (int) $deletedLogs,
-            'access_logs' => (int) $accessLogs,
+            'access_logs' => (int) $totalLogs,
+            'login_logs' => (int) $loginLogs,
+            'logout_logs' => (int) $logoutLogs,
             'latest_user' => $latestLog?->causer?->name ?? '-',
             'latest_event' => $latestLog?->event ?? $latestLog?->description ?? '-',
             'latest_time' => $latestLog?->created_at?->diffForHumans() ?? '-',
