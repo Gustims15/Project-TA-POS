@@ -1,5 +1,16 @@
-<x-filament-panels::page>
-    @php
+<?php if (isset($component)) { $__componentOriginal166a02a7c5ef5a9331faf66fa665c256 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal166a02a7c5ef5a9331faf66fa665c256 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'filament-panels::components.page.index','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('filament-panels::page'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+    <?php
         $order = $record;
         $order->loadMissing('items');
 
@@ -67,7 +78,7 @@
                 'color' => '#8b5cf6',
             ],
         ];
-    @endphp
+    ?>
 
     <div class="ng-order-detail-page">
         <section class="ng-order-detail-hero-grid">
@@ -84,7 +95,7 @@
                     </div>
                 </div>
 
-                <a href="{{ $backUrl }}" class="ng-primary-button">
+                <a href="<?php echo e($backUrl); ?>" class="ng-primary-button">
                     ← Kembali
                 </a>
             </article>
@@ -92,28 +103,32 @@
         </section>
 
         <section class="ng-kpi-grid ng-order-detail-kpi-grid">
-            @foreach ($cards as $card)
-                <article class="ng-kpi-card" style="--accent: {{ $card['color'] ?? '#f97316' }};">
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $cards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $card): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                <article class="ng-kpi-card" style="--accent: <?php echo e($card['color'] ?? '#f97316'); ?>;">
                     <div class="ng-kpi-icon">
-                        {{ $card['icon'] ?? '▣' }}
+                        <?php echo e($card['icon'] ?? '▣'); ?>
+
                     </div>
 
                     <div class="ng-kpi-content">
                         <div class="ng-kpi-label">
-                            {{ $card['label'] ?? '-' }}
+                            <?php echo e($card['label'] ?? '-'); ?>
+
                             <span>⋮</span>
                         </div>
 
                         <strong>
-                            {{ $card['value'] ?? '-' }}
+                            <?php echo e($card['value'] ?? '-'); ?>
+
                         </strong>
 
                         <p class="neutral">
-                            {{ $card['caption'] ?? '-' }}
+                            <?php echo e($card['caption'] ?? '-'); ?>
+
                         </p>
                     </div>
                 </article>
-            @endforeach
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
         </section>
 
         <section class="ng-order-detail-main-grid">
@@ -125,35 +140,36 @@
                     </div>
 
                     <span class="ng-status-pill"
-                          style="--status-color: {{ $statusStyle['color'] }}; --status-bg: {{ $statusStyle['bg'] }}; --status-border: {{ $statusStyle['border'] }};">
-                        {{ $statusStyle['icon'] }} {{ $status }}
+                          style="--status-color: <?php echo e($statusStyle['color']); ?>; --status-bg: <?php echo e($statusStyle['bg']); ?>; --status-border: <?php echo e($statusStyle['border']); ?>;">
+                        <?php echo e($statusStyle['icon']); ?> <?php echo e($status); ?>
+
                     </span>
                 </div>
 
                 <div class="ng-order-info-list">
                     <div>
                         <span>ID Order</span>
-                        <strong>{{ $order->order_code ?? 'ORD-' . $order->id }}</strong>
+                        <strong><?php echo e($order->order_code ?? 'ORD-' . $order->id); ?></strong>
                     </div>
 
                     <div>
                         <span>Status</span>
-                        <strong>{{ $status }}</strong>
+                        <strong><?php echo e($status); ?></strong>
                     </div>
 
                     <div>
                         <span>Total Item</span>
-                        <strong>{{ number_format((int) ($order->total_item ?? 0), 0, ',', '.') }}</strong>
+                        <strong><?php echo e(number_format((int) ($order->total_item ?? 0), 0, ',', '.')); ?></strong>
                     </div>
 
                     <div>
                         <span>Total Pembayaran</span>
-                        <strong>Rp {{ number_format((int) ($order->total_price ?? 0), 0, ',', '.') }}</strong>
+                        <strong>Rp <?php echo e(number_format((int) ($order->total_price ?? 0), 0, ',', '.')); ?></strong>
                     </div>
 
                     <div class="span-2">
                         <span>Waktu Order</span>
-                        <strong>{{ $date ? \Carbon\Carbon::parse($date)->translatedFormat('d F Y H:i') : '-' }}</strong>
+                        <strong><?php echo e($date ? \Carbon\Carbon::parse($date)->translatedFormat('d F Y H:i') : '-'); ?></strong>
                     </div>
                 </div>
             </article>
@@ -166,41 +182,44 @@
                 </div>
 
                 <span class="ng-count-pill">
-                    {{ number_format($items->count(), 0, ',', '.') }} Produk
+                    <?php echo e(number_format($items->count(), 0, ',', '.')); ?> Produk
                 </span>
             </div>
 
             <div class="ng-order-items-list">
-                @forelse ($items as $item)
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
                     <div class="ng-order-item-row">
                         <div class="ng-order-item-number">
-                            {{ $loop->iteration }}
+                            <?php echo e($loop->iteration); ?>
+
                         </div>
 
                         <div class="ng-order-item-name">
-                            <strong>{{ $item->product_name ?? '-' }}</strong>
-                            <span>Size: {{ $item->size_name ?? 'Regular' }}</span>
+                            <strong><?php echo e($item->product_name ?? '-'); ?></strong>
+                            <span>Size: <?php echo e($item->size_name ?? 'Regular'); ?></span>
                         </div>
 
                         <div class="ng-order-item-chip">
-                            Qty {{ number_format((int) ($item->quantity ?? 0), 0, ',', '.') }}
+                            Qty <?php echo e(number_format((int) ($item->quantity ?? 0), 0, ',', '.')); ?>
+
                         </div>
 
                         <div class="ng-order-item-chip muted">
-                            Rp {{ number_format((int) ($item->price ?? 0), 0, ',', '.') }}
+                            Rp <?php echo e(number_format((int) ($item->price ?? 0), 0, ',', '.')); ?>
+
                         </div>
 
                         <div class="ng-order-item-subtotal">
                             <span>Subtotal</span>
-                            <strong>Rp {{ number_format((int) ($item->subtotal ?? 0), 0, ',', '.') }}</strong>
+                            <strong>Rp <?php echo e(number_format((int) ($item->subtotal ?? 0), 0, ',', '.')); ?></strong>
                         </div>
                     </div>
-                @empty
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                     <div class="ng-empty-order">
                         <strong>Tidak ada item</strong>
                         <span>Order ini belum memiliki detail item.</span>
                     </div>
-                @endforelse
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </div>
         </article>
 
@@ -955,4 +974,14 @@
         }
 
     </style>
-</x-filament-panels::page>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal166a02a7c5ef5a9331faf66fa665c256)): ?>
+<?php $attributes = $__attributesOriginal166a02a7c5ef5a9331faf66fa665c256; ?>
+<?php unset($__attributesOriginal166a02a7c5ef5a9331faf66fa665c256); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal166a02a7c5ef5a9331faf66fa665c256)): ?>
+<?php $component = $__componentOriginal166a02a7c5ef5a9331faf66fa665c256; ?>
+<?php unset($__componentOriginal166a02a7c5ef5a9331faf66fa665c256); ?>
+<?php endif; ?>
+<?php /**PATH /var/www/html/resources/views/filament/admin/resources/orders/pages/view-order.blade.php ENDPATH**/ ?>

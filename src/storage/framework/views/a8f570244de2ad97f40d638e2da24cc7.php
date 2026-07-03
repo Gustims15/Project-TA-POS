@@ -1,4 +1,4 @@
-@php
+<?php
     $cards = [
         [
             'label' => 'Total Users',
@@ -22,24 +22,36 @@
             'color' => '#3b82f6',
         ],
     ];
-@endphp
+?>
 
-<x-filament-widgets::widget>
+<?php if (isset($component)) { $__componentOriginalb525200bfa976483b4eaa0b7685c6e24 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalb525200bfa976483b4eaa0b7685c6e24 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'filament-widgets::components.widget','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('filament-widgets::widget'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
     <div class="ng-user-form-page">
         <section class="ng-user-form-hero-grid">
             <article class="ng-widget-card ng-user-form-hero-card">
                 <div class="ng-widget-head">
                     <div>
 
-                        <h1>{{ $title }}</h1>
+                        <h1><?php echo e($title); ?></h1>
 
                         <p>
-                            {{ $description }}
+                            <?php echo e($description); ?>
+
                         </p>
                     </div>
 
                     <div class="ng-user-form-hero-actions">
-                        <a href="{{ $backUrl }}" class="ng-primary-button">
+                        <a href="<?php echo e($backUrl); ?>" class="ng-primary-button">
                             ← Kembali
                         </a>
                     </div>
@@ -48,28 +60,32 @@
         </section>
 
         <section class="ng-kpi-grid ng-user-form-kpi-grid">
-            @foreach ($cards as $card)
-                <article class="ng-kpi-card" style="--accent: {{ $card['color'] ?? '#f97316' }};">
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $cards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $card): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                <article class="ng-kpi-card" style="--accent: <?php echo e($card['color'] ?? '#f97316'); ?>;">
                     <div class="ng-kpi-icon">
-                        {{ $card['icon'] ?? '▣' }}
+                        <?php echo e($card['icon'] ?? '▣'); ?>
+
                     </div>
 
                     <div class="ng-kpi-content">
                         <div class="ng-kpi-label">
-                            {{ $card['label'] ?? '-' }}
+                            <?php echo e($card['label'] ?? '-'); ?>
+
                             <span>⋮</span>
                         </div>
 
                         <strong>
-                            {{ $card['value'] ?? '-' }}
+                            <?php echo e($card['value'] ?? '-'); ?>
+
                         </strong>
 
                         <p class="neutral">
-                            {{ $card['caption'] ?? '-' }}
+                            <?php echo e($card['caption'] ?? '-'); ?>
+
                         </p>
                     </div>
                 </article>
-            @endforeach
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
         </section>
     </div>
     <style>
@@ -738,4 +754,14 @@
         }
     
     </style>
-</x-filament-widgets::widget>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>
+<?php $attributes = $__attributesOriginalb525200bfa976483b4eaa0b7685c6e24; ?>
+<?php unset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>
+<?php $component = $__componentOriginalb525200bfa976483b4eaa0b7685c6e24; ?>
+<?php unset($__componentOriginalb525200bfa976483b4eaa0b7685c6e24); ?>
+<?php endif; ?>
+<?php /**PATH /var/www/html/resources/views/filament/admin/resources/users/widgets/user-form-hero-widget.blade.php ENDPATH**/ ?>
