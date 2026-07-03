@@ -527,7 +527,7 @@
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 14px;
-            margin-bottom: 14px;
+            margin-bottom: 5px;
         }
 
         .ng-kpi-card {
@@ -875,7 +875,7 @@
         body:has(.ng-order-page) .ng-kpi-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
             gap: 14px !important;
-            margin-bottom: 16px !important;
+            margin-bottom: 6px !important;
         }
 
         body:has(.ng-order-page) .ng-order-kpi-grid .ng-kpi-card {
@@ -905,4 +905,57 @@
         }
     </style>
 
+
+
+    <style id="ng-order-kpi-2x2-safe-final">
+        /* FINAL SAFE: Order Management KPI 2 kolom hanya tablet/HP */
+        @media (max-width: 900px) {
+            body:has(.ng-order-page) .ng-order-page .ng-order-kpi-grid,
+            body:has(.ng-order-page) .ng-order-page .ng-kpi-grid {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 12px !important;
+            }
+
+            body:has(.ng-order-page) .ng-order-page .ng-kpi-card {
+                width: 100% !important;
+                min-width: 0 !important;
+                min-height: 108px !important;
+                padding: 14px !important;
+                border-radius: 20px !important;
+            }
+
+            body:has(.ng-order-page) .ng-order-page .ng-kpi-icon {
+                width: 42px !important;
+                height: 42px !important;
+                flex: 0 0 42px !important;
+                border-radius: 14px !important;
+            }
+
+            body:has(.ng-order-page) .ng-order-page .ng-kpi-label {
+                font-size: 10px !important;
+                line-height: 1.2 !important;
+            }
+
+            body:has(.ng-order-page) .ng-order-page .ng-kpi-content strong {
+                font-size: 18px !important;
+                line-height: 1.1 !important;
+                white-space: normal !important;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body:has(.ng-order-page) .ng-order-page .ng-order-kpi-grid,
+            body:has(.ng-order-page) .ng-order-page .ng-kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+
+            body:has(.ng-order-page) .ng-order-page .ng-kpi-card {
+                min-height: 100px !important;
+                padding: 12px !important;
+                gap: 10px !important;
+            }
+        }
+    </style>
 </x-filament-widgets::widget>

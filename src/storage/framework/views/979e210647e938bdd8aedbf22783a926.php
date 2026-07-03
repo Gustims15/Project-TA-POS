@@ -328,7 +328,7 @@
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 14px;
-            margin-bottom: 14px;
+            margin-bottom: 6px;
         }
 
         .ng-kpi-card {
@@ -605,6 +605,303 @@
             }
         }
     </style>
+
+
+    <style id="ng-final-hp-kpi-2x2-ng-user-page">
+        /* =========================================================
+           FINAL HP KPI 2x2 - scoped only for .ng-user-page
+           Tablet & desktop tetap mengikuti style sebelumnya.
+        ========================================================= */
+        @media (max-width: 700px) {
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+                align-items: stretch !important;
+            }
+
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid > .ng-kpi-card {
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                min-height: 100px !important;
+                padding: 12px !important;
+                border-radius: 18px !important;
+                gap: 9px !important;
+                display: flex !important;
+                align-items: flex-start !important;
+            }
+
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid .ng-kpi-icon {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                flex: 0 0 36px !important;
+                border-radius: 13px !important;
+                font-size: 14px !important;
+            }
+
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid .ng-kpi-content {
+                min-width: 0 !important;
+                width: 100% !important;
+            }
+
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid .ng-kpi-label {
+                gap: 5px !important;
+                font-size: 9px !important;
+                line-height: 1.2 !important;
+                letter-spacing: 0.035em !important;
+            }
+
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid .ng-kpi-label span {
+                display: none !important;
+            }
+
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid .ng-kpi-content strong {
+                margin-top: 6px !important;
+                font-size: clamp(15px, 4.3vw, 18px) !important;
+                line-height: 1.1 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid .ng-kpi-content p,
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid .ng-kpi-content .neutral,
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid .ng-kpi-content span:not(.ng-kpi-label span) {
+                margin-top: 5px !important;
+                font-size: 9.5px !important;
+                line-height: 1.25 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+        }
+
+        @media (max-width: 380px) {
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid {
+                gap: 8px !important;
+            }
+
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid > .ng-kpi-card {
+                min-height: 94px !important;
+                padding: 10px !important;
+                gap: 7px !important;
+            }
+
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid .ng-kpi-icon {
+                width: 32px !important;
+                height: 32px !important;
+                min-width: 32px !important;
+                flex-basis: 32px !important;
+                font-size: 13px !important;
+            }
+
+            body:has(.ng-user-page) .ng-user-page .ng-user-kpi-grid .ng-kpi-content strong {
+                font-size: clamp(13px, 4vw, 16px) !important;
+            }
+        }
+    
+
+        /* =========================================================
+           FINAL HP TABLE CLEANUP - USER & ROLE
+           Khusus HP: tabel dibuat scroll horizontal rapi,
+           kolom tidak saling tumpuk, tablet/desktop tidak berubah.
+        ========================================================= */
+
+        @media (max-width: 700px) {
+            body:has(.ng-user-page) .fi-ta-ctn,
+            body:has(.ng-role-page) .fi-ta-ctn {
+                overflow: hidden !important;
+                border-radius: 22px !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-content,
+            body:has(.ng-role-page) .fi-ta-content {
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                -webkit-overflow-scrolling: touch !important;
+                scrollbar-width: thin !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-table,
+            body:has(.ng-role-page) .fi-ta-table {
+                width: max-content !important;
+                table-layout: fixed !important;
+                border-collapse: separate !important;
+                border-spacing: 0 !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-table {
+                min-width: 1080px !important;
+            }
+
+            body:has(.ng-role-page) .fi-ta-table {
+                min-width: 940px !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-table th,
+            body:has(.ng-user-page) .fi-ta-table td,
+            body:has(.ng-role-page) .fi-ta-table th,
+            body:has(.ng-role-page) .fi-ta-table td {
+                vertical-align: middle !important;
+                white-space: nowrap !important;
+                word-break: keep-all !important;
+                overflow-wrap: normal !important;
+                padding-top: 12px !important;
+                padding-bottom: 12px !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-row,
+            body:has(.ng-role-page) .fi-ta-row {
+                height: 72px !important;
+                min-height: 72px !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-cell,
+            body:has(.ng-role-page) .fi-ta-cell {
+                height: 72px !important;
+                min-height: 72px !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-cell > *,
+            body:has(.ng-role-page) .fi-ta-cell > * {
+                min-height: 0 !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-text,
+            body:has(.ng-user-page) .fi-ta-text-item,
+            body:has(.ng-user-page) .fi-ta-text-item-label,
+            body:has(.ng-role-page) .fi-ta-text,
+            body:has(.ng-role-page) .fi-ta-text-item,
+            body:has(.ng-role-page) .fi-ta-text-item-label {
+                max-width: 100% !important;
+                white-space: nowrap !important;
+                word-break: keep-all !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-actions,
+            body:has(.ng-role-page) .fi-ta-actions {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: flex-end !important;
+                flex-wrap: nowrap !important;
+                gap: 8px !important;
+                width: 100% !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-actions .fi-btn,
+            body:has(.ng-user-page) .fi-ta-actions .fi-icon-btn,
+            body:has(.ng-user-page) .fi-ta-actions a,
+            body:has(.ng-role-page) .fi-ta-actions .fi-btn,
+            body:has(.ng-role-page) .fi-ta-actions .fi-icon-btn,
+            body:has(.ng-role-page) .fi-ta-actions a {
+                flex: 0 0 auto !important;
+                white-space: nowrap !important;
+            }
+
+            /* USER TABLE WIDTH */
+            body:has(.ng-user-page) .fi-ta-table th:nth-child(1),
+            body:has(.ng-user-page) .fi-ta-table td:nth-child(1) {
+                width: 56px !important;
+                min-width: 56px !important;
+                max-width: 56px !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-table th:nth-child(2),
+            body:has(.ng-user-page) .fi-ta-table td:nth-child(2) {
+                width: 230px !important;
+                min-width: 230px !important;
+                max-width: 230px !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-table th:nth-child(3),
+            body:has(.ng-user-page) .fi-ta-table td:nth-child(3) {
+                width: 270px !important;
+                min-width: 270px !important;
+                max-width: 270px !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-table th:nth-child(4),
+            body:has(.ng-user-page) .fi-ta-table td:nth-child(4) {
+                width: 150px !important;
+                min-width: 150px !important;
+                max-width: 150px !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-table th:nth-child(5),
+            body:has(.ng-user-page) .fi-ta-table td:nth-child(5),
+            body:has(.ng-user-page) .fi-ta-table th:nth-child(6),
+            body:has(.ng-user-page) .fi-ta-table td:nth-child(6) {
+                width: 150px !important;
+                min-width: 150px !important;
+                max-width: 150px !important;
+            }
+
+            body:has(.ng-user-page) .fi-ta-table th:last-child,
+            body:has(.ng-user-page) .fi-ta-table td:last-child {
+                width: 170px !important;
+                min-width: 170px !important;
+                max-width: 170px !important;
+                text-align: right !important;
+            }
+
+            /* ROLE TABLE WIDTH */
+            body:has(.ng-role-page) .fi-ta-table th:nth-child(1),
+            body:has(.ng-role-page) .fi-ta-table td:nth-child(1) {
+                width: 56px !important;
+                min-width: 56px !important;
+                max-width: 56px !important;
+            }
+
+            body:has(.ng-role-page) .fi-ta-table th:nth-child(2),
+            body:has(.ng-role-page) .fi-ta-table td:nth-child(2) {
+                width: 230px !important;
+                min-width: 230px !important;
+                max-width: 230px !important;
+            }
+
+            body:has(.ng-role-page) .fi-ta-table th:nth-child(3),
+            body:has(.ng-role-page) .fi-ta-table td:nth-child(3) {
+                width: 130px !important;
+                min-width: 130px !important;
+                max-width: 130px !important;
+            }
+
+            body:has(.ng-role-page) .fi-ta-table th:nth-child(4),
+            body:has(.ng-role-page) .fi-ta-table td:nth-child(4) {
+                width: 180px !important;
+                min-width: 180px !important;
+                max-width: 180px !important;
+                text-align: center !important;
+            }
+
+            body:has(.ng-role-page) .fi-ta-table th:nth-child(5),
+            body:has(.ng-role-page) .fi-ta-table td:nth-child(5) {
+                width: 170px !important;
+                min-width: 170px !important;
+                max-width: 170px !important;
+            }
+
+            body:has(.ng-role-page) .fi-ta-table th:last-child,
+            body:has(.ng-role-page) .fi-ta-table td:last-child {
+                width: 190px !important;
+                min-width: 190px !important;
+                max-width: 190px !important;
+                text-align: right !important;
+            }
+
+            body:has(.ng-role-page) .fi-badge,
+            body:has(.ng-user-page) .fi-badge {
+                white-space: nowrap !important;
+            }
+        }
+</style>
+
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalb525200bfa976483b4eaa0b7685c6e24)): ?>

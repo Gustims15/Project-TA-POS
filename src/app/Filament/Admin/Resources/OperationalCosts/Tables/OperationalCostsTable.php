@@ -30,12 +30,14 @@ class OperationalCostsTable
                     ->sortable()
                     ->weight('bold')
                     ->description(fn ($record): string => self::compactDescription($record))
-                    ->wrap()
+                    ->wrap(false)
                     ->extraHeaderAttributes([
-                        'style' => 'width: 38%;',
+                        'class' => 'ng-mobile-table-col ng-operational-cost-col ng-operational-cost-name-col',
+                        'style' => 'width: 260px !important; min-width: 260px !important; max-width: 260px !important; white-space: nowrap !important;',
                     ])
                     ->extraCellAttributes([
-                        'style' => 'width: 38%; max-width: 38%;',
+                        'class' => 'ng-mobile-table-col ng-operational-cost-col ng-operational-cost-name-col',
+                        'style' => 'width: 260px !important; min-width: 260px !important; max-width: 260px !important; white-space: nowrap !important; word-break: normal !important; overflow-wrap: normal !important;',
                     ]),
 
                 TextColumn::make('allocated_monthly')
@@ -46,10 +48,12 @@ class OperationalCostsTable
                     ->description(fn ($record): string => self::allocationDescription($record))
                     ->sortable(false)
                     ->extraHeaderAttributes([
-                        'style' => 'width: 24%;',
+                        'class' => 'ng-mobile-table-col ng-operational-cost-col ng-operational-cost-nominal-col',
+                        'style' => 'width: 210px !important; min-width: 210px !important; max-width: 210px !important; white-space: nowrap !important;',
                     ])
                     ->extraCellAttributes([
-                        'style' => 'width: 24%; max-width: 24%;',
+                        'class' => 'ng-mobile-table-col ng-operational-cost-col ng-operational-cost-nominal-col',
+                        'style' => 'width: 210px !important; min-width: 210px !important; max-width: 210px !important; white-space: nowrap !important; word-break: normal !important; overflow-wrap: normal !important;',
                     ]),
 
                 TextColumn::make('period_status')
@@ -65,10 +69,12 @@ class OperationalCostsTable
                         default => 'success',
                     })
                     ->extraHeaderAttributes([
-                        'style' => 'width: 18%;',
+                        'class' => 'ng-mobile-table-col ng-operational-cost-col ng-operational-cost-status-col',
+                        'style' => 'width: 170px !important; min-width: 170px !important; max-width: 170px !important; white-space: nowrap !important;',
                     ])
                     ->extraCellAttributes([
-                        'style' => 'width: 18%; max-width: 18%;',
+                        'class' => 'ng-mobile-table-col ng-operational-cost-col ng-operational-cost-status-col',
+                        'style' => 'width: 170px !important; min-width: 170px !important; max-width: 170px !important; white-space: nowrap !important; word-break: normal !important; overflow-wrap: normal !important;',
                     ]),
 
                 TextColumn::make('active_period_display')
@@ -76,10 +82,12 @@ class OperationalCostsTable
                     ->getStateUsing(fn ($record): string => self::activePeriodDisplay($record))
                     ->sortable(false)
                     ->extraHeaderAttributes([
-                        'style' => 'width: 14%;',
+                        'class' => 'ng-mobile-table-col ng-operational-cost-col ng-operational-cost-date-col',
+                        'style' => 'width: 160px !important; min-width: 160px !important; max-width: 160px !important; white-space: nowrap !important;',
                     ])
                     ->extraCellAttributes([
-                        'style' => 'width: 14%; max-width: 14%;',
+                        'class' => 'ng-mobile-table-col ng-operational-cost-col ng-operational-cost-date-col',
+                        'style' => 'width: 160px !important; min-width: 160px !important; max-width: 160px !important; white-space: nowrap !important; word-break: normal !important; overflow-wrap: normal !important;',
                     ]),
             ])
             ->headerActions([])

@@ -16,6 +16,266 @@
   >
 
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+
+    <style>
+        /* =========================================================
+           RESPONSIVE HEADER LOCK - HISTORY & SETTINGS
+           Dipasang langsung di Blade agar tidak kalah oleh CSS lama.
+           Target: tablet/iPad mengikuti tampilan Home page:
+           logo + menu + logout tetap satu baris dalam satu widget.
+        ========================================================= */
+        @media (min-width: 641px) and (max-width: 1180px) {
+            body.history-page,
+            body.settings-page {
+                width: 100% !important;
+                min-height: 100dvh !important;
+                padding: 0 !important;
+                overflow: auto !important;
+            }
+
+            body.history-page .app-shell,
+            body.settings-page .app-shell,
+            body.history-page .app-shell:not(.single-content),
+            body.settings-page .app-shell:not(.single-content),
+            body.history-page .app-shell.single-content,
+            body.settings-page .app-shell.single-content {
+                width: 100% !important;
+                height: auto !important;
+                min-height: 100dvh !important;
+                display: grid !important;
+                grid-template-columns: 1fr !important;
+                grid-template-rows: auto minmax(0, 1fr) !important;
+                gap: 14px !important;
+                padding: 14px !important;
+                overflow: visible !important;
+            }
+
+            body.history-page .sidebar,
+            body.settings-page .sidebar {
+                position: relative !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
+                display: grid !important;
+                grid-template-columns: 180px minmax(0, 1fr) 118px !important;
+                grid-template-areas: "brand nav logout" !important;
+                align-items: center !important;
+                gap: 12px !important;
+                padding: 14px 16px !important;
+                margin: 0 !important;
+                border-radius: 24px !important;
+                overflow: hidden !important;
+            }
+
+            body.history-page .brand,
+            body.history-page .brand.brand-with-logo,
+            body.settings-page .brand,
+            body.settings-page .brand.brand-with-logo {
+                grid-area: brand !important;
+                width: 100% !important;
+                max-width: 180px !important;
+                min-width: 0 !important;
+                height: 58px !important;
+                min-height: 58px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                gap: 8px !important;
+                padding: 8px 10px !important;
+                margin: 0 !important;
+                border-radius: 18px !important;
+            }
+
+            body.history-page .brand-logo,
+            body.settings-page .brand-logo {
+                width: 42px !important;
+                height: 42px !important;
+                min-width: 42px !important;
+                flex: 0 0 42px !important;
+                border-radius: 14px !important;
+            }
+
+            body.history-page .brand-text,
+            body.settings-page .brand-text {
+                min-width: 0 !important;
+                overflow: hidden !important;
+            }
+
+            body.history-page .brand strong,
+            body.history-page .brand-text strong,
+            body.settings-page .brand strong,
+            body.settings-page .brand-text strong {
+                font-size: 22px !important;
+                line-height: 1 !important;
+                letter-spacing: -0.8px !important;
+                white-space: nowrap !important;
+            }
+
+            body.history-page .brand small,
+            body.history-page .brand-text small,
+            body.settings-page .brand small,
+            body.settings-page .brand-text small {
+                margin-top: 4px !important;
+                font-size: 8.5px !important;
+                letter-spacing: 0.16em !important;
+                white-space: nowrap !important;
+            }
+
+            body.history-page .nav-menu,
+            body.settings-page .nav-menu {
+                grid-area: nav !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                display: flex !important;
+                grid-template-columns: none !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                gap: 10px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                overflow: hidden !important;
+            }
+
+            body.history-page .logout-form,
+            body.settings-page .logout-form {
+                grid-area: logout !important;
+                width: 118px !important;
+                min-width: 118px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                align-self: center !important;
+                justify-self: end !important;
+            }
+
+            body.history-page .nav-item,
+            body.history-page .logout-button,
+            body.settings-page .nav-item,
+            body.settings-page .logout-button {
+                width: auto !important;
+                min-width: 0 !important;
+                height: 46px !important;
+                min-height: 46px !important;
+                max-height: 46px !important;
+                display: inline-flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 8px !important;
+                padding: 0 14px !important;
+                margin: 0 !important;
+                border-radius: 16px !important;
+                font-size: 12px !important;
+                line-height: 1 !important;
+                text-align: center !important;
+                white-space: nowrap !important;
+            }
+
+            body.history-page .nav-menu .nav-item,
+            body.settings-page .nav-menu .nav-item {
+                flex: 1 1 0 !important;
+                max-width: 150px !important;
+            }
+
+            body.history-page .logout-button,
+            body.settings-page .logout-button {
+                width: 100% !important;
+                padding: 0 12px !important;
+            }
+
+            body.history-page .nav-icon,
+            body.settings-page .nav-icon {
+                width: 18px !important;
+                height: 18px !important;
+                min-width: 18px !important;
+                flex: 0 0 18px !important;
+                font-size: 15px !important;
+            }
+
+            body.history-page .nav-item.active::after,
+            body.settings-page .nav-item.active::after {
+                display: none !important;
+            }
+
+            body.history-page .content,
+            body.settings-page .content,
+            body.history-page .app-shell.single-content .content,
+            body.settings-page .app-shell.single-content .content {
+                width: 100% !important;
+                height: auto !important;
+                min-height: 0 !important;
+                border-radius: 24px !important;
+                overflow: visible !important;
+            }
+
+            body.history-page .history-area,
+            body.settings-page .settings-area {
+                height: auto !important;
+                min-height: 70vh !important;
+                overflow: visible !important;
+            }
+        }
+
+        @media (min-width: 641px) and (max-width: 780px) {
+            body.history-page .sidebar,
+            body.settings-page .sidebar {
+                grid-template-columns: 168px minmax(0, 1fr) 108px !important;
+                gap: 8px !important;
+                padding: 12px 14px !important;
+            }
+
+            body.history-page .brand,
+            body.history-page .brand.brand-with-logo,
+            body.settings-page .brand,
+            body.settings-page .brand.brand-with-logo {
+                max-width: 168px !important;
+                height: 56px !important;
+                min-height: 56px !important;
+            }
+
+            body.history-page .brand-logo,
+            body.settings-page .brand-logo {
+                width: 40px !important;
+                height: 40px !important;
+                min-width: 40px !important;
+                flex-basis: 40px !important;
+            }
+
+            body.history-page .brand strong,
+            body.history-page .brand-text strong,
+            body.settings-page .brand strong,
+            body.settings-page .brand-text strong {
+                font-size: 20px !important;
+            }
+
+            body.history-page .nav-menu,
+            body.settings-page .nav-menu {
+                gap: 8px !important;
+            }
+
+            body.history-page .nav-item,
+            body.history-page .logout-button,
+            body.settings-page .nav-item,
+            body.settings-page .logout-button {
+                height: 44px !important;
+                min-height: 44px !important;
+                max-height: 44px !important;
+                padding: 0 10px !important;
+                font-size: 11.2px !important;
+                border-radius: 15px !important;
+            }
+
+            body.history-page .logout-form,
+            body.settings-page .logout-form {
+                width: 108px !important;
+                min-width: 108px !important;
+            }
+        }
+    </style>
+
 </head>
 
 <body class="history-page">

@@ -278,7 +278,7 @@
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 14px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .ng-kpi-card {
@@ -659,6 +659,61 @@
             body:has(.ng-category-page) .fi-ta-ctn {
                 margin: 0 14px 20px !important;
                 width: calc(100% - 28px) !important;
+            }
+        }
+    </style>
+
+
+    <style id="ng-category-kpi-2x2-safe-final">
+        /* FINAL SAFE: Category KPI 2 kolom hanya tablet/HP */
+        @media (max-width: 1100px) {
+            body:has(.ng-category-page) .ng-category-page .ng-kpi-grid {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 12px !important;
+            }
+
+            body:has(.ng-category-page) .ng-category-page .ng-kpi-card {
+                width: 100% !important;
+                min-width: 0 !important;
+                min-height: 108px !important;
+                padding: 14px !important;
+                border-radius: 20px !important;
+            }
+
+            body:has(.ng-category-page) .ng-category-page .ng-kpi-icon {
+                width: 42px !important;
+                height: 42px !important;
+                flex: 0 0 42px !important;
+                border-radius: 14px !important;
+            }
+
+            body:has(.ng-category-page) .ng-category-page .ng-kpi-label {
+                font-size: 10px !important;
+                line-height: 1.2 !important;
+            }
+
+            body:has(.ng-category-page) .ng-category-page .ng-kpi-content strong {
+                font-size: 18px !important;
+                line-height: 1.1 !important;
+                white-space: normal !important;
+            }
+
+            body:has(.ng-category-page) .ng-category-page .ng-kpi-grid .ng-kpi-card:nth-child(5):last-child {
+                grid-column: 1 / -1 !important;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body:has(.ng-category-page) .ng-category-page .ng-kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+
+            body:has(.ng-category-page) .ng-category-page .ng-kpi-card {
+                min-height: 100px !important;
+                padding: 12px !important;
+                gap: 10px !important;
             }
         }
     </style>

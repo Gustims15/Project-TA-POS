@@ -539,7 +539,7 @@
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 14px;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .ng-kpi-card {
@@ -1121,4 +1121,57 @@
         }
     </style>
 
+
+
+    <style id="ng-monthly-kpi-2x2-safe-final">
+        /* FINAL SAFE: Export Monthly Revenue KPI 2 kolom hanya tablet/HP */
+        @media (max-width: 1100px) {
+            body:has(.ng-monthly-revenue-page) .ng-monthly-revenue-page .ng-kpi-grid,
+            body:has(.ng-monthly-revenue-page) .ng-monthly-revenue-page .ng-report-kpi-grid {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 12px !important;
+            }
+
+            body:has(.ng-monthly-revenue-page) .ng-monthly-revenue-page .ng-kpi-card {
+                width: 100% !important;
+                min-width: 0 !important;
+                min-height: 108px !important;
+                padding: 14px !important;
+                border-radius: 20px !important;
+            }
+
+            body:has(.ng-monthly-revenue-page) .ng-monthly-revenue-page .ng-kpi-icon {
+                width: 42px !important;
+                height: 42px !important;
+                flex: 0 0 42px !important;
+                border-radius: 14px !important;
+            }
+
+            body:has(.ng-monthly-revenue-page) .ng-monthly-revenue-page .ng-kpi-label {
+                font-size: 10px !important;
+                line-height: 1.2 !important;
+            }
+
+            body:has(.ng-monthly-revenue-page) .ng-monthly-revenue-page .ng-kpi-content strong {
+                font-size: 18px !important;
+                line-height: 1.1 !important;
+                white-space: normal !important;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body:has(.ng-monthly-revenue-page) .ng-monthly-revenue-page .ng-kpi-grid,
+            body:has(.ng-monthly-revenue-page) .ng-monthly-revenue-page .ng-report-kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+
+            body:has(.ng-monthly-revenue-page) .ng-monthly-revenue-page .ng-kpi-card {
+                min-height: 100px !important;
+                padding: 12px !important;
+                gap: 10px !important;
+            }
+        }
+    </style>
 </x-filament-panels::page>

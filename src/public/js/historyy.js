@@ -187,7 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="history-item-summary">
                 <div class="history-item-summary-main">
                     <strong>${escapeHTML(firstItem.product_name || '-')}</strong>
-                    <span>${escapeHTML(firstItem.size || 'Regular')} • x${Number(firstItem.quantity || 0)}</span>
                 </div>
 
                 ${
@@ -217,10 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         <div class="history-extra-item-card">
                                             <div class="history-extra-item-main">
                                                 <strong>${escapeHTML(item.product_name || '-')}</strong>
-                                                <span>${escapeHTML(item.size || 'Regular')} • x${Number(item.quantity || 0)}</span>
                                             </div>
-
-                                            <span>${formatRupiah(item.subtotal || 0)}</span>
 
                                             ${
                                                 note
@@ -343,13 +339,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const wrapRect = historyTableWrap.getBoundingClientRect();
         const lastRowRect = lastRow.getBoundingClientRect();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Pagination muncul saat:
-        | 1. Scroll sudah dekat dengan batas bawah, atau
-        | 2. Baris terakhir sudah terlihat di area bawah tabel.
-        |--------------------------------------------------------------------------
-        */
         const nearBottom = currentScroll + tableHeight >= totalScrollHeight - 90;
 
         const lastRowVisibleAtBottom =

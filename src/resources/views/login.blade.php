@@ -47,7 +47,7 @@
           </p>
         </div>
 
-        <span class="pos-login-footer">Digital Cashier</span>
+  
       </div>
 
       <div class="pos-login-right">

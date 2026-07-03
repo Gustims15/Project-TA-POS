@@ -2971,3 +2971,579 @@ html.ngunjuk-page-transition .fi-main {
     pointer-events: auto !important;
 }
 
+
+
+/* =========================================================
+   NGUNJUK FINAL ADMIN HP TABLE SCROLL - TRUE NEW FIX
+   Fokus: area informasi data Biaya Operasional & Target Penjualan.
+   Prinsip:
+   - Tabel dibuat lebih lebar dari layar HP.
+   - Wrapper tabel dipaksa bisa scroll horizontal.
+   - Teks kolom tidak boleh pecah vertikal.
+   - Header/KPI/widget atas tidak disentuh.
+   ========================================================= */
+
+@media (max-width: 767px) {
+    .fi-page,
+    .fi-page-content,
+    .fi-main,
+    .fi-main-ctn {
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+
+    .fi-ta,
+    .fi-ta-ctn,
+    .fi-section:has(.fi-ta),
+    .fi-section:has(.fi-ta-ctn) {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .fi-ta-content,
+    .fi-ta-table-ctn,
+    .fi-ta-table-container,
+    .fi-ta .overflow-x-auto,
+    .fi-ta-ctn .overflow-x-auto,
+    .fi-section:has(.fi-ta) .overflow-x-auto,
+    .fi-section:has(.fi-ta-ctn) .overflow-x-auto {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior-x: contain !important;
+        scrollbar-width: thin !important;
+    }
+
+    .fi-ta table,
+    .fi-ta-ctn table,
+    table.fi-ta-table,
+    .fi-ta-table {
+        display: table !important;
+        width: 940px !important;
+        min-width: 940px !important;
+        max-width: none !important;
+        table-layout: fixed !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+    }
+
+    .fi-ta table colgroup,
+    .fi-ta-ctn table colgroup,
+    table.fi-ta-table colgroup,
+    .fi-ta-table colgroup {
+        display: none !important;
+    }
+
+    .fi-ta table thead,
+    .fi-ta table tbody,
+    .fi-ta-ctn table thead,
+    .fi-ta-ctn table tbody,
+    .fi-ta-table thead,
+    .fi-ta-table tbody {
+        display: table-header-group !important;
+    }
+
+    .fi-ta table tbody,
+    .fi-ta-ctn table tbody,
+    .fi-ta-table tbody {
+        display: table-row-group !important;
+    }
+
+    .fi-ta table tr,
+    .fi-ta-ctn table tr,
+    .fi-ta-table tr {
+        display: table-row !important;
+    }
+
+    .fi-ta table th,
+    .fi-ta table td,
+    .fi-ta-ctn table th,
+    .fi-ta-ctn table td,
+    .fi-ta-header-cell,
+    .fi-ta-cell {
+        display: table-cell !important;
+        width: auto !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        white-space: nowrap !important;
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+        vertical-align: middle !important;
+        text-align: left !important;
+    }
+
+    .fi-ta table th *,
+    .fi-ta table td *,
+    .fi-ta-ctn table th *,
+    .fi-ta-ctn table td *,
+    .fi-ta-text,
+    .fi-ta-text *,
+    .fi-ta-text-item,
+    .fi-ta-text-item *,
+    .fi-ta-col-wrp,
+    .fi-ta-col-wrp * {
+        white-space: nowrap !important;
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+        text-overflow: clip !important;
+        max-width: none !important;
+    }
+
+    .fi-ta table th:nth-child(1),
+    .fi-ta table td:nth-child(1),
+    .fi-ta-ctn table th:nth-child(1),
+    .fi-ta-ctn table td:nth-child(1) {
+        width: 270px !important;
+        min-width: 270px !important;
+        max-width: 270px !important;
+    }
+
+    .fi-ta table th:nth-child(2),
+    .fi-ta table td:nth-child(2),
+    .fi-ta-ctn table th:nth-child(2),
+    .fi-ta-ctn table td:nth-child(2) {
+        width: 230px !important;
+        min-width: 230px !important;
+        max-width: 230px !important;
+    }
+
+    .fi-ta table th:nth-child(3),
+    .fi-ta table td:nth-child(3),
+    .fi-ta-ctn table th:nth-child(3),
+    .fi-ta-ctn table td:nth-child(3) {
+        width: 190px !important;
+        min-width: 190px !important;
+        max-width: 190px !important;
+    }
+
+    .fi-ta table th:nth-child(4),
+    .fi-ta table td:nth-child(4),
+    .fi-ta-ctn table th:nth-child(4),
+    .fi-ta-ctn table td:nth-child(4) {
+        width: 200px !important;
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+
+    .fi-ta table th:last-child,
+    .fi-ta table td:last-child,
+    .fi-ta-ctn table th:last-child,
+    .fi-ta-ctn table td:last-child {
+        width: 80px !important;
+        min-width: 80px !important;
+        max-width: 80px !important;
+        text-align: center !important;
+    }
+
+    .fi-ta .fi-ta-actions,
+    .fi-ta-ctn .fi-ta-actions {
+        white-space: nowrap !important;
+        justify-content: center !important;
+    }
+
+    .ng-sales-target-month-col,
+    .ng-operational-cost-name-col {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+}
+
+@media (min-width: 768px) {
+    /* Desktop/tablet besar: kembalikan sedikit ruang kolom Bulan Target Penjualan sesuai desain sebelumnya. */
+    .ng-sales-target-month-col {
+        padding-left: 96px !important;
+        padding-right: 12px !important;
+    }
+}
+
+/* =========================================================
+   FIX ADMIN MOBILE/TABLET SIDEBAR
+   Samakan sidebar HP & tablet dengan desktop + hide search
+========================================================= */
+
+@media (max-width: 1023px) {
+    /*
+    |--------------------------------------------------------------------------
+    | Hide Sidebar Search on Mobile / Tablet
+    |--------------------------------------------------------------------------
+    */
+    .fi-sidebar .fi-global-search,
+    .fi-sidebar .fi-global-search-field,
+    .fi-sidebar [data-global-search],
+    .fi-sidebar form[role="search"],
+    .fi-sidebar .fi-input-wrp:has(input[type="search"]),
+    .fi-sidebar .fi-input-wrp:has(input[placeholder*="Search"]),
+    .fi-sidebar .fi-input-wrp:has(input[placeholder*="search"]) {
+        display: none !important;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mobile / Tablet Sidebar Glass Orange
+    |--------------------------------------------------------------------------
+    */
+    .fi-sidebar {
+        color: #1f2937 !important;
+
+        background:
+            radial-gradient(circle at 28% 8%, rgba(255, 255, 255, 0.76), transparent 30%),
+            radial-gradient(circle at 95% 82%, rgba(255, 128, 0, 0.18), transparent 38%),
+            linear-gradient(145deg, rgba(255, 239, 219, 0.92), rgba(255, 224, 194, 0.72)) !important;
+
+        border-right: 1px solid rgba(255, 255, 255, 0.72) !important;
+
+        box-shadow:
+            20px 0 70px rgba(63, 40, 24, 0.18),
+            inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+
+        backdrop-filter: blur(28px) saturate(150%) !important;
+        -webkit-backdrop-filter: blur(28px) saturate(150%) !important;
+    }
+
+    .fi-sidebar::before {
+        content: "" !important;
+        position: absolute !important;
+        inset: 0 !important;
+        z-index: 0 !important;
+        pointer-events: none !important;
+
+        background:
+            linear-gradient(
+                115deg,
+                transparent 0 44%,
+                rgba(255, 255, 255, 0.32) 44.2% 45%,
+                transparent 45.4% 100%
+            ) !important;
+    }
+
+    .fi-sidebar > * {
+        position: relative !important;
+        z-index: 1 !important;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sidebar Header / Logo
+    |--------------------------------------------------------------------------
+    */
+    .fi-sidebar-header {
+        min-height: 4.4rem !important;
+        padding: 1rem 1rem 0.4rem !important;
+        background: transparent !important;
+        border-bottom: 0 !important;
+    }
+
+    .fi-sidebar-header .fi-logo,
+    .fi-sidebar-header a {
+        color: #111827 !important;
+        font-size: 1.15rem !important;
+        font-weight: 950 !important;
+        letter-spacing: -0.04em !important;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sidebar Menu
+    |--------------------------------------------------------------------------
+    */
+    .fi-sidebar-nav {
+        padding: 0.45rem 0.85rem 0.85rem !important;
+        gap: 0.3rem !important;
+    }
+
+    .fi-sidebar-nav-groups {
+        gap: 0.35rem !important;
+    }
+
+    .fi-sidebar-group {
+        margin-top: 0.25rem !important;
+        margin-bottom: 0.1rem !important;
+        padding: 0 !important;
+    }
+
+    .fi-sidebar-group-label {
+        color: rgba(75, 85, 99, 0.72) !important;
+        font-size: 0.8rem !important;
+        font-weight: 900 !important;
+        letter-spacing: 0.01em !important;
+    }
+
+    .fi-sidebar-group-button {
+        min-height: 2rem !important;
+        padding-top: 0.15rem !important;
+        padding-bottom: 0.15rem !important;
+    }
+
+    .fi-sidebar-item {
+        margin-top: 0.05rem !important;
+        margin-bottom: 0.08rem !important;
+    }
+
+    .fi-sidebar-item a {
+        min-height: 2.55rem !important;
+        padding: 0.45rem 0.7rem !important;
+
+        border-radius: 1rem !important;
+
+        color: rgba(31, 41, 55, 0.76) !important;
+        background: transparent !important;
+
+        font-size: 0.9rem !important;
+        font-weight: 760 !important;
+        line-height: 1.18 !important;
+
+        transition:
+            transform 180ms ease,
+            background 180ms ease,
+            box-shadow 180ms ease,
+            color 180ms ease !important;
+    }
+
+    .fi-sidebar-item-label {
+        line-height: 1.18 !important;
+    }
+
+    .fi-sidebar-item svg {
+        width: 1.15rem !important;
+        height: 1.15rem !important;
+        color: rgba(148, 163, 184, 0.95) !important;
+    }
+
+    .fi-sidebar-item a:hover {
+        color: #f97316 !important;
+        background: rgba(255, 255, 255, 0.56) !important;
+
+        box-shadow:
+            0 12px 28px rgba(120, 53, 15, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+    }
+
+    .fi-sidebar-item-active a,
+    .fi-sidebar-item.fi-active a,
+    .fi-sidebar-item a[aria-current="page"] {
+        color: #ffffff !important;
+
+        background:
+            linear-gradient(135deg, #ff8a00, #ff6a00) !important;
+
+        box-shadow:
+            0 16px 34px rgba(255, 106, 0, 0.28),
+            inset 0 1px 0 rgba(255, 255, 255, 0.42) !important;
+    }
+
+    .fi-sidebar-item-active svg,
+    .fi-sidebar-item.fi-active svg,
+    .fi-sidebar-item a[aria-current="page"] svg {
+        color: #ffffff !important;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sidebar Footer / User Menu
+    |--------------------------------------------------------------------------
+    */
+    .fi-sidebar-footer {
+        padding: 0.7rem 0.85rem 1rem !important;
+        background: transparent !important;
+    }
+
+    .fi-sidebar .fi-user-menu {
+        width: 100% !important;
+        min-height: 3rem !important;
+
+        border-radius: 1.2rem !important;
+
+        background: rgba(255, 255, 255, 0.62) !important;
+        border: 1px solid rgba(255, 255, 255, 0.76) !important;
+
+        box-shadow:
+            0 14px 34px rgba(120, 53, 15, 0.10),
+            inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+
+        backdrop-filter: blur(18px) saturate(145%) !important;
+        -webkit-backdrop-filter: blur(18px) saturate(145%) !important;
+    }
+}
+
+
+/* =========================================================
+   FINAL FORCE SIDEBAR MOBILE/TABLET - SOFT ORANGE CREAM
+   Warna merata, tidak patah-patah per bagian
+========================================================= */
+
+@media (max-width: 1023px) {
+    html body .fi-sidebar,
+    html body aside.fi-sidebar {
+        position: fixed !important;
+        isolation: isolate !important;
+        overflow: hidden !important;
+
+        background: #ffe6cb !important;
+        background-color: #ffe6cb !important;
+
+        border-right: 1px solid rgba(255, 255, 255, 0.78) !important;
+
+        box-shadow:
+            22px 0 72px rgba(90, 48, 20, 0.18),
+            inset 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+
+        backdrop-filter: blur(20px) saturate(140%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+    }
+
+    html body .fi-sidebar::before {
+        content: "" !important;
+        position: absolute !important;
+        inset: 0 !important;
+        z-index: 0 !important;
+        pointer-events: none !important;
+
+        background:
+            radial-gradient(circle at 18% 8%, rgba(255, 255, 255, 0.55), transparent 30%),
+            radial-gradient(circle at 90% 88%, rgba(255, 169, 91, 0.32), transparent 42%),
+            linear-gradient(180deg, #fff0df 0%, #ffe6cb 48%, #ffd8b2 100%) !important;
+
+        opacity: 1 !important;
+    }
+
+    html body .fi-sidebar::after {
+        content: "" !important;
+        position: absolute !important;
+        inset: 0 !important;
+        z-index: 0 !important;
+        pointer-events: none !important;
+
+        background:
+            linear-gradient(
+                115deg,
+                transparent 0 45%,
+                rgba(255, 255, 255, 0.20) 45.3% 46%,
+                transparent 46.4% 100%
+            ) !important;
+
+        opacity: 0.55 !important;
+    }
+
+    html body .fi-sidebar > *,
+    html body .fi-sidebar > div,
+    html body .fi-sidebar-header,
+    html body .fi-sidebar-nav,
+    html body .fi-sidebar-nav-groups,
+    html body .fi-sidebar-group,
+    html body .fi-sidebar-group-button,
+    html body .fi-sidebar-group-items,
+    html body .fi-sidebar-footer {
+        position: relative !important;
+        z-index: 1 !important;
+
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+
+        box-shadow: none !important;
+        border-color: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    html body .fi-sidebar .fi-global-search,
+    html body .fi-sidebar .fi-global-search-field,
+    html body .fi-sidebar [data-global-search],
+    html body .fi-sidebar form[role="search"],
+    html body .fi-sidebar .fi-input-wrp:has(input[type="search"]),
+    html body .fi-sidebar .fi-input-wrp:has(input[placeholder*="Search"]),
+    html body .fi-sidebar .fi-input-wrp:has(input[placeholder*="search"]) {
+        display: none !important;
+    }
+
+    html body .fi-sidebar-header {
+        min-height: 4.35rem !important;
+        padding: 1rem 1rem 0.45rem !important;
+    }
+
+    html body .fi-sidebar-header .fi-logo,
+    html body .fi-sidebar-header a {
+        color: #121212 !important;
+        font-size: 1.12rem !important;
+        font-weight: 950 !important;
+        letter-spacing: -0.04em !important;
+    }
+
+    html body .fi-sidebar-group-label {
+        color: rgba(91, 66, 44, 0.72) !important;
+        font-size: 0.78rem !important;
+        font-weight: 900 !important;
+    }
+
+    html body .fi-sidebar-item a {
+        min-height: 2.55rem !important;
+        padding: 0.45rem 0.7rem !important;
+        border-radius: 1rem !important;
+
+        color: rgba(45, 35, 27, 0.82) !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+
+        font-size: 0.9rem !important;
+        font-weight: 760 !important;
+        line-height: 1.18 !important;
+
+        box-shadow: none !important;
+    }
+
+    html body .fi-sidebar-item svg {
+        width: 1.12rem !important;
+        height: 1.12rem !important;
+        color: rgba(126, 96, 70, 0.46) !important;
+    }
+
+    html body .fi-sidebar-item a:hover {
+        color: #df6200 !important;
+        background: rgba(255, 255, 255, 0.36) !important;
+        box-shadow:
+            0 10px 24px rgba(126, 68, 24, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+    }
+
+    html body .fi-sidebar-item-active a,
+    html body .fi-sidebar-item.fi-active a,
+    html body .fi-sidebar-item a[aria-current="page"] {
+        color: #ffffff !important;
+        background: linear-gradient(135deg, #ff8726, #ff7218) !important;
+        box-shadow:
+            0 14px 30px rgba(255, 114, 24, 0.24),
+            inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
+    }
+
+    html body .fi-sidebar-item-active svg,
+    html body .fi-sidebar-item.fi-active svg,
+    html body .fi-sidebar-item a[aria-current="page"] svg {
+        color: #ffffff !important;
+    }
+
+    html body .fi-sidebar-footer {
+        padding: 0.7rem 0.85rem 1rem !important;
+    }
+
+    html body .fi-sidebar .fi-user-menu {
+        width: 100% !important;
+        min-height: 3rem !important;
+        border-radius: 1.15rem !important;
+
+        background: rgba(255, 255, 255, 0.48) !important;
+        border: 1px solid rgba(255, 255, 255, 0.76) !important;
+
+        box-shadow:
+            0 12px 28px rgba(126, 68, 24, 0.10),
+            inset 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+
+        backdrop-filter: blur(14px) saturate(135%) !important;
+        -webkit-backdrop-filter: blur(14px) saturate(135%) !important;
+    }
+}
+

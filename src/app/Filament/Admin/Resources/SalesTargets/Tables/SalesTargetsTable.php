@@ -27,13 +27,14 @@ class SalesTargetsTable
                     ->date('M Y')
                     ->sortable()
                     ->weight('bold')
+                    ->wrap(false)
                     ->extraHeaderAttributes([
-                        'class' => 'ng-sales-target-month-col',
-                        'style' => 'width: 28%; max-width: 28%; padding-left: 148px !important; padding-right: 8px !important; text-align: left !important;',
+                        'class' => 'ng-mobile-table-col ng-admin-sales-target-col ng-sales-target-month-col',
+                        'style' => 'width: 180px !important; min-width: 180px !important; max-width: 180px !important; padding-left: 24px !important; padding-right: 16px !important; text-align: left !important; white-space: nowrap !important;',
                     ])
                     ->extraCellAttributes([
-                        'class' => 'ng-sales-target-month-col',
-                        'style' => 'width: 28%; max-width: 28%; padding-left: 148px !important; padding-right: 8px !important; text-align: left !important;',
+                        'class' => 'ng-mobile-table-col ng-admin-sales-target-col ng-sales-target-month-col',
+                        'style' => 'width: 180px !important; min-width: 180px !important; max-width: 180px !important; padding-left: 24px !important; padding-right: 16px !important; text-align: left !important; white-space: nowrap !important; word-break: normal !important; overflow-wrap: normal !important;',
                     ]),
 
                 TextColumn::make('target_revenue')
@@ -42,11 +43,14 @@ class SalesTargetsTable
                     ->alignEnd()
                     ->formatStateUsing(fn ($state): string => self::rupiah((int) $state))
                     ->description(fn ($record): string => 'Aktual ' . self::rupiah(self::monthlyRevenueForTarget($record)))
+                    ->wrap(false)
                     ->extraHeaderAttributes([
-                        'style' => 'width: 30%;',
+                        'class' => 'ng-mobile-table-col ng-admin-sales-target-col ng-sales-target-revenue-col',
+                        'style' => 'width: 240px !important; min-width: 240px !important; max-width: 240px !important; white-space: nowrap !important;',
                     ])
                     ->extraCellAttributes([
-                        'style' => 'width: 30%; max-width: 30%;',
+                        'class' => 'ng-mobile-table-col ng-admin-sales-target-col ng-sales-target-revenue-col',
+                        'style' => 'width: 240px !important; min-width: 240px !important; max-width: 240px !important; white-space: nowrap !important; word-break: normal !important; overflow-wrap: normal !important;',
                     ]),
 
                 TextColumn::make('progress_revenue')
@@ -55,11 +59,14 @@ class SalesTargetsTable
                     ->alignEnd()
                     ->description(fn ($record): string => self::achievementStatusLabel(self::achievementStatusKey($record)))
                     ->sortable(false)
+                    ->wrap(false)
                     ->extraHeaderAttributes([
-                        'style' => 'width: 20%;',
+                        'class' => 'ng-mobile-table-col ng-admin-sales-target-col ng-sales-target-progress-col',
+                        'style' => 'width: 190px !important; min-width: 190px !important; max-width: 190px !important; white-space: nowrap !important;',
                     ])
                     ->extraCellAttributes([
-                        'style' => 'width: 20%; max-width: 20%;',
+                        'class' => 'ng-mobile-table-col ng-admin-sales-target-col ng-sales-target-progress-col',
+                        'style' => 'width: 190px !important; min-width: 190px !important; max-width: 190px !important; white-space: nowrap !important; word-break: normal !important; overflow-wrap: normal !important;',
                     ]),
 
                 TextColumn::make('revenue_gap')
@@ -70,11 +77,14 @@ class SalesTargetsTable
                     ->color(fn ($state): string => ((int) $state) >= 0 ? 'success' : 'danger')
                     ->description(fn ($record): string => 'Terhadap target')
                     ->sortable(false)
+                    ->wrap(false)
                     ->extraHeaderAttributes([
-                        'style' => 'width: 20%;',
+                        'class' => 'ng-mobile-table-col ng-admin-sales-target-col ng-sales-target-gap-col',
+                        'style' => 'width: 200px !important; min-width: 200px !important; max-width: 200px !important; white-space: nowrap !important;',
                     ])
                     ->extraCellAttributes([
-                        'style' => 'width: 20%; max-width: 20%;',
+                        'class' => 'ng-mobile-table-col ng-admin-sales-target-col ng-sales-target-gap-col',
+                        'style' => 'width: 200px !important; min-width: 200px !important; max-width: 200px !important; white-space: nowrap !important; word-break: normal !important; overflow-wrap: normal !important;',
                     ]),
             ])
             ->headerActions([])

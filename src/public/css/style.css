@@ -5400,580 +5400,362 @@ body.pos-login-page::after {
 }
 
 /* =========================================================
-   RESPONSIVE POS LAYOUT FIX
-   Desktop tetap aman, tablet/mobile jadi rapih
-========================================================= */
+   RESPONSIVE POS RESET - DIBUAT ULANG DARI NOL
+   Patokan:
+   - Desktop/laptop di atas 1180px tetap memakai tampilan lama.
+   - Tablet/iPad menjadi layout atas + produk 2 kolom.
+   - HP menjadi bottom navigation + cart drawer bawah.
+   ========================================================= */
 
-/* Tablet besar / iPad / layar sedang */
-@media (max-width: 1180px) {
-  html,
-  body {
-    height: auto !important;
+/* Tablet / iPad / layar sedang */
+@media (min-width: 761px) and (max-width: 1180px) {
+  body:has(.pos-luxury-area) {
+    width: 100% !important;
+    height: 100dvh !important;
     min-height: 100dvh !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
 
-  body {
+  body:has(.pos-luxury-area) .app-shell,
+  body:has(.pos-luxury-area) .app-shell:not(.single-content),
+  body:has(.pos-luxury-area) .app-shell.single-content {
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+    gap: 14px !important;
     padding: 14px !important;
+    overflow: hidden !important;
   }
 
-  .app-shell {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    min-height: calc(100dvh - 28px) !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 16px !important;
-
-    overflow: visible !important;
-  }
-
-  .sidebar {
-    width: 100% !important;
-    min-width: 0 !important;
-    height: auto !important;
-    min-height: 0 !important;
-
+  body:has(.pos-luxury-area) .sidebar,
+  body:has(.pos-luxury-area) body.history-page .sidebar,
+  body:has(.pos-luxury-area) body.settings-page .sidebar {
     position: relative !important;
-    padding: 18px !important;
-    border-radius: 26px !important;
-
-    display: block !important;
-    overflow: visible !important;
-  }
-
-  .brand,
-  .brand-with-logo {
     width: 100% !important;
-    height: 74px !important;
-    margin-bottom: 16px !important;
-    justify-content: flex-start !important;
-  }
-
-  .sidebar nav,
-  .sidebar-menu {
-    width: 100% !important;
-
-    display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 12px !important;
-  }
-
-  .sidebar a,
-  .sidebar .nav-link,
-  .sidebar button,
-  .sidebar .logout-btn {
-    width: 100% !important;
-    height: 54px !important;
-    margin: 0 !important;
-  }
-
-  .content,
-  .main-content,
-  .pos-content,
-  .pos-panel,
-  .menu-panel,
-  .right-panel {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    height: auto !important;
-    min-height: 720px !important;
-    overflow: hidden !important;
-  }
-
-  .topbar,
-  .pos-topbar,
-  .header-bar,
-  .luxury-header {
     height: auto !important;
     min-height: 0 !important;
-
-    display: flex !important;
+    display: grid !important;
+    grid-template-columns: minmax(178px, auto) minmax(0, 1fr) auto !important;
     align-items: center !important;
-    flex-wrap: wrap !important;
     gap: 14px !important;
-
-    padding: 18px 22px !important;
-  }
-
-  .search-box,
-  .search-wrap,
-  .search-area {
-    flex: 1 1 320px !important;
-    max-width: none !important;
-    width: auto !important;
-  }
-
-  .cart-btn {
-    flex: 0 0 auto !important;
-  }
-
-  .user-pill,
-  .profile-pill,
-  .owner-pill {
-    flex: 0 0 auto !important;
-  }
-
-  .menu-area,
-  .abstract-area,
-  .pos-luxury-area {
-    height: auto !important;
-    min-height: 620px !important;
-    overflow: visible !important;
-    padding: 22px 28px 34px !important;
-  }
-
-  .category-tabs,
-  .luxury-category-tabs {
-    width: 100% !important;
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    gap: 12px !important;
-
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-
-    padding-bottom: 16px !important;
-    scrollbar-width: none !important;
-  }
-
-  .category-tabs::-webkit-scrollbar,
-  .luxury-category-tabs::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  .category-tabs button,
-  .luxury-category-tabs button,
-  .category-chip {
-    flex: 0 0 auto !important;
-    white-space: nowrap !important;
-  }
-
-  .product-grid,
-  .luxury-product-grid {
-    width: 100% !important;
-    height: auto !important;
-    max-height: none !important;
-    min-height: 0 !important;
-
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    grid-auto-rows: 166px !important;
-
-    column-gap: 18px !important;
-    row-gap: 16px !important;
-
-    overflow: visible !important;
-    padding: 0 0 36px 0 !important;
-  }
-
-  .product-card {
-    width: 100% !important;
-    height: 166px !important;
-    min-height: 166px !important;
-    max-height: 166px !important;
-
-    padding: 16px !important;
-    gap: 14px !important;
-
-    overflow: hidden !important;
-  }
-
-  .product-card .drink-img {
-    width: 104px !important;
-    height: 104px !important;
-    min-width: 104px !important;
-  }
-
-  .product-card .product-info {
-    height: 120px !important;
-    min-height: 120px !important;
-
-    display: grid !important;
-    grid-template-rows: 34px 38px 40px !important;
-    gap: 4px !important;
-  }
-
-  .product-card h3,
-  .product-card .product-info h3 {
-    font-size: 14.5px !important;
-    line-height: 1.12 !important;
-  }
-
-  .product-card .price {
-    font-size: 13.5px !important;
-  }
-
-  .product-card .add-btn {
-    font-size: 12px !important;
-    padding: 0 18px !important;
-  }
-}
-
-/* Tablet kecil / HP landscape */
-@media (max-width: 760px) {
-  body {
-    padding: 10px !important;
-  }
-
-  .app-shell {
-    gap: 12px !important;
-  }
-
-  .sidebar {
-    padding: 14px !important;
-    border-radius: 22px !important;
-  }
-
-  .brand,
-  .brand-with-logo {
-    height: 68px !important;
-    margin-bottom: 12px !important;
-  }
-
-  .sidebar nav,
-  .sidebar-menu {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 10px !important;
-  }
-
-  .content,
-  .main-content,
-  .pos-content,
-  .pos-panel,
-  .menu-panel,
-  .right-panel {
-    min-height: 680px !important;
+    padding: 14px 16px !important;
     border-radius: 24px !important;
+    overflow: visible !important;
   }
 
-  .topbar,
-  .pos-topbar,
-  .header-bar,
-  .luxury-header {
-    padding: 16px !important;
-    gap: 12px !important;
+  body:has(.pos-luxury-area) .brand,
+  body:has(.pos-luxury-area) .brand.brand-with-logo {
+    width: auto !important;
+    min-width: 178px !important;
+    max-width: 220px !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    margin: 0 !important;
+    padding: 8px 10px !important;
+    border-radius: 18px !important;
+    gap: 8px !important;
   }
 
-  .search-box,
-  .search-wrap,
-  .search-area {
-    flex: 1 1 100% !important;
-    width: 100% !important;
-  }
-
-  .cart-btn {
-    flex: 1 1 calc(50% - 8px) !important;
-    justify-content: center !important;
-  }
-
-  .user-pill,
-  .profile-pill,
-  .owner-pill {
-    flex: 1 1 calc(50% - 8px) !important;
-    min-width: 0 !important;
-  }
-
-  .menu-area,
-  .abstract-area,
-  .pos-luxury-area {
-    padding: 18px 16px 30px !important;
-    min-height: 560px !important;
-  }
-
-  .product-grid,
-  .luxury-product-grid {
-    grid-template-columns: 1fr !important;
-    grid-auto-rows: 156px !important;
-    row-gap: 14px !important;
-  }
-
-  .product-card {
-    height: 156px !important;
-    min-height: 156px !important;
-    max-height: 156px !important;
-
-    padding: 14px !important;
-    gap: 12px !important;
-  }
-
-  .product-card .drink-img {
-    width: 96px !important;
-    height: 96px !important;
-    min-width: 96px !important;
-  }
-
-  .product-card .product-info {
-    height: 116px !important;
-    min-height: 116px !important;
-    grid-template-rows: 32px 36px 38px !important;
-    gap: 4px !important;
-  }
-
-  .product-card h3,
-  .product-card .product-info h3 {
-    font-size: 14px !important;
-    line-height: 1.12 !important;
-  }
-
-  .product-card .price {
-    font-size: 13px !important;
-  }
-
-  .product-card .size-label,
-  .product-card .regular-size,
-  .product-card .size-row span {
-    font-size: 11px !important;
-  }
-
-  .product-card .card-footer {
-    grid-template-columns: auto minmax(112px, 1fr) !important;
-    gap: 10px !important;
-  }
-
-  .product-card .qty-row {
-    gap: 6px !important;
-  }
-
-  .product-card .qty-btn {
-    width: 30px !important;
-    height: 30px !important;
-    min-width: 30px !important;
-    min-height: 30px !important;
-  }
-
-  .product-card .add-btn {
-    height: 36px !important;
-    min-height: 36px !important;
-    padding: 0 14px !important;
-    font-size: 11.5px !important;
-  }
-}
-
-/* HP portrait kecil */
-@media (max-width: 480px) {
-  body {
-    padding: 8px !important;
-  }
-
-  .sidebar {
-    padding: 12px !important;
-  }
-
-  .brand,
-  .brand-with-logo {
-    height: 64px !important;
-  }
-
-  .sidebar nav,
-  .sidebar-menu {
-    grid-template-columns: 1fr !important;
-  }
-
-  .sidebar a,
-  .sidebar .nav-link,
-  .sidebar button,
-  .sidebar .logout-btn {
-    height: 48px !important;
-  }
-
-  .topbar,
-  .pos-topbar,
-  .header-bar,
-  .luxury-header {
-    padding: 14px !important;
-  }
-
-  .cart-btn,
-  .user-pill,
-  .profile-pill,
-  .owner-pill {
-    flex: 1 1 100% !important;
-    width: 100% !important;
-  }
-
-  .menu-area,
-  .abstract-area,
-  .pos-luxury-area {
-    padding: 16px 12px 28px !important;
-  }
-
-  .product-grid,
-  .luxury-product-grid {
-    grid-auto-rows: 150px !important;
-    row-gap: 12px !important;
-  }
-
-  .product-card {
-    height: 150px !important;
-    min-height: 150px !important;
-    max-height: 150px !important;
-
-    padding: 12px !important;
-    gap: 10px !important;
-    border-radius: 20px !important;
-  }
-
-  .product-card .drink-img {
-    width: 88px !important;
-    height: 88px !important;
-    min-width: 88px !important;
+  body:has(.pos-luxury-area) .brand-logo {
+    width: 42px !important;
+    height: 42px !important;
+    flex-basis: 42px !important;
     border-radius: 14px !important;
   }
 
-  .product-card .product-info {
-    height: 112px !important;
-    min-height: 112px !important;
-    grid-template-rows: 31px 35px 36px !important;
-    gap: 3px !important;
+  body:has(.pos-luxury-area) .brand strong,
+  body:has(.pos-luxury-area) .brand-text strong {
+    font-size: 22px !important;
+    letter-spacing: -0.8px !important;
   }
 
-  .product-card h3,
-  .product-card .product-info h3 {
-    font-size: 13.5px !important;
+  body:has(.pos-luxury-area) .brand small,
+  body:has(.pos-luxury-area) .brand-text small {
+    margin-top: 4px !important;
+    font-size: 8.5px !important;
+    letter-spacing: 0.16em !important;
   }
 
-  .product-card .price {
-    font-size: 12.5px !important;
+  body:has(.pos-luxury-area) .nav-menu {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 0 2px !important;
+    scrollbar-width: none !important;
   }
 
-  .product-card .size-row {
-    gap: 6px !important;
+  body:has(.pos-luxury-area) .nav-menu::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .logout-form {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.pos-luxury-area) .nav-item,
+  body:has(.pos-luxury-area) .logout-button {
+    min-width: max-content !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    gap: 8px !important;
+    padding: 0 14px !important;
+    margin: 0 !important;
+    border-radius: 16px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  body:has(.pos-luxury-area) .nav-icon {
+    width: 18px !important;
+    height: 18px !important;
+    flex-basis: 18px !important;
+    font-size: 15px !important;
+  }
+
+  body:has(.pos-luxury-area) .nav-item.active::after {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .content,
+  body:has(.pos-luxury-area) .app-shell.single-content .content {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    border-radius: 24px !important;
     overflow: hidden !important;
   }
 
-  .product-card .regular-size {
-    max-width: 96px !important;
+  body:has(.pos-luxury-area) .topbar,
+  body:has(.pos-luxury-area) .app-shell.single-content .topbar {
+    height: 82px !important;
+    min-height: 82px !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 14px !important;
+    padding: 0 22px !important;
+  }
+
+  body:has(.pos-luxury-area) .search-box {
+    width: auto !important;
+    max-width: none !important;
+    flex: 1 1 auto !important;
+    height: 50px !important;
+    min-height: 50px !important;
+  }
+
+  body:has(.pos-luxury-area) .topbar-spacer {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .cart-toggle {
+    flex: 0 0 auto !important;
+    min-height: 50px !important;
+    height: 50px !important;
+    padding: 0 20px !important;
+    font-size: 13px !important;
+  }
+
+  body:has(.pos-luxury-area) .profile-mini {
+    flex: 0 0 auto !important;
+    height: 50px !important;
+    max-width: 210px !important;
+    padding: 7px 12px 7px 7px !important;
+  }
+
+  body:has(.pos-luxury-area) .profile-mini strong,
+  body:has(.pos-luxury-area) .profile-mini p {
+    max-width: 130px !important;
+  }
+
+  body:has(.pos-luxury-area) .avatar {
+    width: 38px !important;
+    height: 38px !important;
+    flex-basis: 38px !important;
+  }
+
+  body:has(.pos-luxury-area) .menu-area,
+  body:has(.pos-luxury-area) .abstract-area,
+  body:has(.pos-luxury-area) .pos-luxury-area {
+    height: calc(100% - 82px) !important;
+    min-height: 0 !important;
+    padding: 18px 22px 22px !important;
     overflow: hidden !important;
-    text-overflow: ellipsis !important;
   }
 
-  .product-card .qty-btn {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
-    min-height: 28px !important;
+  body:has(.pos-luxury-area) .category-tabs,
+  body:has(.pos-luxury-area) .luxury-category-tabs {
+    gap: 10px !important;
+    width: 100% !important;
+    padding: 0 0 14px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    flex-wrap: nowrap !important;
+    scrollbar-width: none !important;
   }
 
-  .product-card .add-btn {
-    height: 34px !important;
-    min-height: 34px !important;
-    padding: 0 12px !important;
-    font-size: 11px !important;
+  body:has(.pos-luxury-area) .category-tabs::-webkit-scrollbar,
+  body:has(.pos-luxury-area) .luxury-category-tabs::-webkit-scrollbar {
+    display: none !important;
   }
-}
 
-/* =========================================================
-   FIX TABLET / IPAD PRODUCT CARD
-   Add to Cart tidak kepotong di mode 2 kolom tablet
-========================================================= */
+  body:has(.pos-luxury-area) .category-tabs button,
+  body:has(.pos-luxury-area) .luxury-category-tabs button {
+    flex: 0 0 auto !important;
+    min-height: 42px !important;
+    height: 42px !important;
+    padding: 0 16px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
 
-@media (min-width: 761px) and (max-width: 1180px) {
-  .product-grid,
-  .luxury-product-grid {
+  body:has(.pos-luxury-area) .product-grid,
+  body:has(.pos-luxury-area) .luxury-product-grid {
+    width: 100% !important;
+    height: calc(100% - 56px) !important;
+    max-height: calc(100% - 56px) !important;
+    min-height: 0 !important;
+    display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     grid-auto-rows: 174px !important;
-    column-gap: 16px !important;
-    row-gap: 16px !important;
+    gap: 14px !important;
+    align-content: start !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 2px 0 28px 0 !important;
+    scrollbar-width: none !important;
   }
 
-  .product-card {
+  body:has(.pos-luxury-area) .product-grid::-webkit-scrollbar,
+  body:has(.pos-luxury-area) .luxury-product-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card {
+    width: 100% !important;
     height: 174px !important;
     min-height: 174px !important;
     max-height: 174px !important;
-
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 14px !important;
     padding: 14px !important;
-    gap: 12px !important;
-
+    border-radius: 22px !important;
     overflow: hidden !important;
   }
 
-  .product-card .drink-img {
-    width: 98px !important;
-    height: 98px !important;
-    min-width: 98px !important;
-    max-width: 98px !important;
-    border-radius: 15px !important;
+  body:has(.pos-luxury-area) .product-card .drink-img {
+    width: 100px !important;
+    height: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    border-radius: 16px !important;
   }
 
-  .product-card .product-info {
-    min-width: 0 !important;
+  body:has(.pos-luxury-area) .product-card .product-info {
+    flex: 1 1 auto !important;
     width: 100% !important;
-    height: 124px !important;
-    min-height: 124px !important;
-
+    min-width: 0 !important;
+    height: 126px !important;
+    min-height: 126px !important;
     display: grid !important;
     grid-template-rows: 36px 38px 40px !important;
+    align-content: center !important;
     gap: 5px !important;
     overflow: visible !important;
   }
 
-  .product-card .product-head {
-    min-width: 0 !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    gap: 8px !important;
-  }
-
-  .product-card h3,
-  .product-card .product-info h3 {
-    font-size: 14px !important;
-    line-height: 1.12 !important;
-    max-height: 34px !important;
-  }
-
-  .product-card .price {
-    font-size: 12.8px !important;
-    white-space: nowrap !important;
-  }
-
-  .product-card .size-row {
-    min-width: 0 !important;
+  body:has(.pos-luxury-area) .product-card .product-head {
     height: 36px !important;
     min-height: 36px !important;
-    gap: 6px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: start !important;
+    gap: 8px !important;
     overflow: hidden !important;
   }
 
-  .product-card .size-label {
-    font-size: 11px !important;
-    flex: 0 0 auto !important;
+  body:has(.pos-luxury-area) .product-card h3,
+  body:has(.pos-luxury-area) .product-card .product-info h3 {
+    max-height: 34px !important;
+    font-size: 14px !important;
+    line-height: 1.12 !important;
   }
 
-  .product-card .regular-size,
-  .product-card .size-row span {
-    font-size: 11px !important;
-    min-width: 0 !important;
-    max-width: 115px !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+  body:has(.pos-luxury-area) .product-card .price {
+    font-size: 12.8px !important;
+    line-height: 1.12 !important;
     white-space: nowrap !important;
   }
 
-  .product-card .card-footer {
-    min-width: 0 !important;
+  body:has(.pos-luxury-area) .product-card .size-row {
     width: 100% !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+  }
 
+  body:has(.pos-luxury-area) .product-card .size-row::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .size-label {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    font-size: 11px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .regular-size,
+  body:has(.pos-luxury-area) .product-card .size-row span {
+    min-width: 0 !important;
+    max-width: 120px !important;
+    overflow: hidden !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .size-btn {
+    flex: 0 0 auto !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 14px !important;
+    font-size: 11px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .card-footer {
+    width: 100% !important;
     height: 40px !important;
     min-height: 40px !important;
-
     display: grid !important;
-    grid-template-columns: auto minmax(92px, 1fr) !important;
+    grid-template-columns: auto minmax(96px, 1fr) !important;
     align-items: center !important;
     gap: 8px !important;
-
     overflow: visible !important;
   }
 
-  .product-card .qty-row {
+  body:has(.pos-luxury-area) .product-card .qty-row {
+    flex-wrap: nowrap !important;
     gap: 6px !important;
-    flex: 0 0 auto !important;
   }
 
-  .product-card .qty-btn {
+  body:has(.pos-luxury-area) .product-card .qty-btn {
     width: 29px !important;
     height: 29px !important;
     min-width: 29px !important;
@@ -5981,24 +5763,1788 @@ body.pos-login-page::after {
     font-size: 14px !important;
   }
 
-  .product-card .qty-value,
-  .product-card .qty-number {
-    min-width: 14px !important;
-    font-size: 13px !important;
-  }
-
-  .product-card .add-btn {
+  body:has(.pos-luxury-area) .product-card .add-btn {
     width: 100% !important;
     min-width: 0 !important;
-
     height: 36px !important;
     min-height: 36px !important;
-
-    padding: 0 10px !important;
+    padding: 0 12px !important;
     font-size: 11px !important;
     white-space: nowrap !important;
-
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
+}
+
+/* HP / mobile */
+@media (max-width: 760px) {
+  body:has(.pos-luxury-area) {
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body:has(.pos-luxury-area) .app-shell,
+  body:has(.pos-luxury-area) .app-shell:not(.single-content),
+  body:has(.pos-luxury-area) .app-shell.single-content {
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    display: block !important;
+    padding: 10px 10px 84px !important;
+    overflow: hidden !important;
+  }
+
+  body:has(.pos-luxury-area) .sidebar {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 10px !important;
+    z-index: 190 !important;
+    width: auto !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 58px !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 8px !important;
+    border-radius: 24px !important;
+    overflow: hidden !important;
+  }
+
+  body:has(.pos-luxury-area) .brand,
+  body:has(.pos-luxury-area) .brand.brand-with-logo {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .nav-menu {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  body:has(.pos-luxury-area) .logout-form {
+    width: 58px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.pos-luxury-area) .nav-item,
+  body:has(.pos-luxury-area) .logout-button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    padding: 0 4px !important;
+    margin: 0 !important;
+    border-radius: 18px !important;
+    font-size: 9.5px !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  body:has(.pos-luxury-area) .logout-button span:last-child {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .nav-icon {
+    width: 17px !important;
+    height: 17px !important;
+    flex: 0 0 auto !important;
+    font-size: 15px !important;
+  }
+
+  body:has(.pos-luxury-area) .nav-item.active::after {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .content,
+  body:has(.pos-luxury-area) .app-shell.single-content .content {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    border-radius: 24px !important;
+    overflow: hidden !important;
+  }
+
+  body:has(.pos-luxury-area) .topbar,
+  body:has(.pos-luxury-area) .app-shell.single-content .topbar {
+    height: 116px !important;
+    min-height: 116px !important;
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    grid-template-areas:
+      "search search"
+      "cart cart" !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 14px !important;
+  }
+
+  body:has(.pos-luxury-area) .topbar-spacer,
+  body:has(.pos-luxury-area) .profile-mini {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .search-box {
+    grid-area: search !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 46px !important;
+    min-height: 46px !important;
+    padding: 0 15px !important;
+  }
+
+  body:has(.pos-luxury-area) .search-box input {
+    font-size: 13px !important;
+  }
+
+  body:has(.pos-luxury-area) .cart-toggle {
+    grid-area: cart !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    padding: 0 16px !important;
+    font-size: 12px !important;
+  }
+
+  body:has(.pos-luxury-area) .cart-toggle small {
+    width: 21px !important;
+    height: 21px !important;
+    min-width: 21px !important;
+  }
+
+  body:has(.pos-luxury-area) .menu-area,
+  body:has(.pos-luxury-area) .abstract-area,
+  body:has(.pos-luxury-area) .pos-luxury-area {
+    height: calc(100% - 116px) !important;
+    min-height: 0 !important;
+    padding: 12px 12px 14px !important;
+    overflow: hidden !important;
+  }
+
+  body:has(.pos-luxury-area) .category-tabs,
+  body:has(.pos-luxury-area) .luxury-category-tabs {
+    width: 100% !important;
+    gap: 8px !important;
+    padding: 0 0 12px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    flex-wrap: nowrap !important;
+    scrollbar-width: none !important;
+  }
+
+  body:has(.pos-luxury-area) .category-tabs::-webkit-scrollbar,
+  body:has(.pos-luxury-area) .luxury-category-tabs::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .category-tabs button,
+  body:has(.pos-luxury-area) .luxury-category-tabs button {
+    flex: 0 0 auto !important;
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 0 14px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+
+  body:has(.pos-luxury-area) .product-grid,
+  body:has(.pos-luxury-area) .luxury-product-grid {
+    width: 100% !important;
+    height: calc(100% - 50px) !important;
+    max-height: calc(100% - 50px) !important;
+    min-height: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: 156px !important;
+    row-gap: 12px !important;
+    column-gap: 0 !important;
+    align-content: start !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 0 0 22px 0 !important;
+    scrollbar-width: none !important;
+  }
+
+  body:has(.pos-luxury-area) .product-grid::-webkit-scrollbar,
+  body:has(.pos-luxury-area) .luxury-product-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card {
+    width: 100% !important;
+    height: 156px !important;
+    min-height: 156px !important;
+    max-height: 156px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 12px !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .drink-img {
+    width: 88px !important;
+    height: 88px !important;
+    min-width: 88px !important;
+    max-width: 88px !important;
+    border-radius: 15px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .product-info {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    height: 116px !important;
+    min-height: 116px !important;
+    display: grid !important;
+    grid-template-rows: 32px 36px 38px !important;
+    align-content: center !important;
+    gap: 4px !important;
+    overflow: visible !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .product-head {
+    height: 32px !important;
+    min-height: 32px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: start !important;
+    gap: 6px !important;
+    overflow: hidden !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card h3,
+  body:has(.pos-luxury-area) .product-card .product-info h3 {
+    max-height: 32px !important;
+    font-size: 13.5px !important;
+    line-height: 1.12 !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .price {
+    font-size: 12.3px !important;
+    line-height: 1.12 !important;
+    white-space: nowrap !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .size-row {
+    width: 100% !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .size-row::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .size-label {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    font-size: 10.5px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .regular-size,
+  body:has(.pos-luxury-area) .product-card .size-row span {
+    min-width: 0 !important;
+    max-width: 105px !important;
+    overflow: hidden !important;
+    font-size: 10.5px !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .size-btn {
+    flex: 0 0 auto !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 0 12px !important;
+    font-size: 10.5px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .card-footer {
+    width: 100% !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    display: grid !important;
+    grid-template-columns: auto minmax(92px, 1fr) !important;
+    align-items: center !important;
+    gap: 7px !important;
+    overflow: visible !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .qty-row {
+    flex-wrap: nowrap !important;
+    gap: 5px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .qty-btn {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    font-size: 13px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .qty-row span {
+    min-width: 14px !important;
+    font-size: 12px !important;
+    text-align: center !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .add-btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 10px !important;
+    font-size: 10.5px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body:has(.pos-luxury-area) .cart-drawer {
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: min(86dvh, 720px) !important;
+    max-height: 86dvh !important;
+    gap: 12px !important;
+    padding: 18px !important;
+    border-radius: 28px 28px 0 0 !important;
+    z-index: 260 !important;
+    transform: translateY(calc(100% + 34px)) !important;
+    box-shadow: 0 -28px 80px rgba(75, 49, 34, 0.24) !important;
+  }
+
+  body:has(.pos-luxury-area) .cart-drawer.show {
+    transform: translateY(0) !important;
+  }
+
+  body:has(.pos-luxury-area) .cart-backdrop,
+  body:has(.pos-luxury-area) .checkout-confirm-backdrop,
+  body:has(.pos-luxury-area) .checkout-success-backdrop,
+  body:has(.pos-luxury-area) .invoice-modal-backdrop {
+    z-index: 250 !important;
+  }
+
+  body:has(.pos-luxury-area) .cart-drawer-head h2 {
+    font-size: 21px !important;
+  }
+
+  body:has(.pos-luxury-area) .cart-list {
+    gap: 10px !important;
+  }
+
+  body:has(.pos-luxury-area) .cart-item {
+    grid-template-columns: 62px minmax(0, 1fr) !important;
+    gap: 10px !important;
+    padding: 10px !important;
+    border-radius: 20px !important;
+  }
+
+  body:has(.pos-luxury-area) .cart-img {
+    width: 62px !important;
+    height: 62px !important;
+  }
+
+  body:has(.pos-luxury-area) .summary {
+    padding: 14px !important;
+    border-radius: 20px !important;
+  }
+
+  body:has(.pos-luxury-area) .order-btn {
+    min-height: 48px !important;
+  }
+
+  body:has(.pos-luxury-area) .checkout-confirm-modal,
+  body:has(.pos-luxury-area) .checkout-success-modal,
+  body:has(.pos-luxury-area) .invoice-modal {
+    padding: 14px !important;
+    z-index: 270 !important;
+  }
+
+  body:has(.pos-luxury-area) .checkout-confirm-card,
+  body:has(.pos-luxury-area) .checkout-success-card,
+  body:has(.pos-luxury-area) .invoice-modal-card {
+    width: 100% !important;
+    max-height: calc(100dvh - 28px) !important;
+    padding: 20px !important;
+    border-radius: 26px !important;
+  }
+
+  body:has(.pos-luxury-area) .confirm-actions,
+  body:has(.pos-luxury-area) .success-actions,
+  body:has(.pos-luxury-area) .invoice-actions,
+  body:has(.pos-luxury-area) .success-actions-three {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  body:has(.pos-luxury-area) .confirm-secondary-btn,
+  body:has(.pos-luxury-area) .confirm-primary-btn,
+  body:has(.pos-luxury-area) .success-secondary-btn,
+  body:has(.pos-luxury-area) .success-primary-btn,
+  body:has(.pos-luxury-area) .success-print-btn,
+  body:has(.pos-luxury-area) .invoice-secondary-btn,
+  body:has(.pos-luxury-area) .invoice-print-btn {
+    width: 100% !important;
+    min-height: 48px !important;
+  }
+}
+
+/* HP sangat kecil */
+@media (max-width: 420px) {
+  body:has(.pos-luxury-area) .app-shell {
+    padding: 8px 8px 80px !important;
+  }
+
+  body:has(.pos-luxury-area) .sidebar {
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    grid-template-columns: minmax(0, 1fr) 52px !important;
+    border-radius: 22px !important;
+    padding: 7px !important;
+  }
+
+  body:has(.pos-luxury-area) .logout-form {
+    width: 52px !important;
+  }
+
+  body:has(.pos-luxury-area) .nav-item,
+  body:has(.pos-luxury-area) .logout-button {
+    height: 46px !important;
+    min-height: 46px !important;
+    border-radius: 16px !important;
+    font-size: 8.8px !important;
+  }
+
+  body:has(.pos-luxury-area) .content {
+    border-radius: 22px !important;
+  }
+
+  body:has(.pos-luxury-area) .topbar {
+    height: 108px !important;
+    min-height: 108px !important;
+    padding: 12px !important;
+    gap: 8px !important;
+  }
+
+  body:has(.pos-luxury-area) .search-box {
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
+  body:has(.pos-luxury-area) .cart-toggle {
+    height: 42px !important;
+    min-height: 42px !important;
+  }
+
+  body:has(.pos-luxury-area) .menu-area,
+  body:has(.pos-luxury-area) .abstract-area,
+  body:has(.pos-luxury-area) .pos-luxury-area {
+    height: calc(100% - 108px) !important;
+    padding: 10px 10px 12px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-grid,
+  body:has(.pos-luxury-area) .luxury-product-grid {
+    grid-auto-rows: 148px !important;
+    row-gap: 10px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card {
+    height: 148px !important;
+    min-height: 148px !important;
+    max-height: 148px !important;
+    gap: 9px !important;
+    padding: 10px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .drink-img {
+    width: 78px !important;
+    height: 78px !important;
+    min-width: 78px !important;
+    max-width: 78px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .product-info {
+    height: 112px !important;
+    min-height: 112px !important;
+    grid-template-rows: 31px 35px 36px !important;
+    gap: 3px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card h3,
+  body:has(.pos-luxury-area) .product-card .product-info h3 {
+    font-size: 13px !important;
+    max-height: 31px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .price {
+    font-size: 11.6px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .card-footer {
+    grid-template-columns: auto minmax(80px, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .qty-btn {
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    min-height: 26px !important;
+  }
+
+  body:has(.pos-luxury-area) .product-card .add-btn {
+    height: 32px !important;
+    min-height: 32px !important;
+    font-size: 10px !important;
+  }
+}
+
+/* Landscape HP / tablet rendah: area produk tetap bisa discroll */
+@media (max-height: 560px) and (max-width: 1180px) {
+  body:has(.pos-luxury-area) .product-grid,
+  body:has(.pos-luxury-area) .luxury-product-grid,
+  body:has(.pos-luxury-area) .cart-list,
+  body:has(.pos-luxury-area) .checkout-confirm-card,
+  body:has(.pos-luxury-area) .checkout-success-card {
+    overflow-y: auto !important;
+  }
+}
+
+
+/* =========================================================
+   FIX FINAL MOBILE SIDEBAR - HISTORY & SETTINGS
+   Tempel PALING BAWAH style.css
+   Tujuan: sidebar History/Settings sama seperti Home di HP
+========================================================= */
+
+@media (max-width: 900px) {
+  body.history-page,
+  body.settings-page {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+  }
+
+  body.history-page .app-shell,
+  body.settings-page .app-shell,
+  body.history-page .app-shell:not(.single-content),
+  body.settings-page .app-shell:not(.single-content) {
+    width: 100% !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+    display: block !important;
+    padding: 10px 10px 92px !important;
+    overflow: visible !important;
+  }
+
+  body.history-page .sidebar,
+  body.settings-page .sidebar {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 10px !important;
+    top: auto !important;
+
+    width: auto !important;
+    height: 68px !important;
+    min-height: 68px !important;
+    max-height: 68px !important;
+
+    z-index: 9999 !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 58px !important;
+    align-items: center !important;
+    gap: 8px !important;
+
+    padding: 8px !important;
+    margin: 0 !important;
+
+    border-radius: 24px !important;
+    border: 1px solid rgba(150, 86, 42, 0.22) !important;
+    background: rgba(255, 255, 255, 0.42) !important;
+    box-shadow: 0 18px 46px rgba(125, 72, 31, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.42) !important;
+    backdrop-filter: blur(16px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(130%) !important;
+
+    overflow: hidden !important;
+  }
+
+  body.history-page .brand,
+  body.history-page .brand.brand-with-logo,
+  body.settings-page .brand,
+  body.settings-page .brand.brand-with-logo {
+    display: none !important;
+  }
+
+  body.history-page .nav-menu,
+  body.settings-page .nav-menu {
+    width: 100% !important;
+    min-width: 0 !important;
+
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  body.history-page .logout-form,
+  body.settings-page .logout-form {
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.history-page .nav-item,
+  body.history-page .logout-button,
+  body.settings-page .nav-item,
+  body.settings-page .logout-button {
+    width: 100% !important;
+    min-width: 0 !important;
+
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+
+    padding: 0 4px !important;
+    margin: 0 !important;
+
+    border-radius: 18px !important;
+    font-size: 9px !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  body.history-page .nav-icon,
+  body.settings-page .nav-icon {
+    width: 18px !important;
+    height: 18px !important;
+    flex: 0 0 auto !important;
+    font-size: 15px !important;
+  }
+
+  body.history-page .logout-button span:last-child,
+  body.settings-page .logout-button span:last-child {
+    display: none !important;
+  }
+
+  body.history-page .nav-item.active::after,
+  body.settings-page .nav-item.active::after {
+    display: none !important;
+  }
+
+  body.history-page .content,
+  body.settings-page .content {
+    width: 100% !important;
+    height: auto !important;
+    min-height: calc(100dvh - 112px) !important;
+    overflow: visible !important;
+    border-radius: 24px !important;
+  }
+
+  body.settings-page .topbar {
+    display: none !important;
+  }
+
+  body.history-page .history-area,
+  body.settings-page .settings-area {
+    height: auto !important;
+    min-height: calc(100dvh - 112px) !important;
+    overflow: visible !important;
+    padding: 20px 16px 26px !important;
+  }
+
+  body.settings-page .settings-area {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  body.settings-page .profile-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.history-page .history-stats,
+  body.history-page .history-stats-daily,
+  body.history-page .history-filter {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.history-page .history-table-wrap {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+  }
+
+  body.history-page .history-table {
+    min-width: 760px !important;
+  }
+}
+
+/* =========================================================
+   FIX FINAL MOBILE HISTORY SCROLL
+   Tempel PALING BAWAH style.css setelah fix mobile sidebar
+========================================================= */
+
+@media (max-width: 900px) {
+  body.history-page {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  body.history-page .app-shell {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+    display: block !important;
+    padding-bottom: 96px !important;
+  }
+
+  body.history-page .content {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+
+  body.history-page .history-area {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding-bottom: 26px !important;
+  }
+
+  body.history-page .history-head,
+  body.history-page .history-stats,
+  body.history-page .history-filter {
+    flex-shrink: 0 !important;
+  }
+
+  body.history-page .history-table-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+
+    display: block !important;
+
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: auto !important;
+    touch-action: pan-x pan-y !important;
+  }
+
+  body.history-page .history-table {
+    width: 100% !important;
+    min-width: 760px !important;
+    table-layout: fixed !important;
+  }
+
+  body.history-page .history-table thead {
+    display: table-header-group !important;
+  }
+
+  body.history-page .history-table tbody {
+    display: table-row-group !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  body.history-page .history-table tbody tr {
+    display: table-row !important;
+  }
+
+  body.history-page .history-pagination {
+    position: static !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    margin: 16px auto 0 !important;
+  }
+}
+
+/* =========================================================
+   FIX MOBILE HISTORY PAGINATION SIZE
+   Mengecilkan tombol Sebelumnya / Berikutnya di HP
+========================================================= */
+
+@media (max-width: 900px) {
+  body.history-page .history-pagination {
+    width: calc(100% - 12px) !important;
+    max-width: 100% !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+
+    padding: 8px 10px !important;
+    margin: 14px auto 0 !important;
+
+    border-radius: 22px !important;
+    overflow: hidden !important;
+  }
+
+  body.history-page .history-pagination button {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 116px !important;
+
+    height: 38px !important;
+    min-height: 38px !important;
+
+    padding: 0 10px !important;
+    border-radius: 999px !important;
+
+    font-size: 12px !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+  }
+
+  body.history-page .history-pagination span {
+    min-width: max-content !important;
+    padding: 0 4px !important;
+
+    font-size: 12px !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 420px) {
+  body.history-page .history-pagination {
+    gap: 5px !important;
+    padding: 7px 8px !important;
+  }
+
+  body.history-page .history-pagination button {
+    max-width: 104px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 8px !important;
+    font-size: 11px !important;
+  }
+
+  body.history-page .history-pagination span {
+    font-size: 11px !important;
+  }
+}
+
+/* =========================================================
+   FIX TABLET HISTORY PAGINATION RESTORE
+   Tablet jangan ikut style pagination HP
+========================================================= */
+
+@media (min-width: 561px) and (max-width: 900px) {
+  body.history-page .history-pagination {
+    width: fit-content !important;
+    max-width: calc(100% - 28px) !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 14px !important;
+
+    padding: 10px 14px !important;
+    margin: 18px auto 0 !important;
+
+    border-radius: 999px !important;
+    overflow: visible !important;
+  }
+
+  body.history-page .history-pagination button {
+    width: auto !important;
+    min-width: 112px !important;
+    max-width: none !important;
+
+    height: 40px !important;
+    min-height: 40px !important;
+
+    padding: 0 16px !important;
+    border-radius: 999px !important;
+
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+  }
+
+  body.history-page .history-pagination span {
+    min-width: auto !important;
+    padding: 0 !important;
+
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+}
+
+/* =========================================================
+   FIX PALING KUAT - LOGIN SCROLL TABLET & HP
+   Tempel PALING BAWAH style.css
+========================================================= */
+
+@media (max-width: 900px) {
+  html {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  body,
+  body.login-page,
+  body:has(.login-shell),
+  body:has(.luxury-login-shell) {
+    position: static !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    touch-action: pan-y !important;
+    overscroll-behavior-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .login-shell,
+  .luxury-login-shell {
+    position: relative !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+
+    display: block !important;
+
+    padding: 24px 14px 48px !important;
+
+    overflow: visible !important;
+  }
+
+  .login-card,
+  .login-form,
+  .luxury-login-card,
+  .luxury-login-panel {
+    position: relative !important;
+
+    width: min(420px, 100%) !important;
+    max-width: 100% !important;
+
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+
+    margin: 0 auto !important;
+
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .login-shell,
+  .luxury-login-shell {
+    padding: 18px 12px 42px !important;
+  }
+
+  .login-card,
+  .login-form,
+  .luxury-login-card,
+  .luxury-login-panel {
+    padding: 22px 18px !important;
+    border-radius: 24px !important;
+  }
+}
+
+/* =========================================================
+   FINAL UNIFIED TABLET TOP WIDGET - HOME STYLE
+   History & Settings memakai pola widget atas Home.
+   Catatan:
+   - Tablet 561px - 1180px: header horizontal.
+   - Tombol menu mengikuti ukuran teks, bukan melebar.
+   - HP <= 560px tetap memakai bottom navigation dari rule sebelumnya.
+========================================================= */
+
+@media (min-width: 561px) and (max-width: 1180px) {
+  html body.history-page,
+  html body.app-page.settings-page,
+  html body.settings-page {
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html body.history-page main.app-shell,
+  html body.history-page main.app-shell:not(.single-content),
+  html body.history-page main.app-shell.single-content,
+  html body.app-page.settings-page main.app-shell,
+  html body.app-page.settings-page main.app-shell:not(.single-content),
+  html body.app-page.settings-page main.app-shell.single-content,
+  html body.settings-page main.app-shell,
+  html body.settings-page main.app-shell:not(.single-content),
+  html body.settings-page main.app-shell.single-content {
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+    gap: 14px !important;
+
+    padding: 14px !important;
+    overflow: hidden !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar,
+  html body.app-page.settings-page main.app-shell > aside.sidebar,
+  html body.settings-page main.app-shell > aside.sidebar {
+    position: relative !important;
+    inset: auto !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(178px, auto) minmax(0, 1fr) auto !important;
+    grid-template-areas: none !important;
+    align-items: center !important;
+    gap: 14px !important;
+
+    padding: 14px 16px !important;
+    margin: 0 !important;
+
+    border-radius: 24px !important;
+    overflow: visible !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar > .brand,
+  html body.history-page main.app-shell > aside.sidebar > .brand.brand-with-logo,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > .brand,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > .brand.brand-with-logo,
+  html body.settings-page main.app-shell > aside.sidebar > .brand,
+  html body.settings-page main.app-shell > aside.sidebar > .brand.brand-with-logo {
+    grid-area: auto !important;
+
+    width: auto !important;
+    min-width: 178px !important;
+    max-width: 220px !important;
+
+    height: 58px !important;
+    min-height: 58px !important;
+    max-height: 58px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+
+    padding: 8px 10px !important;
+    margin: 0 !important;
+
+    border-radius: 18px !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar .brand-logo,
+  html body.app-page.settings-page main.app-shell > aside.sidebar .brand-logo,
+  html body.settings-page main.app-shell > aside.sidebar .brand-logo {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    flex: 0 0 42px !important;
+    border-radius: 14px !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar .brand-text,
+  html body.app-page.settings-page main.app-shell > aside.sidebar .brand-text,
+  html body.settings-page main.app-shell > aside.sidebar .brand-text {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar .brand strong,
+  html body.history-page main.app-shell > aside.sidebar .brand-text strong,
+  html body.app-page.settings-page main.app-shell > aside.sidebar .brand strong,
+  html body.app-page.settings-page main.app-shell > aside.sidebar .brand-text strong,
+  html body.settings-page main.app-shell > aside.sidebar .brand strong,
+  html body.settings-page main.app-shell > aside.sidebar .brand-text strong {
+    font-size: 22px !important;
+    line-height: 1 !important;
+    letter-spacing: -0.8px !important;
+    white-space: nowrap !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar .brand small,
+  html body.history-page main.app-shell > aside.sidebar .brand-text small,
+  html body.app-page.settings-page main.app-shell > aside.sidebar .brand small,
+  html body.app-page.settings-page main.app-shell > aside.sidebar .brand-text small,
+  html body.settings-page main.app-shell > aside.sidebar .brand small,
+  html body.settings-page main.app-shell > aside.sidebar .brand-text small {
+    margin-top: 4px !important;
+    font-size: 8.5px !important;
+    letter-spacing: 0.16em !important;
+    white-space: nowrap !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar > nav.nav-menu,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > nav.nav-menu,
+  html body.settings-page main.app-shell > aside.sidebar > nav.nav-menu {
+    grid-area: auto !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+
+    display: flex !important;
+    grid-template-columns: none !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+
+    padding: 0 2px !important;
+    margin: 0 !important;
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar > nav.nav-menu::-webkit-scrollbar,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > nav.nav-menu::-webkit-scrollbar,
+  html body.settings-page main.app-shell > aside.sidebar > nav.nav-menu::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar > nav.nav-menu > a.nav-item,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > nav.nav-menu > a.nav-item,
+  html body.settings-page main.app-shell > aside.sidebar > nav.nav-menu > a.nav-item {
+    flex: 0 0 auto !important;
+
+    width: max-content !important;
+    min-width: max-content !important;
+    max-width: max-content !important;
+
+    height: 46px !important;
+    min-height: 46px !important;
+    max-height: 46px !important;
+
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+
+    padding: 0 14px !important;
+    margin: 0 !important;
+
+    border-radius: 16px !important;
+
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar > form.logout-form,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > form.logout-form,
+  html body.settings-page main.app-shell > aside.sidebar > form.logout-form {
+    grid-area: auto !important;
+
+    flex: 0 0 auto !important;
+    width: max-content !important;
+    min-width: max-content !important;
+    max-width: max-content !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    align-self: center !important;
+    justify-self: end !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar > form.logout-form > button.logout-button,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > form.logout-form > button.logout-button,
+  html body.settings-page main.app-shell > aside.sidebar > form.logout-form > button.logout-button {
+    flex: 0 0 auto !important;
+
+    width: max-content !important;
+    min-width: max-content !important;
+    max-width: max-content !important;
+
+    height: 46px !important;
+    min-height: 46px !important;
+    max-height: 46px !important;
+
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+
+    padding: 0 14px !important;
+    margin: 0 !important;
+
+    border-radius: 16px !important;
+
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar .nav-icon,
+  html body.app-page.settings-page main.app-shell > aside.sidebar .nav-icon,
+  html body.settings-page main.app-shell > aside.sidebar .nav-icon {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    flex: 0 0 18px !important;
+    font-size: 15px !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar .nav-item.active::after,
+  html body.app-page.settings-page main.app-shell > aside.sidebar .nav-item.active::after,
+  html body.settings-page main.app-shell > aside.sidebar .nav-item.active::after {
+    display: none !important;
+  }
+
+  html body.history-page main.app-shell > section.content,
+  html body.app-page.settings-page main.app-shell > section.content,
+  html body.settings-page main.app-shell > section.content {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    border-radius: 24px !important;
+    overflow: hidden !important;
+  }
+
+  html body.history-page .history-area {
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    padding: 24px 28px 28px !important;
+  }
+
+  html body.app-page.settings-page .settings-area,
+  html body.settings-page .settings-area {
+    height: calc(100% - 96px) !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 24px 28px 28px !important;
+  }
+}
+
+@media (min-width: 561px) and (max-width: 780px) {
+  html body.history-page main.app-shell > aside.sidebar,
+  html body.app-page.settings-page main.app-shell > aside.sidebar,
+  html body.settings-page main.app-shell > aside.sidebar {
+    grid-template-columns: minmax(168px, auto) minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+    padding: 12px 14px !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar > .brand,
+  html body.history-page main.app-shell > aside.sidebar > .brand.brand-with-logo,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > .brand,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > .brand.brand-with-logo,
+  html body.settings-page main.app-shell > aside.sidebar > .brand,
+  html body.settings-page main.app-shell > aside.sidebar > .brand.brand-with-logo {
+    min-width: 168px !important;
+    max-width: 168px !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar .brand-logo,
+  html body.app-page.settings-page main.app-shell > aside.sidebar .brand-logo,
+  html body.settings-page main.app-shell > aside.sidebar .brand-logo {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    flex-basis: 40px !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar .brand strong,
+  html body.history-page main.app-shell > aside.sidebar .brand-text strong,
+  html body.app-page.settings-page main.app-shell > aside.sidebar .brand strong,
+  html body.app-page.settings-page main.app-shell > aside.sidebar .brand-text strong,
+  html body.settings-page main.app-shell > aside.sidebar .brand strong,
+  html body.settings-page main.app-shell > aside.sidebar .brand-text strong {
+    font-size: 20px !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar > nav.nav-menu,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > nav.nav-menu,
+  html body.settings-page main.app-shell > aside.sidebar > nav.nav-menu {
+    gap: 8px !important;
+  }
+
+  html body.history-page main.app-shell > aside.sidebar > nav.nav-menu > a.nav-item,
+  html body.history-page main.app-shell > aside.sidebar > form.logout-form > button.logout-button,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > nav.nav-menu > a.nav-item,
+  html body.app-page.settings-page main.app-shell > aside.sidebar > form.logout-form > button.logout-button,
+  html body.settings-page main.app-shell > aside.sidebar > nav.nav-menu > a.nav-item,
+  html body.settings-page main.app-shell > aside.sidebar > form.logout-form > button.logout-button {
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    padding: 0 12px !important;
+    border-radius: 15px !important;
+    font-size: 11.2px !important;
+  }
+}
+
+/* =========================================================
+   FINAL FIX SETTINGS TABLET / MOBILE OVERLAP
+   Perbaikan: panel Data Profile dan Ubah Data User tidak saling menumpuk.
+   Settings tablet dibuat satu kolom rapi dan scroll memakai halaman.
+========================================================= */
+
+@media (min-width: 561px) and (max-width: 1180px) {
+  html body.app-page.settings-page,
+  html body.settings-page {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  html body.app-page.settings-page main.app-shell,
+  html body.app-page.settings-page main.app-shell:not(.single-content),
+  html body.app-page.settings-page main.app-shell.single-content,
+  html body.settings-page main.app-shell,
+  html body.settings-page main.app-shell:not(.single-content),
+  html body.settings-page main.app-shell.single-content {
+    height: auto !important;
+    min-height: 100dvh !important;
+    grid-template-rows: auto auto !important;
+    overflow: visible !important;
+  }
+
+  html body.app-page.settings-page main.app-shell > section.content,
+  html body.settings-page main.app-shell > section.content {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+
+  html body.app-page.settings-page .topbar,
+  html body.settings-page .topbar {
+    display: none !important;
+  }
+
+  html body.app-page.settings-page .settings-area,
+  html body.settings-page .settings-area {
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 18px !important;
+
+    padding: 24px 28px 30px !important;
+    overflow: visible !important;
+  }
+
+  html body.app-page.settings-page .settings-area > *,
+  html body.settings-page .settings-area > * {
+    position: relative !important;
+    inset: auto !important;
+    transform: none !important;
+    flex: 0 0 auto !important;
+    align-self: stretch !important;
+  }
+
+  html body.app-page.settings-page .profile-panel,
+  html body.app-page.settings-page .profile-form-panel,
+  html body.settings-page .profile-panel,
+  html body.settings-page .profile-form-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+  }
+
+  html body.app-page.settings-page .profile-card,
+  html body.settings-page .profile-card {
+    overflow: hidden !important;
+  }
+
+  html body.app-page.settings-page .profile-form-panel,
+  html body.settings-page .profile-form-panel {
+    padding: 24px !important;
+    overflow: visible !important;
+  }
+
+  html body.app-page.settings-page .profile-main,
+  html body.app-page.settings-page .profile-header,
+  html body.settings-page .profile-main,
+  html body.settings-page .profile-header {
+    position: relative !important;
+    margin-top: -37px !important;
+  }
+
+  html body.app-page.settings-page .profile-grid,
+  html body.settings-page .profile-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 0 24px 24px !important;
+  }
+
+  html body.app-page.settings-page .profile-grid div,
+  html body.settings-page .profile-grid div {
+    min-height: 74px !important;
+  }
+
+  html body.app-page.settings-page .settings-form,
+  html body.settings-page .settings-form {
+    display: grid !important;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  html body.app-page.settings-page,
+  html body.settings-page {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  html body.app-page.settings-page main.app-shell,
+  html body.settings-page main.app-shell {
+    height: auto !important;
+    min-height: 100dvh !important;
+    display: block !important;
+    overflow: visible !important;
+    padding-bottom: 96px !important;
+  }
+
+  html body.app-page.settings-page main.app-shell > section.content,
+  html body.settings-page main.app-shell > section.content {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+
+  html body.app-page.settings-page .topbar,
+  html body.settings-page .topbar {
+    display: none !important;
+  }
+
+  html body.app-page.settings-page .settings-area,
+  html body.settings-page .settings-area {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+
+    padding: 18px 14px 24px !important;
+    overflow: visible !important;
+  }
+
+  html body.app-page.settings-page .profile-panel,
+  html body.app-page.settings-page .profile-form-panel,
+  html body.settings-page .profile-panel,
+  html body.settings-page .profile-form-panel {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+  }
+
+  html body.app-page.settings-page .profile-form-panel,
+  html body.settings-page .profile-form-panel {
+    padding: 20px !important;
+  }
+
+  html body.app-page.settings-page .profile-grid,
+  html body.settings-page .profile-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 0 18px 20px !important;
+  }
+}
+
+/* =========================================================
+   FIX LOGIN BRAND CENTER - TABLET & HP ONLY
+   Desktop tetap tidak berubah
+========================================================= */
+
+@media (max-width: 1200px) {
+  .pos-login-left-content {
+    width: 100% !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .pos-login-brand-row {
+    width: 100% !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .pos-login-brand-text {
+    align-items: center !important;
+    text-align: center !important;
+    flex: 0 1 auto !important;
+  }
+
+  .pos-login-brand-text .pos-login-line {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .pos-login-brand-text h1 {
+    text-align: center !important;
+  }
+
+  .pos-login-brand-text h1 strong {
+    text-align: center !important;
+  }
+
+  .pos-login-left-content > p {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .pos-login-brand-row {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 16px !important;
+  }
+
+  .pos-login-logo-wrap {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .pos-login-logo {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .pos-login-brand-text {
+    width: 100% !important;
+    align-items: center !important;
+  }
+
+  .pos-login-brand-text h1 {
+    width: 100% !important;
+    white-space: normal !important;
+  }
+}
+
+/* =========================================================
+   FIX TABLET HISTORY STATS + PAGINATION CENTER
+   1. Tablet: 3 widget total dibuat 1 baris
+   2. Pagination tetap center walaupun data discroll
+========================================================= */
+
+@media (min-width: 561px) and (max-width: 1180px) {
+  body.history-page .history-stats,
+  body.history-page .history-stats-daily {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  body.history-page .stat-card {
+    min-height: 86px !important;
+    padding: 14px 16px !important;
+    border-radius: 20px !important;
+  }
+
+  body.history-page .stat-card span {
+    font-size: 10.5px !important;
+    line-height: 1.35 !important;
+  }
+
+  body.history-page .stat-card strong {
+    margin-top: 8px !important;
+    font-size: 21px !important;
+  }
+
+  body.history-page .history-area {
+    position: relative !important;
+    padding-bottom: 86px !important;
+  }
+
+  body.history-page .history-table-wrap {
+    padding-bottom: 0 !important;
+  }
+
+  body.history-page .history-pagination,
+  body.history-page .history-area.show-history-pagination .history-pagination {
+    position: fixed !important;
+
+    left: 50% !important;
+    right: auto !important;
+    bottom: 34px !important;
+
+    z-index: 9998 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+
+    width: fit-content !important;
+    max-width: calc(100vw - 40px) !important;
+
+    margin: 0 !important;
+    padding: 9px 12px !important;
+
+    border-radius: 999px !important;
+
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+
+    transform: translateX(-50%) !important;
+  }
+
+  body.history-page .history-pagination button {
+    min-width: 104px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+  }
+
+  body.history-page .history-pagination span {
+    font-size: 12px !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+  }
+}
+
+/* HP tetap 1 kolom dan pagination tidak ikut style tablet */
+@media (max-width: 560px) {
+  body.history-page .history-stats,
+  body.history-page .history-stats-daily {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.history-page .history-pagination,
+  body.history-page .history-area.show-history-pagination .history-pagination {
+    position: static !important;
+    transform: none !important;
+    margin: 16px auto 0 !important;
+  }
+}
+
+/* =========================================================
+   FIX HISTORY DETAIL MODAL LAYER
+   Saat detail transaksi dibuka, widget atas tidak ikut muncul
+========================================================= */
+
+body.history-page .invoice-modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 20000 !important;
+
+  background: rgba(38, 30, 24, 0.48) !important;
+  backdrop-filter: blur(10px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(120%) !important;
+}
+
+body.history-page .invoice-modal {
+  z-index: 20001 !important;
+}
+
+body.history-page:has(.invoice-modal.show) .sidebar,
+body.history-page:has(.invoice-modal.show) .history-pagination {
+  z-index: 1 !important;
+  pointer-events: none !important;
 }

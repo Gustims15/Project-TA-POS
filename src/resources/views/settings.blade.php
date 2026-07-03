@@ -19,7 +19,7 @@
 
 <body class="app-page settings-page">
     <main class="app-shell">
-        <aside class="sidebar">
+        <aside class="sidebar ng-front-sidebar">
             <div class="brand brand-with-logo">
                 <img
                     src="{{ asset('images/ngunjuk-logo.png') }}"

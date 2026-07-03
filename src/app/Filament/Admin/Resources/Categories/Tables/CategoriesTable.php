@@ -22,12 +22,20 @@ class CategoriesTable
                     ->searchable()
                     ->sortable()
                     ->html()
+                    ->extraHeaderAttributes([
+                        'class' => 'ng-category-table-col ng-category-name-col',
+                        'style' => 'min-width: 230px;',
+                    ])
+                    ->extraCellAttributes([
+                        'class' => 'ng-category-table-col ng-category-name-col',
+                        'style' => 'min-width: 230px;',
+                    ])
                     ->formatStateUsing(function (?string $state): string {
                         $name = $state ?: '-';
                         $initial = mb_strtoupper(mb_substr($name, 0, 1));
 
                         return '
-                            <div style="display:flex;align-items:center;gap:12px;min-width:210px;">
+                            <div style="display:flex;align-items:center;gap:12px;min-width:210px;white-space:nowrap;">
                                 <div style="
                                     width:42px;
                                     height:42px;
@@ -70,6 +78,14 @@ class CategoriesTable
                     ->label('Slug')
                     ->searchable()
                     ->html()
+                    ->extraHeaderAttributes([
+                        'class' => 'ng-category-table-col ng-category-slug-col',
+                        'style' => 'min-width: 150px;',
+                    ])
+                    ->extraCellAttributes([
+                        'class' => 'ng-category-table-col ng-category-slug-col',
+                        'style' => 'min-width: 150px;',
+                    ])
                     ->formatStateUsing(fn (?string $state): string => '
                         <span style="
                             display:inline-flex;
@@ -90,6 +106,14 @@ class CategoriesTable
 
                 IconColumn::make('is_active')
                     ->label('Aktif')
+                    ->extraHeaderAttributes([
+                        'class' => 'ng-category-table-col ng-category-active-col',
+                        'style' => 'min-width: 110px;',
+                    ])
+                    ->extraCellAttributes([
+                        'class' => 'ng-category-table-col ng-category-active-col',
+                        'style' => 'min-width: 110px;',
+                    ])
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
@@ -98,6 +122,14 @@ class CategoriesTable
 
                 TextColumn::make('products_count')
                     ->label('Jumlah Produk')
+                    ->extraHeaderAttributes([
+                        'class' => 'ng-category-table-col ng-category-products-col',
+                        'style' => 'min-width: 150px;',
+                    ])
+                    ->extraCellAttributes([
+                        'class' => 'ng-category-table-col ng-category-products-col',
+                        'style' => 'min-width: 150px;',
+                    ])
                     ->counts('products')
                     ->sortable()
                     ->alignCenter()
@@ -109,17 +141,14 @@ class CategoriesTable
                             $bg = 'rgba(148,163,184,.12)';
                             $border = 'rgba(148,163,184,.24)';
                             $color = '#64748b';
-                            $caption = 'Kosong';
                         } elseif ($count <= 5) {
                             $bg = 'rgba(249,115,22,.12)';
                             $border = 'rgba(249,115,22,.22)';
                             $color = '#c25500';
-                            $caption = 'Sedikit';
                         } else {
                             $bg = 'rgba(16,185,129,.13)';
                             $border = 'rgba(16,185,129,.24)';
                             $color = '#078657';
-                            $caption = 'Aktif';
                         }
 
                         return '
@@ -127,10 +156,9 @@ class CategoriesTable
                                 display:inline-flex;
                                 align-items:center;
                                 justify-content:center;
-                                gap:8px;
                                 min-height:32px;
-                                min-width:116px;
-                                padding:0 12px;
+                                min-width:68px;
+                                padding:0 14px;
                                 border-radius:999px;
                                 background:' . $bg . ';
                                 border:1px solid ' . $border . ';
@@ -138,14 +166,21 @@ class CategoriesTable
                                 font-size:11px;
                                 font-weight:950;
                             ">
-                                <span>' . number_format($count, 0, ',', '.') . '</span>
-                                <span style="opacity:.78;">' . $caption . '</span>
+                                ' . number_format($count, 0, ',', '.') . '
                             </div>
                         ';
                     }),
 
                 TextColumn::make('created_at')
                     ->label('Dibuat')
+                    ->extraHeaderAttributes([
+                        'class' => 'ng-category-table-col ng-category-date-col',
+                        'style' => 'min-width: 160px;',
+                    ])
+                    ->extraCellAttributes([
+                        'class' => 'ng-category-table-col ng-category-date-col',
+                        'style' => 'min-width: 160px;',
+                    ])
                     ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

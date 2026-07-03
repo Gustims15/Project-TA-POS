@@ -454,7 +454,7 @@
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 14px;
-            margin-bottom: 16px;
+            margin-bottom: 0px;
         }
 
         .ng-kpi-card {

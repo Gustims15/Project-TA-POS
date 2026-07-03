@@ -427,7 +427,7 @@
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 14px;
-            margin-bottom: 14px;
+            margin-bottom: 6px;
         }
 
         .ng-kpi-card {
@@ -1182,6 +1182,104 @@
             syncOperationalSidebarClass();
         })();
     </script>
+
+
+
+    <style id="ng-final-hp-kpi-2x2-ng-operational-page">
+        /* =========================================================
+           FINAL HP KPI 2x2 - scoped only for .ng-operational-page
+           Tablet & desktop tetap mengikuti style sebelumnya.
+        ========================================================= */
+        @media (max-width: 700px) {
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+                align-items: stretch !important;
+            }
+
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid > .ng-kpi-card {
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                min-height: 100px !important;
+                padding: 12px !important;
+                border-radius: 18px !important;
+                gap: 9px !important;
+                display: flex !important;
+                align-items: flex-start !important;
+            }
+
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid .ng-kpi-icon {
+                width: 36px !important;
+                height: 36px !important;
+                min-width: 36px !important;
+                flex: 0 0 36px !important;
+                border-radius: 13px !important;
+                font-size: 14px !important;
+            }
+
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid .ng-kpi-content {
+                min-width: 0 !important;
+                width: 100% !important;
+            }
+
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid .ng-kpi-label {
+                gap: 5px !important;
+                font-size: 9px !important;
+                line-height: 1.2 !important;
+                letter-spacing: 0.035em !important;
+            }
+
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid .ng-kpi-label span {
+                display: none !important;
+            }
+
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid .ng-kpi-content strong {
+                margin-top: 6px !important;
+                font-size: clamp(15px, 4.3vw, 18px) !important;
+                line-height: 1.1 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid .ng-kpi-content p,
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid .ng-kpi-content .neutral,
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid .ng-kpi-content span:not(.ng-kpi-label span) {
+                margin-top: 5px !important;
+                font-size: 9.5px !important;
+                line-height: 1.25 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+        }
+
+        @media (max-width: 380px) {
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid {
+                gap: 8px !important;
+            }
+
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid > .ng-kpi-card {
+                min-height: 94px !important;
+                padding: 10px !important;
+                gap: 7px !important;
+            }
+
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid .ng-kpi-icon {
+                width: 32px !important;
+                height: 32px !important;
+                min-width: 32px !important;
+                flex-basis: 32px !important;
+                font-size: 13px !important;
+            }
+
+            body:has(.ng-operational-page) .ng-operational-page .ng-operational-kpi-grid .ng-kpi-content strong {
+                font-size: clamp(13px, 4vw, 16px) !important;
+            }
+        }
+    </style>
 
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

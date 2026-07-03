@@ -780,9 +780,6 @@
             <article class="ng-widget-card ng-role-form-hero-card">
                 <div class="ng-widget-head">
                     <div>
-                        <span class="ng-kicker">
-                            POS Ngunjuk
-                        </span>
 
                         <h1><?php echo e($title); ?></h1>
 
