@@ -16,7 +16,7 @@ class FinancialDashboard extends Page
 
     protected static string|UnitEnum|null $navigationGroup = 'Keuangan';
 
-    protected static ?string $navigationLabel = 'Dashboard Keuangan';
+    protected static ?string $navigationLabel = 'Analisis Keuangan';
 
     protected static ?string $title = 'Dashboard Keuangan';
 

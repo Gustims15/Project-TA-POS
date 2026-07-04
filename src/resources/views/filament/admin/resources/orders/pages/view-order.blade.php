@@ -173,6 +173,7 @@
             <div class="ng-order-items-list">
                 @forelse ($items as $item)
                     <div class="ng-order-item-row">
+
                         <div class="ng-order-item-number">
                             {{ $loop->iteration }}
                         </div>
@@ -182,18 +183,23 @@
                             <span>Size: {{ $item->size_name ?? 'Regular' }}</span>
                         </div>
 
-                        <div class="ng-order-item-chip">
-                            Qty {{ number_format((int) ($item->quantity ?? 0), 0, ',', '.') }}
-                        </div>
+                        <div class="ng-order-item-meta">
+                            <div class="ng-order-item-chip">
+                                Qty {{ number_format((int) ($item->quantity ?? 0), 0, ',', '.') }}
+                            </div>
 
-                        <div class="ng-order-item-chip muted">
-                            Rp {{ number_format((int) ($item->price ?? 0), 0, ',', '.') }}
+                            <div class="ng-order-item-chip muted">
+                                Rp {{ number_format((int) ($item->price ?? 0), 0, ',', '.') }}
+                            </div>
                         </div>
 
                         <div class="ng-order-item-subtotal">
                             <span>Subtotal</span>
-                            <strong>Rp {{ number_format((int) ($item->subtotal ?? 0), 0, ',', '.') }}</strong>
+                            <strong>
+                                Rp {{ number_format((int) ($item->subtotal ?? 0), 0, ',', '.') }}
+                            </strong>
                         </div>
+
                     </div>
                 @empty
                     <div class="ng-empty-order">
@@ -454,7 +460,7 @@
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 14px;
-            margin-bottom: 0px;
+            margin-bottom: 22px;
         }
 
         .ng-kpi-card {
@@ -951,6 +957,318 @@
                 grid-row: auto !important;
                 justify-self: start !important;
                 text-align: left !important;
+            }
+        }
+                /*
+        |--------------------------------------------------------------------------
+        | FINAL DETAIL ITEM CONSISTENT LAYOUT
+        |--------------------------------------------------------------------------
+        | Semua item mempertahankan bentuk yang sama seperti tampilan 2 item.
+        | Item lebih dari 2 akan menggunakan internal scroll.
+        |--------------------------------------------------------------------------
+        */
+
+        /* Widget Detail Item tetap stabil */
+        .ng-order-items-card-side {
+            height: 326px !important;
+            min-height: 326px !important;
+            max-height: 326px !important;
+
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* Header tidak ikut scroll */
+        .ng-order-items-card-side .ng-widget-card-head {
+            flex: 0 0 auto !important;
+            margin-bottom: 12px !important;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | LIST ITEM
+        |--------------------------------------------------------------------------
+        | Penting:
+        | - item tidak boleh stretch
+        | - item tidak boleh mengecil
+        | - banyak item cukup scroll
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-order-items-card-side .ng-order-items-list {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) !important;
+            grid-auto-rows: max-content !important;
+
+            align-content: start !important;
+            align-items: start !important;
+
+            gap: 10px !important;
+
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
+            max-height: 238px !important;
+
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+
+            padding-right: 4px !important;
+
+            scrollbar-width: thin !important;
+            scrollbar-color:
+                rgba(36, 128, 108, .58)
+                rgba(255, 255, 255, .16) !important;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SETIAP ITEM
+        |--------------------------------------------------------------------------
+        | Bentuk dibuat konsisten seperti screenshot 2 item.
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-order-items-card-side .ng-order-item-row {
+            display: grid !important;
+
+            grid-template-columns:
+                38px
+                minmax(0, 1fr)
+                minmax(92px, auto) !important;
+
+            grid-template-areas:
+                "number name subtotal"
+                "number meta subtotal" !important;
+
+            grid-template-rows:
+                auto
+                auto !important;
+
+            column-gap: 10px !important;
+            row-gap: 6px !important;
+
+            align-items: center !important;
+            align-content: center !important;
+
+            width: 100% !important;
+
+            min-height: 104px !important;
+            height: 104px !important;
+            max-height: 104px !important;
+
+            padding: 12px !important;
+
+            flex: 0 0 auto !important;
+
+            border-radius: 18px !important;
+
+            background: rgba(255, 255, 255, .24) !important;
+
+            border:
+                1px solid
+                rgba(255, 255, 255, .38) !important;
+
+            box-shadow:
+                inset 0 1px 0
+                rgba(255, 255, 255, .30) !important;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | NOMOR ITEM
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-order-items-card-side .ng-order-item-number {
+            grid-area: number !important;
+
+            width: 38px !important;
+            height: 38px !important;
+
+            min-width: 38px !important;
+            min-height: 38px !important;
+
+            align-self: center !important;
+            justify-self: start !important;
+
+            display: grid !important;
+            place-items: center !important;
+
+            border-radius: 13px !important;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | NAMA + SIZE
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-order-items-card-side .ng-order-item-name {
+            grid-area: name !important;
+
+            min-width: 0 !important;
+
+            align-self: end !important;
+        }
+
+        .ng-order-items-card-side .ng-order-item-name strong {
+            display: block !important;
+
+            max-width: 100% !important;
+
+            overflow: hidden !important;
+            white-space: nowrap !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .ng-order-items-card-side .ng-order-item-name span {
+            display: block !important;
+            margin-top: 4px !important;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | QTY + HARGA
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-order-items-card-side .ng-order-item-meta {
+            grid-area: meta !important;
+
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+
+            gap: 8px !important;
+
+            min-width: 0 !important;
+
+            align-self: start !important;
+        }
+
+        .ng-order-items-card-side .ng-order-item-meta .ng-order-item-chip {
+            position: static !important;
+
+            grid-column: auto !important;
+            grid-row: auto !important;
+
+            margin: 0 !important;
+
+            min-height: 26px !important;
+
+            padding:
+                0
+                9px !important;
+
+            flex: 0 0 auto !important;
+        }
+
+        .ng-order-items-card-side .ng-order-item-meta .ng-order-item-chip.muted {
+            grid-column: auto !important;
+            grid-row: auto !important;
+
+            justify-self: auto !important;
+
+            margin: 0 !important;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUBTOTAL
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-order-items-card-side .ng-order-item-subtotal {
+            grid-area: subtotal !important;
+
+            grid-column: auto !important;
+            grid-row: auto !important;
+
+            align-self: center !important;
+            justify-self: end !important;
+
+            min-width: 92px !important;
+
+            text-align: right !important;
+        }
+
+        .ng-order-items-card-side .ng-order-item-subtotal span {
+            display: block !important;
+        }
+
+        .ng-order-items-card-side .ng-order-item-subtotal strong {
+            display: block !important;
+
+            margin-top: 4px !important;
+
+            white-space: nowrap !important;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SCROLLBAR
+        |--------------------------------------------------------------------------
+        */
+
+        .ng-order-items-card-side .ng-order-items-list::-webkit-scrollbar {
+            width: 6px !important;
+        }
+
+        .ng-order-items-card-side .ng-order-items-list::-webkit-scrollbar-track {
+            background:
+                rgba(255, 255, 255, .16) !important;
+
+            border-radius: 999px !important;
+        }
+
+        .ng-order-items-card-side .ng-order-items-list::-webkit-scrollbar-thumb {
+            background:
+                rgba(36, 128, 108, .58) !important;
+
+            border-radius: 999px !important;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | TABLET / MOBILE
+        |--------------------------------------------------------------------------
+        */
+
+        @media (max-width: 900px) {
+            .ng-order-items-card-side {
+                height: auto !important;
+                min-height: 326px !important;
+                max-height: none !important;
+            }
+
+            .ng-order-items-card-side .ng-order-items-list {
+                max-height: 420px !important;
+                overflow-y: auto !important;
+            }
+
+            .ng-order-items-card-side .ng-order-item-row {
+                grid-template-columns:
+                    38px
+                    minmax(0, 1fr) !important;
+
+                grid-template-areas:
+                    "number name"
+                    "number meta"
+                    "subtotal subtotal" !important;
+
+                grid-template-rows:
+                    auto
+                    auto
+                    auto !important;
+
+                min-height: 126px !important;
+                height: auto !important;
+                max-height: none !important;
+            }
+
+            .ng-order-items-card-side .ng-order-item-subtotal {
+                justify-self: end !important;
+                text-align: right !important;
             }
         }
 

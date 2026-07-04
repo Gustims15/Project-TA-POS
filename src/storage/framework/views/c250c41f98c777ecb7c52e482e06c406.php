@@ -148,8 +148,8 @@
     <div class="ng-finance-dashboard-new">
         <section class="ng-topbar">
             <div class="ng-title-area">
-                <h1>Dashboard Keuangan</h1>
-                <p>Ringkasan kinerja keuangan UMKM Ngunjuk </p>
+                <h1>Analisis Keuangan</h1>
+                <p>Ringkasan kinerja dan analisis keuangan UMKM Ngunjuk </p>
                 <small class="ng-active-data-label">
                     Data bulan aktif: <?php echo e($selectedMonthLabel); ?> <?php echo e($selectedYear); ?> • <?php echo e($dateRangeLabel); ?>
 
